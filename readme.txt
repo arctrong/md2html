@@ -70,8 +70,8 @@ Simplified argument set may be used: <input file name> <output file name> <page 
  
 File [`generate_html.bat`](generate_html.bat) demonstrates different usage variations. It
 transmits its arguments directly to the `generate_html.py` module. For example, 
-if `demo.bat -vf` is called then the module will forcefully regenerate the HTML files and will 
-do it verbosely.
+if `generate_html.bat -vf` is called then the module will forcefully regenerate the HTML files
+and will do it verbosely.
 
 ## Double-click script
 
