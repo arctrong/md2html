@@ -3,4 +3,4 @@
 
 Simple CLI tool for generating HTML documents out of Markdown files.
 
-See [here](readme.html) for more description.
+See [here](https://arctrong.github.io/md2html/readme.html) for more description.
