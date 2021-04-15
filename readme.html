@@ -173,7 +173,7 @@ div.tableGridded+table td, div.tableGridded+table th {
 <li><a href="#css">CSS</a></li>
 </ul>
 </li>
-<li><a href="#features-testing">Features testing</a><ul>
+<li><a href="#feature-testing">Feature testing</a><ul>
 <li><a href="#lists">Lists</a></li>
 <li><a href="#lists-in-blockquotes">Lists in blockquotes</a></li>
 <li><a href="#tables">Tables</a></li>
@@ -315,25 +315,25 @@ above Git hook example. Among other required changes the main one is removing <c
 command.</p>
 <hr />
 <h1 id="templates">Templates</h1>
-<p>This utility works with predefined set of empirically developed templates that must suitable for
-most basic technical writings tasks. Different templates may be created for a certain project
-and defined via command line arguments. An example below demonstrates this feature.</p>
+<p>This utility works with a predefined set of empirically developed templates that must be suitable
+for most basic technical writing. Different templates may be created and defined via the 
+command line. An example below demonstrates this option.</p>
 <h2 id="css">CSS</h2>
 <p>For portability purpose by default CSS are included into the HTML document. Press <code>Ctrl</code> + <code>U</code>
 in Firefox (and probably other browsers) to see haw it looks like. Command line arguments
 allow to redefine this behavior.</p>
 <p><a name="ref_to_custom_template_page"></a></p>
 <blockquote>
-<p>Below is an example of a page that was generated using custom templates. And also CSS were 
-linked instead of being included. Click the arrow to navigate:</p>
+<p>Below is an example of a page that was generated using a custom template set. And also CSS 
+were linked instead of being included. Click the arrow to navigate:</p>
 <p><a href="demo/custom_templates.html"><img alt="" src="demo/arrow-right.png" /></a></p>
 </blockquote>
 <hr />
-<h1 id="features-testing">Features testing</h1>
-<p>Some Markdown features available in this implementation are already demonstrated above in this 
-documents. This section provides other examples for solely testing and demonstration purpose.</p>
+<h1 id="feature-testing">Feature testing</h1>
+<p>This document itself demonstrates the available Markdown features of this implementation.
+This section provides other examples for solely testing and demonstration purpose.</p>
 <blockquote>
-<p>See the source Markdown files (<a href="readme.txt">like this</a>) to know how such result can be obtain.</p>
+<p>See the source Markdown files (<a href="readme.txt">like this</a>) to know how such result can be obtained.</p>
 </blockquote>
 <h2 id="lists">Lists</h2>
 <p>The following text will be arranged in a form of a multi-level list with long items in order
@@ -419,7 +419,8 @@ implementation light table style is chosen as the default.</p>
 </tbody>
 </table>
 <p>As Markdown doesn't allow for different table styles, some CSS trick may be used to get this
-functionality &mdash; adding a specific invisible element before the table:</p>
+functionality &mdash; specifically, adding an invisible element before the table and then using some
+simple CSS magic to define the appearance:</p>
 <pre><code class="code">&lt;div class=&quot;tablePlated&quot;&gt;&lt;/div&gt;
 </code></pre>
 

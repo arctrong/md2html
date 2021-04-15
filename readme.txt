@@ -154,9 +154,9 @@ command.
 ----------------------------------------------------------------------------------------------------
 # Templates
 
-This utility works with predefined set of empirically developed templates that must suitable for
-most basic technical writings tasks. Different templates may be created for a certain project
-and defined via command line arguments. An example below demonstrates this feature.
+This utility works with a predefined set of empirically developed templates that must be suitable
+for most basic technical writing. Different templates may be created and defined via the 
+command line. An example below demonstrates this option.
 
 ## CSS
 
@@ -166,18 +166,18 @@ allow to redefine this behavior.
 
 <a name="ref_to_custom_template_page"></a>
 
-> Below is an example of a page that was generated using custom templates. And also CSS were 
-> linked instead of being included. Click the arrow to navigate:
+> Below is an example of a page that was generated using a custom template set. And also CSS 
+> were linked instead of being included. Click the arrow to navigate:
 > 
 > [![](demo/arrow-right.png)](demo/custom_templates.html)
 
 ----------------------------------------------------------------------------------------------------
-# Features testing
+# Feature testing
 
-Some Markdown features available in this implementation are already demonstrated above in this 
-documents. This section provides other examples for solely testing and demonstration purpose.
+This document itself demonstrates the available Markdown features of this implementation.
+This section provides other examples for solely testing and demonstration purpose.
 
-> See the source Markdown files ([like this](readme.txt)) to know how such result can be obtain.
+> See the source Markdown files ([like this](readme.txt)) to know how such result can be obtained.
 
 ## Lists
 
@@ -242,7 +242,8 @@ Item No | Name | Description | Price
 3       | Lamp  | Standard lamp | 120.75
 
 As Markdown doesn't allow for different table styles, some CSS trick may be used to get this
-functionality --- adding a specific invisible element before the table:
+functionality --- specifically, adding an invisible element before the table and then using some
+simple CSS magic to define the appearance:
 
 ````code
 <div class="tablePlated"></div>
