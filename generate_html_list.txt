@@ -1,0 +1,2 @@
+-i readme.txt -t "Markdown to HTML converter"
+--templates demo/custom_templates --link-css=custom_styles.css demo/custom_templates.txt demo/custom_templates.html "Custom template demo"

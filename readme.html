@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Markdown to HTML converter</title>
+<style>
+body, html {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+body {
+    font-size: 18px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+/* p, li {
+    border: solid 1px fuchsia;
+} */
+
+p {
+    max-width: 900px;
+}
+
+li {
+    max-width: 860px;
+}
+
+ul, ol {
+    padding-left: 40px;
+}
+
+hr {
+    background: cadetblue;
+    height: 1px;
+    border: 0px;
+}
+
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+    font-size: unset;
+}
+
+del {
+    color: red;
+}
+
+ins {
+    color: blue;
+}
+
+pre {
+    /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif; */
+    /* font-size: 16px; */
+    /* background-color: #eeeeee; */
+    /*border: black 1px solid;*/
+    /* width: 1000px; */
+    /* min-width: max-content; */
+    /* padding: 15px; */
+}
+
+code {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
+    font-size: 16px;
+    background-color: #eeeeee;
+    padding-left: 6px;
+    padding-right: 6px;
+    /* border: solid 1px darkgray; */
+    border-radius: 7px;
+    white-space: nowrap;
+}
+
+pre code {
+    font-size: 16px;
+    display: block;
+    width: 878px;
+    min-width: max-content;
+    line-height: 1.4;
+    border-radius: 0;
+    /* border: none; */
+    /* margin: -15px; */
+    /* padding: 15px; */
+    white-space: break-spaces;
+    padding: 10px;
+}
+
+pre code.text {
+    background-color: unset;
+    padding: 0;
+    width: 900px;
+    border: none;
+}
+
+pre code.shell {
+    background-color: #282c33;
+    color: #cccccc;
+    border: solid 1px #282c33;
+}
+
+pre code.code {
+    /* color: #115d8b; */
+    color: #04283e;
+    border: solid 1px #d9d9d9;
+    background-color: #f7f7f7;
+}
+
+blockquote {
+    margin-left: 0;
+    padding: 1px 10px;
+    font-size: 16px;
+    width: 868px;
+    min-width: max-content;
+    border-color: #cccccc;
+    border-style: solid;
+    border-width: 1px 1px 1px 10px;
+    /* border-left: #cccccc 10px solid; */
+    /* border-top: #cccccc 1px solid; */
+    /* border-right: #cccccc 1px solid; */
+    /* border-bottom: #cccccc 1px solid; */
+}
+
+blockquote p, blockquote li {
+    max-width: 868px;
+}
+
+table {
+    font-size: 16px;
+}
+
+td, th {
+    padding: 7px 14px;
+}
+
+div.tablePlated+table {
+    border-spacing: 1px;
+    border-collapse: separate;
+}
+
+div.tablePlated+table th {
+    background-color: #dce7ea;
+}
+
+div.tablePlated+table td {
+    background-color: #e9f4f7;
+}
+
+div.tableGridded+table {
+    border-spacing: 0;
+    border-collapse: collapse;    
+}
+
+div.tableGridded+table th {
+    background-color: #e9f0f2;
+}
+
+div.tableGridded+table td, div.tableGridded+table th {
+    border: solid 1px #6a8fb3;
+}
+
+</style>
+</head>
+<body>
+<p><i>This is an automatically generated document.</i></p>
+<div class="toc">
+<ul>
+<li><a href="#python-markdown-to-html-converter">Python Markdown to HTML converter</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#double-click-script">Double-click script</a></li>
+<li><a href="#with-git">With Git</a></li>
+<li><a href="#in-linux">In Linux</a></li>
+</ul>
+</li>
+<li><a href="#templates">Templates</a><ul>
+<li><a href="#css">CSS</a></li>
+</ul>
+</li>
+<li><a href="#features-testing">Features testing</a><ul>
+<li><a href="#lists">Lists</a></li>
+<li><a href="#lists-in-blockquotes">Lists in blockquotes</a></li>
+<li><a href="#tables">Tables</a></li>
+<li><a href="#text-effects">Text effects</a></li>
+<li><a href="#code-blocks">Code blocks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<hr />
+<h1 id="python-markdown-to-html-converter">Python Markdown to HTML converter</h1>
+<p><img alt="" src="demo/logo.png" /></p>
+<p>This utility provides an easy way to convert single Markdown documents into single HTML pages.</p>
+<p>It uses <strong>Python-Markdown</strong> module. See:</p>
+<ul>
+<li><a href="https://python-markdown.github.io/">Official documentation</a></li>
+<li><a href="https://pypi.org/project/Markdown/">PIP Python-Markdown module page</a></li>
+</ul>
+<p>This document describes the utility's features, gives usage notes and itself demonstrates a
+possible obtainable result.</p>
+<hr />
+<h1 id="prerequisites">Prerequisites</h1>
+<p>This utility requires the following Python packages:</p>
+<pre><code class="shell">$ pip3 install Markdown
+.  .  .
+Installing collected packages: zipp, typing-extensions, importlib-metadata, Markdown
+Successfully installed Markdown-3.3.4 importlib-metadata-3.10.1 typing-extensions-3.7.4.3 zipp-3.4.1
+
+$ pip3 install markdown-del-ins
+.  .  .
+Installing collected packages: typing-extensions, zipp, importlib-metadata, markdown, markdown-del-ins
+Successfully installed importlib-metadata-3.10.1 markdown-3.3.4 markdown-del-ins-1.0.0 typing-extensions-3.7.4.3 zipp-3.4.1
+
+$ pip3 install markdown-emdash
+.  .  .
+Installing collected packages: markdown-emdash
+Successfully installed markdown-emdash-0.1.0
+</code></pre>
+
+<hr />
+<h1 id="usage">Usage</h1>
+<pre><code class="shell">&gt;python generate_html.py -h
+usage: generate_html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--templates TEMPLATES] [-l LINK_CSS] [-f] [-v] [-r] ...
+
+Converts Markdown document into HTML document.
+
+positional arguments:
+                        positionals for -i, -o, and -t, incompatible with corresponding named arguments
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT, --input INPUT
+                        input Markdown file name (mandatory)
+  -o OUTPUT, --output OUTPUT
+                        output HTML file name, defaults to input file name with '.html' extension
+  -t TITLE, --title TITLE
+                        the HTML page title, if omitted there will be an empty title
+  --templates TEMPLATES
+                        custom template directory
+  -l LINK_CSS, --link-css LINK_CSS
+                        links CSS file, if omitted includes the default CSS into HTML
+  -f, --force           rewrites HTML output file even if it was modified later than the input file
+  -v, --verbose         outputs human readable information messages
+  -r, --report          if HTML file is generated, outputs the path of this file, incompatible with -v
+
+Simplified argument set may be used: &lt;input file name&gt; &lt;output file name&gt; &lt;page title&gt;
+</code></pre>
+
+<p>File <a href="generate_html.bat"><code>generate_html.bat</code></a> demonstrates different usage variations. It
+transmits its arguments directly to the <code>generate_html.py</code> module. For example, 
+if <code>demo.bat -vf</code> is called then the module will forcefully regenerate the HTML files and will 
+do it verbosely.</p>
+<h2 id="double-click-script">Double-click script</h2>
+<p>This script may be executed by a double click from, e.g., the project's directory. It opens 
+a command window, does its job and:</p>
+<ul>
+<li>if finished successfully closes the command window;</li>
+<li>in case of errors/exceptions leaves the command window open.</li>
+</ul>
+<p><code>generate_html_list.txt</code> is a file which contains arguments for a single HTML-file generation
+per line.</p>
+<p>Environment variable <code>MD2HTML_PY_HOME</code> may be defined system-wide or for a current user.</p>
+<pre><code class="code">@echo off
+
+set SUCCESS=
+
+for /f &quot;delims=&quot; %%a in (generate_html_list.txt) do call :GENERATE_ONE_HTML %%a
+
+if not [%SUCCESS%]==[Y] pause
+
+exit /b
+
+:GENERATE_ONE_HTML
+set SINGLE_SECCESS=N
+echo Generating: %2
+call python %MD2HTML_PY_HOME%\generate_html.py -v %* &amp;&amp; set SINGLE_SECCESS=Y
+if not [%SINGLE_SECCESS%]==[Y] (
+    set SUCCESS=N
+) else (
+    echo Done
+    if not [%SUCCESS%]==[N] (
+        set SUCCESS=Y
+    )
+)
+exit /b
+</code></pre>
+
+<h2 id="with-git">With Git</h2>
+<p>When working on a project we need to periodically regenerate our HTML documentation. With Git 
+we may want to do it automatically on commit. Special argument <code>--report</code> was introduced for 
+this purpose. It outputs the generated output file path if this file was generated or 
+regenerated so that a Git hook can add it into stage.</p>
+<p>Here's a Git hook pre-commit example (works in Windows too):</p>
+<pre><code class="code">#!/bin/bash
+grep -v '^\s*$' generate_html_list.txt | sed -e 's/\r//' | while read args; do
+    result=`echo ${args} | xargs python3 generate_html.py -r`
+    exitcode=${PIPESTATUS[0]}
+    result=`echo $result | sed -e 's/\r//'`
+    if [ $exitcode -eq 0 ]; then
+        if [[ -n $result ]]; then
+            echo generate_html.py: Adding: $result
+            git add -- ${result}
+        else
+            echo generate_html.py: Skipping one file
+        fi
+    else
+        echo Error: $result
+        exit 1
+    fi
+done
+</code></pre>
+
+<p><a href="generate_html_list.txt"><code>generate_html_list.txt</code></a> is a file which contains arguments for a
+single HTML-file generation per line. This list is used also by the manual HTML generation
+script.</p>
+<h2 id="in-linux">In Linux</h2>
+<p>This utility works in Linux. The script for manual HTML generation may be adapted from the
+above Git hook example. Among other required changes the main one is removing <code>git add</code>
+command.</p>
+<hr />
+<h1 id="templates">Templates</h1>
+<p>This utility works with predefined set of empirically developed templates that must suitable for
+most basic technical writings tasks. Different templates may be created for a certain project
+and defined via command line arguments. An example below demonstrates this feature.</p>
+<h2 id="css">CSS</h2>
+<p>For portability purpose by default CSS are included into the HTML document. Press <code>Ctrl</code> + <code>U</code>
+in Firefox (and probably other browsers) to see haw it looks like. Command line arguments
+allow to redefine this behavior.</p>
+<p><a name="ref_to_custom_template_page"></a></p>
+<blockquote>
+<p>Below is an example of a page that was generated using custom templates. And also CSS were 
+linked instead of being included. Click the arrow to navigate:</p>
+<p><a href="demo/custom_templates.html"><img alt="" src="demo/arrow-right.png" /></a></p>
+</blockquote>
+<hr />
+<h1 id="features-testing">Features testing</h1>
+<p>Some Markdown features available in this implementation are already demonstrated above in this 
+documents. This section provides other examples for solely testing and demonstration purpose.</p>
+<blockquote>
+<p>See the source Markdown files (<a href="readme.txt">like this</a>) to know how such result can be obtain.</p>
+</blockquote>
+<h2 id="lists">Lists</h2>
+<p>The following text will be arranged in a form of a multi-level list with long items in order
+to check the indentations and other appearance aspects. It's important to check the indentations 
+on the <strong>right</strong>.</p>
+<ul>
+<li>This is the <strong>first</strong> long list item that is going to be wrapped into several lines. So that we 
+  can visually check the text flow and indentations, especially on the right.<ol>
+<li>This is the first <strong>ordered</strong> list subitem of the first list item. With it we want to 
+   check text flow and indentations not only of the higher level list items but of subitems
+   as well.<ul>
+<li>And at least let's check third-level items. This is the <strong>first</strong> third-level items 
+  subitem of the the first second-level subitem of the first first-level item of the
+  multi-level list.</li>
+<li>This is the <strong>second</strong> third-level items subitem of the the first second-level subitem
+  of the first first-level item of the multi-level list.</li>
+</ul>
+</li>
+<li>This is the second <strong>ordered</strong> list subitem of the first list item. With it we want to 
+   check text flow and indentations not only of the higher level list items but of subitems
+   as well.</li>
+</ol>
+</li>
+<li>This is the <strong>second</strong> long list item that is going to be wrapped into several lines. So that we 
+  can visually check the text flow and indentations, especially on the right.</li>
+</ul>
+<p>If we temporarily add the CSS rule:</p>
+<pre><code class="code">p, li {
+    border: solid 1px fuchsia;
+}
+</code></pre>
+
+<p>we will see:</p>
+<p><img alt="" src="demo/list_text_flow.png" /></p>
+<p>So the text doesn't overflow the limits.</p>
+<h2 id="lists-in-blockquotes">Lists in blockquotes</h2>
+<blockquote>
+<p>Let's now have a look at how a list behaves in a <code>blockquote</code>. Also we can check the 
+text flow and the indentations of simple paragraphs like this.</p>
+<ul>
+<li>As before this is the <em>first</em> higher level item of the list. <em>Italic</em> is applied just to
+  demonstrate the other formatting option.<ol>
+<li>This is the first <em>ordered</em> list subitem of the first higher-level list item.</li>
+<li>This is the second <em>ordered</em> list subitem of the first higher-level list item.</li>
+</ol>
+</li>
+<li>This is the <em>second</em> higher level item of the list.</li>
+</ul>
+</blockquote>
+<p>As we can see there's no overflow in this case too:</p>
+<p><img alt="" src="demo/blockquote_list_text_flow.png" /></p>
+<h2 id="tables">Tables</h2>
+<p>Tables may be used for representing tabular data and for text alignment sometimes. In this
+implementation light table style is chosen as the default.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Item No</th>
+<th>Name</th>
+<th>Description</th>
+<th align="right">Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">1</td>
+<td>Chair</td>
+<td>Kitchen chair</td>
+<td align="right">87.50</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>Table</td>
+<td>Kitchen table</td>
+<td align="right">450.00</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>Lamp</td>
+<td>Standard lamp</td>
+<td align="right">120.75</td>
+</tr>
+</tbody>
+</table>
+<p>As Markdown doesn't allow for different table styles, some CSS trick may be used to get this
+functionality &mdash; adding a specific invisible element before the table:</p>
+<pre><code class="code">&lt;div class=&quot;tablePlated&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<p>Then we can get styles like this:</p>
+<div class="tablePlated"></div>
+
+<table>
+<thead>
+<tr>
+<th align="center">Item No</th>
+<th>Name</th>
+<th>Description</th>
+<th align="right">Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">1</td>
+<td>Chair</td>
+<td>Kitchen chair</td>
+<td align="right">87.50</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>Table</td>
+<td>Kitchen table</td>
+<td align="right">450.00</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>Lamp</td>
+<td>Standard lamp</td>
+<td align="right">120.75</td>
+</tr>
+</tbody>
+</table>
+<p>and this (<code>class="tableGridded"</code>):</p>
+<div class="tableGridded"></div>
+
+<table>
+<thead>
+<tr>
+<th align="center">Item No</th>
+<th>Name</th>
+<th>Description</th>
+<th align="right">Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">1</td>
+<td>Chair</td>
+<td>Kitchen chair</td>
+<td align="right">87.50</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>Table</td>
+<td>Kitchen table</td>
+<td align="right">450.00</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>Lamp</td>
+<td>Standard lamp</td>
+<td align="right">120.75</td>
+</tr>
+</tbody>
+</table>
+<h2 id="text-effects">Text effects</h2>
+<p>Text fragments may be marked as <del>deleted</del> (surround with double tildes <code>~~</code> from both sides)
+and <ins>inserted</ins> (surround with double pluses from both sides <code>++</code>). Three dashes (<code>---</code>) may be
+replaced with an em-dash (<code>&amp;mdash;</code>) &mdash; yes, it works! Of cause <strong>bold</strong> (<code>__bold__</code> or
+<code>**bold**</code>) and <em>italic</em> (<code>_italic_</code> or <code>*italic*</code>) are also supported. </p>
+<h2 id="code-blocks">Code blocks</h2>
+<p>Unmarked code block. Visually corresponds to <code>inline</code> code fragments:</p>
+<pre><code>This code block represents information:
+ - like `inline` code fragments
+ - but of bigger size
+ - and when we need to preserve line breaks
+</code></pre>
+
+<p>Light code block (marked as <code>text</code>):</p>
+<pre><code class="text">This code block is used:
+ - when we need no background and borders
+ - and we need to preserve line breaks
+</code></pre>
+
+<p>Shell code block (marked as <code>shell</code>):</p>
+<pre><code class="shell">$ echo &quot;This block demonstrates operations in a shell&quot;
+This block demonstrates operations in a shell
+</code></pre>
+
+<p>Program language code block (marked as <code>code</code>):</p>
+<pre><code class="code">System.out.println(&quot;This block demonstrates a source code in a program language.&quot;);
+</code></pre>
+
+<hr />
+<hr />
+<hr />
+<hr />
+</body>
+</html>
