@@ -7,7 +7,7 @@
 
 This utility provides an easy way to convert single Markdown documents into single HTML pages.
 
-It uses __Python-Markdown__ module. See:
+It uses __Python-Markdown__ module, see:
 
 - [Official documentation](https://python-markdown.github.io/)
 - [PIP Python-Markdown module page](https://pypi.org/project/Markdown/)
@@ -18,31 +18,24 @@ possible obtainable result.
 ----------------------------------------------------------------------------------------------------
 # Prerequisites
 
-This utility requires the following Python packages:
+This utility requires [Python 3](https://www.python.org/). The following Python packages must
+be installed (in Windows `pip3` command must be called just `pip`):
 
 ````shell
 $ pip3 install Markdown
 .  .  .
-Installing collected packages: zipp, typing-extensions, importlib-metadata, Markdown
-Successfully installed Markdown-3.3.4 importlib-metadata-3.10.1 typing-extensions-3.7.4.3 zipp-3.4.1
-
 $ pip3 install markdown-del-ins
 .  .  .
-Installing collected packages: typing-extensions, zipp, importlib-metadata, markdown, markdown-del-ins
-Successfully installed importlib-metadata-3.10.1 markdown-3.3.4 markdown-del-ins-1.0.0 typing-extensions-3.7.4.3 zipp-3.4.1
-
 $ pip3 install markdown-emdash
 .  .  .
-Installing collected packages: markdown-emdash
-Successfully installed markdown-emdash-0.1.0
 ````
 
 ----------------------------------------------------------------------------------------------------
 # Usage
 
 ````shell
->python generate_html.py -h
-usage: generate_html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--templates TEMPLATES] [-l LINK_CSS] [-f] [-v] [-r] ...
+>python md2html.py -h
+usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--templates TEMPLATES] [-l LINK_CSS] [-f] [-v] [-r] ...
 
 Converts Markdown document into HTML document.
 
@@ -68,18 +61,17 @@ optional arguments:
 Simplified argument set may be used: <input file name> <output file name> <page title>
 ````
  
-File [`generate_html.bat`](generate_html.bat) demonstrates different usage variations. It
-transmits its arguments directly to the `generate_html.py` module. For example, 
-if `generate_html.bat -vf` is called then the module will forcefully regenerate the HTML files
-and will do it verbosely.
+File [`demo.bat`](demo.bat) demonstrates different usage variations. It transmits its arguments
+directly to the `md2html.py` module. For example, if `demo.bat -vf` is called then the module
+will forcefully regenerate the HTML files and will do it verbosely.
 
 ## Double-click script
 
 This script may be executed by a double click from, e.g., the project's directory. It opens 
 a command window, does its job and:
 
-- if finished successfully closes the command window;
-- in case of errors/exceptions leaves the command window open.
+- if finished successfully, closes the command window;
+- in case of errors/exceptions, leaves the command window open.
 
 `generate_html_list.txt` is a file which contains arguments for a single HTML-file generation
 per line.
@@ -100,7 +92,7 @@ exit /b
 :GENERATE_ONE_HTML
 set SINGLE_SECCESS=N
 echo Generating: %2
-call python %MD2HTML_PY_HOME%\generate_html.py -v %* && set SINGLE_SECCESS=Y
+call python %MD2HTML_PY_HOME%\md2html.py -v %* && set SINGLE_SECCESS=Y
 if not [%SINGLE_SECCESS%]==[Y] (
     set SUCCESS=N
 ) else (
@@ -111,6 +103,34 @@ if not [%SINGLE_SECCESS%]==[Y] (
 )
 exit /b
 ````
+
+## Windows Explorer context menu
+
+This utility may be integrated into Windows Explorer context menu.
+
+![](demo/windows_context_menu.png)
+
+For this, the batch file 
+[`win_context_menu/md2html_prompt.bat`](win_context_menu/md2html_prompt.bat) may be used. 
+It opens a command line prompt window and allows to redefine some options. Just pressing
+`Enter` will fulfill generation with default options.
+
+To add this context menu item, press `Win`+`R`, type `regedit` and add the following keys
+and values (`@` stands for `(Default)`):
+
+````
+[HKEY_CURRENT_USER\Software\Classes\*\shell\md2html]
+@="Markdown to HTML"
+"icon"="X:\\path\\to\\md2html\\win_context_menu\\icon.ico"
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\md2html\command]
+@="\"X:\\path\\to\\md2html\\win_context_menu\\md2html_prompt.bat\" \"%1\""
+````
+
+__Note.__ The quotes must be set like this:
+
+![](demo/add_reg_value.png)
+
 
 ## With Git
 
@@ -123,16 +143,16 @@ Here's a Git hook pre-commit example (works in Windows too):
 
 ````code
 #!/bin/bash
-grep -v '^\s*$' generate_html_list.txt | sed -e 's/\r//' | while read args; do
-    result=`echo ${args} | xargs python3 generate_html.py -r`
+grep -v '^\s*$' demo/demo_list.txt | sed -e 's/\r//' | while read args; do
+    result=`echo ${args} | xargs python3 ${MD2HTML_PY_HOME}/md2html.py -r`
     exitcode=${PIPESTATUS[0]}
     result=`echo $result | sed -e 's/\r//'`
     if [ $exitcode -eq 0 ]; then
         if [[ -n $result ]]; then
-            echo generate_html.py: Adding: $result
+            echo md2html.py: Adding: $result
             git add -- ${result}
         else
-            echo generate_html.py: Skipping one file
+            echo md2html.py: Skipping one file
         fi
     else
         echo Error: $result
@@ -141,15 +161,16 @@ grep -v '^\s*$' generate_html_list.txt | sed -e 's/\r//' | while read args; do
 done
 ````
 
-[`generate_html_list.txt`](generate_html_list.txt) is a file which contains arguments for a
+[`demo/demo_list.txt`](demo/demo_list.txt) is a file which contains arguments for a
 single HTML-file generation per line. This list is used also by the manual HTML generation
-script.
+script. Defining environment variable `MD2HTML_PY_HOME` globally or for a user is a better
+decision than specifying the exact full path.
 
 ## In Linux
 
 This utility works in Linux. The script for manual HTML generation may be adapted from the
-above Git hook example. Among other required changes the main one is removing `git add`
-command.
+above Git hook example. It may be simplified, `-r` argument must be changed to `-v` and
+`git add` command must be removed.
 
 ----------------------------------------------------------------------------------------------------
 # Templates
@@ -271,10 +292,14 @@ Item No | Name | Description | Price
 
 ## Text effects
 
-Text fragments may be marked as ~~deleted~~ (surround with double tildes `~~` from both sides)
-and ++inserted++ (surround with double pluses from both sides `++`). Three dashes (`---`) may be
-replaced with an em-dash (`&mdash;`) --- yes, it works! Of cause __bold__ (`__bold__` or
-`**bold**`) and _italic_ (`_italic_` or `*italic*`) are also supported. 
+Text fragments may be marked as:
+
+- ~~deleted~~ (surround with double tildes `~~` from both sides);
+- ++inserted++ (surround with double pluses from both sides `++`);
+- of cause __bold__ (`__bold__` or `**bold**`);
+- and _italic_ (`_italic_` or `*italic*`).
+
+Three dashes (`---`) may be replaced with an em-dash (`&mdash;`) --- yes, it works!
 
 ## Code blocks
 
