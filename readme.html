@@ -125,12 +125,16 @@ table {
 }
 
 td, th {
-    padding: 7px 14px;
+    padding: 2px 7px;
 }
 
 div.tablePlated+table {
-    border-spacing: 1px;
+    border-spacing: 2px;
     border-collapse: separate;
+}
+
+div.tablePlated+table td, div.tablePlated+table th {
+    padding: 7px 14px;
 }
 
 div.tablePlated+table th {
@@ -152,6 +156,7 @@ div.tableGridded+table th {
 
 div.tableGridded+table td, div.tableGridded+table th {
     border: solid 1px #6a8fb3;
+    padding: 7px 14px;
 }
 
 </style>
@@ -162,6 +167,7 @@ div.tableGridded+table td, div.tableGridded+table th {
 <ul>
 <li><a href="#python-markdown-to-html-converter">Python Markdown to HTML converter</a></li>
 <li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
 <li><a href="#usage">Usage</a><ul>
 <li><a href="#double-click-script">Double-click script</a></li>
 <li><a href="#windows-explorer-context-menu">Windows Explorer context menu</a></li>
@@ -186,19 +192,19 @@ div.tableGridded+table td, div.tableGridded+table th {
 <hr />
 <h1 id="python-markdown-to-html-converter">Python Markdown to HTML converter</h1>
 <p><img alt="" src="demo/logo.png" /></p>
-<p>This utility provides an easy way to convert single Markdown documents into single HTML pages.</p>
+<p>This utility provides an easy way to convert single 
+<a href="https://daringfireball.net/projects/markdown/">Markdown</a> documents into single HTML pages.</p>
 <p>It uses <strong>Python-Markdown</strong> module, see:</p>
 <ul>
 <li><a href="https://python-markdown.github.io/">Official documentation</a></li>
 <li><a href="https://pypi.org/project/Markdown/">PIP Python-Markdown module page</a></li>
 </ul>
-<p>This document describes the utility's features, gives usage notes and itself demonstrates a
+<p>This document describes the converter's features, gives usage notes and itself demonstrates a
 possible obtainable result.</p>
 <hr />
 <h1 id="prerequisites">Prerequisites</h1>
 <p>This utility requires <a href="https://www.python.org/">Python 3</a>. The following Python packages must
-be installed (in Windows, <code>pip3</code> command must be called just <code>pip</code>, or, if it doesn't work, try
-<code>python -m pip install ...</code>):</p>
+be installed (in Windows, <code>pip3</code> command must be called just <code>pip</code>):</p>
 <pre><code class="shell">$ pip3 install Markdown
 .  .  .
 $ pip3 install markdown-del-ins
@@ -207,8 +213,21 @@ $ pip3 install markdown-emdash
 .  .  .
 </code></pre>
 
+<blockquote>
+<p><strong>Note.</strong> If this doesn't work, try <code>python -m pip install ...</code> (or probably <code>python3 ...</code>
+on Linux).</p>
+</blockquote>
+<hr />
+<h1 id="installation">Installation</h1>
+<p>Place the directory containing this file wherever you like. Define <code>MD2HTML_PY_HOME</code> environment
+variable (system-wide of for a user). The latter is not necessary though will make the usage 
+much more convenient (this variable will probably also be mentioned below).</p>
+<p>File <a href="md2html.py"><code>md2html.py</code></a> is minimal possible element required. The <code>templates</code> directory
+contains the HTML template and the CSS used by default. The <code>win_context_menu</code> directory 
+contains Windows Explorer context menu integration artifacts (see below).</p>
 <hr />
 <h1 id="usage">Usage</h1>
+<p>The utility provides its usage information in a standard manner:</p>
 <pre><code class="shell">&gt;python md2html.py -h
 usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--templates TEMPLATES] [-l LINK_CSS] [-f] [-v] [-r] ...
 
@@ -236,44 +255,21 @@ optional arguments:
 Simplified argument set may be used: &lt;input file name&gt; &lt;output file name&gt; &lt;page title&gt;
 </code></pre>
 
-<p>File <a href="demo.bat"><code>demo.bat</code></a> demonstrates different usage variations. It transmits its arguments
-directly to the <code>md2html.py</code> module. For example, if <code>demo.bat -vf</code> is called then the module
-will forcefully regenerate the HTML files and will do it verbosely.</p>
 <h2 id="double-click-script">Double-click script</h2>
+<p>File <a href="md2html.bat"><code>md2html.bat</code></a> is used for generating this documentation. It demonstrates
+different usage variations. File <a href="md2html_list.txt"><code>md2html_list.txt</code></a> contains arguments for
+a single HTML-file generation per line. The script reads this lines successively and sends the
+arguments the Python module. Also the script adds its own arguments to the Python module call.
+For example, if <code>md2html.bat -f</code> is called then the module will forcefully regenerate the
+HTML files.</p>
 <p>This script may be executed by a double click from, e.g., the project's directory. It opens 
 a command window, does its job and:</p>
 <ul>
 <li>if finished successfully, closes the command window;</li>
 <li>in case of errors/exceptions, leaves the command window open.</li>
 </ul>
-<p><code>generate_html_list.txt</code> is a file which contains arguments for a single HTML-file generation
-per line.</p>
-<p>Environment variable <code>MD2HTML_PY_HOME</code> may be defined system-wide or for a current user.</p>
-<pre><code class="code">@echo off
-
-set SUCCESS=
-
-for /f &quot;delims=&quot; %%a in (generate_html_list.txt) do call :GENERATE_ONE_HTML %%a
-
-if not [%SUCCESS%]==[Y] pause
-
-exit /b
-
-:GENERATE_ONE_HTML
-set SINGLE_SECCESS=N
-echo Generating: %2
-call python %MD2HTML_PY_HOME%\md2html.py -v %* &amp;&amp; set SINGLE_SECCESS=Y
-if not [%SINGLE_SECCESS%]==[Y] (
-    set SUCCESS=N
-) else (
-    echo Done
-    if not [%SUCCESS%]==[N] (
-        set SUCCESS=Y
-    )
-)
-exit /b
-</code></pre>
-
+<p>If the value of <code>MD2HTML_PY_HOME</code> variable is added to the <code>PATH</code> then this script will work
+from the current directory and process the file <code>md2html_list.txt</code> from that directory.</p>
 <h2 id="windows-explorer-context-menu">Windows Explorer context menu</h2>
 <p>This utility may be integrated into Windows Explorer context menu.</p>
 <p><img alt="" src="demo/windows_context_menu.png" /></p>
@@ -297,10 +293,10 @@ and values (<code>@</code> stands for <code>(Default)</code>):</p>
 <p>When working on a project we need to periodically regenerate our HTML documentation. With Git 
 we may want to do it automatically on commit. Special argument <code>--report</code> was introduced for 
 this purpose. It outputs the generated output file path if this file was generated or 
-regenerated so that a Git hook can add it into stage.</p>
-<p>Here's a Git hook pre-commit example (works in Windows too):</p>
+regenerated so that a Git hook can add it into the <em>stage</em>.</p>
+<p>Here's a Git hook <code>pre-commit</code> example (works in Windows too):</p>
 <pre><code class="code">#!/bin/bash
-grep -v '^\s*$' demo/demo_list.txt | sed -e 's/\r//' | while read args; do
+grep -v '^\s*$' md2html_list.txt | sed -e 's/\r//' | while read args; do
     result=`echo ${args} | xargs python3 ${MD2HTML_PY_HOME}/md2html.py -r`
     exitcode=${PIPESTATUS[0]}
     result=`echo $result | sed -e 's/\r//'`
@@ -318,40 +314,39 @@ grep -v '^\s*$' demo/demo_list.txt | sed -e 's/\r//' | while read args; do
 done
 </code></pre>
 
-<p><a href="demo/demo_list.txt"><code>demo/demo_list.txt</code></a> is a file which contains arguments for a
-single HTML-file generation per line. This list is used also by the manual HTML generation
-script. Defining environment variable <code>MD2HTML_PY_HOME</code> globally or for a user is a better
-decision than specifying the exact full path.</p>
+<p>The file <a href="md2html_list.txt"><code>md2html_list.txt</code></a> was already mentioned above. Defining environment
+variable <code>MD2HTML_PY_HOME</code> (globally or for a user) may be a better decision than specifying
+the exact full path.</p>
 <h2 id="in-linux">In Linux</h2>
 <p>This utility works in Linux. The script for manual HTML generation may be adapted from the
 above Git hook example. It may be simplified, <code>-r</code> argument must be changed to <code>-v</code> and
 <code>git add</code> command must be removed.</p>
 <hr />
 <h1 id="templates">Templates</h1>
-<p>This utility works with a predefined set of empirically developed templates that must be suitable
-for most basic technical writing. Different templates may be created and defined via the 
+<p>By default the utility works based on a predefined empirically developed template that must be
+suitable for most basic technical writing. Different template may be created and defined via the 
 command line. An example below demonstrates this option.</p>
 <h2 id="css">CSS</h2>
-<p>For portability purpose by default CSS are included into the HTML document. Press <code>Ctrl</code> + <code>U</code>
-in Firefox (and probably other browsers) to see haw it looks like. Command line arguments
-allow to redefine this behavior.</p>
+<p>For portability purpose by default CSS is included into the HTML document. Press <code>Ctrl</code> + <code>U</code>
+in Firefox (and probably other browsers) to see haw it looks like in the source code. Command
+line arguments allow to redefine this behavior.</p>
 <p><a name="ref_to_custom_template_page"></a></p>
 <blockquote>
 <p>Below is an example of a page that was generated using a custom template set. And also CSS 
-were linked instead of being included. Click the arrow to navigate:</p>
+was linked instead of being included. Click the arrow to navigate:</p>
 <p><a href="demo/custom_templates.html"><img alt="" src="demo/arrow-right.png" /></a></p>
 </blockquote>
 <hr />
 <h1 id="feature-testing">Feature testing</h1>
 <p>This document itself demonstrates the available Markdown features of this implementation.
-This section provides other examples for solely testing and demonstration purpose.</p>
+This section provides other examples.</p>
 <blockquote>
-<p>See the source Markdown files (<a href="readme.txt">like this</a>) to know how such result can be obtained.</p>
+<p>See the source Markdown files like (<a href="readme.txt">this</a>) to know how such result can be obtained.</p>
 </blockquote>
 <h2 id="lists">Lists</h2>
 <p>The following text will be arranged in a form of a multi-level list with long items in order
-to check the indentations and other appearance aspects. It's important to check the indentations 
-on the <strong>right</strong>.</p>
+to check the indentations and the text flow. It's important to check the indentations on the
+<strong>right</strong>.</p>
 <ul>
 <li>This is the <strong>first</strong> long list item that is going to be wrapped into several lines. So that we 
   can visually check the text flow and indentations, especially on the right.<ol>
@@ -431,9 +426,40 @@ implementation light table style is chosen as the default.</p>
 </tr>
 </tbody>
 </table>
-<p>As Markdown doesn't allow for different table styles, some CSS trick may be used to get this
-functionality &mdash; specifically, adding an invisible element before the table and then using some
-simple CSS magic to define the appearance:</p>
+<p>So if we want to just align text we can use a table without a header:</p>
+<table>
+<thead>
+<tr>
+<th align="right"></th>
+<th align="right"></th>
+<th align="right"></th>
+<th align="right"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right">10</td>
+<td align="right">20</td>
+<td align="right">30</td>
+<td align="right">40</td>
+</tr>
+<tr>
+<td align="right">50</td>
+<td align="right">60</td>
+<td align="right">70</td>
+<td align="right">80</td>
+</tr>
+<tr>
+<td align="right">90</td>
+<td align="right">100</td>
+<td align="right">110</td>
+<td align="right">120</td>
+</tr>
+</tbody>
+</table>
+<p>Markdown doesn't allow for different table styles, but some trick may be used to get this
+functionality &mdash; specifically, adding an invisible element (an empty <code>&lt;div&gt;</code> in this case)
+right before the table and then using some simple CSS magic to define the appearance:</p>
 <pre><code class="code">&lt;div class=&quot;tablePlated&quot;&gt;&lt;/div&gt;
 </code></pre>
 
@@ -523,6 +549,7 @@ simple CSS magic to define the appearance:</p>
 <p>Light code block (marked as <code>text</code>):</p>
 <pre><code class="text">This code block is used:
  - when we need no background and borders
+ - and the text must be monospaced
  - and we need to preserve line breaks
 </code></pre>
 

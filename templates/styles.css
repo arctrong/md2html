@@ -121,12 +121,16 @@ table {
 }
 
 td, th {
-    padding: 7px 14px;
+    padding: 2px 7px;
 }
 
 div.tablePlated+table {
-    border-spacing: 1px;
+    border-spacing: 2px;
     border-collapse: separate;
+}
+
+div.tablePlated+table td, div.tablePlated+table th {
+    padding: 7px 14px;
 }
 
 div.tablePlated+table th {
@@ -148,4 +152,5 @@ div.tableGridded+table th {
 
 div.tableGridded+table td, div.tableGridded+table th {
     border: solid 1px #6a8fb3;
+    padding: 7px 14px;
 }

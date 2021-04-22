@@ -5,22 +5,22 @@
 
 ![](demo/logo.png)
 
-This utility provides an easy way to convert single Markdown documents into single HTML pages.
+This utility provides an easy way to convert single 
+[Markdown](https://daringfireball.net/projects/markdown/) documents into single HTML pages.
 
 It uses __Python-Markdown__ module, see:
 
 - [Official documentation](https://python-markdown.github.io/)
 - [PIP Python-Markdown module page](https://pypi.org/project/Markdown/)
 
-This document describes the utility's features, gives usage notes and itself demonstrates a
+This document describes the converter's features, gives usage notes and itself demonstrates a
 possible obtainable result.
 
 ----------------------------------------------------------------------------------------------------
 # Prerequisites
 
 This utility requires [Python 3](https://www.python.org/). The following Python packages must
-be installed (in Windows, `pip3` command must be called just `pip`, or, if it doesn't work, try
-`python -m pip install ...`):
+be installed (in Windows, `pip3` command must be called just `pip`):
 
 ````shell
 $ pip3 install Markdown
@@ -31,8 +31,24 @@ $ pip3 install markdown-emdash
 .  .  .
 ````
 
+> __Note.__ If this doesn't work, try `python -m pip install ...` (or probably `python3 ...`
+> on Linux).
+
+----------------------------------------------------------------------------------------------------
+# Installation
+
+Place the directory containing this file wherever you like. Define `MD2HTML_PY_HOME` environment
+variable (system-wide of for a user). The latter is not necessary though will make the usage 
+much more convenient (this variable will probably also be mentioned below).
+
+File [`md2html.py`](md2html.py) is minimal possible element required. The `templates` directory
+contains the HTML template and the CSS used by default. The `win_context_menu` directory 
+contains Windows Explorer context menu integration artifacts (see below).
+
 ----------------------------------------------------------------------------------------------------
 # Usage
+
+The utility provides its usage information in a standard manner:
 
 ````shell
 >python md2html.py -h
@@ -61,12 +77,16 @@ optional arguments:
 
 Simplified argument set may be used: <input file name> <output file name> <page title>
 ````
- 
-File [`demo.bat`](demo.bat) demonstrates different usage variations. It transmits its arguments
-directly to the `md2html.py` module. For example, if `demo.bat -vf` is called then the module
-will forcefully regenerate the HTML files and will do it verbosely.
+
 
 ## Double-click script
+
+File [`md2html.bat`](md2html.bat) is used for generating this documentation. It demonstrates
+different usage variations. File [`md2html_list.txt`](md2html_list.txt) contains arguments for
+a single HTML-file generation per line. The script reads this lines successively and sends the
+arguments the Python module. Also the script adds its own arguments to the Python module call.
+For example, if `md2html.bat -f` is called then the module will forcefully regenerate the
+HTML files.
 
 This script may be executed by a double click from, e.g., the project's directory. It opens 
 a command window, does its job and:
@@ -74,36 +94,9 @@ a command window, does its job and:
 - if finished successfully, closes the command window;
 - in case of errors/exceptions, leaves the command window open.
 
-`generate_html_list.txt` is a file which contains arguments for a single HTML-file generation
-per line.
+If the value of `MD2HTML_PY_HOME` variable is added to the `PATH` then this script will work
+from the current directory and process the file `md2html_list.txt` from that directory.
 
-Environment variable `MD2HTML_PY_HOME` may be defined system-wide or for a current user.
-
-````code
-@echo off
-
-set SUCCESS=
-
-for /f "delims=" %%a in (generate_html_list.txt) do call :GENERATE_ONE_HTML %%a
-
-if not [%SUCCESS%]==[Y] pause
-
-exit /b
-
-:GENERATE_ONE_HTML
-set SINGLE_SECCESS=N
-echo Generating: %2
-call python %MD2HTML_PY_HOME%\md2html.py -v %* && set SINGLE_SECCESS=Y
-if not [%SINGLE_SECCESS%]==[Y] (
-    set SUCCESS=N
-) else (
-    echo Done
-    if not [%SUCCESS%]==[N] (
-        set SUCCESS=Y
-    )
-)
-exit /b
-````
 
 ## Windows Explorer context menu
 
@@ -138,13 +131,13 @@ __Note.__ The quotes must be set like this:
 When working on a project we need to periodically regenerate our HTML documentation. With Git 
 we may want to do it automatically on commit. Special argument `--report` was introduced for 
 this purpose. It outputs the generated output file path if this file was generated or 
-regenerated so that a Git hook can add it into stage.
+regenerated so that a Git hook can add it into the _stage_.
 
-Here's a Git hook pre-commit example (works in Windows too):
+Here's a Git hook `pre-commit` example (works in Windows too):
 
 ````code
 #!/bin/bash
-grep -v '^\s*$' demo/demo_list.txt | sed -e 's/\r//' | while read args; do
+grep -v '^\s*$' md2html_list.txt | sed -e 's/\r//' | while read args; do
     result=`echo ${args} | xargs python3 ${MD2HTML_PY_HOME}/md2html.py -r`
     exitcode=${PIPESTATUS[0]}
     result=`echo $result | sed -e 's/\r//'`
@@ -162,10 +155,9 @@ grep -v '^\s*$' demo/demo_list.txt | sed -e 's/\r//' | while read args; do
 done
 ````
 
-[`demo/demo_list.txt`](demo/demo_list.txt) is a file which contains arguments for a
-single HTML-file generation per line. This list is used also by the manual HTML generation
-script. Defining environment variable `MD2HTML_PY_HOME` globally or for a user is a better
-decision than specifying the exact full path.
+The file [`md2html_list.txt`](md2html_list.txt) was already mentioned above. Defining environment
+variable `MD2HTML_PY_HOME` (globally or for a user) may be a better decision than specifying
+the exact full path.
 
 ## In Linux
 
@@ -176,20 +168,20 @@ above Git hook example. It may be simplified, `-r` argument must be changed to `
 ----------------------------------------------------------------------------------------------------
 # Templates
 
-This utility works with a predefined set of empirically developed templates that must be suitable
-for most basic technical writing. Different templates may be created and defined via the 
+By default the utility works based on a predefined empirically developed template that must be
+suitable for most basic technical writing. Different template may be created and defined via the 
 command line. An example below demonstrates this option.
 
 ## CSS
 
-For portability purpose by default CSS are included into the HTML document. Press `Ctrl` + `U`
-in Firefox (and probably other browsers) to see haw it looks like. Command line arguments
-allow to redefine this behavior.
+For portability purpose by default CSS is included into the HTML document. Press `Ctrl` + `U`
+in Firefox (and probably other browsers) to see haw it looks like in the source code. Command
+line arguments allow to redefine this behavior.
 
 <a name="ref_to_custom_template_page"></a>
 
 > Below is an example of a page that was generated using a custom template set. And also CSS 
-> were linked instead of being included. Click the arrow to navigate:
+> was linked instead of being included. Click the arrow to navigate:
 > 
 > [![](demo/arrow-right.png)](demo/custom_templates.html)
 
@@ -197,15 +189,15 @@ allow to redefine this behavior.
 # Feature testing
 
 This document itself demonstrates the available Markdown features of this implementation.
-This section provides other examples for solely testing and demonstration purpose.
+This section provides other examples.
 
-> See the source Markdown files ([like this](readme.txt)) to know how such result can be obtained.
+> See the source Markdown files like ([this](readme.txt)) to know how such result can be obtained.
 
 ## Lists
 
 The following text will be arranged in a form of a multi-level list with long items in order
-to check the indentations and other appearance aspects. It's important to check the indentations 
-on the __right__.
+to check the indentations and the text flow. It's important to check the indentations on the
+__right__.
 
 - This is the __first__ long list item that is going to be wrapped into several lines. So that we 
   can visually check the text flow and indentations, especially on the right.
@@ -263,9 +255,17 @@ Item No | Name | Description | Price
 2       | Table | Kitchen table | 450.00
 3       | Lamp  | Standard lamp | 120.75
 
-As Markdown doesn't allow for different table styles, some CSS trick may be used to get this
-functionality --- specifically, adding an invisible element before the table and then using some
-simple CSS magic to define the appearance:
+So if we want to just align text we can use a table without a header:
+
+|||||
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+
+Markdown doesn't allow for different table styles, but some trick may be used to get this
+functionality --- specifically, adding an invisible element (an empty `<div>` in this case)
+right before the table and then using some simple CSS magic to define the appearance:
 
 ````code
 <div class="tablePlated"></div>
@@ -297,8 +297,8 @@ Text fragments may be marked as:
 
 - ~~deleted~~ (surround with double tildes `~~` from both sides);
 - ++inserted++ (surround with double pluses from both sides `++`);
-- of cause __bold__ (`__bold__` or `**bold**`);
-- and _italic_ (`_italic_` or `*italic*`).
+- of cause **bold** (`__bold__` or `**bold**`);
+- and *italic* (`_italic_` or `*italic*`).
 
 Three dashes (`---`) may be replaced with an em-dash (`&mdash;`) --- yes, it works!
 
@@ -318,6 +318,7 @@ Light code block (marked as `text`):
 ````text
 This code block is used:
  - when we need no background and borders
+ - and the text must be monospaced
  - and we need to preserve line breaks
 ````
 
