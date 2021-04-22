@@ -4,8 +4,9 @@ This page is generated using custom templates.
 
 ## What else?
 
-And also CSS are linked instead of being included (try to press `Ctrl` + `U` to see the
-source code).
+- CSS are linked instead of being included (try to press `Ctrl` + `U` to see the source code).
+- Title is set to an absent, malformed placeholder. This way we test the converter's behavior 
+    in such cases. 
 
 ## OK, got it!
 

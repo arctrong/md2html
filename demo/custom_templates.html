@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Custom template demo</title>
+<head><title>${absent placeholder}</title>
 <link rel="stylesheet" type="text/css" href="custom_styles.css">
 </head>
 <body>
@@ -10,8 +9,11 @@
 <h1 id="custom-template-demo">Custom template demo</h1>
 <p>This page is generated using custom templates.</p>
 <h2 id="what-else">What else?</h2>
-<p>And also CSS are linked instead of being included (try to press <code>Ctrl</code> + <code>U</code> to see the
-source code).</p>
+<ul>
+<li>CSS are linked instead of being included (try to press <code>Ctrl</code> + <code>U</code> to see the source code).</li>
+<li>Title is set to an absent, malformed placeholder. This way we test the converter's behavior 
+    in such cases. </li>
+</ul>
 <h2 id="ok-got-it">OK, got it!</h2>
 <p>Then click the arrow below to go back to the main page:</p>
 <p><a href="../readme.html#ref_to_custom_template_page"><img alt="" src="arrow-left.png" /></a></p>

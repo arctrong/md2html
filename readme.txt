@@ -19,7 +19,8 @@ possible obtainable result.
 # Prerequisites
 
 This utility requires [Python 3](https://www.python.org/). The following Python packages must
-be installed (in Windows `pip3` command must be called just `pip`):
+be installed (in Windows, `pip3` command must be called just `pip`, or, if it doesn't work, try
+`python -m pip install ...`):
 
 ````shell
 $ pip3 install Markdown

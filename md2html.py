@@ -4,22 +4,20 @@ import sys
 from pathlib import Path
 from subprocess import check_output
 import markdown
+from string import Template
 
 DEFAULT_TEMPLATE_DIR = 'templates'
-HEADER1_TEMPLATE = 'header1.html'
-CSS_TEMPLATE = 'styles.css'
-HEADER2_TEMPLATE = 'header2.html'
-FOOTER_TEMPLATE = 'footer.html'
+TEMPLATE_FILE_NAME = 'template.html'
+CSS_FILE_NAME = 'styles.css'
 USE_HELP_TEXT = 'use -h for help'
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "markdown_del_ins", "mdx_emdash"])
 
 
-def write_file_to_stream(in_file, out_stream):
-    with open(in_file, 'r') as file:
-        for item in file.readlines():
-            out_stream.write(item)
+def read_lines_from_file(file):
+    with open(file, 'r') as file_handler:
+        return file_handler.read()
 
 
 def md2html(input_file, output_file, title, template_dir, link_css, force, verbose, report):
@@ -32,40 +30,32 @@ def md2html(input_file, output_file, title, template_dir, link_css, force, verbo
                 print(f'The output file is up-to-date. Skipping: {output_file}')
             return
 
-    with open(output_file, 'w') as out:
+    substitutions = {'title': title}
+    if link_css:
+        substitutions['styles'] = f'<link rel="stylesheet" type="text/css" href="{link_css}">'
+    else:
+        substitutions['styles'] = '<style>\n' + read_lines_from_file(template_dir.joinpath(CSS_FILE_NAME)) \
+                                  + '\n</style>'
 
-        write_file_to_stream(template_dir.joinpath(HEADER1_TEMPLATE), out)
+    # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from their inside
+    # implementation. So methods `markdown.markdown()` and `Markdown.convert()` are gonna be used.
+    # And anyway the first two methods read the md-file completely before conversion, so they give
+    # no memory save.
 
-        out.write('<title>')
-        if title:
-            out.write(title)
-        out.write('</title>')
+    with open(input_file, 'r') as md_file:
+        md_lines = md_file.read()
+    substitutions['content'] = MARKDOWN_CONVERTER.convert(source=md_lines)
 
-        if link_css:
-            out.write(f'\n<link rel="stylesheet" type="text/css" href="{link_css}">\n')
-        else:
-            out.write('\n<style>\n')
-            write_file_to_stream(template_dir.joinpath(CSS_TEMPLATE), out)
-            out.write('\n</style>\n')
+    template = Template(read_lines_from_file(template_dir.joinpath(TEMPLATE_FILE_NAME)))
+    result = template.safe_substitute(substitutions)
 
-        write_file_to_stream(template_dir.joinpath(HEADER2_TEMPLATE), out)
+    with open(output_file, 'w') as result_file:
+        result_file.write(result)
 
-        # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from their inside
-        # implementation. So methods `markdown.markdown()` and `Markdown.convert()` are gonna be used.
-        # And anyway the first two methods read the md-file completely before conversion, so they give
-        # no memory save.
-
-        with open(input_file, 'r') as md_file:
-            md_lines = md_file.read()
-        html_lines = MARKDOWN_CONVERTER.convert(source=md_lines)
-        out.write(html_lines)
-
-        write_file_to_stream(template_dir.joinpath(FOOTER_TEMPLATE), out)
-
-        if verbose:
-            print(f'Output file generated: {output_file}')
-        if report:
-            print(output_file)
+    if verbose:
+        print(f'Output file generated: {output_file}')
+    if report:
+        print(output_file)
 
 
 def main():
