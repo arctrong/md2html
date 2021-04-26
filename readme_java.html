@@ -59,27 +59,29 @@ containing the file <code>md2html-&lt;version&gt;.jar</code>.</li>
 </ul>
 <hr />
 <h1 id="usage">Usage</h1>
-<pre><code class="shell">&gt;java -jar path\to\md2html-0.1.1.jar
+<pre><code class="shell">&gt;java -jar %MD2HTML_JAVA_HOME%\md2html-&lt;version&gt;.jar
 
-usage: java Md2Html [-f] [-h] [-i &lt;arg&gt;] [-l &lt;arg&gt;] [-o &lt;arg&gt;] [-r] [-t
-       &lt;arg&gt;] [--templates &lt;arg&gt;] [-v]
- -f,--force             rewrites HTML output file even if it was modified
-                        later than the input file
+usage: java Md2Html [-h] [-i &lt;arg&gt;] [-o &lt;arg&gt;] [-t &lt;arg&gt;] [--templates &lt;arg&gt;]
+       [-l &lt;arg&gt;] [-f] [-v] [-r]
+       , [input], [output], [title]
+
+Positional arguments: [input], [output], [title]
  -h,--help              show this help message and exit
  -i,--input &lt;arg&gt;       input Markdown file name (mandatory)
- -l,--link-css &lt;arg&gt;    links CSS file, if omitted includes the default
-                        CSS into HTML
- -o,--output &lt;arg&gt;      output HTML file name, defaults to input file name
-                        with '.html' extension
- -r,--report            if HTML file is generated, outputs the path of
-                        this file, incompatible with -v
- -t,--title &lt;arg&gt;       the HTML page title, if omitted there will be an
-                        empty title
+ -o,--output &lt;arg&gt;      output HTML file name, defaults to input file name with
+                        '.html' extension
+ -t,--title &lt;arg&gt;       the HTML page title, if omitted there will be an empty
+                        title
     --templates &lt;arg&gt;   custom template directory
+ -l,--link-css &lt;arg&gt;    links CSS file, if omitted includes the default CSS into
+                        HTML
+ -f,--force             rewrites HTML output file even if it was modified later
+                        than the input file
  -v,--verbose           outputs human readable information messages
+ -r,--report            if HTML file is generated, outputs the path of this
+                        file, incompatible with -v
 </code></pre>
-<p>In this help three positional parameters are not shown. Actually the syntax
-is the same as of the <a href="readme.html#md2html_py_usage"><em>Python version</em></a>.</p>
+<p>The syntax is the same as of the <a href="readme.html#md2html_py_usage"><em>Python version</em></a>.</p>
 <h2 id="double-click-script">Double-click script</h2>
 <p>See <a href="md2html_java.bat"><code>md2html_java.bat</code></a>. Works the same way as for the
 <a href="readme.html#md2html_py_double_click_script"><em>Python version</em></a>.</p>

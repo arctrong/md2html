@@ -29,28 +29,30 @@ Java runtime (JRE) 8 or higher.
 # Usage
 
 ````shell
->java -jar path\to\md2html-0.1.1.jar
+>java -jar %MD2HTML_JAVA_HOME%\md2html-<version>.jar
 
-usage: java Md2Html [-f] [-h] [-i <arg>] [-l <arg>] [-o <arg>] [-r] [-t
-       <arg>] [--templates <arg>] [-v]
- -f,--force             rewrites HTML output file even if it was modified
-                        later than the input file
+usage: java Md2Html [-h] [-i <arg>] [-o <arg>] [-t <arg>] [--templates <arg>]
+       [-l <arg>] [-f] [-v] [-r]
+       , [input], [output], [title]
+
+Positional arguments: [input], [output], [title]
  -h,--help              show this help message and exit
  -i,--input <arg>       input Markdown file name (mandatory)
- -l,--link-css <arg>    links CSS file, if omitted includes the default
-                        CSS into HTML
- -o,--output <arg>      output HTML file name, defaults to input file name
-                        with '.html' extension
- -r,--report            if HTML file is generated, outputs the path of
-                        this file, incompatible with -v
- -t,--title <arg>       the HTML page title, if omitted there will be an
-                        empty title
+ -o,--output <arg>      output HTML file name, defaults to input file name with
+                        '.html' extension
+ -t,--title <arg>       the HTML page title, if omitted there will be an empty
+                        title
     --templates <arg>   custom template directory
+ -l,--link-css <arg>    links CSS file, if omitted includes the default CSS into
+                        HTML
+ -f,--force             rewrites HTML output file even if it was modified later
+                        than the input file
  -v,--verbose           outputs human readable information messages
+ -r,--report            if HTML file is generated, outputs the path of this
+                        file, incompatible with -v
 ````
 
-In this help three positional parameters are not shown. Actually the syntax 
-is the same as of the [_Python version_](readme.html#md2html_py_usage).
+The syntax is the same as of the [_Python version_](readme.html#md2html_py_usage).
 
 
 ## Double-click script

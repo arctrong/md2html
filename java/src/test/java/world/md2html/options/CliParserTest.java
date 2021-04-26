@@ -82,7 +82,7 @@ class CliParserTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_missingKeyArgument() throws Exception {
+    public void getMd2HtmlOptions_missingKeyArgument() {
         assertThrows(ParseException.class, () -> getParsingResult("-i"));
         assertThrows(ParseException.class, () -> getParsingResult("-o", "-i", "input.txt"));
         assertThrows(ParseException.class,
@@ -127,7 +127,7 @@ class CliParserTest {
 
     private CliParsingResult getParsingResult(String... args)
             throws ParseException, CliArgumentsException {
-        return CliParser.getMd2HtmlOptions(args);
+        return new CliParser().getMd2HtmlOptions(args);
     }
 
     private void testHelp(String... args) throws Exception {

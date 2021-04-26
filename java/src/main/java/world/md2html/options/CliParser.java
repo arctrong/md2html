@@ -22,11 +22,17 @@ public class CliParser {
 
     private static final String DEFAULT_TEMPLATE_DIR = "templates";
 
-    private static final String USAGE = "java " + Md2Html.class.getSimpleName();
-    private static final Options cliOptions = getCliOptions();
-    private static final FeedbackHelper feedbackHelper = new FeedbackHelper(USAGE, cliOptions);
+    private final Options cliOptions;
+    private final FeedbackHelper feedbackHelper;
 
-    public static CliParsingResult getMd2HtmlOptions(String[] args)
+    public CliParser() {
+        String usage = "java " + Md2Html.class.getSimpleName();
+        cliOptions = createCliOptions();
+        feedbackHelper = new FeedbackHelper(usage, cliOptions, new String[]{"input", "output",
+                "title"});
+    }
+
+    public CliParsingResult getMd2HtmlOptions(String[] args)
             throws ParseException, CliArgumentsException {
 
         CommandLineParser parser = new DefaultParser();
@@ -104,53 +110,46 @@ public class CliParser {
                         verbose, report));
     }
 
-    private static Options getCliOptions() {
+    private Options createCliOptions() {
 
         Options cliOptions = new Options();
 
         cliOptions.addOption(HELP_OPTION_NAME, "help", false, "show this help message and exit");
 
-        Option inputFileOption = new Option(INPUT_FILE_OPTION_NAME, "input", true,
-                "input Markdown file name (mandatory)");
-        inputFileOption.setArgs(1);
-        cliOptions.addOption(inputFileOption);
+        cliOptions.addOption(Option.builder(INPUT_FILE_OPTION_NAME).longOpt("input").hasArg()
+                .numberOfArgs(1).desc("input Markdown file name (mandatory)").build());
 
-        Option outputFileOption = new Option(OUTPUT_FILE_OPTION_NAME, "output", true,
-                "output HTML file name, defaults to input file name with '.html' extension");
-        outputFileOption.setArgs(1);
-        cliOptions.addOption(outputFileOption);
+        cliOptions.addOption(Option.builder(OUTPUT_FILE_OPTION_NAME).longOpt("output").hasArg()
+                .numberOfArgs(1)
+                .desc("output HTML file name, defaults to input file name with '.html' extension")
+                .build());
 
-        Option titleOption = new Option(TITLE_OPTION_NAME, "title", true,
-                "the HTML page title, if omitted there will be an empty title");
-        titleOption.setArgs(1);
-        cliOptions.addOption(titleOption);
+        cliOptions.addOption(Option.builder(TITLE_OPTION_NAME).longOpt("title").hasArg()
+                .numberOfArgs(1)
+                .desc("the HTML page title, if omitted there will be an empty title").build());
 
-        Option templatesDirOption = new Option(null, TEMPLATES_DIR_OPTION_NAME, true,
-                "custom template directory");
-        templatesDirOption.setArgs(1);
-        cliOptions.addOption(templatesDirOption);
+        cliOptions.addOption(Option.builder(null).longOpt(TEMPLATES_DIR_OPTION_NAME).hasArg()
+                .numberOfArgs(1).desc("custom template directory").build());
 
-        Option linkCssOption = new Option(LINK_CSS_OPTION_NAME, "link-css", true,
-                "links CSS file, if omitted includes the default CSS into HTML");
-        linkCssOption.setArgs(1);
-        cliOptions.addOption(linkCssOption);
+        cliOptions.addOption(Option.builder(LINK_CSS_OPTION_NAME).longOpt("link-css").hasArg()
+                .numberOfArgs(1)
+                .desc("links CSS file, if omitted includes the default CSS into HTML").build());
 
-        Option forceOption = new Option(FORCE_OPTION_NAME, "force", false,
-                "rewrites HTML output file even if it was modified later than the input file");
-        cliOptions.addOption(forceOption);
+        cliOptions.addOption(Option.builder(FORCE_OPTION_NAME).longOpt("force").hasArg(false)
+                .desc("rewrites HTML output file even if it was modified later than the input file")
+                .build());
 
-        Option verboseOption = new Option(VERBOSE_OPTION_NAME, "verbose", false,
-                "outputs human readable information messages");
-        cliOptions.addOption(verboseOption);
+        cliOptions.addOption(Option.builder(VERBOSE_OPTION_NAME).longOpt("verbose").hasArg(false)
+                .desc("outputs human readable information messages").build());
 
-        Option reportOption = new Option(REPORT_OPTION_NAME, "report", false,
-                "if HTML file is generated, outputs the path of this file, incompatible with -v");
-        cliOptions.addOption(reportOption);
+        cliOptions.addOption(Option.builder(REPORT_OPTION_NAME).longOpt("report").hasArg(false)
+                .desc("if HTML file is generated, outputs the path of this file, incompatible " +
+                        "with -v").build());
 
         return cliOptions;
     }
 
-    public static FeedbackHelper getFeedbackHelper() {
+    public FeedbackHelper getFeedbackHelper() {
         return feedbackHelper;
     }
 
