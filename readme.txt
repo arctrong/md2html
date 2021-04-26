@@ -16,6 +16,8 @@ It uses __Python-Markdown__ module, see:
 This document describes the converter's features, gives usage notes and itself demonstrates a
 possible obtainable result.
 
+> Also see the [_Java version_](readme_java.html) implemented in this project.
+
 ----------------------------------------------------------------------------------------------------
 # Prerequisites
 
