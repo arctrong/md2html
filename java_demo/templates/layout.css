@@ -1,0 +1,32 @@
+body {
+    margin:34px 0 0 250px;
+    padding:20px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    padding: 5px 20px;
+    background-color: papayawhip;
+    overflow: hidden;
+    white-space: nowrap;
+    /* border-bottom: solid 15px white; */
+}
+
+.sidebar {
+    position: fixed;
+    top: 34px;
+    bottom: 0;
+    z-index: 2;
+    margin: 0;
+    padding: 20px;
+    left: 0;
+    width: 210px;
+    overflow-y: auto;
+    background-color: lightskyblue;
+}

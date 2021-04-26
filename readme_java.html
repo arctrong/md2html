@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head><title>Java MD2HTML converter</title>
+<link rel="stylesheet" type="text/css" href="templates/styles.css">
+<link rel="stylesheet" type="text/css" href="java_demo/templates/layout.css">
+</head>
+<body>
+
+<div class="header"><i>This is an automatically generated document.</i></div>
+<div class="sidebar">
+    <h3>Sections</h3>
+    <p><a href="readme_java.html">Overview</a></p>
+    <p><a href="readme_java_dev.html">Development</a></p>
+    <h3>Examples</h3>
+    <p><a href="java_demo/default_template.html">Using default template</a></p>
+    <p><a href="java_demo/absent_placeholder.htm">Absent placeholder test</a></p>
+</div>
+
+<ul>
+<li><a href="#java-markdown-to-html-converter">Java Markdown to HTML converter</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a>
+<ul>
+<li><a href="#double-click-script">Double-click script</a></li>
+</ul>
+</li>
+<li><a href="#feature-testing">Feature testing</a>
+<ul>
+<li><a href="#template">Template</a></li>
+<li><a href="#blockquotes">Blockquotes</a></li>
+<li><a href="#images">Images</a></li>
+<li><a href="#lists">Lists</a></li>
+<li><a href="#lists-in-blockquotes">Lists in blockquotes</a></li>
+<li><a href="#tables">Tables</a></li>
+<li><a href="#text-effects">Text effects</a></li>
+<li><a href="#code-blocks">Code blocks</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<h1 id="java-markdown-to-html-converter">Java Markdown to HTML converter</h1>
+<p><img src="demo/logo.png" alt="" /></p>
+<p>This is a Java version of <em>Markdown to HTML converter</em>. It works mostly the same way as the
+<a href="readme.html"><em>Python version</em></a> and is intended to be used interchangeably with the
+<a href="readme.html"><em>Python version</em></a> on the same source files, templates, and configuration files.</p>
+<p>This document gives short descriptions and demonstrates the capabilities of the utility.</p>
+<hr />
+<h1 id="prerequisites">Prerequisites</h1>
+<p>Java runtime (JRE) 8 or higher.</p>
+<hr />
+<h1 id="installation">Installation</h1>
+<ul>
+<li>Unpack the release archive wherever you like.</li>
+<li>Define <code>MD2HTML_PY_HOME</code> environment variable (system-wide of for a user) as the path to the
+directory containing the <code>templates</code> directory. Unlike the <em>Python version</em> this is required.</li>
+<li>Optionally define <code>MD2HTML_JAVA_HOME</code> environment variable as the path to the directory
+containing the file <code>md2html-&lt;version&gt;.jar</code>.</li>
+</ul>
+<hr />
+<h1 id="usage">Usage</h1>
+<pre><code class="shell">&gt;java -jar path\to\md2html-0.1.1.jar
+
+usage: java Md2Html [-f] [-h] [-i &lt;arg&gt;] [-l &lt;arg&gt;] [-o &lt;arg&gt;] [-r] [-t
+       &lt;arg&gt;] [--templates &lt;arg&gt;] [-v]
+ -f,--force             rewrites HTML output file even if it was modified
+                        later than the input file
+ -h,--help              show this help message and exit
+ -i,--input &lt;arg&gt;       input Markdown file name (mandatory)
+ -l,--link-css &lt;arg&gt;    links CSS file, if omitted includes the default
+                        CSS into HTML
+ -o,--output &lt;arg&gt;      output HTML file name, defaults to input file name
+                        with '.html' extension
+ -r,--report            if HTML file is generated, outputs the path of
+                        this file, incompatible with -v
+ -t,--title &lt;arg&gt;       the HTML page title, if omitted there will be an
+                        empty title
+    --templates &lt;arg&gt;   custom template directory
+ -v,--verbose           outputs human readable information messages
+</code></pre>
+<p>In this help three positional parameters are not shown. Actually the syntax
+is the same as of the <a href="readme.html#md2html_py_usage"><em>Python version</em></a>.</p>
+<h2 id="double-click-script">Double-click script</h2>
+<p>See <a href="md2html_java.bat"><code>md2html_java.bat</code></a>. Works the same way as for the
+<a href="readme.html#md2html_py_double_click_script"><em>Python version</em></a>.</p>
+<hr />
+<h1 id="feature-testing">Feature testing</h1>
+<p><a name="md2html_java_template"></a></p>
+<h2 id="template">Template</h2>
+<p>This page is generated using a custom template with CSS linking.
+<a href="java_demo/default_template.html">Here</a> is an example of a page generated with default template
+with CSS embedding.</p>
+<p><a name="md2html_java_malformed_placeholders"></a></p>
+<p>Unlike <a href="readme.html"><em>Python version</em></a>, this Java utility doesn&rsquo;t accept malformed placeholders
+in templates. But it correctly processes well-formed placeholders for which corresponding keys
+are not defined. <a href="java_demo/absent_placeholder.htm">Here</a> is an example.</p>
+<h2 id="blockquotes">Blockquotes</h2>
+<blockquote>
+<p>This is a <code>blockquote</code> with a link image inside.</p>
+<p><a href="java_demo/default_template.html" title="Default template usage demo"><img src="demo/arrow-right.png" alt="DEFAULT TEMPLATE USAGE DEMO" /></a></p>
+</blockquote>
+<h2 id="images">Images</h2>
+<p>An image usage is demonstrated above (the yellow arrow). In this example <code>alt</code> and <code>title</code>
+attributes are filled.</p>
+<h2 id="lists">Lists</h2>
+<p>This is a multilevel list:</p>
+<ul>
+<li>This is the <strong>first</strong> first-level list item.
+<ol>
+<li>This is the first <strong>ordered</strong> list subitem of the first list item.
+<ul>
+<li>This is the <strong>first</strong> third-level subitem of the the first second-level subitem of
+the first first-level item of the multilevel list.</li>
+<li>This is the <strong>second</strong> third-level items subitem of the the first second-level subitem
+of the first first-level item of the multi-level list.</li>
+</ul>
+</li>
+<li>This is the second <strong>ordered</strong> list subitem of the first list item.</li>
+</ol>
+</li>
+<li>This is the <strong>second</strong> first-level list item.</li>
+</ul>
+<h2 id="lists-in-blockquotes">Lists in blockquotes</h2>
+<blockquote>
+<p>Let&rsquo;s now have a look at how a list behaves in a <code>blockquote</code>:</p>
+<ul>
+<li>The <em>first</em> higher level item of the list.
+<ol>
+<li>The first <em>ordered</em> list subitem.</li>
+<li>The second <em>ordered</em> list subitem.</li>
+</ol>
+</li>
+<li>The <em>second</em> higher level item of the list.</li>
+</ul>
+</blockquote>
+<h2 id="tables">Tables</h2>
+<p>Default table style.</p>
+<table>
+<thead>
+<tr><th align="center">Item No</th><th>Name</th><th>Description</th><th align="right">Price</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">1</td><td>Chair</td><td>Kitchen chair</td><td align="right">87.50</td></tr>
+<tr><td align="center">2</td><td>Table</td><td>Kitchen table</td><td align="right">450.00</td></tr>
+<tr><td align="center">3</td><td>Lamp</td><td>Standard lamp</td><td align="right">120.75</td></tr>
+</tbody>
+</table>
+<p>Default table style without a header:</p>
+<table>
+<thead>
+<tr><th align="right" colspan="4"></th></tr>
+</thead>
+<tbody>
+<tr><td align="right">10</td><td align="right">20</td><td align="right">30</td><td align="right">40</td></tr>
+<tr><td align="right">50</td><td align="right">60</td><td align="right">70</td><td align="right">80</td></tr>
+<tr><td align="right">90</td><td align="right">100</td><td align="right">110</td><td align="right">120</td></tr>
+</tbody>
+</table>
+<p>&ldquo;Plated&rdquo; table style:</p>
+<div class="tablePlated"></div>
+<table>
+<thead>
+<tr><th align="center">Item No</th><th>Name</th><th>Description</th><th align="right">Price</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">1</td><td>Chair</td><td>Kitchen chair</td><td align="right">87.50</td></tr>
+<tr><td align="center">2</td><td>Table</td><td>Kitchen table</td><td align="right">450.00</td></tr>
+<tr><td align="center">3</td><td>Lamp</td><td>Standard lamp</td><td align="right">120.75</td></tr>
+</tbody>
+</table>
+<p>&ldquo;Gridded&rdquo; table style:</p>
+<div class="tableGridded"></div>
+<table>
+<thead>
+<tr><th align="center">Item No</th><th>Name</th><th>Description</th><th align="right">Price</th></tr>
+</thead>
+<tbody>
+<tr><td align="center">1</td><td>Chair</td><td>Kitchen chair</td><td align="right">87.50</td></tr>
+<tr><td align="center">2</td><td>Table</td><td>Kitchen table</td><td align="right">450.00</td></tr>
+<tr><td align="center">3</td><td>Lamp</td><td>Standard lamp</td><td align="right">120.75</td></tr>
+</tbody>
+</table>
+<h2 id="text-effects">Text effects</h2>
+<p>Text fragments may be marked as:</p>
+<ul>
+<li><del>deleted</del> (surround with double tildes <code>~~</code> from both sides);</li>
+<li><ins>inserted</ins> (surround with double pluses from both sides <code>++</code>);</li>
+<li>of cause <strong>bold</strong> (<code>__bold__</code> or <code>**bold**</code>);</li>
+<li>and <em>italic</em> (<code>_italic_</code> or <code>*italic*</code>).</li>
+</ul>
+<p>Three dashes (<code>---</code>) will be replaced with an em-dash (<code>&amp;mdash;</code>) &mdash; yes, it works!</p>
+<h2 id="code-blocks">Code blocks</h2>
+<p>Unmarked code block. Visually corresponds to <code>inline</code> code fragments:</p>
+<pre><code>This code block represents information:
+ - like `inline` code fragments
+ - but of bigger size
+ - and when we need to preserve line breaks
+</code></pre>
+<p>Light code block (marked as <code>text</code>):</p>
+<pre><code class="text">This code block is used:
+ - when we need no background and borders
+ - and the text must be monospaced
+ - and we need to preserve line breaks
+</code></pre>
+<p>Shell code block (marked as <code>shell</code>):</p>
+<pre><code class="shell">$ echo &quot;This block demonstrates operations in a shell&quot;
+This block demonstrates operations in a shell
+</code></pre>
+<p>Program language code block (marked as <code>code</code>):</p>
+<pre><code class="code">System.out.println(&quot;This block demonstrates a source code in a program language.&quot;);
+</code></pre>
+<hr />
+<hr />
+<hr />
+<hr />
+<hr />
+
+
+</body>
+</html>

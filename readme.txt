@@ -48,6 +48,8 @@ contains Windows Explorer context menu integration artifacts (see below).
 ----------------------------------------------------------------------------------------------------
 # Usage
 
+<a name="md2html_py_usage"></a>
+
 The utility provides its usage information in a standard manner:
 
 ````shell
@@ -78,6 +80,7 @@ optional arguments:
 Simplified argument set may be used: <input file name> <output file name> <page title>
 ````
 
+<a name="md2html_py_double_click_script"></a>
 
 ## Double-click script
 
@@ -183,7 +186,7 @@ line arguments allow to redefine this behavior.
 > Below is an example of a page that was generated using a custom template set. And also CSS 
 > was linked instead of being included. Click the arrow to navigate:
 > 
-> [![](demo/arrow-right.png)](demo/custom_templates.html)
+> [![CUSTOM TEMPLATE DEMO](demo/arrow-right.png)](demo/custom_templates.html "Custom template demo")
 
 ----------------------------------------------------------------------------------------------------
 # Feature testing
@@ -191,7 +194,12 @@ line arguments allow to redefine this behavior.
 This document itself demonstrates the available Markdown features of this implementation.
 This section provides other examples.
 
-> See the source Markdown files like ([this](readme.txt)) to know how such result can be obtained.
+> See the source Markdown files like, [this](readme.txt), to know how such result may be obtained.
+
+## Images
+
+An image usage is demonstrated above (the yellow arrow). In this example `alt` and `title` 
+attributes are filled.
 
 ## Lists
 
@@ -306,12 +314,10 @@ Three dashes (`---`) may be replaced with an em-dash (`&mdash;`) --- yes, it wor
 
 Unmarked code block. Visually corresponds to `inline` code fragments:
 
-````
-This code block represents information:
- - like `inline` code fragments
- - but of bigger size
- - and when we need to preserve line breaks
-````
+    This code block represents information:
+     - like `inline` code fragments
+     - but of bigger size
+     - and when we need to preserve line breaks
 
 Light code block (marked as `text`):
 

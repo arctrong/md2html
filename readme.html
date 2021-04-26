@@ -77,7 +77,7 @@ pre code {
     /* border: none; */
     /* margin: -15px; */
     /* padding: 15px; */
-    white-space: break-spaces;
+    white-space: pre;
     padding: 10px;
 }
 
@@ -147,7 +147,7 @@ div.tablePlated+table td {
 
 div.tableGridded+table {
     border-spacing: 0;
-    border-collapse: collapse;    
+    border-collapse: collapse;
 }
 
 div.tableGridded+table th {
@@ -180,6 +180,7 @@ div.tableGridded+table td, div.tableGridded+table th {
 </ul>
 </li>
 <li><a href="#feature-testing">Feature testing</a><ul>
+<li><a href="#images">Images</a></li>
 <li><a href="#lists">Lists</a></li>
 <li><a href="#lists-in-blockquotes">Lists in blockquotes</a></li>
 <li><a href="#tables">Tables</a></li>
@@ -227,6 +228,7 @@ contains the HTML template and the CSS used by default. The <code>win_context_me
 contains Windows Explorer context menu integration artifacts (see below).</p>
 <hr />
 <h1 id="usage">Usage</h1>
+<p><a name="md2html_py_usage"></a></p>
 <p>The utility provides its usage information in a standard manner:</p>
 <pre><code class="shell">&gt;python md2html.py -h
 usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--templates TEMPLATES] [-l LINK_CSS] [-f] [-v] [-r] ...
@@ -255,6 +257,7 @@ optional arguments:
 Simplified argument set may be used: &lt;input file name&gt; &lt;output file name&gt; &lt;page title&gt;
 </code></pre>
 
+<p><a name="md2html_py_double_click_script"></a></p>
 <h2 id="double-click-script">Double-click script</h2>
 <p>File <a href="md2html.bat"><code>md2html.bat</code></a> is used for generating this documentation. It demonstrates
 different usage variations. File <a href="md2html_list.txt"><code>md2html_list.txt</code></a> contains arguments for
@@ -334,15 +337,18 @@ line arguments allow to redefine this behavior.</p>
 <blockquote>
 <p>Below is an example of a page that was generated using a custom template set. And also CSS 
 was linked instead of being included. Click the arrow to navigate:</p>
-<p><a href="demo/custom_templates.html"><img alt="" src="demo/arrow-right.png" /></a></p>
+<p><a href="demo/custom_templates.html" title="Custom template demo"><img alt="CUSTOM TEMPLATE DEMO" src="demo/arrow-right.png" /></a></p>
 </blockquote>
 <hr />
 <h1 id="feature-testing">Feature testing</h1>
 <p>This document itself demonstrates the available Markdown features of this implementation.
 This section provides other examples.</p>
 <blockquote>
-<p>See the source Markdown files like (<a href="readme.txt">this</a>) to know how such result can be obtained.</p>
+<p>See the source Markdown files like, <a href="readme.txt">this</a>, to know how such result may be obtained.</p>
 </blockquote>
+<h2 id="images">Images</h2>
+<p>An image usage is demonstrated above (the yellow arrow). In this example <code>alt</code> and <code>title</code> 
+attributes are filled.</p>
 <h2 id="lists">Lists</h2>
 <p>The following text will be arranged in a form of a multi-level list with long items in order
 to check the indentations and the text flow. It's important to check the indentations on the
@@ -545,7 +551,6 @@ right before the table and then using some simple CSS magic to define the appear
  - but of bigger size
  - and when we need to preserve line breaks
 </code></pre>
-
 <p>Light code block (marked as <code>text</code>):</p>
 <pre><code class="text">This code block is used:
  - when we need no background and borders
