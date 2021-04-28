@@ -11,7 +11,7 @@ exit /b
 set SINGLE_SECCESS=N
 echo.
 echo Generating: %*
-call java -jar %MD2HTML_JAVA_HOME%\md2html-0.1.1.jar %* && set SINGLE_SECCESS=Y
+call java -jar %MD2HTML_JAVA_HOME%\md2html-0.1.1.jar -v %* && set SINGLE_SECCESS=Y
 if not [%SINGLE_SECCESS%]==[Y] (
     set SUCCESS=N
 ) else (
