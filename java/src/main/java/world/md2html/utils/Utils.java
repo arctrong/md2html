@@ -12,8 +12,13 @@ public class Utils {
     }
 
     public static String stripExtension(String path) {
-        int pos = path.lastIndexOf(".");
-        return pos == -1 ? path : path.substring(0, pos);
+        int dotPos = path.lastIndexOf(".");
+        int slashPos = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+        if (dotPos - slashPos > 1) {
+            return dotPos > 0 ? path.substring(0, dotPos) : path;
+        } else {
+            return path;
+        }
     }
 
     public static String readStringFromUtf8File(Path filePath) throws Exception {

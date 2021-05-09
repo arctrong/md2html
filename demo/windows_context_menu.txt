@@ -1,3 +1,0 @@
-# Windows Explorer context menu support
-
-__md2html__ utility may be integrated with Windows Explorer context menu.

@@ -1,4 +1,0 @@
--i readme_java.txt -t "Java MD2HTML converter" --link-css=templates/styles.css --templates=java_demo/templates
--i java_demo/default_template.txt -t "Default template"
---templates=java_demo/malformed_template --link-css=../templates/styles.css java_demo/absent_placeholder.txt java_demo/absent_placeholder.htm "Absent placeholder"
--i readme_java_dev.txt -t "Development notes" --link-css=templates/styles.css --templates=java_demo/templates

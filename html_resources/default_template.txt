@@ -1,0 +1,14 @@
+# Default template demo
+
+This page is generated using default template.
+
+## CSS inclusion
+
+CSS are included into the HTML document (try to press `Ctrl`+`U` to see the source code).
+
+# Go back
+
+To go to the Home page click the arrow image below.
+
+[![TO HOME PAGE](pict/arrow-left.png)](../readme.html)
+ 

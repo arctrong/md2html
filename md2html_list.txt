@@ -1,2 +1,5 @@
--i readme.txt -t "Markdown to HTML converter"
---templates demo/custom_templates --link-css=custom_styles.css demo/custom_templates.txt demo/custom_templates.html "Custom template demo"
+-i readme.txt -t "Markdown to HTML converter" --template md2html_templates/custom --link-css=html_resources/styles.css
+-i html_resources/readme_py.txt -t "md2html: Python version" --link-css=styles.css
+-i html_resources/readme_java.txt -t "md2html: Java version" --link-css=styles.css
+-i html_resources/default_template.txt -t "md2html: Default template"
+-i html_resources/malformed_template.txt -t "md2html: Malformed template" --template md2html_templates/malformed --no-css

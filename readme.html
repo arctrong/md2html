@@ -1,177 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head><title>Markdown to HTML converter</title>
-<style>
-body, html {
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-}
-
-body {
-    font-size: 18px;
-    margin-left: 50px;
-    margin-right: 50px;
-}
-
-/* p, li {
-    border: solid 1px fuchsia;
-} */
-
-p {
-    max-width: 900px;
-}
-
-li {
-    max-width: 860px;
-}
-
-ul, ol {
-    padding-left: 40px;
-}
-
-hr {
-    background: cadetblue;
-    height: 1px;
-    border: 0px;
-}
-
-h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
-    font-size: unset;
-}
-
-del {
-    color: red;
-}
-
-ins {
-    color: green;
-}
-
-pre {
-    /* font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif; */
-    /* font-size: 16px; */
-    /* background-color: #eeeeee; */
-    /*border: black 1px solid;*/
-    /* width: 1000px; */
-    /* min-width: max-content; */
-    /* padding: 15px; */
-}
-
-code {
-    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
-    font-size: 16px;
-    background-color: #eeeeee;
-    padding-left: 6px;
-    padding-right: 6px;
-    /* border: solid 1px darkgray; */
-    border-radius: 7px;
-    white-space: nowrap;
-}
-
-pre code {
-    font-size: 16px;
-    display: block;
-    width: 878px;
-    min-width: max-content;
-    line-height: 1.4;
-    border-radius: 0;
-    /* border: none; */
-    /* margin: -15px; */
-    /* padding: 15px; */
-    white-space: pre;
-    padding: 10px;
-}
-
-pre code.text {
-    background-color: unset;
-    padding: 0;
-    width: 900px;
-    border: none;
-}
-
-pre code.shell {
-    background-color: #282c33;
-    color: #cccccc;
-    border: solid 1px #282c33;
-}
-
-pre code.code {
-    /* color: #115d8b; */
-    color: #04283e;
-    border: solid 1px #d9d9d9;
-    background-color: #f7f7f7;
-}
-
-blockquote {
-    margin-left: 0;
-    padding: 1px 10px;
-    font-size: 16px;
-    width: 868px;
-    min-width: max-content;
-    border-color: #cccccc;
-    border-style: solid;
-    border-width: 1px 1px 1px 10px;
-    /* border-left: #cccccc 10px solid; */
-    /* border-top: #cccccc 1px solid; */
-    /* border-right: #cccccc 1px solid; */
-    /* border-bottom: #cccccc 1px solid; */
-}
-
-blockquote p, blockquote li {
-    max-width: 868px;
-}
-
-table {
-    font-size: 16px;
-}
-
-td, th {
-    padding: 2px 7px;
-}
-
-div.tablePlated+table {
-    border-spacing: 2px;
-    border-collapse: separate;
-}
-
-div.tablePlated+table td, div.tablePlated+table th {
-    padding: 7px 14px;
-}
-
-div.tablePlated+table th {
-    background-color: #dce7ea;
-}
-
-div.tablePlated+table td {
-    background-color: #e9f4f7;
-}
-
-div.tableGridded+table {
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-div.tableGridded+table th {
-    background-color: #e9f0f2;
-}
-
-div.tableGridded+table td, div.tableGridded+table th {
-    border: solid 1px #6a8fb3;
-    padding: 7px 14px;
-}
-
-</style>
+<link rel="stylesheet" type="text/css" href="html_resources/styles.css">
+<link rel="stylesheet" type="text/css" href="html_resources/layout.css">
 </head>
 <body>
-<p><i>This is an automatically generated document.</i></p>
+
+<div class="header"><i>This is an automatically generated document.</i></div>
+<div class="sidebar">
+    <h3>Sections</h3>
+    <p><a href="readme.html">Home</a></p>
+    <p><a href="html_resources/readme_py.html">Python version</a></p>
+    <p><a href="html_resources/readme_java.html">Java version</a></p>
+    <h3>Examples</h3>
+    <p><a href="html_resources/default_template.html">Using default template</a></p>
+    <p><a href="html_resources/malformed_template.html">Malformed template test</a></p>
+</div>
+
 <div class="toc">
 <ul>
-<li><a href="#python-markdown-to-html-converter">Python Markdown to HTML converter</a></li>
-<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#about-markdown">About Markdown</a></li>
+</ul>
+</li>
+<li><a href="#implementations">Implementations</a></li>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#usage">Usage</a><ul>
+<li><a href="#bulk-processing">Bulk processing</a></li>
 <li><a href="#double-click-script">Double-click script</a></li>
 <li><a href="#windows-explorer-context-menu">Windows Explorer context menu</a></li>
-<li><a href="#with-git">With Git</a></li>
+<li><a href="#typical-project-structure">Typical project structure</a></li>
+<li><a href="#git-hook-script">Git hook script</a></li>
 <li><a href="#in-linux">In Linux</a></li>
 </ul>
 </li>
@@ -179,131 +38,161 @@ div.tableGridded+table td, div.tableGridded+table th {
 <li><a href="#css">CSS</a></li>
 </ul>
 </li>
-<li><a href="#feature-testing">Feature testing</a><ul>
-<li><a href="#images">Images</a></li>
-<li><a href="#lists">Lists</a></li>
-<li><a href="#lists-in-blockquotes">Lists in blockquotes</a></li>
-<li><a href="#tables">Tables</a></li>
+<li><a href="#demo">Demo</a><ul>
 <li><a href="#text-effects">Text effects</a></li>
-<li><a href="#code-blocks">Code blocks</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#links-and-images">Links and images</a></li>
+<li><a href="#lists">Lists</a></li>
+<li><a href="#blockquotes">Blockquotes</a></li>
+<li><a href="#tables">Tables</a></li>
+<li><a href="#fenced-code-blocks">Fenced code blocks</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <hr />
-<h1 id="python-markdown-to-html-converter">Python Markdown to HTML converter</h1>
-<p><img alt="" src="demo/logo.png" /></p>
-<p>This utility provides an easy way to convert single 
-<a href="https://daringfireball.net/projects/markdown/">Markdown</a> documents into single HTML pages.</p>
-<p>It uses <strong>Python-Markdown</strong> module, see:</p>
-<ul>
-<li><a href="https://python-markdown.github.io/">Official documentation</a></li>
-<li><a href="https://pypi.org/project/Markdown/">PIP Python-Markdown module page</a></li>
-</ul>
-<p>This document describes the converter's features, gives usage notes and itself demonstrates a
-possible obtainable result.</p>
-<blockquote>
-<p>Also see the <a href="readme_java.html"><em>Java version</em></a> implemented in this project.</p>
-</blockquote>
-<hr />
-<h1 id="prerequisites">Prerequisites</h1>
-<p>This utility requires <a href="https://www.python.org/">Python 3</a>. The following Python packages must
-be installed (in Windows, <code>pip3</code> command must be called just <code>pip</code>):</p>
-<pre><code class="shell">$ pip3 install Markdown
-.  .  .
-$ pip3 install markdown-del-ins
-.  .  .
-$ pip3 install markdown-emdash
-.  .  .
+<h1 id="introduction">Introduction</h1>
+<p><img alt="LOGO" src="html_resources/pict/logo.png" title="logo" /></p>
+<p>This is a simple command line utility that easily converts single <em>Markdown</em> documents into
+single static HTML pages. It's provided with a suitable HTML templates and scripts for batch
+processing and integration.</p>
+<p>This document describes the converter's features and restrictions, gives usage notes, and
+itself demonstrates a possible obtainable result.</p>
+<h2 id="about-markdown">About Markdown</h2>
+<p>This is a simple example of <em>Markdown</em> syntax:</p>
+<pre><code>&gt; A **monad** is just a _monoid_ in the category of `endofunctors`.
 </code></pre>
 
+<p>This plain text will be converted into the following HTML code:</p>
+<pre><code>&lt;blockquote&gt;
+&lt;p&gt;A &lt;strong&gt;monad&lt;/strong&gt; is just a &lt;em&gt;monoid&lt;/em&gt; in the category of &lt;code&gt;endofunctors&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+</code></pre>
+
+<p>that will look like this:</p>
 <blockquote>
-<p><strong>Note.</strong> If this doesn't work, try <code>python -m pip install ...</code> (or probably <code>python3 ...</code>
-on Linux).</p>
+<p>A <strong>monad</strong> is just a <em>monoid</em> in the category of <code>endofunctors</code>.</p>
 </blockquote>
+<p>Note that the closing angle bracket (<code>&gt;</code>) is also a part of the syntax. It marks up the line
+as a <code>&lt;blockquote&gt;</code> HTML element.</p>
+<p>This must be mentioned that <em>Markdown</em> is intended to be <strong>easy-to-write</strong> and <strong>easy-to-read</strong>
+in plain text. It contains just a very small subset of HTML features but allows inclusion of
+direct HTML code.</p>
+<p><a href="https://daringfireball.net/projects/markdown/">This site</a> (among others) may be viewed for
+more details about <em>Markdown</em> and its syntax.</p>
+<hr />
+<h1 id="implementations">Implementations</h1>
+<p>This utility has two implementations: in Python and in Java. They work mostly the same way,
+have the same command line syntax, use the same source files and templates. The two
+implementations are shipped together as source code and share some common artifacts like
+templates, scripts, and documentation. The implementations can be separated though this may
+hardly be needed as for now the overall size of the distribution is pretty small. This document
+contains information that is common for all the implementations. Implementation-specific details 
+(like system requirements and installation) are described in separate documents:</p>
+<p><a name="implementation_specific_documents_links"></a></p>
+<ul>
+<li><a href="html_resources/readme_py.html">for Python implementation</a></li>
+<li><a href="html_resources/readme_java.html">for Java implementation</a></li>
+</ul>
 <hr />
 <h1 id="installation">Installation</h1>
-<p>Place the directory containing this file wherever you like. Define <code>MD2HTML_PY_HOME</code> environment
-variable (system-wide of for a user). The latter is not necessary though will make the usage 
-much more convenient (this variable will probably also be mentioned below).</p>
-<p>File <a href="md2html.py"><code>md2html.py</code></a> is minimal possible element required. The <code>templates</code> directory
-contains the HTML template and the CSS used by default. The <code>win_context_menu</code> directory 
-contains Windows Explorer context menu integration artifacts (see below).</p>
+<ul>
+<li>Place the directory containing this file wherever you like.</li>
+<li>Define <code>MD2HTML_HOME</code> environment variable as the absolute path of this directory.</li>
+<li>Then see corresponding 
+    <a href="#implementation_specific_documents_links">implementation-specific documents</a>
+    for further installation instructions.</li>
+</ul>
 <hr />
 <h1 id="usage">Usage</h1>
-<p><a name="md2html_py_usage"></a></p>
-<p>The utility provides its usage information in a standard manner:</p>
-<pre><code class="shell">&gt;python md2html.py -h
-usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--templates TEMPLATES] [-l LINK_CSS] [-f] [-v] [-r] ...
-
-Converts Markdown document into HTML document.
-
-positional arguments:
-                        positionals for -i, -o, and -t, incompatible with corresponding named arguments
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -i INPUT, --input INPUT
-                        input Markdown file name (mandatory)
-  -o OUTPUT, --output OUTPUT
-                        output HTML file name, defaults to input file name with '.html' extension
-  -t TITLE, --title TITLE
-                        the HTML page title, if omitted there will be an empty title
-  --templates TEMPLATES
-                        custom template directory
-  -l LINK_CSS, --link-css LINK_CSS
-                        links CSS file, if omitted includes the default CSS into HTML
-  -f, --force           rewrites HTML output file even if it was modified later than the input file
-  -v, --verbose         outputs human readable information messages
-  -r, --report          if HTML file is generated, outputs the path of this file, incompatible with -v
-
-Simplified argument set may be used: &lt;input file name&gt; &lt;output file name&gt; &lt;page title&gt;
+<p>A simple usage example for the Python version is:</p>
+<pre><code class="shell">&gt;python %MD2HTML_HOME%/python/md2html.py -i test.txt
 </code></pre>
 
-<p><a name="md2html_py_double_click_script"></a></p>
+<p>This will convert file <code>test.txt</code> into file <code>test.html</code> using default conversion parameters.
+The Java version will work the same way. All options are described in the 
+<a href="#implementation_specific_documents_links">implementation-specific documents</a>.</p>
+<h2 id="bulk-processing">Bulk processing</h2>
+<p>File <code>md2html_batch.bat</code> may be used for generating several HTML-files in one run. It uses
+<em>list file</em> <code>md2html_list.txt</code> in current directory. The <em>list file</em> contains arguments for a
+single HTML-file generation per line. The first optional parameter specifies the utility
+implementation. Also the other arguments will be sent directly to the executable module. See
+the script code for more details. With the following example:</p>
+<pre><code class="shell">&gt;%MD2HTML_HOME%\bin\md2html_batch.bat py -f
+</code></pre>
+
+<p>the Python version will be used and all HTML-files will be forcefully regenerated. If the first 
+argument is nether <code>py</code> nor <code>java</code> then the Python version is used.</p>
+<p>The above command may be executed in any directory and it will process the <em>list file</em> in that
+directory. If <code>%MD2HTML_HOME%\bin</code> is added to the <code>PATH</code> then this prefix will not be required.</p>
 <h2 id="double-click-script">Double-click script</h2>
-<p>File <a href="md2html.bat"><code>md2html.bat</code></a> is used for generating this documentation. It demonstrates
-different usage variations. File <a href="md2html_list.txt"><code>md2html_list.txt</code></a> contains arguments for
-a single HTML-file generation per line. The script reads this lines successively and sends the
-arguments the Python module. Also the script adds its own arguments to the Python module call.
-For example, if <code>md2html.bat -f</code> is called then the module will forcefully regenerate the
-HTML files.</p>
-<p>This script may be executed by a double click from, e.g., the project's directory. It opens 
-a command window, does its job and:</p>
-<ul>
-<li>if finished successfully, closes the command window;</li>
-<li>in case of errors/exceptions, leaves the command window open.</li>
-</ul>
-<p>If the value of <code>MD2HTML_PY_HOME</code> variable is added to the <code>PATH</code> then this script will work
-from the current directory and process the file <code>md2html_list.txt</code> from that directory.</p>
+<p>File <code>generate_html.bat</code> may be run by double-click from Windows file explorer. It works the same
+way as script <code>md2html_batch.bat</code> except it doesn't finish in case of errors/exceptions so the 
+command window remains open. This scripts is very small and may be copied to a project's
+directory where it will process the project's <em>list file</em>.</p>
 <h2 id="windows-explorer-context-menu">Windows Explorer context menu</h2>
-<p>This utility may be integrated into Windows Explorer context menu.</p>
-<p><img alt="" src="demo/windows_context_menu.png" /></p>
-<p>For this, the batch file 
-<a href="win_context_menu/md2html_prompt.bat"><code>win_context_menu/md2html_prompt.bat</code></a> may be used. 
-It opens a command line prompt window and allows to redefine some options. Just pressing
+<p><code>bin/win_context_menu</code> directory contains artifacts for integration into Windows Explorer
+context menu:</p>
+<p><img alt="WINDOWS_EXPOLORER_CONTEXT_MENU" src="html_resources/pict/windows_context_menu.png" /></p>
+<p>It opens a command line prompt window and allows to redefine some options. Just pressing
 <code>Enter</code> will fulfill generation with default options.</p>
 <p>To add this context menu item, press <code>Win</code>+<code>R</code>, type <code>regedit</code> and add the following keys
-and values (<code>@</code> stands for <code>(Default)</code>):</p>
+and values:</p>
 <pre><code>[HKEY_CURRENT_USER\Software\Classes\*\shell\md2html]
 @=&quot;Markdown to HTML&quot;
 &quot;icon&quot;=&quot;X:\\path\\to\\md2html\\win_context_menu\\icon.ico&quot;
 
 [HKEY_CURRENT_USER\Software\Classes\*\shell\md2html\command]
-@=&quot;\&quot;X:\\path\\to\\md2html\\win_context_menu\\md2html_prompt.bat\&quot; \&quot;%1\&quot;&quot;
+@=&quot;\&quot;X:\\path\\to\\md2html\\bin\\context_menu\\md2html_prompt.bat\&quot; -i \&quot;%1\&quot;&quot;
 </code></pre>
 
-<p><strong>Note.</strong> The quotes must be set like this:</p>
-<p><img alt="" src="demo/add_reg_value.png" /></p>
-<h2 id="with-git">With Git</h2>
-<p>When working on a project we need to periodically regenerate our HTML documentation. With Git 
-we may want to do it automatically on commit. Special argument <code>--report</code> was introduced for 
-this purpose. It outputs the generated output file path if this file was generated or 
-regenerated so that a Git hook can add it into the <em>stage</em>.</p>
-<p>Here's a Git hook <code>pre-commit</code> example (works in Windows too):</p>
+<p><strong>Note.</strong>  1. <code>@</code> stands for <code>(Default)</code> value name. 2. <code>py</code> or <code>java</code> may be added before <code>-i</code>.
+3. The quotes must be set like this:</p>
+<p><img alt="" src="html_resources/pict/reg_value.png" /></p>
+<h2 id="typical-project-structure">Typical project structure</h2>
+<p>The following structure may be suggested for a documented project:</p>
+<pre><code class="shell">$ tree -L 2 --charset=ascii --dirsfirst
+.
+|-- html_resources
+|   `-- pict
+|-- md2html_templates
+|   |-- template1
+|   |   `-- template.html
+|   `-- template2
+|       `-- template.html
+|-- doc1.html
+|-- doc1.txt
+|-- doc2.html
+|-- doc2.txt
+|-- generate_html.bat
+`-- md2html_list.txt
+</code></pre>
+
+<ul>
+<li><code>html_resources</code> directory is used for images, CSS and other resources. Probably it may contain
+    other Markdown files and generated HTML documents that we don't want to have in the project's
+    root. This directory will be packaged with the HTML files in the project's root if we are 
+    going to send the documentation separately from the project. Alternatively we can use
+    directory named <code>doc</code> that would contain all necessary HTML documentation files and the
+    resources. In this case Markdown source files may be located somewhere in a directory like
+    <code>src</code>;</li>
+<li><code>md2html_templates</code> directory contains custom templates if they are used. The directory may
+    be called <code>md2html_template</code> with a single <code>template.html</code> file if only one custom template
+    is used;</li>
+<li><code>doc1.txt</code> and <code>doc1.html</code> are the Markdown document and it's corresponding generated HTML
+    version that we want to have in the project's root;</li>
+<li><code>generate_html.bat</code> &mdash; the double-click script for the whole HTML documentation regeneration;</li>
+<li><code>md2html_list.txt</code> &mdash; the project's <em>list file</em>.</li>
+</ul>
+<p>Some elements may be omitted if they are not required.</p>
+<h2 id="git-hook-script">Git hook script</h2>
+<p>Along with periodical manual HTML files regeneration a Git <em>hook</em> may be used to do it
+automatically on commit. Special argument <code>--report</code> was introduced for this purpose. It outputs
+the generated output file path if this file was generated or regenerated so that a Git hook can
+add it into the <em>stage</em>. Here's a Git hook <code>pre-commit</code> example (works in Windows too):</p>
 <pre><code class="code">#!/bin/bash
 grep -v '^\s*$' md2html_list.txt | sed -e 's/\r//' | while read args; do
-    result=`echo ${args} | xargs python3 ${MD2HTML_PY_HOME}/md2html.py -r`
+    result=`echo ${args} | xargs python3 ${MD2HTML_HOME}/python/md2html.py -r`
     exitcode=${PIPESTATUS[0]}
     result=`echo $result | sed -e 's/\r//'`
     if [ $exitcode -eq 0 ]; then
@@ -320,91 +209,130 @@ grep -v '^\s*$' md2html_list.txt | sed -e 's/\r//' | while read args; do
 done
 </code></pre>
 
-<p>The file <a href="md2html_list.txt"><code>md2html_list.txt</code></a> was already mentioned above. Defining environment
-variable <code>MD2HTML_PY_HOME</code> (globally or for a user) may be a better decision than specifying
-the exact full path.</p>
+<p>This script uses the <em>list file</em> <code>md2html_list.txt</code> that has been already mentioned in this
+document. To add this hook create file <code>pre-commit</code> with the above content in directory
+<code>.git/hooks</code> of your Git repository.</p>
 <h2 id="in-linux">In Linux</h2>
-<p>This utility works in Linux. The script for manual HTML generation may be adapted from the
-above Git hook example. It may be simplified, <code>-r</code> argument must be changed to <code>-v</code> and
-<code>git add</code> command must be removed.</p>
+<p>This utility works in Linux. The scripts for batch processing and integration are not written
+yet but they may be adapted from the above Git hook example. Some hints: in addition to other
+possible changes <code>-r</code> argument must be changed to <code>-v</code> and <code>git add</code> command must be removed.</p>
 <hr />
 <h1 id="templates">Templates</h1>
-<p>By default the utility works based on a predefined empirically developed template that must be
-suitable for most basic technical writing. Different template may be created and defined via the 
-command line. An example below demonstrates this option.</p>
+<p>A template file (see the source code of <a href="md2html_templates/default/template.html">this file</a>
+for example) consists of HTML code that is translated as-is and placeholders that are replaced
+with their corresponding content. The placeholder format is <code>$name</code> or <code>${name}</code>. The following
+placeholders are implemented:</p>
+<ul>
+<li><code>$title</code> &mdash; will be replaced with the page title;</li>
+<li><code>$styles</code> &mdash; will be replaced with the in-lined or linked CSS;</li>
+<li><code>$content</code> &mdash; will be replaced with the result of the Markdown document processing.</li>
+</ul>
+<p>The template is specified by directory in order to retain compatibility in case of further 
+modification of the utility.</p>
+<p>This document is created using a <strong>custom template</strong> that contains specific elements and so 
+cannot be set as the default. If you want to use this template in your project, just make a
+copy of corresponding files (the custom template and the additional CSS file) and change them
+accordingly.</p>
+<p>See the <a href="#implementation_specific_documents_links">implementation-specific documents</a>
+for examples of the <strong>default template</strong> usage. This template must be suitable for most
+documentation tasks.</p>
 <h2 id="css">CSS</h2>
-<p>For portability purpose by default CSS is included into the HTML document. Press <code>Ctrl</code> + <code>U</code>
-in Firefox (and probably other browsers) to see haw it looks like in the source code. Command
-line arguments allow to redefine this behavior.</p>
-<p><a name="ref_to_custom_template_page"></a></p>
-<blockquote>
-<p>Below is an example of a page that was generated using a custom template set. And also CSS 
-was linked instead of being included. Click the arrow to navigate:</p>
-<p><a href="demo/custom_templates.html" title="Custom template demo"><img alt="CUSTOM TEMPLATE DEMO" src="demo/arrow-right.png" /></a></p>
-</blockquote>
+<p>By default CSS is included into the HTML document; this makes documents standalone (if they don't 
+use pictures and other resources). Command line arguments can redefine this behavior.</p>
 <hr />
-<h1 id="feature-testing">Feature testing</h1>
-<p>This document itself demonstrates the available Markdown features of this implementation.
-This section provides other examples.</p>
-<blockquote>
-<p>See the source Markdown files like, <a href="readme.txt">this</a>, to know how such result may be obtained.</p>
-</blockquote>
-<h2 id="images">Images</h2>
-<p>An image usage is demonstrated above (the yellow arrow). In this example <code>alt</code> and <code>title</code> 
-attributes are filled.</p>
-<h2 id="lists">Lists</h2>
-<p>The following text will be arranged in a form of a multi-level list with long items in order
-to check the indentations and the text flow. It's important to check the indentations on the
-<strong>right</strong>.</p>
-<ul>
-<li>This is the <strong>first</strong> long list item that is going to be wrapped into several lines. So that we 
-  can visually check the text flow and indentations, especially on the right.<ol>
-<li>This is the first <strong>ordered</strong> list subitem of the first list item. With it we want to 
-   check text flow and indentations not only of the higher level list items but of subitems
-   as well.<ul>
-<li>And at least let's check third-level items. This is the <strong>first</strong> third-level items 
-  subitem of the the first second-level subitem of the first first-level item of the
-  multi-level list.</li>
-<li>This is the <strong>second</strong> third-level items subitem of the the first second-level subitem
-  of the first first-level item of the multi-level list.</li>
-</ul>
-</li>
-<li>This is the second <strong>ordered</strong> list subitem of the first list item. With it we want to 
-   check text flow and indentations not only of the higher level list items but of subitems
-   as well.</li>
-</ol>
-</li>
-<li>This is the <strong>second</strong> long list item that is going to be wrapped into several lines. So that we 
-  can visually check the text flow and indentations, especially on the right.</li>
-</ul>
-<p>If we temporarily add the CSS rule:</p>
-<pre><code class="code">p, li {
-    border: solid 1px fuchsia;
-}
-</code></pre>
+<h1 id="demo">Demo</h1>
+<p>This document itself demonstrates the capabilities of this implementation. This section provides
+some other examples. See the source Markdown files, like <a href="readme.txt">this</a>, to know how such
+results may be obtained.</p>
+<h2 id="text-effects">Text effects</h2>
+<div class="tableGridded"></div>
 
-<p>we will see:</p>
-<p><img alt="" src="demo/list_text_flow.png" /></p>
-<p>So the text doesn't overflow the limits.</p>
-<h2 id="lists-in-blockquotes">Lists in blockquotes</h2>
+<table>
+<thead>
+<tr>
+<th>Text effect</th>
+<th>Markdown syntax</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>bold</strong></td>
+<td><code>__bold__</code> or <code>**bold**</code></td>
+</tr>
+<tr>
+<td><em>italic</em></td>
+<td><code>_italic_</code> or <code>*italic*</code></td>
+</tr>
+<tr>
+<td><code>in-line code fragment</code></td>
+<td><code>`in-line code fragment`</code></td>
+</tr>
+<tr>
+<td><del>deleted</del></td>
+<td><code>&lt;del&gt;deleted&lt;/del&gt;</code></td>
+</tr>
+<tr>
+<td><ins>inserted</ins></td>
+<td><code>&lt;ins&gt;inserted&lt;/ins&gt;</code></td>
+</tr>
+<tr>
+<td>&mdash; (em-dash, <code>&amp;mdash;</code>)</td>
+<td><code>---</code></td>
+</tr>
+</tbody>
+</table>
 <blockquote>
-<p>Let's now have a look at how a list behaves in a <code>blockquote</code>. Also we can check the 
-text flow and the indentations of simple paragraphs like this.</p>
+<p><strong>Note.</strong> Special markdown syntax for inserted (<code>++inserted++</code>) and deleted (<code>~~deleted~~</code>)
+text is not implemented in this utility. First, these effects must not be used very often.
+Second, such murk-up may cause problems if we write text like "C++", or <code>++i</code>.</p>
+</blockquote>
+<h2 id="table-of-contents">Table of contents</h2>
+<p><code>[TOC]</code> element in the Markdown document will resolve into the document's table of contents in
+the generated HTML. The example can be seen at the top of this page.</p>
+<blockquote>
+<p>Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
+that would contain only the sub-headers of this header.</p>
+</blockquote>
+<h2 id="links-and-images">Links and images</h2>
+<p>Link and image usage is demonstrated multiple times in this document. The link syntax is 
+<code>[link text](path/to/doc.html "title")</code> where <code>"title"</code> is not required. <code>link text</code> may also
+be omitted but the link will be invisible. There's another syntax <code>&lt;path/to/doc.html&gt;</code> that will
+make the link text equal the link location.</p>
+<p>The image syntax is <code>![ALT](path/to/image.png "title")</code>, where <code>ALT</code> and <code>"title"</code> are not
+required.</p>
+<p><a name="anchor_demo"></a></p>
+<p>An image may be used as a link text. So the following code 
+<code>[![](html_resources/pict/target.png)](readme.html#anchor_demo)</code> will create the following link:
+<a href="readme.html#anchor_demo"><img alt="" src="html_resources/pict/target.png" /></a>.</p>
+<blockquote>
+<p>To place an anchor, the following code was used: <code>&lt;a name="anchor_demo"&gt;&lt;/a&gt;</code>.</p>
+</blockquote>
+<h2 id="lists">Lists</h2>
+<p>The following text demonstrates a multi-level list.</p>
 <ul>
-<li>As before this is the <em>first</em> higher level item of the list. <em>Italic</em> is applied just to
-  demonstrate the other formatting option.<ol>
-<li>This is the first <em>ordered</em> list subitem of the first higher-level list item.</li>
-<li>This is the second <em>ordered</em> list subitem of the first higher-level list item.</li>
+<li>This is a <strong>first-level</strong> <em>unordered</em> list item.<ol>
+<li>This is a <strong>second-level</strong> <em>ordered</em> list sub-item.<ul>
+<li>This is a <strong>third-level</strong> <em>unordered</em> list sub-item.</li>
+<li>This is another <strong>third-level</strong> <em>unordered</em> list sub-item.</li>
+</ul>
+</li>
+<li>This is another <strong>second-level</strong> <em>ordered</em> list sub-item.</li>
 </ol>
 </li>
-<li>This is the <em>second</em> higher level item of the list.</li>
+<li>This is another <strong>first-level</strong> <em>unordered</em> list item.</li>
+</ul>
+<h2 id="blockquotes">Blockquotes</h2>
+<p>Blockquotes are inserted by starting each line with <code>&gt;</code>.</p>
+<blockquote>
+<p>Links, images and some other Markdown elements may be used inside <code>blockquote</code>s: </p>
+<ul>
+<li>Here's a link with a clickable image: <a href="readme.html#anchor_demo"><img alt="" src="html_resources/pict/target.png" /></a>.</li>
+<li>Also a list inside this <code>blockquote</code> is use for demonstration.</li>
 </ul>
 </blockquote>
-<p>As we can see there's no overflow in this case too:</p>
-<p><img alt="" src="demo/blockquote_list_text_flow.png" /></p>
 <h2 id="tables">Tables</h2>
 <p>Tables may be used for representing tabular data and for text alignment sometimes. In this
-implementation light table style is chosen as the default.</p>
+implementation light table style is selected as the default.</p>
 <table>
 <thead>
 <tr>
@@ -435,7 +363,7 @@ implementation light table style is chosen as the default.</p>
 </tr>
 </tbody>
 </table>
-<p>So if we want to just align text we can use a table without a header:</p>
+<p>If we want to just align text we can use a table without a header:</p>
 <table>
 <thead>
 <tr>
@@ -466,9 +394,12 @@ implementation light table style is chosen as the default.</p>
 </tr>
 </tbody>
 </table>
-<p>Markdown doesn't allow for different table styles, but some trick may be used to get this
-functionality &mdash; specifically, adding an invisible element (an empty <code>&lt;div&gt;</code> in this case)
-right before the table and then using some simple CSS magic to define the appearance:</p>
+<blockquote>
+<p><strong>Note.</strong> Small extra gap appears above header-less tables that is not avoidable so far.</p>
+</blockquote>
+<p>Markdown doesn't have syntax for different table styles, but some trick may be used to get 
+this &mdash; we can add an invisible element (an empty <code>&lt;div&gt;</code> in this case)
+right before the table and then use some simple CSS magic to define the appearance:</p>
 <pre><code class="code">&lt;div class=&quot;tablePlated&quot;&gt;&lt;/div&gt;
 </code></pre>
 
@@ -538,41 +469,49 @@ right before the table and then using some simple CSS magic to define the appear
 </tr>
 </tbody>
 </table>
-<h2 id="text-effects">Text effects</h2>
-<p>Text fragments may be marked as:</p>
-<ul>
-<li><del>deleted</del> (surround with double tildes <code>~~</code> from both sides);</li>
-<li><ins>inserted</ins> (surround with double pluses from both sides <code>++</code>);</li>
-<li>of cause <strong>bold</strong> (<code>__bold__</code> or <code>**bold**</code>);</li>
-<li>and <em>italic</em> (<code>_italic_</code> or <code>*italic*</code>).</li>
-</ul>
-<p>Three dashes (<code>---</code>) may be replaced with an em-dash (<code>&amp;mdash;</code>) &mdash; yes, it works!</p>
-<h2 id="code-blocks">Code blocks</h2>
-<p>Unmarked code block. Visually corresponds to <code>inline</code> code fragments:</p>
-<pre><code>This code block represents information:
- - like `inline` code fragments
- - but of bigger size
- - and when we need to preserve line breaks
+<h2 id="fenced-code-blocks">Fenced code blocks</h2>
+<p>Fenced code blocks may be set up by four-space indent, or by four backticks (<code>````</code>), i.e.
+the following mark-up:</p>
+<pre><code>````
+Example of
+    preformatted 
+    text
+````
 </code></pre>
-<p>Light code block (marked as <code>text</code>):</p>
-<pre><code class="text">This code block is used:
- - when we need no background and borders
- - and the text must be monospaced
- - and we need to preserve line breaks
+<p>will look like:</p>
+<pre><code>Example of
+    preformatted 
+    text
+</code></pre>
+<p>This type of block visually corresponds to <code>inline</code> code fragments. </p>
+<p>Style may be specified the following way:</p>
+<pre><code>````text
+This is a light code block example.
+    It is also preformatted
+    but has no background.
+````
+</code></pre>
+<p>The result will be:</p>
+<pre><code class="text">This is a light code block example.
+    It is also preformatted
+    but has no background.
 </code></pre>
 
-<p>Shell code block (marked as <code>shell</code>):</p>
+<p>There are also shell code block (marked as <code>shell</code>):</p>
 <pre><code class="shell">$ echo &quot;This block demonstrates operations in a shell&quot;
 This block demonstrates operations in a shell
 </code></pre>
 
-<p>Program language code block (marked as <code>code</code>):</p>
-<pre><code class="code">System.out.println(&quot;This block demonstrates a source code in a program language.&quot;);
+<p>and program language code block (marked as <code>code</code>):</p>
+<pre><code class="code">System.out.println(&quot;This block demonstrates &quot; + 
+    &quot;a source code in a program language.&quot;);
 </code></pre>
 
 <hr />
 <hr />
 <hr />
 <hr />
+<hr />
+
 </body>
 </html>

@@ -13,7 +13,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <assembly.format>dir</assembly.format>
         <flexmark.version>0.62.2</flexmark.version>
     </properties>
 
@@ -93,21 +92,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>world.md2html.Md2Html</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.3.0</version>
                 <executions>
@@ -119,10 +103,17 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <descriptors>
-                        <descriptor>${project.basedir}/src/assembly/assembly.xml</descriptor>
-                    </descriptors>
+                    <archive>
+                        <manifest>
+                            <mainClass>world.md2html.Md2HtmlRunner</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>${project.artifactId}-${project.version}-bin</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <attach>false</attach>
                 </configuration>
             </plugin>
 

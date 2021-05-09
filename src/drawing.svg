@@ -95,9 +95,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="461.55305"
-     inkscape:cy="951.18957"
+     inkscape:zoom="2"
+     inkscape:cx="524.50505"
+     inkscape:cy="427.48452"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -305,5 +305,28 @@
          y="136.26041"
          style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583"
          id="tspan1216">Open this PNG file in GIMP and export it into ICO.</tspan></text>
+    <circle
+       style="fill:none;stroke:#800000;stroke-width:0.499999"
+       id="path891"
+       cx="148.03436"
+       cy="115.22604"
+       r="3.5057287"
+       inkscape:export-filename="D:\8230o\Projects\md2html\demo\target.png"
+       inkscape:export-xdpi="58"
+       inkscape:export-ydpi="58" />
+    <path
+       style="fill:none;stroke:#800000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 148.03437,109.80209 V 120.65"
+       id="path893"
+       inkscape:export-filename="D:\8230o\Projects\md2html\demo\target.png"
+       inkscape:export-xdpi="58"
+       inkscape:export-ydpi="58" />
+    <path
+       style="fill:none;stroke:#800000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 153.45833,115.22604 H 142.61042"
+       id="path895"
+       inkscape:export-filename="D:\8230o\Projects\md2html\demo\target.png"
+       inkscape:export-xdpi="58"
+       inkscape:export-ydpi="58" />
   </g>
 </svg>
