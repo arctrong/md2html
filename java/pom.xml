@@ -19,12 +19,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-engine-core</artifactId>
-            <version>2.3</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-util-data</artifactId>
             <version>${flexmark.version}</version>
@@ -42,11 +36,11 @@
             <version>${flexmark.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-gfm-strikethrough</artifactId>
-            <version>${flexmark.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-ext-gfm-strikethrough</artifactId>-->
+<!--            <version>${flexmark.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
@@ -54,11 +48,11 @@
             <version>${flexmark.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-ins</artifactId>
-            <version>${flexmark.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-ext-ins</artifactId>-->
+<!--            <version>${flexmark.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
@@ -66,10 +60,16 @@
             <version>${flexmark.version}</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-nop</artifactId>-->
+<!--            <version>1.7.30</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.30</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
         </dependency>
 
         <dependency>

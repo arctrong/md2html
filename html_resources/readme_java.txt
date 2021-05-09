@@ -8,13 +8,8 @@ This is the Java implementation of the Markdown to HTML converter.
 This document describes the implementation-specific details. The whole description is given
 on the [Home page](../readme.html).
 
-This implementation uses:
-
-- Module [vsch/flexmark-java](https://github.com/vsch/flexmark-java) for converting _Markdown_ 
-    text to HTML and
-- Apache Velocity for template resolution: 
-    [Wikipedia](https://en.wikipedia.org/wiki/Apache_Velocity) |
-    [Home page](http://velocity.apache.org/)
+This implementation uses module [vsch/flexmark-java](https://github.com/vsch/flexmark-java) 
+for converting _Markdown_ text to HTML.
 
 ----------------------------------------------------------------------------------------------------
 # Prerequisites

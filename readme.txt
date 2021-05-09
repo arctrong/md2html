@@ -219,12 +219,19 @@ possible changes `-r` argument must be changed to `-v` and `git add` command mus
 
 A template file (see the source code of [this file](md2html_templates/default/template.html)
 for example) consists of HTML code that is translated as-is and placeholders that are replaced
-with their corresponding content. The placeholder format is `$name` or `${name}`. The following
+with their corresponding content. The placeholder format is `${name}`. The following
 placeholders are implemented:
 
-- `$title` --- will be replaced with the page title;
-- `$styles` --- will be replaced with the in-lined or linked CSS;
-- `$content` --- will be replaced with the result of the Markdown document processing.
+- `${title}` --- will be replaced with the page title;
+- `${styles}` --- will be replaced with the in-lined or linked CSS;
+- `${content}` --- will be replaced with the result of the Markdown document processing.
+
+> __Notes.__ 1. In uncertain cases `$$` may be used to represent a single `$` in a template.
+> This does not apply to the Markdown texts where expressions like `${name}` are not
+> processed.
+> 
+> 2\. Though the Python version will recognize placeholders in format `$name` (without curly
+> braces) it's not recommended to use them.
 
 The template is specified by directory in order to retain compatibility in case of further 
 modification of the utility.

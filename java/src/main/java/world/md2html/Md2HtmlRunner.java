@@ -1,6 +1,5 @@
 package world.md2html;
 
-import org.apache.commons.cli.ParseException;
 import world.md2html.options.CliArgumentsException;
 import world.md2html.options.CliParserHelper;
 import world.md2html.options.Md2HtmlOptions;

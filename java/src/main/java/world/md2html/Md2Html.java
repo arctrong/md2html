@@ -7,10 +7,7 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.commons.text.StringSubstitutor;
 import world.md2html.options.Md2HtmlOptions;
 import world.md2html.utils.Utils;
 
@@ -19,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Md2Html {
 
@@ -42,34 +41,34 @@ public class Md2Html {
             }
         }
 
+        Map<String, String> substitutions = new HashMap<>();
+
         String mdText = Utils.readStringFromUtf8File(options.getInputFile());
         String htmlText = generateHtml(mdText);
 
-        VelocityEngine velocityEngine = new VelocityEngine();
-        String fileResourceLoaderPath = options.getTemplateDir().toUri().getPath();
-        velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH,
-                fileResourceLoaderPath);
-        velocityEngine.init();
-        Template velocityTemplate = velocityEngine.getTemplate(TEMPLATE_FILE_NAME);
-        VelocityContext context = new VelocityContext();
-        context.put(TITLE_PLACEHOLDER, options.getTitle());
-
+        substitutions.put(CONTENT_PLACEHOLDER, htmlText);
+        substitutions.put(TITLE_PLACEHOLDER, options.getTitle());
         String linkCss = options.getLinkCss();
         Path includeCss = options.getIncludeCss();
         if (linkCss != null && !linkCss.isEmpty()) {
-            context.put(STYLES_PLACEHOLDER, "<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
-                    linkCss + "\">");
+            substitutions.put(STYLES_PLACEHOLDER,
+                    "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + linkCss + "\">");
         } else if (includeCss != null) {
-            context.put(STYLES_PLACEHOLDER, "<style>\n"
+            substitutions.put(STYLES_PLACEHOLDER, "<style>\n"
                     + Utils.readStringFromUtf8File(includeCss)
                     + "\n</style>");
         } else {
-            context.put(STYLES_PLACEHOLDER, "");
+            substitutions.put(STYLES_PLACEHOLDER, "");
         }
-        context.put(CONTENT_PLACEHOLDER, htmlText);
 
+        StringSubstitutor stringSubstitutor = new StringSubstitutor(substitutions);
+        stringSubstitutor.setEnableUndefinedVariableException(false);
+        stringSubstitutor.setDisableSubstitutionInValues(true);
+
+        String template = Utils.readStringFromUtf8File(options.getTemplateDir()
+                .resolve(TEMPLATE_FILE_NAME));
         try (Writer out = Files.newBufferedWriter(options.getOutputFile())) {
-            velocityTemplate.merge(context, out);
+            out.write(stringSubstitutor.replace(template));
         }
 
         if (options.isVerbose()) {

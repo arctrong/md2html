@@ -220,13 +220,20 @@ possible changes <code>-r</code> argument must be changed to <code>-v</code> and
 <h1 id="templates">Templates</h1>
 <p>A template file (see the source code of <a href="md2html_templates/default/template.html">this file</a>
 for example) consists of HTML code that is translated as-is and placeholders that are replaced
-with their corresponding content. The placeholder format is <code>$name</code> or <code>${name}</code>. The following
+with their corresponding content. The placeholder format is <code>${name}</code>. The following
 placeholders are implemented:</p>
 <ul>
-<li><code>$title</code> &mdash; will be replaced with the page title;</li>
-<li><code>$styles</code> &mdash; will be replaced with the in-lined or linked CSS;</li>
-<li><code>$content</code> &mdash; will be replaced with the result of the Markdown document processing.</li>
+<li><code>${title}</code> &mdash; will be replaced with the page title;</li>
+<li><code>${styles}</code> &mdash; will be replaced with the in-lined or linked CSS;</li>
+<li><code>${content}</code> &mdash; will be replaced with the result of the Markdown document processing.</li>
 </ul>
+<blockquote>
+<p><strong>Notes.</strong> 1. In uncertain cases <code>$$</code> may be used to represent a single <code>$</code> in a template.
+This does not apply to the Markdown texts where expressions like <code>${name}</code> are not
+processed.</p>
+<p>2. Though the Python version will recognize placeholders in format <code>$name</code> (without curly
+braces) it's not recommended to use them.</p>
+</blockquote>
 <p>The template is specified by directory in order to retain compatibility in case of further 
 modification of the utility.</p>
 <p>This document is created using a <strong>custom template</strong> that contains specific elements and so 

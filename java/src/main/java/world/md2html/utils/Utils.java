@@ -27,11 +27,12 @@ public class Utils {
 
     public static String readStringFromFile(Path filePath, Charset charset) throws Exception {
         StringBuilder result = new StringBuilder();
-        BufferedReader reader = Files.newBufferedReader(filePath, charset);
-        char[] buffer = new char[8192];
-        int readCount;
-        while ((readCount = reader.read(buffer)) > -1) {
-            result.append(buffer, 0, readCount);
+        try (BufferedReader reader = Files.newBufferedReader(filePath, charset)) {
+            char[] buffer = new char[8192];
+            int readCount;
+            while ((readCount = reader.read(buffer)) > -1) {
+                result.append(buffer, 0, readCount);
+            }
         }
         return result.toString();
     }
