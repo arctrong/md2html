@@ -1,6 +1,8 @@
 
 # md2html
 
+![](html_resources/pict/logo.png)
+
 Simple CLI tool for generating HTML documents out of Markdown documents.
 
 There are two implementations: in Python and in Java. They have the same command line syntax,
