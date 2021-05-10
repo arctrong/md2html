@@ -17,6 +17,8 @@
     <p><a href="html_resources/malformed_template.html">Malformed template test</a></p>
 </div>
 
+<!--METADATA {"title": "Markdown to HTML converter"} -->
+
 <div class="toc">
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
@@ -34,6 +36,7 @@
 <li><a href="#in-linux">In Linux</a></li>
 </ul>
 </li>
+<li><a href="#source-markdown-document">Source Markdown document</a></li>
 <li><a href="#templates">Templates</a><ul>
 <li><a href="#css">CSS</a></li>
 </ul>
@@ -216,6 +219,21 @@ document. To add this hook create file <code>pre-commit</code> with the above co
 <p>This utility works in Linux. The scripts for batch processing and integration are not written
 yet but they may be adapted from the above Git hook example. Some hints: in addition to other
 possible changes <code>-r</code> argument must be changed to <code>-v</code> and <code>git add</code> command must be removed.</p>
+<hr />
+<h1 id="source-markdown-document">Source Markdown document</h1>
+<p>Apart from the standard Markdown elements, this utility recognizes page <em>metadata</em> that is
+included in the source text in format:</p>
+<pre><code>&lt;!--METADATA {&quot;title&quot;: &quot;My title&quot;} --&gt;
+</code></pre>
+
+<p>This must be the first non-space text in the document, otherwise it will be ignored. The
+<code>METADATA</code> keyword is case-insensitive. There must be no spaces before <code>METADATA</code> keyword and
+must be at least one whitespace after. The metadata content must be a valid <em>JSON</em> text, that
+means that the keys are case-sensitive and must be enclosed in double quotes. Also it must be
+an object (i.e. in curly braces). </p>
+<p>For now the only parameter, <code>title</code> of type string (i.e. it must be in double quotes), is
+supported. It defines the default page title. The title specified by the command line
+arguments will override the title defined in the page metadata.</p>
 <hr />
 <h1 id="templates">Templates</h1>
 <p>A template file (see the source code of <a href="md2html_templates/default/template.html">this file</a>

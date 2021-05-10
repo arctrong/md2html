@@ -1,3 +1,4 @@
+<!--METADATA {"title": "Markdown to HTML converter"} -->
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
@@ -213,6 +214,26 @@ document. To add this hook create file `pre-commit` with the above content in di
 This utility works in Linux. The scripts for batch processing and integration are not written
 yet but they may be adapted from the above Git hook example. Some hints: in addition to other
 possible changes `-r` argument must be changed to `-v` and `git add` command must be removed.
+
+----------------------------------------------------------------------------------------------------
+# Source Markdown document
+
+Apart from the standard Markdown elements, this utility recognizes page _metadata_ that is
+included in the source text in format:
+
+````
+<!--METADATA {"title": "My title"} -->
+````
+
+This must be the first non-space text in the document, otherwise it will be ignored. The
+`METADATA` keyword is case-insensitive. There must be no spaces before `METADATA` keyword and
+must be at least one whitespace after. The metadata content must be a valid _JSON_ text, that
+means that the keys are case-sensitive and must be enclosed in double quotes. Also it must be
+an object (i.e. in curly braces). 
+
+For now the only parameter, `title` of type string (i.e. it must be in double quotes), is
+supported. It defines the default page title. The title specified by the command line
+arguments will override the title defined in the page metadata.
 
 ----------------------------------------------------------------------------------------------------
 # Templates

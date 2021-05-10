@@ -1,4 +1,4 @@
--i readme.txt -t "Markdown to HTML converter" --template md2html_templates/custom --link-css=html_resources/styles.css
+-i readme.txt --template md2html_templates/custom --link-css=html_resources/styles.css
 -i html_resources/readme_py.txt -t "md2html: Python version" --link-css=styles.css
 -i html_resources/readme_java.txt -t "md2html: Java version" --link-css=styles.css
 -i html_resources/default_template.txt -t "md2html: Default template"

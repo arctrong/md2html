@@ -21,7 +21,7 @@ class CliParserHelperTest {
         Md2HtmlOptions options = getParsingResult("-i", "../doc/notes.md");
         assertEquals(Paths.get("../doc/notes.md"), options.getInputFile());
         assertEquals(Paths.get("../doc/notes.html"), options.getOutputFile());
-        assertEquals("", options.getTitle());
+        assertNull(options.getTitle());
         // Template path depends on the environment and is not checked here.
         assertNull(options.getLinkCss());
         assertNotNull(options.getIncludeCss());

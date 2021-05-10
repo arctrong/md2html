@@ -1,5 +1,9 @@
 package world.md2html;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+import com.eclipsesource.json.ParseException;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
@@ -18,6 +22,8 @@ import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Md2Html {
 
@@ -41,13 +47,48 @@ public class Md2Html {
             }
         }
 
-        Map<String, String> substitutions = new HashMap<>();
-
         String mdText = Utils.readStringFromUtf8File(options.getInputFile());
+
+        String title = options.getTitle();
+        // Trying to get title from metadata.
+        // If adding other parameters, need to remove this condition.
+        if (title == null) {
+
+            Matcher matcher = Pattern.compile("^\\s*<!--METADATA\\s+(.*?)\\s*-->",
+                    Pattern.CASE_INSENSITIVE + Pattern.DOTALL)
+                    .matcher(mdText);
+            if (matcher.find()) {
+                JsonObject jsonObject = null;
+                try {
+                    jsonObject = Json.parse(matcher.group(1)).asObject();
+                } catch (ParseException | UnsupportedOperationException e) {
+                    if (options.isVerbose()) {
+                        System.out.println("WARNING: Page metadata cannot be parsed: "
+                                + e.getClass().getSimpleName() + ": " + e.getMessage());
+                    }
+                }
+                if (jsonObject != null) {
+                    JsonValue titleObject = jsonObject.get("title");
+                    if (titleObject != null) {
+                        try {
+                            title = titleObject.asString();
+                        } catch (UnsupportedOperationException e) {
+                            System.out.println("WARNING: Title cannot be taken from page metadata: "
+                                    + e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+        if (title == null) {
+            title = "";
+        }
+
         String htmlText = generateHtml(mdText);
 
+        Map<String, String> substitutions = new HashMap<>();
+        substitutions.put(TITLE_PLACEHOLDER, title);
         substitutions.put(CONTENT_PLACEHOLDER, htmlText);
-        substitutions.put(TITLE_PLACEHOLDER, options.getTitle());
         String linkCss = options.getLinkCss();
         Path includeCss = options.getIncludeCss();
         if (linkCss != null && !linkCss.isEmpty()) {

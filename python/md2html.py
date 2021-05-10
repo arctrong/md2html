@@ -5,6 +5,8 @@ from pathlib import Path
 from subprocess import check_output
 import markdown
 from string import Template
+import re
+import json
 
 DEFAULT_TEMPLATE_DIR = '../md2html_templates/default'
 TEMPLATE_FILE_NAME = 'template.html'
@@ -30,6 +32,29 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
                 print(f'The output file is up-to-date. Skipping: {output_file}')
             return
 
+    with open(input_file, 'r') as md_file:
+        md_lines = md_file.read()
+
+    # Trying to get title from metadata.
+    # If adding other parameters, need to remove this condition.
+    if title is None:
+        match = re.search('^\\s*<!--METADATA\\s+(.*?)\\s*-->', md_lines, flags=re.IGNORECASE + re.DOTALL)
+        if match:
+            try:
+                metadata = json.loads(match.group(1))
+                title_item = metadata.get('title')
+                if isinstance(title_item, str):
+                    title = title_item
+                elif verbose and title_item is not None:
+                    print(f"WARNING: Title in page metadata is of type '{type(title_item).__name__}', "
+                          f"not a string, skipping.")
+            except Exception as e:
+                if verbose:
+                    print(f'WARNING: Page metadata cannot be parsed: {type(e).__name__}: {e}')
+
+    if title is None:
+        title = ''
+
     substitutions = {'title': title}
     if link_css:
         substitutions['styles'] = f'<link rel="stylesheet" type="text/css" href="{link_css}">'
@@ -43,8 +68,6 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
     # And anyway the first two methods read the md-file completely before conversion, so they give
     # no memory save.
 
-    with open(input_file, 'r') as md_file:
-        md_lines = md_file.read()
     substitutions['content'] = MARKDOWN_CONVERTER.convert(source=md_lines)
 
     template = Template(read_lines_from_file(template_dir.joinpath(TEMPLATE_FILE_NAME)))
@@ -99,7 +122,7 @@ def main():
     if args.title:
         title = args.title
     else:
-        title = ''
+        title = None
 
     template_dir = Path(args.template) if args.template else WORKING_DIR.joinpath(DEFAULT_TEMPLATE_DIR)
 

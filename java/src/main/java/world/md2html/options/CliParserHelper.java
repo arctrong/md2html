@@ -76,11 +76,9 @@ public class CliParserHelper {
             outputFile = Paths.get(Utils.stripExtension(inputFile.toString()) + ".html");
         }
 
-        String title;
+        String title = null;
         if (commandLine.hasOption(TITLE_OPTION_NAME)) {
             title = commandLine.getOptionValue(TITLE_OPTION_NAME);
-        } else {
-            title = "";
         }
 
         Path templateDir;
