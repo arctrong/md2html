@@ -43,7 +43,7 @@ In a command line terminal execute:
 ````shell
 >cd %MD2HTML_HOME%\java
 
->mvn clean compile test assembly:single
+>release.bat
 ````
 
 The following must be output as the process ends:
@@ -81,11 +81,11 @@ usage: java Md2Html [-h] [-i <arg>] [-o <arg>] [-t <arg>] [--templates <arg>]
  -t,--title <arg>         the HTML page title, if omitted there will be an empty
                           title
     --templates <arg>     custom template directory
-    --link-css <arg>      links CSS file, if omitted includes the default CSS
-                          into HTML
-    --include-css <arg>   includes CSS file into HTML, if omitted includes the
-                          default CSS
-    --no-css              creates HTML with no CSS
+    --link-css <arg>      links CSS file, multiple entries allowed
+    --include-css <arg>   includes content of the CSS file into HTML, multiple
+                          entries allowed
+    --no-css              creates HTML with no CSS. If no CSS-related arguments
+                          is specified, the default CSS will be included
  -f,--force               rewrites HTML output file even if it was modified
                           later than the input file
  -v,--verbose             outputs human readable information messages

@@ -47,7 +47,7 @@ for installation instructions.
 The utility provides its usage information in a standard manner:
 
 ````shell
->python %MD2HTML_HOME%/python/md2html.py -h
+>python %MD2HTML_HOME%/python/md2html.py
 usage: md2html.py [-h] -i INPUT [-o OUTPUT] [-t TITLE] [--template TEMPLATE]
                   [--link-css LINK_CSS] [--include-css INCLUDE_CSS] [--no-css]
                   [-f] [-v] [-r]
@@ -65,12 +65,12 @@ optional arguments:
                         the HTML page title, if omitted there will be an empty
                         title
   --template TEMPLATE   custom template directory
-  --link-css LINK_CSS   links CSS file, if omitted includes the default CSS into
-                        HTML
+  --link-css LINK_CSS   links CSS file, multiple entries allowed
   --include-css INCLUDE_CSS
-                        includes CSS file into HTML, if omitted includes the
-                        default CSS
-  --no-css              creates HTML with no CSS
+                        includes content of the CSS file into HTML, multiple
+                        entries allowed
+  --no-css              creates HTML with no CSS. If no CSS-related arguments is
+                        specified, the default CSS will be included
   -f, --force           rewrites HTML output file even if it was modified later
                         than the input file
   -v, --verbose         outputs human readable information messages

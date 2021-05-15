@@ -1,6 +1,5 @@
 package world.md2html.options;
 
-import org.apache.commons.cli.ParseException;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
@@ -10,10 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class CliParserHelperTest {
 
     @Test
-    public void getMd2HtmlOptions_helpRequested() throws Exception {
+    public void getMd2HtmlOptions_helpRequested() {
         testHelp();
         testHelp("-h");
         testHelp("--help");
+        testHelp("-t \"no_matter_what\"", "--help");
     }
 
     @Test
@@ -41,7 +41,8 @@ class CliParserHelperTest {
         assertEquals(Paths.get("doc/output.htm"), options.getOutputFile());
         assertEquals("someTitle", options.getTitle());
         assertEquals(Paths.get("../templateDir"), options.getTemplateDir());
-        assertEquals("someStyles.css", options.getLinkCss());
+        assertEquals(1, options.getLinkCss().size());
+        assertEquals("someStyles.css", options.getLinkCss().get(0));
         assertNull(options.getIncludeCss());
         assertTrue(options.isForce());
         assertTrue(options.isVerbose());
@@ -56,16 +57,46 @@ class CliParserHelperTest {
 
     @Test
     public void getMd2HtmlOptions_includeCss() throws Exception {
-        Md2HtmlOptions options = getParsingResult("-i", "input.md", "--include-css=styles.css");
-        assertNull(options.getLinkCss());
-        assertEquals(Paths.get("styles.css"), options.getIncludeCss());
+        Md2HtmlOptions options = getParsingResult("-i", "input.md", "--include-css=styles1.css",
+                "--include-css=styles2.css");
+        assertEquals(2, options.getIncludeCss().size());
+        assertTrue(options.getIncludeCss().contains(Paths.get("styles1.css")));
+        assertTrue(options.getIncludeCss().contains(Paths.get("styles2.css")));
+        assertTrue(options.getLinkCss() == null || options.getLinkCss().isEmpty());
+    }
+
+    @Test
+    public void getMd2HtmlOptions_linkCss() throws Exception {
+        Md2HtmlOptions options = getParsingResult("-i", "input.md", "--link-css=styles1.css",
+                "--link-css=styles2.css");
+        assertEquals(2, options.getLinkCss().size());
+        assertTrue(options.getLinkCss().contains("styles1.css"));
+        assertTrue(options.getLinkCss().contains("styles2.css"));
+        assertTrue(options.getIncludeCss() == null || options.getIncludeCss().isEmpty());
+    }
+
+    @Test
+    public void getMd2HtmlOptions_linkAndIncludeCss() throws Exception {
+        Md2HtmlOptions options = getParsingResult("-i", "input.md", "--link-css=styles1.css",
+                "--include-css=styles2.css");
+        assertEquals(1, options.getLinkCss().size());
+        assertEquals(1, options.getIncludeCss().size());
+        assertTrue(options.getLinkCss().contains("styles1.css"));
+        assertTrue(options.getIncludeCss().contains(Paths.get("styles2.css")));
+    }
+
+    @Test
+    public void getMd2HtmlOptions_defaultCss() throws Exception {
+        Md2HtmlOptions options = getParsingResult("-i", "input.md");
+        assertTrue(options.getLinkCss() == null || options.getLinkCss().isEmpty());
+        assertEquals(1, options.getIncludeCss().size());
     }
 
     @Test
     public void getMd2HtmlOptions_noCss() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "--no-css");
-        assertNull(options.getLinkCss());
-        assertNull(options.getIncludeCss());
+        assertTrue(options.getLinkCss() == null || options.getLinkCss().isEmpty());
+        assertTrue(options.getIncludeCss() == null || options.getIncludeCss().isEmpty());
     }
 
     @Test
@@ -103,12 +134,6 @@ class CliParserHelperTest {
                 "--no-css", "--link-css", "styles.css"));
     }
 
-    @Test
-    public void getMd2HtmlOptions_wrongLinkCssAndIncludeCss() {
-        assertThrows(CliArgumentsException.class, () -> getParsingResult("-i", "readme.txt",
-                "--link-css=styles.css", "--include-css=styles.css"));
-    }
-
     private void assertMd2HtmlOptionsEquals(Md2HtmlOptions o1, Md2HtmlOptions o2) {
         assertEquals(o1.getInputFile(), o2.getInputFile());
         assertEquals(o1.getOutputFile(), o2.getOutputFile());
@@ -121,8 +146,7 @@ class CliParserHelperTest {
         assertEquals(o1.isReport(), o2.isReport());
     }
 
-    private Md2HtmlOptions getParsingResult(String... args)
-            throws ParseException, CliArgumentsException {
+    private Md2HtmlOptions getParsingResult(String... args) throws CliArgumentsException {
         CliParserHelper cliParserHelper = new CliParserHelper("no_matter_what");
         return cliParserHelper.parse(args);
     }

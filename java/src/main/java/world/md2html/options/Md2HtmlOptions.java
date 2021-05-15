@@ -1,6 +1,7 @@
 package world.md2html.options;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class Md2HtmlOptions {
 
@@ -8,14 +9,15 @@ public class Md2HtmlOptions {
     private final Path outputFile;
     private final String title;
     private final Path templateDir;
-    private final Path includeCss;
-    private final String linkCss;
+    private final List<Path> includeCss;
+    private final List<String> linkCss;
     private final boolean force;
     private final boolean verbose;
     private final boolean report;
 
     public Md2HtmlOptions(Path inputFile, Path outputFile, String title, Path templateDir,
-            Path includeCss, String linkCss, boolean force, boolean verbose, boolean report) {
+            List<Path> includeCss, List<String> linkCss, boolean force,
+            boolean verbose, boolean report) {
 
         this.inputFile = inputFile;
         this.outputFile = outputFile;
@@ -44,7 +46,7 @@ public class Md2HtmlOptions {
         return templateDir;
     }
 
-    public String getLinkCss() {
+    public List<String> getLinkCss() {
         return linkCss;
     }
 
@@ -60,7 +62,7 @@ public class Md2HtmlOptions {
         return report;
     }
 
-    public Path getIncludeCss() {
+    public List<Path> getIncludeCss() {
         return includeCss;
     }
 

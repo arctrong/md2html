@@ -30,3 +30,18 @@ body {
     overflow-y: auto;
     background-color: lightskyblue;
 }
+
+.sidebar_aligner {
+    height: 100%;
+    width:100%;
+    border-collapse: collapse;
+}
+
+.sidebar_aligner td {
+    padding: 0;
+    margin: 0;    
+}
+
+.sidebar_aligner td.bottom {
+    font-size: smaller;
+}

@@ -2,6 +2,8 @@
 
 for /f "delims=" %%a in ( '%~dp0..\_set_executable.bat %*' ) do set EXEC=%%a
 
+echo EXEC=%EXEC%
+
 set INPUT_FILE=
 set STATE=
 for %%a in (%*) do call :FIND_INPUT_FILE %%a
@@ -20,7 +22,8 @@ echo Converting the following file to HTML: %INPUT_FILE%
 echo.
 echo Options:
 echo.
-echo y - Generate with empty title
+echo y - Generate with default title (if not defined then empty)
+echo 0 - Generate with empty title
 echo 1 - Generate with title "%TITLE_1%"
 echo 2 - Generate with title "%TITLE_2%"
 echo 3 - Generate with title "%TITLE_3%"
@@ -34,6 +37,10 @@ set /p CHOICE="Please make your choice (y): "
 if "%CHOICE%"=="" goto continue
 if "%CHOICE%"=="Y" goto continue
 if "%CHOICE%"=="y" goto continue
+if "%CHOICE%"=="0" (
+    set TITLE=--title=
+    goto continue
+)
 if "%CHOICE%"=="1" (
     set TITLE=-t "%TITLE_1%"
     goto continue

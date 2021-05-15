@@ -218,22 +218,32 @@ possible changes `-r` argument must be changed to `-v` and `git add` command mus
 ----------------------------------------------------------------------------------------------------
 # Source Markdown document
 
-Apart from the standard Markdown elements, this utility recognizes page _metadata_ that is
-included in the source text in format:
+The source text may contain the page _metadata_ that is processed by this utility and is not
+a part of the Markdown syntax. The format of the page metadata is:
 
 ````
 <!--METADATA {"title": "My title"} -->
 ````
 
-This must be the first non-space text in the document, otherwise it will be ignored. The
-`METADATA` keyword is case-insensitive. There must be no spaces before `METADATA` keyword and
-must be at least one whitespace after. The metadata content must be a valid _JSON_ text, that
-means that the keys are case-sensitive and must be enclosed in double quotes. Also it must be
-an object (i.e. in curly braces). 
+It must be the first non-space text in the document, otherwise it will be ignored. The `METADATA`
+keyword is case-insensitive and must follow directly after the opening marker `<!--` without
+any space. The metadata content must be a valid _JSON_ text, that means that the keys are
+case-sensitive and must be enclosed in double quotes. Also it must be an object (i.e. in curly
+braces).
 
-For now the only parameter, `title` of type string (i.e. it must be in double quotes), is
-supported. It defines the default page title. The title specified by the command line
-arguments will override the title defined in the page metadata.
+> __NOTE!__ Opening `<!--` and closing markers `-->` must not be used inside  the metadata
+> section. Also consecutive hyphens `--` inside HTML comments probably may be a problem in some
+> browsers. In JSON strings Unicode entities may be used to resolve these issues, i.e. string
+> `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
+> page content and the context, opening and closing markers, even when escaped, may cause
+> unexpected effects. Check it first if you really need to use these symbols.
+
+If page metadata section found but its content cannot be recognized it will ignored. If 
+verbose mode is on then a warning message will be output in the console.
+
+As for now, the only parameter `title` of type string (i.e. it must always be in double quotes)
+is supported that defines the default page title. The title defined by the command line arguments
+(if any) will override the default page title.
 
 ----------------------------------------------------------------------------------------------------
 # Templates
@@ -245,7 +255,11 @@ placeholders are implemented:
 
 - `${title}` --- will be replaced with the page title;
 - `${styles}` --- will be replaced with the in-lined or linked CSS;
-- `${content}` --- will be replaced with the result of the Markdown document processing.
+- `${content}` --- will be replaced with the result of the Markdown document processing;
+- `${exec_name}` --- will be replaced with the generator name;
+- `${exec_version}` --- will be replaced with the generator version;
+- `${generation_date}` --- will be replaced with the generation date (YYYY-MM-DD);
+- `${generation_time}` --- will be replaced with the generation time (hh:mm:ss).
 
 > __Notes.__ 1. In uncertain cases `$$` may be used to represent a single `$` in a template.
 > This does not apply to the Markdown texts where expressions like `${name}` are not
@@ -361,7 +375,7 @@ Item No | Name | Description | Price
 
 If we want to just align text we can use a table without a header:
 
-|||||
+| | | | |
 |---:|---: |---: |---: |
 | 10 | 20  | 30  | 40  |
 | 50 | 60  | 70  | 80  |

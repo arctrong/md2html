@@ -6,7 +6,7 @@ public class CliArgumentsException extends Exception {
         /** Parsing error occurred. */
         ERROR,
         /** Help was requested. */
-        HELP;
+        HELP
     }
 
     private final CliParsingExceptionType exceptionType;

@@ -15,15 +15,18 @@ import org.apache.commons.text.StringSubstitutor;
 import world.md2html.options.Md2HtmlOptions;
 import world.md2html.utils.Utils;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Md2Html {
 
@@ -32,6 +35,10 @@ public class Md2Html {
     private static final String TITLE_PLACEHOLDER = "title";
     private static final String STYLES_PLACEHOLDER = "styles";
     private static final String CONTENT_PLACEHOLDER = "content";
+    private static final String EXEC_NAME_PLACEHOLDER = "exec_name";
+    private static final String EXEC_VERSION_PLACEHOLDER = "exec_version";
+    private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
+    private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
 
     public static void execute(Md2HtmlOptions options) throws Exception {
 
@@ -54,13 +61,11 @@ public class Md2Html {
         // If adding other parameters, need to remove this condition.
         if (title == null) {
 
-            Matcher matcher = Pattern.compile("^\\s*<!--METADATA\\s+(.*?)\\s*-->",
-                    Pattern.CASE_INSENSITIVE + Pattern.DOTALL)
-                    .matcher(mdText);
-            if (matcher.find()) {
+            Optional<String> metadata = Md2HtmlUtils.extractPageMetadataSection(mdText);
+            if (metadata.isPresent()) {
                 JsonObject jsonObject = null;
                 try {
-                    jsonObject = Json.parse(matcher.group(1)).asObject();
+                    jsonObject = Json.parse(metadata.get()).asObject();
                 } catch (ParseException | UnsupportedOperationException e) {
                     if (options.isVerbose()) {
                         System.out.println("WARNING: Page metadata cannot be parsed: "
@@ -89,18 +94,42 @@ public class Md2Html {
         Map<String, String> substitutions = new HashMap<>();
         substitutions.put(TITLE_PLACEHOLDER, title);
         substitutions.put(CONTENT_PLACEHOLDER, htmlText);
-        String linkCss = options.getLinkCss();
-        Path includeCss = options.getIncludeCss();
-        if (linkCss != null && !linkCss.isEmpty()) {
-            substitutions.put(STYLES_PLACEHOLDER,
-                    "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + linkCss + "\">");
-        } else if (includeCss != null) {
-            substitutions.put(STYLES_PLACEHOLDER, "<style>\n"
-                    + Utils.readStringFromUtf8File(includeCss)
-                    + "\n</style>");
-        } else {
-            substitutions.put(STYLES_PLACEHOLDER, "");
+
+        StringBuilder styles = new StringBuilder();
+        boolean[] firstStyle = {true};
+
+        Consumer<String> styleAppender = item -> {
+            if (!firstStyle[0]) {
+                styles.append("\n");
+            }
+            styles.append(item);
+            firstStyle[0] = false;
+        };
+
+        if (options.getLinkCss() != null) {
+            options.getLinkCss().forEach(item -> styleAppender
+                    .accept("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + item + "\">"));
         }
+        if (options.getIncludeCss() != null) {
+            options.getIncludeCss().forEach(item -> {
+                try {
+                    styleAppender.accept("<style>\n" + Utils.readStringFromUtf8File(item)
+                            + "\n</style>");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        substitutions.put(STYLES_PLACEHOLDER, styles.toString());
+
+        substitutions.put(EXEC_NAME_PLACEHOLDER, Constants.EXEC_NAME);
+        substitutions.put(EXEC_VERSION_PLACEHOLDER, Constants.EXEC_VERSION);
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.now(ZoneId.systemDefault());
+        substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
+        substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
 
         StringSubstitutor stringSubstitutor = new StringSubstitutor(substitutions);
         stringSubstitutor.setEnableUndefinedVariableException(false);

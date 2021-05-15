@@ -10,6 +10,9 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CliParserHelper {
 
@@ -89,8 +92,8 @@ public class CliParserHelper {
             templateDir = Constants.WORKING_DIR.resolve(DEFAULT_TEMPLATE_DIR);
         }
 
-        Path includeCss = null;
-        String linkCss = null;
+        List<String> linkCss = null;
+        List<Path> includeCss = null;
         if (commandLine.hasOption(NO_CSS_OPTION_NAME)) {
             if (commandLine.hasOption(LINK_CSS_OPTION_NAME) ||
                     commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
@@ -98,16 +101,25 @@ public class CliParserHelper {
                         "' is not compatible with options '" + LINK_CSS_OPTION_NAME + "' and '"
                         + " '" + INCLUDE_CSS_OPTION_NAME + "'");
             }
-        } else if (commandLine.hasOption(LINK_CSS_OPTION_NAME) &&
-                commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
-            throw errorAsException(cliOptions, "Options '" + LINK_CSS_OPTION_NAME + "' and '"
-                    + " '" + INCLUDE_CSS_OPTION_NAME + "' are not compatible");
-        } else if (commandLine.hasOption(LINK_CSS_OPTION_NAME)) {
-            linkCss = commandLine.getOptionValue(LINK_CSS_OPTION_NAME);
-        } else if (commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
-            includeCss = Paths.get(commandLine.getOptionValue(INCLUDE_CSS_OPTION_NAME));
-        } else {
-            includeCss = Constants.WORKING_DIR.resolve(DEFAULT_CSS_LOCATION);
+        }
+//        else if (commandLine.hasOption(LINK_CSS_OPTION_NAME) &&
+//                commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
+//            throw errorAsException(cliOptions, "Options '" + LINK_CSS_OPTION_NAME + "' and '"
+//                    + " '" + INCLUDE_CSS_OPTION_NAME + "' are not compatible");
+//        } else
+        else {
+
+            if (commandLine.hasOption(LINK_CSS_OPTION_NAME)) {
+                linkCss = Arrays.asList(commandLine.getOptionValues(LINK_CSS_OPTION_NAME));
+            }
+            if (commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
+                includeCss = Arrays.stream(commandLine.getOptionValues(INCLUDE_CSS_OPTION_NAME))
+                        .map(Paths::get).collect(Collectors.toList());
+            }
+            if (linkCss == null && includeCss == null) {
+                includeCss = Collections.singletonList(Constants.WORKING_DIR
+                        .resolve(DEFAULT_CSS_LOCATION));
+            }
         }
 
         boolean force = commandLine.hasOption(FORCE_OPTION_NAME);
@@ -146,14 +158,16 @@ public class CliParserHelper {
 
         cliOptions.addOption(Option.builder(null).longOpt(LINK_CSS_OPTION_NAME).hasArg()
                 .numberOfArgs(1)
-                .desc("links CSS file, if omitted includes the default CSS into HTML").build());
+                .desc("links CSS file, multiple entries allowed").build());
 
         cliOptions.addOption(Option.builder(null).longOpt(INCLUDE_CSS_OPTION_NAME).hasArg()
                 .numberOfArgs(1)
-                .desc("includes CSS file into HTML, if omitted includes the default CSS").build());
+                .desc("includes content of the CSS file into HTML, multiple entries allowed")
+                .build());
 
         cliOptions.addOption(Option.builder(null).longOpt(NO_CSS_OPTION_NAME).hasArg(false)
-                .desc("creates HTML with no CSS").build());
+                .desc("creates HTML with no CSS. If no CSS-related arguments is specified, "
+                        + "the default CSS will be included").build());
 
         cliOptions.addOption(Option.builder(FORCE_OPTION_NAME).longOpt("force").hasArg(false)
                 .desc("rewrites HTML output file even if it was modified later than the input file")

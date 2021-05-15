@@ -5,6 +5,9 @@ import java.nio.file.Paths;
 
 public class Constants {
 
+    public static final String EXEC_NAME = "md2html_java";
+    public static final String EXEC_VERSION = "0.1.1";
+
     private static final String WORKING_DIR_ENV_VARIABLE_NAME = "MD2HTML_HOME";
     public static final Path WORKING_DIR;
     static {

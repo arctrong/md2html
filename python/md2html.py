@@ -7,11 +7,15 @@ import markdown
 from string import Template
 import re
 import json
+from datetime import datetime
 
 DEFAULT_TEMPLATE_DIR = '../md2html_templates/default'
 TEMPLATE_FILE_NAME = 'template.html'
 DEFAULT_CSS_FILE_PATH = '../html_resources/styles.css'
 USE_HELP_TEXT = 'use -h for help'
+
+EXEC_NAME = 'md2html_py'
+EXEC_VERSION = '0.1.1'
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash"])
@@ -38,7 +42,7 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
     # Trying to get title from metadata.
     # If adding other parameters, need to remove this condition.
     if title is None:
-        match = re.search('^\\s*<!--METADATA\\s+(.*?)\\s*-->', md_lines, flags=re.IGNORECASE + re.DOTALL)
+        match = re.search('^\\s*<!--METADATA\\s*(.*?)\\s*-->', md_lines, flags=re.IGNORECASE + re.DOTALL)
         if match:
             try:
                 metadata = json.loads(match.group(1))
@@ -56,12 +60,12 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
         title = ''
 
     substitutions = {'title': title}
+    styles = []
     if link_css:
-        substitutions['styles'] = f'<link rel="stylesheet" type="text/css" href="{link_css}">'
-    elif include_css:
-        substitutions['styles'] = '<style>\n' + read_lines_from_file(include_css) + '\n</style>'
-    else:
-        substitutions['styles'] = ''
+        styles.extend([f'<link rel="stylesheet" type="text/css" href="{item}">' for item in link_css])
+    if include_css:
+        styles.extend(['<style>\n' + read_lines_from_file(item) + '\n</style>' for item in include_css])
+    substitutions['styles'] = '\n'.join(styles) if styles else ''
 
     # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from their inside
     # implementation. So methods `markdown.markdown()` and `Markdown.convert()` are gonna be used.
@@ -69,6 +73,12 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
     # no memory save.
 
     substitutions['content'] = MARKDOWN_CONVERTER.convert(source=md_lines)
+    
+    substitutions['exec_name'] = EXEC_NAME
+    substitutions['exec_version'] = EXEC_VERSION
+    current_time = datetime.today()
+    substitutions['generation_date'] = current_time.strftime('%Y-%m-%d')
+    substitutions['generation_time'] = current_time.strftime('%H:%M:%S')
 
     template = Template(read_lines_from_file(template_dir.joinpath(TEMPLATE_FILE_NAME)))
     result = template.safe_substitute(substitutions)
@@ -96,10 +106,11 @@ def main():
                                                "extension", type=str)
     parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an empty title", type=str)
     parser.add_argument("--template", help="custom template directory", type=str)
-    parser.add_argument("--link-css", help="links CSS file, if omitted includes the default CSS into HTML", type=str)
-    parser.add_argument("--include-css", help="includes CSS file into HTML, if omitted includes the default CSS",
-                        type=str)
-    parser.add_argument("--no-css", help="creates HTML with no CSS", action='store_true')
+    parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str, action='append')
+    parser.add_argument("--include-css", help="includes content of the CSS file into HTML, multiple entries allowed",
+                        type=str, action='append')
+    parser.add_argument("--no-css", help="creates HTML with no CSS. If no CSS-related arguments is specified, "
+                                         "the default CSS will be included", action='store_true')
     parser.add_argument("-f", "--force", help="rewrites HTML output file even if it was modified later than the input "
                                               "file", action='store_true')
     parser.add_argument("-v", "--verbose", help="outputs human readable information messages", action='store_true')
@@ -119,27 +130,22 @@ def main():
     else:
         output_file = Path(os.path.splitext(input_file)[0] + '.html')
 
-    if args.title:
-        title = args.title
-    else:
-        title = None
+    title = args.title
 
     template_dir = Path(args.template) if args.template else WORKING_DIR.joinpath(DEFAULT_TEMPLATE_DIR)
 
-    if args.link_css and args.include_css:
-        parser.print_usage()
-        print(f'--link-css and --include-css arguments are not compatible ({USE_HELP_TEXT})')
-        sys.exit(1)
     if args.no_css and (args.link_css or args.include_css):
         parser.print_usage()
         print(f'--no-css argument is not compatible with --link-css and --include-css arguments ({USE_HELP_TEXT})')
         sys.exit(1)
+
     link_css = args.link_css
-    if args.no_css:
+    if args.include_css:
+        include_css = [Path(item) for item in args.include_css]
+    elif args.no_css or link_css:
         include_css = None
     else:
-        include_css = Path(args.include_css) if args.include_css else \
-            WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)
+        include_css = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 
     force = args.force
     verbose = args.verbose
