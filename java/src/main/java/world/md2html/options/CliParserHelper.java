@@ -20,7 +20,7 @@ public class CliParserHelper {
     private static final String INPUT_FILE_OPTION_NAME = "i";
     private static final String OUTPUT_FILE_OPTION_NAME = "o";
     private static final String TITLE_OPTION_NAME = "t";
-    private static final String TEMPLATES_DIR_OPTION_NAME = "templates";
+    private static final String TEMPLATES_DIR_OPTION_NAME = "template";
     private static final String LINK_CSS_OPTION_NAME = "link-css";
     private static final String INCLUDE_CSS_OPTION_NAME = "include-css";
     private static final String NO_CSS_OPTION_NAME = "no-css";
@@ -101,14 +101,7 @@ public class CliParserHelper {
                         "' is not compatible with options '" + LINK_CSS_OPTION_NAME + "' and '"
                         + " '" + INCLUDE_CSS_OPTION_NAME + "'");
             }
-        }
-//        else if (commandLine.hasOption(LINK_CSS_OPTION_NAME) &&
-//                commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
-//            throw errorAsException(cliOptions, "Options '" + LINK_CSS_OPTION_NAME + "' and '"
-//                    + " '" + INCLUDE_CSS_OPTION_NAME + "' are not compatible");
-//        } else
-        else {
-
+        } else {
             if (commandLine.hasOption(LINK_CSS_OPTION_NAME)) {
                 linkCss = Arrays.asList(commandLine.getOptionValues(LINK_CSS_OPTION_NAME));
             }

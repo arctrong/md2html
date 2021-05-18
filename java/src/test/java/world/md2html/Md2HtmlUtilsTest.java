@@ -75,7 +75,7 @@ class Md2HtmlUtilsTest {
 
     @Test
     void extractPageMetadata_withLiteralClose() {
-        // In JSON strings `-->` may be represented as `--\u003E`.
+        // In JSON strings `-->` may be represented as `-\u002D>`.
         Optional<String> metadata =
                 Md2HtmlUtils.extractPageMetadataSection("<!--metadata \"-->\" -->");
         assertTrue(metadata.isPresent());

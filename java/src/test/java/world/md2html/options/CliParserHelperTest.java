@@ -35,7 +35,7 @@ class CliParserHelperTest {
 
         // Short form
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "-o", "doc/output.htm",
-                "-t", "someTitle", "--templates", "../templateDir", "-link-css=someStyles.css",
+                "-t", "someTitle", "--template", "../templateDir", "--link-css=someStyles.css",
                 "-fv");
         assertEquals(Paths.get("input.md"), options.getInputFile());
         assertEquals(Paths.get("doc/output.htm"), options.getOutputFile());
@@ -50,7 +50,7 @@ class CliParserHelperTest {
 
         // Long form
         Md2HtmlOptions options1 = getParsingResult("--input", "input.md", "--output=doc/output.htm",
-                "--title", "someTitle", "--templates", "../templateDir",
+                "--title", "someTitle", "--template", "../templateDir",
                 "--link-css", "someStyles.css", "--force", "--verbose");
         assertMd2HtmlOptionsEquals(options, options1);
     }

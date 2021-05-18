@@ -26,7 +26,102 @@ def read_lines_from_file(file):
         return file_handler.read()
 
 
-def md2html(input_file, output_file, title, template_dir, link_css, include_css, force, verbose, report):
+def strip_extension(path):
+    return os.path.splitext(path)[0]
+
+
+def extract_metadata_section(text):
+    match = re.search('^\\s*<!--METADATA(.*?)-->', text, flags=re.IGNORECASE + re.DOTALL)
+    return match.group(1) if match else None
+
+
+def parse_md2html_arguments(*args):
+    """
+    Returns a tuple of (result_type, result), where result_type is one of the 'success', 'help' or `error`.
+    If the result is not successful then all user information messages are already printed into console.
+    """
+
+    md2html_args = {}
+
+    def formatter_creator(prog):
+        return argparse.HelpFormatter(prog, width=80)
+
+    parser = argparse.ArgumentParser(description='Converts Markdown document into HTML document.',
+                                     formatter_class=formatter_creator, add_help=False)
+    parser.add_argument("-h", "--help", help="shows this help message and exit", action='store_true')
+    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str, required=True)
+    parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name with '.html' "
+                                               "extension", type=str)
+    parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an empty title", type=str)
+    parser.add_argument("--template", help="custom template directory", type=str)
+    parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str, action='append')
+    parser.add_argument("--include-css", help="includes content of the CSS file into HTML, multiple entries allowed",
+                        type=str, action='append')
+    parser.add_argument("--no-css", help="creates HTML with no CSS. If no CSS-related arguments is specified, "
+                                         "the default CSS will be included", action='store_true')
+    parser.add_argument("-f", "--force", help="rewrites HTML output file even if it was modified later than the input "
+                                              "file", action='store_true')
+    parser.add_argument("-v", "--verbose", help="outputs human readable information messages", action='store_true')
+    parser.add_argument("-r", "--report", help="if HTML file is generated, outputs the path of this file, "
+                                               "incompatible with -v", action='store_true')
+    args = parser.parse_args(*args)
+
+    # if args.help:
+    #     parser.print_help()
+    #     return 'help', None
+
+    if args.input:
+        md2html_args['input_file'] = Path(args.input)
+    else:
+        parser.print_usage()
+        print(f'Input file is not specified ({USE_HELP_TEXT})')
+        return 'error', None
+
+    if args.output:
+        md2html_args['output_file'] = Path(args.output)
+    else:
+        md2html_args['output_file'] = Path(strip_extension(md2html_args['input_file']) + '.html')
+
+    md2html_args['title'] = args.title
+
+    md2html_args['template_dir'] = Path(args.template) if args.template else WORKING_DIR.joinpath(DEFAULT_TEMPLATE_DIR)
+
+    if args.no_css and (args.link_css or args.include_css):
+        parser.print_usage()
+        print(f'--no-css argument is not compatible with --link-css and --include-css arguments ({USE_HELP_TEXT})')
+        return 'error', None
+
+    md2html_args['link_css'] = args.link_css
+    if args.include_css:
+        md2html_args['include_css'] = [Path(item) for item in args.include_css]
+    elif args.no_css or md2html_args['link_css']:
+        md2html_args['include_css'] = None
+    else:
+        md2html_args['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
+
+    md2html_args['force'] = args.force
+    md2html_args['verbose'] = args.verbose
+    md2html_args['report'] = args.report
+
+    if md2html_args['report'] and md2html_args['verbose']:
+        parser.print_usage()
+        print(f'--report and --verbose arguments are not compatible ({USE_HELP_TEXT})')
+        return 'error', None
+
+    return 'success', md2html_args
+
+
+def md2html(**kwargs):
+
+    input_file = kwargs['input_file']
+    output_file = kwargs['output_file']
+    title = kwargs['title']
+    template_dir = kwargs['template_dir']
+    link_css = kwargs['link_css']
+    include_css = kwargs['include_css']
+    force = kwargs['force']
+    verbose = kwargs['verbose']
+    report = kwargs['report']
 
     if not force and output_file.exists():
         output_file_mtime = os.path.getmtime(output_file)
@@ -42,10 +137,10 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
     # Trying to get title from metadata.
     # If adding other parameters, need to remove this condition.
     if title is None:
-        match = re.search('^\\s*<!--METADATA\\s*(.*?)\\s*-->', md_lines, flags=re.IGNORECASE + re.DOTALL)
-        if match:
+        metadata_section = extract_metadata_section(md_lines)
+        if metadata_section:
             try:
-                metadata = json.loads(match.group(1))
+                metadata = json.loads(metadata_section)
                 title_item = metadata.get('title')
                 if isinstance(title_item, str):
                     title = title_item
@@ -93,70 +188,11 @@ def md2html(input_file, output_file, title, template_dir, link_css, include_css,
 
 
 def main():
-
     # print(sys.argv)
-
-    def formatter_creator(prog):
-        return argparse.HelpFormatter(prog, width=80)
-
-    parser = argparse.ArgumentParser(description='Converts Markdown document into HTML document.',
-                                     formatter_class=formatter_creator)
-    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str, required=True)
-    parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name with '.html' "
-                                               "extension", type=str)
-    parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an empty title", type=str)
-    parser.add_argument("--template", help="custom template directory", type=str)
-    parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str, action='append')
-    parser.add_argument("--include-css", help="includes content of the CSS file into HTML, multiple entries allowed",
-                        type=str, action='append')
-    parser.add_argument("--no-css", help="creates HTML with no CSS. If no CSS-related arguments is specified, "
-                                         "the default CSS will be included", action='store_true')
-    parser.add_argument("-f", "--force", help="rewrites HTML output file even if it was modified later than the input "
-                                              "file", action='store_true')
-    parser.add_argument("-v", "--verbose", help="outputs human readable information messages", action='store_true')
-    parser.add_argument("-r", "--report", help="if HTML file is generated, outputs the path of this file, "
-                                               "incompatible with -v", action='store_true')
-    args = parser.parse_args()
-
-    if args.input:
-        input_file = Path(args.input)
-    else:
-        parser.print_usage()
-        print(f'Input file is not specified ({USE_HELP_TEXT})')
+    result_type, md2html_args = parse_md2html_arguments(sys.argv[1:])
+    if result_type != 'success':
         sys.exit(1)
-
-    if args.output:
-        output_file = Path(args.output)
-    else:
-        output_file = Path(os.path.splitext(input_file)[0] + '.html')
-
-    title = args.title
-
-    template_dir = Path(args.template) if args.template else WORKING_DIR.joinpath(DEFAULT_TEMPLATE_DIR)
-
-    if args.no_css and (args.link_css or args.include_css):
-        parser.print_usage()
-        print(f'--no-css argument is not compatible with --link-css and --include-css arguments ({USE_HELP_TEXT})')
-        sys.exit(1)
-
-    link_css = args.link_css
-    if args.include_css:
-        include_css = [Path(item) for item in args.include_css]
-    elif args.no_css or link_css:
-        include_css = None
-    else:
-        include_css = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
-
-    force = args.force
-    verbose = args.verbose
-    report = args.report
-
-    if report and verbose:
-        parser.print_usage()
-        print(f'--report and --verbose arguments are not compatible ({USE_HELP_TEXT})')
-        sys.exit(1)
-
-    md2html(input_file, output_file, title, template_dir, link_css, include_css, force, verbose, report)
+    md2html(**md2html_args)
 
 
 if __name__ == '__main__':

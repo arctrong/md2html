@@ -2,7 +2,7 @@
 
 for /f "delims=" %%a in ( '%~dp0..\_set_executable.bat %*' ) do set EXEC=%%a
 
-echo EXEC=%EXEC%
+echo.
 
 set INPUT_FILE=
 set STATE=

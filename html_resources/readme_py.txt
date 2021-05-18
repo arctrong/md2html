@@ -47,7 +47,7 @@ for installation instructions.
 The utility provides its usage information in a standard manner:
 
 ````shell
->python %MD2HTML_HOME%/python/md2html.py
+>python %MD2HTML_HOME%\python\md2html.py
 usage: md2html.py [-h] -i INPUT [-o OUTPUT] [-t TITLE] [--template TEMPLATE]
                   [--link-css LINK_CSS] [--include-css INCLUDE_CSS] [--no-css]
                   [-f] [-v] [-r]
@@ -79,6 +79,25 @@ optional arguments:
 ````
 
 ----------------------------------------------------------------------------------------------------
+# Development
+
+To run tests execute:
+
+````shell
+>cd %MD2HTML_HOME%\python
+
+> python -m unittest
+````
+
+The output must end with somthing like this:
+
+````shell
+..............
+----------------------------------------------------------------------
+Ran 22 tests in 0.027s
+
+OK
+````
 
 ----------------------------------------------------------------------------------------------------
 
