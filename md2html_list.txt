@@ -1,5 +1,5 @@
--i readme.txt --template md2html_templates/custom --link-css=html_resources/styles.css
--i html_resources/readme_py.txt -t "md2html: Python version" --link-css=styles.css
--i html_resources/readme_java.txt -t "md2html: Java version" --link-css=styles.css
--i html_resources/default_template.txt -t "md2html: Default template"
--i html_resources/malformed_template.txt -t "md2html: Malformed template" --template md2html_templates/malformed --no-css
+-i readme.txt --template doc_src/templates/custom.html --link-css=doc/styles.css --link-css=doc/layout.css
+-i doc_src/readme_py.txt -o doc/readme_py.html -t "md2html: Python version" --template doc_src/templates/custom.html --link-css=styles.css --link-css=layout.css
+-i doc_src/readme_java.txt -o doc/readme_java.html -t "md2html: Java version" --template doc_src/templates/custom.html --link-css=styles.css --link-css=layout.css
+-i doc_src/default_template.txt -o doc/default_template.html -t "md2html: Default template"
+-i doc_src/malformed_template.txt -o doc/malformed_template.html -t "md2html: Malformed template" --template doc_src/templates/malformed.html --no-css

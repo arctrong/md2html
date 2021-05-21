@@ -1,10 +1,11 @@
-<!--METADATA {"title": "Markdown to HTML converter"} -->
+<!--METADATA {"title": "Markdown to HTML converter", 
+"custom_template_placeholders": {"home_path": "", "doc_path": "doc/"}} -->
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
 # Introduction
 
-![LOGO](html_resources/pict/logo.png "logo")
+![LOGO](doc/pict/logo.png "logo")
 
 This is a simple command line utility that easily converts single _Markdown_ documents into
 single static HTML pages. It's provided with a suitable HTML templates and scripts for batch
@@ -56,8 +57,8 @@ contains information that is common for all the implementations. Implementation-
 
 <a name="implementation_specific_documents_links"></a>
 
-- [for Python implementation](html_resources/readme_py.html)
-- [for Java implementation](html_resources/readme_java.html)
+- [for Python implementation](doc/readme_py.html)
+- [for Java implementation](doc/readme_java.html)
 
 ----------------------------------------------------------------------------------------------------
 # Installation
@@ -114,7 +115,7 @@ directory where it will process the project's _list file_.
 `bin/win_context_menu` directory contains artifacts for integration into Windows Explorer
 context menu:
 
-![WINDOWS_EXPOLORER_CONTEXT_MENU](html_resources/pict/windows_context_menu.png)
+![WINDOWS_EXPOLORER_CONTEXT_MENU](doc/pict/windows_context_menu.png)
 
 It opens a command line prompt window and allows to redefine some options. Just pressing
 `Enter` will fulfill generation with default options.
@@ -134,7 +135,7 @@ and values:
 __Note.__  1. `@` stands for `(Default)` value name. 2. `py` or `java` may be added before `-i`.
 3. The quotes must be set like this:
 
-![](html_resources/pict/reg_value.png)
+![](doc/pict/reg_value.png)
 
 
 ## Typical project structure
@@ -334,8 +335,8 @@ required.
 <a name="anchor_demo"></a>
 
 An image may be used as a link text. So the following code 
-`[![](html_resources/pict/target.png)](readme.html#anchor_demo)` will create the following link:
-[![](html_resources/pict/target.png)](readme.html#anchor_demo).
+`[![](doc/pict/target.png)](readme.html#anchor_demo)` will create the following link:
+[![](doc/pict/target.png)](readme.html#anchor_demo).
 
 > To place an anchor, the following code was used: `<a name="anchor_demo"></a>`.
 
@@ -358,7 +359,7 @@ Blockquotes are inserted by starting each line with `> `.
 
 > Links, images and some other Markdown elements may be used inside `blockquote`s: 
 > 
-> - Here's a link with a clickable image: [![](html_resources/pict/target.png)](readme.html#anchor_demo).
+> - Here's a link with a clickable image: [![](doc/pict/target.png)](readme.html#anchor_demo).
 > - Also a list inside this `blockquote` is use for demonstration.
 
 

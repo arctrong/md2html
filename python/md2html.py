@@ -202,7 +202,7 @@ def md2html(**kwargs):
     substitutions['styles'] = '\n'.join(styles) if styles else ''
 
     # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from their inside
-    # implementation. So methods `markdown.markdown()` and `Markdown.convert()` are gonna be used.
+    # implementation. So we are going to use methods `markdown.markdown()` and `Markdown.convert()` instead.
     # And anyway the first two methods read the md-file completely before conversion, so they give
     # no memory save.
 
