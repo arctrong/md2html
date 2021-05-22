@@ -86,17 +86,16 @@ optional arguments:
 To run tests execute:
 
 ````shell
->cd %MD2HTML_HOME%\python
+>%MD2HTML_HOME%\python\test.bat
 
-> python -m unittest
 ````
 
-The output must end with somthing like this:
+The output must end with something like this:
 
 ````shell
-..............
+........................................
 ----------------------------------------------------------------------
-Ran 22 tests in 0.027s
+Ran 40 tests in 0.021s
 
 OK
 ````

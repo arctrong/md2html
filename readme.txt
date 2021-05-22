@@ -219,18 +219,27 @@ possible changes `-r` argument must be changed to `-v` and `git add` command mus
 ----------------------------------------------------------------------------------------------------
 # Source Markdown document
 
-The source text may contain the page _metadata_ that is processed by this utility and is not
-a part of the Markdown syntax. The format of the page metadata is:
+Along with its target content a source Markdown text document may contain page _metadata_ 
+that is processed by this utility and is not a part of the Markdown syntax. The format of the
+page metadata is:
 
 ````
-<!--METADATA {"title": "My title"} -->
+<!--METADATA {
+"title": "My title",
+"custom_template_placeholders": {"key1": "value1", "key2": "value2"}
+}-->
 ````
 
-It must be the first non-space text in the document, otherwise it will be ignored. The `METADATA`
-keyword is case-insensitive and must follow directly after the opening marker `<!--` without
+> NOTE! The page metadata (if recognized) may affect the HTML generation process and the final
+> HTML document in the end. But it is ignored as a part of the source document, so it will not
+> literally appear in the generated HTML.
+
+The page metadata section must be the first non-space text in the source document, otherwise it
+will be ignored (and literally included as the the source text). The `METADATA` keyword is
+case-insensitive and must follow directly after the opening marker `<!--` without
 any space. The metadata content must be a valid _JSON_ text, that means that the keys are
-case-sensitive and must be enclosed in double quotes. Also it must be an object (i.e. in curly
-braces).
+case-sensitive and must be enclosed in double quotes. Also the root element must be an object
+(i.e. in curly braces).
 
 > __NOTE!__ Opening `<!--` and closing markers `-->` must not be used inside  the metadata
 > section. Also consecutive hyphens `--` inside HTML comments probably may be a problem in some
@@ -239,18 +248,22 @@ braces).
 > page content and the context, opening and closing markers, even when escaped, may cause
 > unexpected effects. Check it first if you really need to use these symbols.
 
-If page metadata section found but its content cannot be recognized it will ignored. If 
-verbose mode is on then a warning message will be output in the console.
+If page metadata section found but its content cannot be recognized it will be ignored. If 
+verbose mode is on then a warning messages will be output in the console.
 
-As for now, the only parameter `title` of type string (i.e. it must always be in double quotes)
-is supported that defines the default page title. The title defined by the command line arguments
-(if any) will override the default page title.
+The following metadata parameters are supported:
+
+- `title` of type string (i.e. it must always be in double quotes), defines the default page
+    title. The title defined by the command line arguments (if any) will override the default
+    page title.
+- `custom_template_placeholders` of type object, defines values that will replace custom 
+    placeholders when the template is resolved. The values type must be string only.
 
 ----------------------------------------------------------------------------------------------------
 # Templates
 
-A template file (see the source code of [this file](md2html_templates/default/template.html)
-for example) consists of HTML code that is translated as-is and placeholders that are replaced
+A template file (see the source code of [this file](doc_src/templates/default.html) as an 
+example) consists of HTML code that is translated as-is and placeholders that are replaced
 with their corresponding content. The placeholder format is `${name}`. The following
 placeholders are implemented:
 
@@ -261,6 +274,7 @@ placeholders are implemented:
 - `${exec_version}` --- will be replaced with the generator version;
 - `${generation_date}` --- will be replaced with the generation date (YYYY-MM-DD);
 - `${generation_time}` --- will be replaced with the generation time (hh:mm:ss).
+- `${custom_key}` --- any custom placeholder keys defined in the page metadata.
 
 > __Notes.__ 1. In uncertain cases `$$` may be used to represent a single `$` in a template.
 > This does not apply to the Markdown texts where expressions like `${name}` are not
@@ -277,9 +291,9 @@ cannot be set as the default. If you want to use this template in your project, 
 copy of corresponding files (the custom template and the additional CSS file) and change them
 accordingly.
 
-See the [implementation-specific documents](#implementation_specific_documents_links)
-for examples of the __default template__ usage. This template must be suitable for most
-documentation tasks.
+If no template is specified then the __default template__ is used. This template must be suitable
+for most documentation tasks. It also may be used and specified explicitly as any other
+template.
 
 
 ## CSS
@@ -389,12 +403,12 @@ this --- we can add an invisible element (an empty `<div>` in this case)
 right before the table and then use some simple CSS magic to define the appearance:
 
 ````code
-<div class="tablePlated"></div>
+<div class="tableGridded"></div>
 ````
 
 Then we can get styles like this:
 
-<div class="tablePlated"></div>
+<div class="tableGridded"></div>
 
 |Item No | Name | Description | Price|
 |:------:|------|-------------|-----:|
@@ -402,9 +416,9 @@ Then we can get styles like this:
 |2       | Table | Kitchen table | 450.00|
 |3       | Lamp  | Standard lamp | 120.75|
 
-and this (`class="tableGridded"`):
+and this (`class="tablePlated"`):
 
-<div class="tableGridded"></div>
+<div class="tablePlated"></div>
 
 Item No | Name | Description | Price
 :------:|------|-------------|-----:
