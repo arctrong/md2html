@@ -1,9 +1,5 @@
 package world.md2html;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-import com.eclipsesource.json.ParseException;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
@@ -13,6 +9,7 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import org.apache.commons.text.StringSubstitutor;
 import world.md2html.options.Md2HtmlOptions;
+import world.md2html.pagemetadata.*;
 import world.md2html.utils.Utils;
 
 import java.io.IOException;
@@ -25,12 +22,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class Md2Html {
-
-    private static final String TEMPLATE_FILE_NAME = "template.html";
 
     private static final String TITLE_PLACEHOLDER = "title";
     private static final String STYLES_PLACEHOLDER = "styles";
@@ -56,42 +50,34 @@ public class Md2Html {
 
         String mdText = Utils.readStringFromUtf8File(options.getInputFile());
 
+        Map<String, String> substitutions = new HashMap<>();
         String title = options.getTitle();
-        // Trying to get title from metadata.
-        // If adding other parameters, need to remove this condition.
-        if (title == null) {
 
-            Optional<String> metadata = Md2HtmlUtils.extractPageMetadataSection(mdText);
-            if (metadata.isPresent()) {
-                JsonObject jsonObject = null;
-                try {
-                    jsonObject = Json.parse(metadata.get()).asObject();
-                } catch (ParseException | UnsupportedOperationException e) {
-                    if (options.isVerbose()) {
-                        System.out.println("WARNING: Page metadata cannot be parsed: "
-                                + e.getClass().getSimpleName() + ": " + e.getMessage());
-                    }
+        PageMetadataExtractionResult extractionResult =
+                Md2HtmlPageMetadataExtractor.extract(mdText);
+        if (extractionResult.isSuccess()) {
+            mdText = mdText.substring(0, extractionResult.getStart()) +
+                    mdText.substring(extractionResult.getEnd());
+            PageMetadataParsingResult parsingResult =
+                    Md2HtmlPageMetadataParser.parse(extractionResult.getMetadata());
+            if (options.isVerbose()) {
+                parsingResult.getErrors().forEach(e -> System.out.println("WARNING: " + e));
+            }
+            if (parsingResult.isSuccess()) {
+                PageMetadata metadata = parsingResult.getPageMetadata();
+                if (title == null) {
+                    title = metadata.getTitle();
                 }
-                if (jsonObject != null) {
-                    JsonValue titleObject = jsonObject.get("title");
-                    if (titleObject != null) {
-                        try {
-                            title = titleObject.asString();
-                        } catch (UnsupportedOperationException e) {
-                            System.out.println("WARNING: Title cannot be taken from page metadata: "
-                                    + e.getMessage());
-                        }
-                    }
-                }
+                substitutions.putAll(metadata.getCustomTemplatePlaceholders());
             }
         }
+
         if (title == null) {
             title = "";
         }
 
         String htmlText = generateHtml(mdText);
 
-        Map<String, String> substitutions = new HashMap<>();
         substitutions.put(TITLE_PLACEHOLDER, title);
         substitutions.put(CONTENT_PLACEHOLDER, htmlText);
 
@@ -135,8 +121,7 @@ public class Md2Html {
         stringSubstitutor.setEnableUndefinedVariableException(false);
         stringSubstitutor.setDisableSubstitutionInValues(true);
 
-        String template = Utils.readStringFromUtf8File(options.getTemplateDir()
-                .resolve(TEMPLATE_FILE_NAME));
+        String template = Utils.readStringFromUtf8File(options.getTemplate());
         try (Writer out = Files.newBufferedWriter(options.getOutputFile())) {
             out.write(stringSubstitutor.replace(template));
         }

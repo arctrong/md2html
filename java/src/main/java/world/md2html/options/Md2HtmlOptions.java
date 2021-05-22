@@ -8,21 +8,21 @@ public class Md2HtmlOptions {
     private final Path inputFile;
     private final Path outputFile;
     private final String title;
-    private final Path templateDir;
+    private final Path template;
     private final List<Path> includeCss;
     private final List<String> linkCss;
     private final boolean force;
     private final boolean verbose;
     private final boolean report;
 
-    public Md2HtmlOptions(Path inputFile, Path outputFile, String title, Path templateDir,
+    public Md2HtmlOptions(Path inputFile, Path outputFile, String title, Path template,
             List<Path> includeCss, List<String> linkCss, boolean force,
             boolean verbose, boolean report) {
 
         this.inputFile = inputFile;
         this.outputFile = outputFile;
         this.title = title;
-        this.templateDir = templateDir;
+        this.template = template;
         this.includeCss = includeCss;
         this.linkCss = linkCss;
         this.force = force;
@@ -42,8 +42,8 @@ public class Md2HtmlOptions {
         return title;
     }
 
-    public Path getTemplateDir() {
-        return templateDir;
+    public Path getTemplate() {
+        return template;
     }
 
     public List<String> getLinkCss() {

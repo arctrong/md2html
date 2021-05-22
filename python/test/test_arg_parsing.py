@@ -25,6 +25,22 @@ class ArgParseTest(unittest.TestCase):
         self.assertEqual(o1['verbose'], o2['verbose'])
         self.assertEqual(o1['report'], o2['report'])
 
+    def test_parse_md2html_arguments_helpRequested(self):
+        with contextlib.redirect_stdout(NonWritable()):
+            result_type, md2html_args = parse_md2html_arguments(['-h'])
+        self.assertEqual('help', result_type)
+        with contextlib.redirect_stdout(NonWritable()):
+            result_type, md2html_args = parse_md2html_arguments(['--help'])
+        self.assertEqual('help', result_type)
+        with contextlib.redirect_stdout(NonWritable()):
+            result_type, md2html_args = parse_md2html_arguments(['-i \"whatever\"', '--help'])
+        self.assertEqual('help', result_type)
+
+    def test_parse_md2html_arguments_noInputFile(self):
+        with contextlib.redirect_stdout(NonWritable()):
+            result_type, md2html_args = parse_md2html_arguments(['-t', 'whatever'])
+        self.assertEqual('error', result_type)
+
     def test_parse_md2html_arguments_minimalArgumentSet(self):
         result_type, md2html_args = parse_md2html_arguments(['-i', '../doc/notes.md'])
         self.assertEqual('success', result_type)

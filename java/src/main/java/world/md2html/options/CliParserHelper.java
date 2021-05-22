@@ -2,7 +2,6 @@ package world.md2html.options;
 
 import org.apache.commons.cli.*;
 import world.md2html.Constants;
-import world.md2html.options.CliArgumentsException.CliParsingExceptionType;
 import world.md2html.utils.Utils;
 
 import java.io.PrintWriter;
@@ -28,8 +27,8 @@ public class CliParserHelper {
     private static final String VERBOSE_OPTION_NAME = "v";
     private static final String REPORT_OPTION_NAME = "r";
 
-    private static final String DEFAULT_TEMPLATE_DIR = "md2html_templates/default";
-    private static final String DEFAULT_CSS_LOCATION = "html_resources/styles.css";
+    private static final String DEFAULT_TEMPLATE_FILE = "doc_src/templates/default.html";
+    private static final String DEFAULT_CSS_FILE = "doc/styles.css";
 
     private static final int HELP_WIDTH = 80;
 
@@ -84,12 +83,12 @@ public class CliParserHelper {
             title = commandLine.getOptionValue(TITLE_OPTION_NAME);
         }
 
-        Path templateDir;
+        Path templateFile;
         if (commandLine.hasOption(TEMPLATES_DIR_OPTION_NAME)) {
-            templateDir = Paths.get(commandLine.getOptionValue(
+            templateFile = Paths.get(commandLine.getOptionValue(
                     TEMPLATES_DIR_OPTION_NAME));
         } else {
-            templateDir = Constants.WORKING_DIR.resolve(DEFAULT_TEMPLATE_DIR);
+            templateFile = Constants.WORKING_DIR.resolve(DEFAULT_TEMPLATE_FILE);
         }
 
         List<String> linkCss = null;
@@ -111,7 +110,7 @@ public class CliParserHelper {
             }
             if (linkCss == null && includeCss == null) {
                 includeCss = Collections.singletonList(Constants.WORKING_DIR
-                        .resolve(DEFAULT_CSS_LOCATION));
+                        .resolve(DEFAULT_CSS_FILE));
             }
         }
 
@@ -124,7 +123,7 @@ public class CliParserHelper {
                     "--report and --verbose arguments are not compatible");
         }
 
-        return new Md2HtmlOptions(inputFile, outputFile, title, templateDir, includeCss, linkCss,
+        return new Md2HtmlOptions(inputFile, outputFile, title, templateFile, includeCss, linkCss,
                 force, verbose, report);
     }
 
@@ -185,7 +184,7 @@ public class CliParserHelper {
         pw.println();
         hf.printOptions(pw, hf.getWidth(), cliOptions, hf.getLeftPadding(), hf.getDescPadding());
         pw.close();
-        return new CliArgumentsException(null, CliParsingExceptionType.HELP, sw.toString());
+        return new CliArgumentsException(null, CliArgumentsException.CliParsingExceptionType.HELP, sw.toString());
     }
 
     private CliArgumentsException errorAsException(Options cliOptions, String errorMessage) {
@@ -196,7 +195,7 @@ public class CliParserHelper {
         pw.println();
         HelpFormatter hf = createHelpFormatter();
         printUsage(pw, hf, cliOptions);
-        return new CliArgumentsException(errorMessage, CliParsingExceptionType.ERROR,
+        return new CliArgumentsException(errorMessage, CliArgumentsException.CliParsingExceptionType.ERROR,
                 sw.toString());
     }
 

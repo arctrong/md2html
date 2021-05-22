@@ -40,7 +40,7 @@ class CliParserHelperTest {
         assertEquals(Paths.get("input.md"), options.getInputFile());
         assertEquals(Paths.get("doc/output.htm"), options.getOutputFile());
         assertEquals("someTitle", options.getTitle());
-        assertEquals(Paths.get("../templateDir"), options.getTemplateDir());
+        assertEquals(Paths.get("../templateDir"), options.getTemplate());
         assertEquals(1, options.getLinkCss().size());
         assertEquals("someStyles.css", options.getLinkCss().get(0));
         assertNull(options.getIncludeCss());
@@ -138,7 +138,7 @@ class CliParserHelperTest {
         assertEquals(o1.getInputFile(), o2.getInputFile());
         assertEquals(o1.getOutputFile(), o2.getOutputFile());
         assertEquals(o1.getTitle(), o2.getTitle());
-        assertEquals(o1.getTemplateDir(), o2.getTemplateDir());
+        assertEquals(o1.getTemplate(), o2.getTemplate());
         assertEquals(o1.getIncludeCss(), o2.getIncludeCss());
         assertEquals(o1.getLinkCss(), o2.getLinkCss());
         assertEquals(o1.isForce(), o2.isForce());
