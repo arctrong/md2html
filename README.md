@@ -1,7 +1,7 @@
 
 # md2html
 
-![](html_resources/pict/logo.png)
+![](doc/pict/logo.png)
 
 Simple CLI tool for generating HTML documents out of Markdown documents.
 
