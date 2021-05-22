@@ -30,8 +30,8 @@ def strip_extension(path):
 
 
 def extract_metadata_section(text):
-    match = re.search('^\\s*<!--METADATA(.*?)-->', text, flags=re.IGNORECASE + re.DOTALL)
-    return (match.group(1), match.end()) if match else (None, 0)
+    match = re.search('^\\s*(<!--METADATA(.*?)-->)', text, flags=re.IGNORECASE + re.DOTALL)
+    return (match.group(2), match.start(1), match.end(1)) if match else (None, 0, 0)
 
 
 def parse_metadata(metadata_section):
@@ -90,7 +90,7 @@ def parse_md2html_arguments(*args):
     parser = argparse.ArgumentParser(description='Converts Markdown document into HTML document.',
                                      formatter_class=formatter_creator, add_help=False)
     parser.add_argument("-h", "--help", help="shows this help message and exit", action='store_true')
-    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str, required=True)
+    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str)
     parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name with '.html' "
                                                "extension", type=str)
     parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an empty title", type=str)
@@ -177,9 +177,9 @@ def md2html(**kwargs):
 
     substitutions = {'title': title}
 
-    metadata_section, metadata_length = extract_metadata_section(md_lines)
+    metadata_section, metadata_start, metadata_end = extract_metadata_section(md_lines)
     if metadata_section:
-        md_lines = md_lines[metadata_length:]
+        md_lines = md_lines[:metadata_start] + md_lines[metadata_end:]
         metadata, errors = parse_metadata(metadata_section)
         if verbose:
             for error in errors:
