@@ -279,7 +279,7 @@ page metadata is:
 > the source texts. This must not be a problem for personal use but may be a security issue when 
 > accepting source texts from untrusted third-parties.
 > 
-> 3. The page metadata processing will not fail the page generation. If there are incorrect 
+> __3.__ The page metadata processing will not fail the page generation. If there are incorrect 
 > fragments in metadata, reasonable attempts will be done to recognize the correct elements, 
 > all the other perts will be ignored. If verbose mode is on then a warning messages will be
 > output to the console.
