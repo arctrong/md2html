@@ -5,6 +5,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="210mm"
@@ -26,7 +27,7 @@
        inkscape:isstock="true">
       <path
          transform="scale(0.4)"
-         style="fill-rule:evenodd;stroke:#008080;stroke-width:1pt;stroke-opacity:1;fill:#008080;fill-opacity:1"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
          d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
          id="path1140" />
     </marker>
@@ -95,18 +96,33 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="524.50505"
-     inkscape:cy="427.48452"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="470.02967"
+     inkscape:cy="368.939"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g1130"
      inkscape:document-rotation="0"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="995"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-midpoints="false"
+     inkscape:snap-center="false"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-global="false"
+     inkscape:object-paths="false"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-others="false"
+     inkscape:bbox-nodes="true"
+     inkscape:bbox-paths="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-page="false"
+     inkscape:snap-grids="true"
+     inkscape:snap-to-guides="true"
+     inkscape:snap-midpoints="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -128,8 +144,8 @@
        id="rect849"
        width="65.532425"
        height="59.308678"
-       x="8.9887133"
-       y="8.2338076"
+       x="-153.46545"
+       y="-11.874526"
        inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
        inkscape:export-xdpi="96.400002"
        inkscape:export-ydpi="96.400002" />
@@ -138,42 +154,42 @@
        id="rect851"
        width="92.257942"
        height="59.308678"
-       x="18.507385"
-       y="34.959324"
+       x="-143.94678"
+       y="14.85099"
        inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
        inkscape:export-xdpi="96.400002"
        inkscape:export-ydpi="96.400002" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:20.5017px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="40.83968"
-       y="85.481544"
+       x="-121.61449"
+       y="65.373215"
        id="text839"
        inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
        inkscape:export-xdpi="96.400002"
        inkscape:export-ydpi="96.400002"><tspan
          sodipodi:role="line"
          id="tspan837"
-         x="40.83968"
-         y="85.481544"
+         x="-121.61449"
+         y="65.373215"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-width:0.512543">HTML</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:20.5017px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="17.042984"
-       y="30.199986"
+       x="-145.41118"
+       y="10.091652"
        id="text847"
        inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
        inkscape:export-xdpi="96.400002"
        inkscape:export-ydpi="96.400002"><tspan
          sodipodi:role="line"
          id="tspan845"
-         x="17.042984"
-         y="30.199986"
+         x="-145.41118"
+         y="10.091652"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-width:0.512543">MD</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:2.45053;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Mend)"
-       d="M 53.961957,17.440775 C 92.470238,5.4155206 106.48901,26.406698 85.611628,62.130545"
+       d="m -108.49221,-2.6675583 c 38.508282,-12.0252547 52.527054,8.965923 31.649672,44.6897703"
        id="path853"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
@@ -184,8 +200,8 @@
        style="fill:#ffff00;stroke:none;stroke-width:1.44115"
        id="path854"
        sodipodi:sides="7"
-       sodipodi:cx="18.258805"
-       sodipodi:cy="41.973004"
+       sodipodi:cx="-144.19536"
+       sodipodi:cy="21.86467"
        sodipodi:r1="14.036164"
        sodipodi:r2="7.0180821"
        sodipodi:arg1="0.70862627"
@@ -193,7 +209,7 @@
        inkscape:flatsided="false"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 28.915855,51.107618 -7.837896,-2.707653 -3.316322,7.600395 -2.76992,-7.816107 -8.0099202,2.145963 4.3838622,-7.038873 -6.6718861,-4.924422 8.2365061,-0.961225 -0.309785,-8.286617 5.886894,5.840246 6.28559,-5.408821 -0.89567,8.243893 8.147788,1.541928 -7.003776,4.439719 z"
+       d="m -133.53831,30.999284 -7.83789,-2.707652 -3.31633,7.600394 -2.76992,-7.816107 -8.00992,2.145964 4.38387,-7.038874 -6.67189,-4.924422 8.23651,-0.961224 -0.30979,-8.2866175 5.8869,5.8402465 6.28559,-5.4088211 -0.89567,8.2438921 8.14778,1.541928 -7.00377,4.43972 z"
        inkscape:transform-center-x="-0.11062991"
        inkscape:transform-center-y="0.58671847"
        inkscape:export-xdpi="96.400002"
@@ -203,8 +219,8 @@
        style="fill:#ffff00;stroke:none;stroke-width:1.44115"
        id="path858"
        sodipodi:sides="7"
-       sodipodi:cx="70.939625"
-       sodipodi:cy="31.876916"
+       sodipodi:cx="-91.514538"
+       sodipodi:cy="11.768584"
        sodipodi:r1="14.036164"
        sodipodi:r2="7.0180821"
        sodipodi:arg1="0.70862627"
@@ -212,7 +228,7 @@
        inkscape:flatsided="false"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 81.596679,41.011531 -7.837895,-2.707652 -3.316322,7.600394 -2.76992,-7.816107 -8.009921,2.145964 4.383862,-7.038874 -6.671886,-4.924422 8.236506,-0.961224 -0.309784,-8.286617 5.886893,5.840246 6.285591,-5.408821 -0.895671,8.243892 8.147788,1.541928 -7.003776,4.43972 z"
+       d="m -80.857491,20.903199 -7.837896,-2.707653 -3.316322,7.600395 -2.769919,-7.816107 -8.009922,2.145963 4.383863,-7.038873 -6.671883,-4.9244222 8.236503,-0.9612247 -0.309785,-8.2866171 5.886894,5.840246 6.28559,-5.40882064 -0.89567,8.24389234 8.147788,1.5419281 -7.003776,4.4397192 z"
        inkscape:transform-center-x="-0.11062353"
        inkscape:transform-center-y="0.58671456"
        inkscape:export-xdpi="96.400002"
@@ -222,8 +238,8 @@
        style="fill:#ffff00;stroke:none;stroke-width:1.44115"
        id="path860"
        sodipodi:sides="7"
-       sodipodi:cx="50.359158"
-       sodipodi:cy="56.211064"
+       sodipodi:cx="-112.09501"
+       sodipodi:cy="36.10273"
        sodipodi:r1="14.036164"
        sodipodi:r2="7.0180821"
        sodipodi:arg1="0.70862627"
@@ -231,7 +247,7 @@
        inkscape:flatsided="false"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 61.016208,65.345678 -7.837895,-2.707653 -3.316322,7.600395 -2.76992,-7.816107 -8.009921,2.145963 4.383862,-7.038873 -6.671886,-4.924422 8.236506,-0.961225 -0.309784,-8.286617 5.886893,5.840246 6.28559,-5.408821 -0.89567,8.243893 8.147788,1.541928 -7.003776,4.439719 z"
+       d="m -101.43796,45.237344 -7.83789,-2.707652 -3.31633,7.600394 -2.76992,-7.816107 -8.00992,2.145964 4.38387,-7.038874 -6.67189,-4.924422 8.23651,-0.961224 -0.30979,-8.286617 5.88689,5.840245 6.2856,-5.40882 -0.89568,8.243892 8.147793,1.541928 -7.003773,4.43972 z"
        inkscape:transform-center-x="-0.11062631"
        inkscape:transform-center-y="0.58671815"
        inkscape:export-xdpi="96.400002"
@@ -239,94 +255,331 @@
     <path
        id="rect912"
        style="fill:#ffdd55;stroke:#a02c2c;stroke-width:0.286652;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 161.37801,22.355627 v 6.26363 h -22.70622 v 14.42409 h 22.70622 v 6.26363 l 26.44939,-13.47567 z"
+       d="m 254.94438,41.625 v 6.26363 h -22.70622 v 14.42409 h 22.70622 v 6.26363 l 26.44939,-13.47567 z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <path
        id="path924"
        style="fill:#ffdd55;stroke:#a02c2c;stroke-width:0.286652;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 158.06434,61.078127 v 6.26363 h 22.70621 v 14.4241 h -22.70621 v 6.26363 l -26.44939,-13.47568 z"
+       d="m 299.9729,53.32866 v 6.26363 h 22.70621 v 14.4241 H 299.9729 v 6.26363 L 273.52351,66.80434 Z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:12.7px;line-height:1.25;font-family:sans-serif;fill:#0066ff;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="31.053398"
-       y="165.43756"
+       x="79.454018"
+       y="64.380058"
        id="text881"
-       inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
-       inkscape:export-xdpi="58.72401"
-       inkscape:export-ydpi="58.72401"><tspan
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
+       inkscape:export-xdpi="60.259911"
+       inkscape:export-ydpi="60.259911"><tspan
          sodipodi:role="line"
          id="tspan879"
-         x="31.053398"
-         y="165.43756"
+         x="79.454018"
+         y="64.380058"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#0066ff;stroke-width:0.512543">H</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:12.7px;line-height:1.25;font-family:sans-serif;fill:#800000;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="19.099607"
-       y="154.11804"
+       x="67.500221"
+       y="53.260536"
        id="text885"
-       inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
-       inkscape:export-xdpi="58.72401"
-       inkscape:export-ydpi="58.72401"><tspan
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
+       inkscape:export-xdpi="60.259911"
+       inkscape:export-ydpi="60.259911"><tspan
          sodipodi:role="line"
          id="tspan883"
-         x="19.099607"
-         y="154.11804"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#800000;stroke-width:0.512543">MD</tspan></text>
-    <path
-       style="fill:none;stroke:#008080;stroke-width:1.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutM)"
-       d="m 21.784507,155.72956 v 4.79582 h 5.664265"
-       id="path887"
-       sodipodi:nodetypes="ccc"
-       inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
-       inkscape:export-xdpi="58.72401"
-       inkscape:export-ydpi="58.72401" />
+         x="67.500221"
+         y="53.260536"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#800000;stroke-width:0.512543">M</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="4.7625003"
-       y="125.67709"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:82.3032;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="4.0141459"
+       y="9.4950304"
        id="text1212"><tspan
+         x="4.0141459"
+         y="9.4950304"><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">Export the </tspan><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">selection into PNG of size </tspan></tspan><tspan
+         x="4.0141459"
+         y="14.786693"><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">48 </tspan><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">by 48 px, use it as the favicon </tspan></tspan><tspan
+         x="4.0141459"
+         y="20.078355"><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">image. Then open the PNG file in </tspan></tspan><tspan
+         x="4.0141459"
+         y="25.370017"><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">GIMP and export it into ICO format for </tspan></tspan><tspan
+         x="4.0141459"
+         y="30.661679"><tspan
+           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">Windows explorer context menu item.</tspan></tspan></text>
+    <g
+       id="g1135"
+       transform="translate(8.6060789,-96.537753)"
+       style="opacity:0.998">
+      <circle
+         style="fill:none;stroke:#800000;stroke-width:1.55203"
+         id="path891"
+         cx="164.87231"
+         cy="124.2063"
+         r="10.882045"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\target.png"
+         inkscape:export-xdpi="58"
+         inkscape:export-ydpi="58" />
+      <path
+         style="fill:none;stroke:#800000;stroke-width:0.821286px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 164.87234,107.36994 v 33.67273"
+         id="path893"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\target.png"
+         inkscape:export-xdpi="58"
+         inkscape:export-ydpi="58" />
+      <path
+         style="fill:none;stroke:#800000;stroke-width:0.821286px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 181.70872,124.20629 H 148.03599"
+         id="path895"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\target.png"
+         inkscape:export-xdpi="58"
+         inkscape:export-ydpi="58" />
+    </g>
+    <path
+       id="path904"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -98.065313,120.09643 -33.442997,25.86605 -33.44299,-25.86605"
+       sodipodi:nodetypes="ccc" />
+    <circle
+       style="fill:#ff7f2a;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle896"
+       cx="-164.95131"
+       cy="120.09643"
+       r="12.633854" />
+    <circle
+       style="fill:#5599ff;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle900"
+       cx="-131.50833"
+       cy="145.96246"
+       r="19.4736" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:14.1111px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="-164.95131"
+       y="125.22617"
+       id="text909"
+       inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
+       inkscape:export-xdpi="96.400002"
+       inkscape:export-ydpi="96.400002"><tspan
          sodipodi:role="line"
-         id="tspan1210"
-         x="4.7625003"
-         y="125.67709"
-         style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">How to export to *.ico file.</tspan><tspan
+         id="tspan907"
+         x="-164.95131"
+         y="125.22617"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.1111px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;stroke-width:0.512543">M</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:20.5017px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="-131.50832"
+       y="153.41537"
+       id="text917"
+       inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
+       inkscape:export-xdpi="96.400002"
+       inkscape:export-ydpi="96.400002"><tspan
          sodipodi:role="line"
-         x="4.7625003"
-         y="130.96875"
-         style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583"
-         id="tspan1214">Export the selection into PNG with size 48 by 48 px.</tspan><tspan
+         id="tspan915"
+         x="-131.50832"
+         y="153.41537"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;stroke-width:0.512543">H</tspan></text>
+    <circle
+       style="fill:#ff7f2a;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle919"
+       cx="-98.065315"
+       cy="120.09643"
+       r="12.633854" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:14.1111px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="-98.065315"
+       y="125.22617"
+       id="text923"
+       inkscape:export-filename="D:\8230o\Projects\md2html\test\test_files\logo.png"
+       inkscape:export-xdpi="96.400002"
+       inkscape:export-ydpi="96.400002"><tspan
          sodipodi:role="line"
-         x="4.7625003"
-         y="136.26041"
-         style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583"
-         id="tspan1216">Open this PNG file in GIMP and export it into ICO.</tspan></text>
+         id="tspan921"
+         x="-98.065315"
+         y="125.22617"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.1111px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;stroke-width:0.512543">M</tspan></text>
+    <ellipse
+       style="fill:#5599ff;fill-opacity:1;stroke:#002255;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle929"
+       cx="-49.150658"
+       cy="-126.10235"
+       rx="21.049406"
+       ry="21.042818"
+       transform="scale(-1)"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="path946"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:#803300;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 28.462126,129.82927 c -1.02564,-0.22027 -2.09004,-0.33623 -3.18152,-0.33623 -8.32595,0 -15.07545,6.74739 -15.07545,15.07073 0,8.32334 6.7495,15.07074 15.07545,15.07074 8.11055,0 14.72517,-6.40281 15.06199,-14.42801 z"
+       sodipodi:nodetypes="cssscc"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="circle927"
+       style="fill:#ff7f2a;fill-opacity:1;stroke:#803300;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 69.845886,129.82927 c 1.02565,-0.22027 2.09004,-0.33623 3.181534,-0.33623 8.32594,0 15.07545,6.74739 15.07545,15.07073 0,8.32334 -6.74951,15.07074 -15.07545,15.07074 -8.110554,0 -14.725184,-6.40281 -15.061994,-14.42801 z"
+       sodipodi:nodetypes="cssscc"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.0731px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="73.015999"
+       y="148.24821"
+       id="text933"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96.400002"
+       inkscape:export-ydpi="96.400002"
+       transform="scale(1.0001565,0.99984352)"><tspan
+         sodipodi:role="line"
+         id="tspan931"
+         x="73.015999"
+         y="148.24821"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0731px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;stroke-width:0.512543">M</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:14.635px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#00112b;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="49.142963"
+       y="131.44229"
+       id="text937"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96.400002"
+       inkscape:export-ydpi="96.400002"
+       transform="scale(1.0001565,0.99984352)"><tspan
+         sodipodi:role="line"
+         id="tspan935"
+         x="49.142963"
+         y="131.44229"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#00112b;stroke-width:0.512543">H</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.0731px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#2b1100;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="25.269915"
+       y="148.24821"
+       id="text943"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96.400002"
+       inkscape:export-ydpi="96.400002"
+       transform="scale(1.0001565,0.99984352)"><tspan
+         sodipodi:role="line"
+         id="tspan941"
+         x="25.269915"
+         y="148.24821"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0731px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#2b1100;stroke-width:0.512543">M</tspan></text>
+    <path
+       style="fill:#5599ff;fill-opacity:1;stroke:#6b462d;stroke-width:0.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 69.846671,129.83363 -11.88047,15.37723"
+       id="path1170"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:#5599ff;fill-opacity:1;stroke:#6b462d;stroke-width:0.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 28.462126,129.82927 11.88047,15.37723"
+       id="path1196"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path947"
+       cx="75.440475"
+       cy="57.958313"
+       r="2.1700869"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
+       inkscape:export-xdpi="60"
+       inkscape:export-ydpi="60" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle959"
+       cx="83.625603"
+       cy="50.427994"
+       r="2.1700869"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
+       inkscape:export-xdpi="60"
+       inkscape:export-ydpi="60" />
+    <image
+       width="51.554924"
+       height="27.856289"
+       preserveAspectRatio="none"
+       style="stroke-width:1.90913;image-rendering:optimizeSpeed"
+       xlink:href="data:image/png;base64,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 "
+       id="image971"
+       x="4.5169978"
+       y="37.78223" />
     <circle
        style="fill:none;stroke:#800000;stroke-width:0.499999"
-       id="path891"
-       cx="148.03436"
-       cy="115.22604"
+       id="circle975"
+       cx="253.17819"
+       cy="16.069048"
        r="3.5057287"
        inkscape:export-filename="D:\8230o\Projects\md2html\demo\target.png"
        inkscape:export-xdpi="58"
        inkscape:export-ydpi="58" />
     <path
        style="fill:none;stroke:#800000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 148.03437,109.80209 V 120.65"
-       id="path893"
+       d="m 253.1782,10.645095 v 10.84791"
+       id="path977"
        inkscape:export-filename="D:\8230o\Projects\md2html\demo\target.png"
        inkscape:export-xdpi="58"
        inkscape:export-ydpi="58" />
     <path
        style="fill:none;stroke:#800000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 153.45833,115.22604 H 142.61042"
-       id="path895"
+       d="M 258.60216,16.069045 H 247.75425"
+       id="path979"
        inkscape:export-filename="D:\8230o\Projects\md2html\demo\target.png"
        inkscape:export-xdpi="58"
        inkscape:export-ydpi="58" />
+    <g
+       id="g1140"
+       transform="translate(8.6060789,-100.6537)"
+       style="opacity:0.998">
+      <circle
+         style="fill:none;stroke:#800000;stroke-width:0.844716"
+         id="circle981"
+         cx="164.87233"
+         cy="164.15839"
+         r="5.9227185"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\target-smaller.png"
+         inkscape:export-xdpi="58"
+         inkscape:export-ydpi="58" />
+      <path
+         style="fill:none;stroke:#800000;stroke-width:0.446997px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 164.87235,154.99494 v 18.32689"
+         id="path983"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\target-smaller.png"
+         inkscape:export-xdpi="58"
+         inkscape:export-ydpi="58" />
+      <path
+         style="fill:none;stroke:#800000;stroke-width:0.446997px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 174.0358,164.15838 H 155.70891"
+         id="path985"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\target-smaller.png"
+         inkscape:export-xdpi="58"
+         inkscape:export-ydpi="58" />
+    </g>
+    <g
+       id="g1130"
+       transform="matrix(1.4803272,0,0,1.4811144,-55.900814,-24.975294)"
+       style="stroke-width:0.675347" />
   </g>
+  <style
+     type="text/css"
+     id="style1004">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style>
 </svg>

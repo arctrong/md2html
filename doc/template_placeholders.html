@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head><title>md2html: Template placeholders</title>
+<meta charset="utf-8" />
+</head>
+<style>
+body {color: whitesmoke; font-size: x-large; margin: 0; padding: 50px 50px 0; background-color: darkslategray;}
+div#header_area {padding: 1px 50px; margin: -51px -50px 0; background-color: teal;}
+div#header {width: 1000px;}
+div#content {width: 1000px;}
+hr {background: whitesmoke; height: 1px; border: 0px;}
+table {border-spacing: 0; border-collapse: collapse;}
+th {background-color: steelblue;}
+td, th {border: solid 1px whitesmoke; padding: 7px 14px;}
+</style>
+<body>
+<div id="header_area">
+    <div id="header">
+        <p><i>This is the beginning of the template header.</i></p>
+        <p><a href="../readme.html"><img alt="TO HOME PAGE" src="pict/home_whitesmoke.svg" 
+            title="To the Home page" /></a></p>
+        <table>
+        <thead>
+        <tr><th>Placeholder key</th><th>Resolved value</th></tr>
+        </thead>
+        <tr><td>${placeholder1}</td><td>${placeholder1}</td></tr>
+        <tr><td>${Placeholder1}</td><td>Value1</td></tr>
+        <tr><td>${placeholder2}</td><td>${placeholder2}</td></tr>
+        </table>
+        <p><i>This is the end of the template header.</i></p>
+    </div>
+</div>
+
+<div id="content">
+<h1 id="template-placeholders-usage-demo">Template placeholders usage demo</h1>
+<p>This page is generated using a special template that demonstrates template placeholders usage.</p>
+<p>The predefined <code>${styles}</code> placeholder is not used in this template, so no CSS were added 
+during the page processing. The styles are defined directly in the template.</p>
+<p>Several custom template placeholders were defined in this page metadata correctly and incorrectly:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder key</th>
+<th>Placeholder definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>${placeholder1}</code></td>
+<td>undefined and must be represented as is</td>
+</tr>
+<tr>
+<td><code>${Placeholder1}</code></td>
+<td>defined, placeholder keys are case sensitive</td>
+</tr>
+<tr>
+<td><code>${placeholder2}</code></td>
+<td>defined but its value is not a string</td>
+</tr>
+</tbody>
+</table>
+<p>Incorrectly defined placeholders are represented as is, the page processing doesn't stop.</p>
+<p>Also note that using double dollar character (<code>$${Placeholder1}</code>) in a template escapes the 
+dollar character from being interpreted as the a placeholder marker.</p>
+</div>
+
+</body>
+</html>

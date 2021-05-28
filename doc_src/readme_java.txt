@@ -22,11 +22,16 @@ Java runtime (JRE) 8 or higher.
 # Installation
 
 The Java implementation is shipped together with other implementations that share some common
-artifacts like templates, scripts, and documentation. First see the [Home page](../readme.html) 
-for the common installation instructions.
+artifacts. See the [Home page](../readme.html#implementation_specific_documents_links) for more
+details. Here's how the Java version may be installed:
 
-Unlike the Python version, Java version in this distribution doesn't contain the executable
-artifacts. They must be built or taken separately.
+- Place (or clone from the VCS) directory `md2html` (that contains directory `java`) wherever
+    you like.
+- Define `MD2HTML_HOME` environment variable as the absolute path of directory `md2html`.
+- Take or build the executable artifact (see below).
+
+Unlike the Python version, the Java version in this distribution doesn't contain the executable
+artifacts. The executable artifact must be built or taken separately.
 
 
 ## Using a release build
@@ -38,7 +43,7 @@ The latest release must be available along with the source code. A release is a 
 
 ## Building the project
 
-This needs Java Development Kit (JDK) 8 or higher and [Maven](https://maven.apache.org/).
+This needs Java Development Kit (JDK, not JRE) 8 or higher and [Maven](https://maven.apache.org/).
 
 In a command line terminal execute:
 
@@ -58,6 +63,8 @@ The following must be output as the process ends:
 
 File `md2html-<version>-bin.jar` must appear in the directory `%MD2HTML_HOME%\java\target\`.
 
+> __Note.__ The tests and the whole build will fail if the variable `MD2HTML_HOME` is not defined.
+
 
 ## Artifact separate usage
 
@@ -68,32 +75,20 @@ work if those options are explicitly specified by the arguments.
 ----------------------------------------------------------------------------------------------------
 # Usage
 
-The utility provides its usage information in a standard manner:
+A simple usage example is:
 
 ````shell
->java -jar %MD2HTML_HOME%\java\target\md2html-0.1.1-bin.jar
-
-usage: java Md2Html [-h] [-i <arg>] [-o <arg>] [-t <arg>] [--templates <arg>]
-       [--link-css <arg>] [--include-css <arg>] [--no-css] [-f] [-v] [-r]
-
- -h,--help                show this help message and exit
- -i,--input <arg>         input Markdown file name (mandatory)
- -o,--output <arg>        output HTML file name, defaults to input file name
-                          with '.html' extension
- -t,--title <arg>         the HTML page title, if omitted there will be an empty
-                          title
-    --templates <arg>     custom template directory
-    --link-css <arg>      links CSS file, multiple entries allowed
-    --include-css <arg>   includes content of the CSS file into HTML, multiple
-                          entries allowed
-    --no-css              creates HTML with no CSS. If no CSS-related arguments
-                          is specified, the default CSS will be included
- -f,--force               rewrites HTML output file even if it was modified
-                          later than the input file
- -v,--verbose             outputs human readable information messages
- -r,--report              if HTML file is generated, outputs the path of this
-                          file, incompatible with -v
+>java -jar %MD2HTML_HOME%\java\target\md2html-0.1.1-bin.jar -i test.txt
 ````
+
+This will convert file `test.txt` into file `test.html` using default parameters. For other
+options use argument `-h` or run the module without arguments.
+
+----------------------------------------------------------------------------------------------------
+# Development
+
+There are no additional notes to the building process description above. The packaging and the
+tests are defined in the source code and run automatically when the project is built.
 
 ----------------------------------------------------------------------------------------------------
 

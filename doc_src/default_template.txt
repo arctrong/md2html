@@ -8,7 +8,6 @@ CSS are included into the HTML document (try to press `Ctrl`+`U` to see the sour
 
 # Go back
 
-To go to the Home page click the arrow image below.
+To go to the Home page click the image below.
 
-[![TO HOME PAGE](pict/arrow-left.png)](../readme.html)
- 
+[![TO HOME PAGE](pict/home_black.svg)](../readme.html)

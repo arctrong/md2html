@@ -1,0 +1,21 @@
+<!--METADATA {"custom_template_placeholders": {"Placeholder1": "Value1", "placeholder2": 150}} -->
+
+# Template placeholders usage demo
+
+This page is generated using a special template that demonstrates template placeholders usage.
+
+The predefined `${styles}` placeholder is not used in this template, so no CSS were added 
+during the page processing. The styles are defined directly in the template.
+
+Several custom template placeholders were defined in this page metadata correctly and incorrectly:
+
+Placeholder key	| Placeholder definition
+---|---
+`${placeholder1}` | undefined and must be represented as is
+`${Placeholder1}` | defined, placeholder keys are case sensitive
+`${placeholder2}` | defined but its value is not a string
+
+Incorrectly defined placeholders are represented as is, the page processing doesn't stop.
+
+Also note that using double dollar character (`$${Placeholder1}`) in a template escapes the 
+dollar character from being interpreted as the a placeholder marker.

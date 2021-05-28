@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head><title>${title}</title>
+<meta charset="utf-8" />
+</head>
+<style>
+body {color: whitesmoke; font-size: x-large; margin: 0; padding: 50px 50px 0; background-color: darkslategray;}
+div#header_area {padding: 1px 50px; margin: -51px -50px 0; background-color: teal;}
+div#header {width: 1000px;}
+div#content {width: 1000px;}
+hr {background: whitesmoke; height: 1px; border: 0px;}
+table {border-spacing: 0; border-collapse: collapse;}
+th {background-color: steelblue;}
+td, th {border: solid 1px whitesmoke; padding: 7px 14px;}
+</style>
+<body>
+<div id="header_area">
+    <div id="header">
+        <p><i>This is the beginning of the template header.</i></p>
+        <p><a href="../readme.html"><img alt="TO HOME PAGE" src="pict/home_whitesmoke.svg" 
+            title="To the Home page" /></a></p>
+        <table>
+        <thead>
+        <tr><th>Placeholder key</th><th>Resolved value</th></tr>
+        </thead>
+        <tr><td>$${placeholder1}</td><td>${placeholder1}</td></tr>
+        <tr><td>$${Placeholder1}</td><td>${Placeholder1}</td></tr>
+        <tr><td>$${placeholder2}</td><td>${placeholder2}</td></tr>
+        </table>
+        <p><i>This is the end of the template header.</i></p>
+    </div>
+</div>
+
+<div id="content">
+${content}
+</div>
+
+</body>
+</html>

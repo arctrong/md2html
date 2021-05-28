@@ -7,12 +7,11 @@
 
 ![LOGO](doc/pict/logo.png "logo")
 
-This is a simple command line utility that easily converts single _Markdown_ documents into
-single static HTML pages. It's provided with a suitable HTML templates and scripts for batch
-processing and integration.
+This is a command line utility that converts _Markdown_ documents into static HTML pages. 
+It is provided with HTML templates, CSS, and scripts for batch processing and integration.
 
-This document describes the converter's features and restrictions, gives usage notes, and
-itself demonstrates a possible obtainable result.
+This documentation is created using this utility and itself demonstrates a possible obtainable
+result.
 
 ## About Markdown
 
@@ -37,7 +36,7 @@ that will look like this:
 Note that the closing angle bracket (`>`) is also a part of the syntax. It marks up the line
 as a `<blockquote>` HTML element.
 
-This must be mentioned that _Markdown_ is intended to be __easy-to-write__ and __easy-to-read__
+It must be emphasized that _Markdown_ is intended to be __easy-to-write__ and __easy-to-read__
 in plain text. It contains just a very small subset of HTML features but allows inclusion of
 direct HTML code.
 
@@ -47,26 +46,30 @@ more details about _Markdown_ and its syntax.
 ----------------------------------------------------------------------------------------------------
 # Implementations
 
-This utility has two implementations: in Python and in Java. They work mostly the same way,
-have the same command line syntax, use the same source files and templates. The two
-implementations are shipped together as source code and share some common artifacts like
-templates, scripts, and documentation. The implementations can be separated though this may
-hardly be needed as for now the overall size of the distribution is pretty small. This document
-contains information that is common for all the implementations. Implementation-specific details 
-(like system requirements and installation) are described in separate documents:
+This utility has two _implementations_ (they will be called _versions_ sometimes in this
+documentation): in Python and in Java. They work mostly the same way, have the same command line 
+interface, can process the same input, are shipped together as source code and share some common
+artifacts like templates, scripts, and this documentation. Despite this,  the versions are not
+interdependent and can be used separately. This document contains information that is common for
+all implementations. Implementation-specific details (like system requirements and installation)
+are described in separate documents:
 
 <a name="implementation_specific_documents_links"></a>
 
-- [for Python implementation](doc/readme_py.html)
-- [for Java implementation](doc/readme_java.html)
+- [for Python version](doc/readme_py.html)
+- [for Java version](doc/readme_java.html)
 
 ----------------------------------------------------------------------------------------------------
 # Installation
 
-- Place the directory containing this file wherever you like.
-- Define `MD2HTML_HOME` environment variable as the absolute path of this directory.
-- Then see corresponding 
-    [implementation-specific documents](#implementation_specific_documents_links)
+The Python version is ready to use though it needs the Python 3 execution environment and some
+Python packages to be installed. Java version is provided in source code; the executable artifacts
+are provided separately as release builds, or prepared users may build them themselves. The common
+installation sequence is:
+
+- Place (or clone from the VCS) directory `md2html` (that contains this file) wherever you like.
+- Define `MD2HTML_HOME` environment variable as the absolute path of directory `md2html`.
+- See corresponding [implementation-specific documents](#implementation_specific_documents_links)
     for further installation instructions.
 
 ----------------------------------------------------------------------------------------------------
@@ -78,36 +81,75 @@ A simple usage example for the Python version is:
 >python %MD2HTML_HOME%/python/md2html.py -i test.txt
 ````
 
-This will convert file `test.txt` into file `test.html` using default conversion parameters.
-The Java version will work the same way. All options are described in the 
-[implementation-specific documents](#implementation_specific_documents_links).
+This will convert file `test.txt` into file `test.html` using default parameters. The Java version
+usage is similar. 
+
+The other options are:
+
+````shell
+>python %MD2HTML_HOME%/python/md2html.py -h
+usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--template TEMPLATE]
+                  [--link-css LINK_CSS] [--include-css INCLUDE_CSS] [--no-css]
+                  [-f] [-v] [-r]
+
+Converts Markdown document into HTML document.
+
+optional arguments:
+  -h, --help            shows this help message and exit
+  -i INPUT, --input INPUT
+                        input Markdown file name (mandatory)
+  -o OUTPUT, --output OUTPUT
+                        output HTML file name, defaults to input file name with
+                        '.html' extension
+  -t TITLE, --title TITLE
+                        the HTML page title, if omitted there will be an empty
+                        title
+  --template TEMPLATE   custom template directory
+  --link-css LINK_CSS   links CSS file, multiple entries allowed
+  --include-css INCLUDE_CSS
+                        includes content of the CSS file into HTML, multiple
+                        entries allowed
+  --no-css              creates HTML with no CSS. If no CSS-related arguments is
+                        specified, the default CSS will be included
+  -f, --force           rewrites HTML output file even if it was modified later
+                        than the input file
+  -v, --verbose         outputs human readable information messages
+  -r, --report          if HTML file is generated, outputs the path of this
+                        file, incompatible with -v
+````
 
 
 ## Bulk processing
 
-File `md2html_batch.bat` may be used for generating several HTML-files in one run. It uses
-_list file_ `md2html_list.txt` in current directory. The _list file_ contains arguments for a
-single HTML-file generation per line. The first optional parameter specifies the utility
-implementation. Also the other arguments will be sent directly to the executable module. See
-the script code for more details. With the following example:
+File `bin/md2html_batch.bat` may be used for generating several HTML pages in one run. It uses
+the _list file_, the file `md2html_list.txt` in the current directory. The list file contains
+arguments for a single HTML-file generation per line. Here's an example:
 
-````shell
->%MD2HTML_HOME%\bin\md2html_batch.bat py -f
+````
+-i index.txt -o doc/index.html -t "Home page"
+-i about.txt -o doc/about.html -t "About this site"
 ````
 
-the Python version will be used and all HTML-files will be forcefully regenerated. If the first 
+The first optional argument specifies the utility implementation. The other arguments will be
+sent directly to the executable module. With the following example:
+
+````shell
+>%MD2HTML_HOME%\bin\md2html_batch.bat java -f
+````
+
+the Java version will be used and all HTML-files will be forcefully regenerated. If the first 
 argument is nether `py` nor `java` then the Python version is used.
 
-The above command may be executed in any directory and it will process the _list file_ in that
+The above command may be executed in any directory and it will process the list file in that
 directory. If `%MD2HTML_HOME%\bin` is added to the `PATH` then this prefix will not be required.
 
 
 ## Double-click script
 
 File `generate_html.bat` may be run by double-click from Windows file explorer. It works the same
-way as script `md2html_batch.bat` except it doesn't finish in case of errors/exceptions so the 
-command window remains open. This scripts is very small and may be copied to a project's
-directory where it will process the project's _list file_.
+way as script `md2html_batch.bat` except it doesn't finish in case of errors so the command
+window remains open. This scripts is very small and is intended to be copied to a project's
+directory where it will process the project's list file.
 
 
 ## Windows Explorer context menu
@@ -120,8 +162,8 @@ context menu:
 It opens a command line prompt window and allows to redefine some options. Just pressing
 `Enter` will fulfill generation with default options.
 
-To add this context menu item, press `Win`+`R`, type `regedit` and add the following keys
-and values:
+To add this context menu item, open the Windows Registry editor (press `Win`+`R`, type `regedit`
+and press `Enter`) and add the following keys and values:
 
 ````
 [HKEY_CURRENT_USER\Software\Classes\*\shell\md2html]
@@ -145,35 +187,32 @@ The following structure may be suggested for a documented project:
 ````shell
 $ tree -L 2 --charset=ascii --dirsfirst
 .
-|-- html_resources
-|   `-- pict
-|-- md2html_templates
-|   |-- template1
-|   |   `-- template.html
-|   `-- template2
-|       `-- template.html
-|-- doc1.html
-|-- doc1.txt
-|-- doc2.html
-|-- doc2.txt
+|-- doc
+|   |-- pict
+|   |   |-- favicon.png
+|   |   `-- image1.png
+|   |-- doc1.html
+|   |-- doc2.html
+|   `-- styles.css
+|-- doc_src
+|   |-- templates
+|   |   |-- custom.html
+|   |   `-- default.html
+|   |-- doc1.txt
+|   `-- doc2.txt
+|-- doc0.html
+|-- doc0.txt
 |-- generate_html.bat
 `-- md2html_list.txt
 ````
 
-- `html_resources` directory is used for images, CSS and other resources. Probably it may contain
-    other Markdown files and generated HTML documents that we don't want to have in the project's
-    root. This directory will be packaged with the HTML files in the project's root if we are 
-    going to send the documentation separately from the project. Alternatively we can use
-    directory named `doc` that would contain all necessary HTML documentation files and the
-    resources. In this case Markdown source files may be located somewhere in a directory like
-    `src`;
-- `md2html_templates` directory contains custom templates if they are used. The directory may
-    be called `md2html_template` with a single `template.html` file if only one custom template
-    is used;
-- `doc1.txt` and `doc1.html` are the Markdown document and it's corresponding generated HTML
+- `doc0.txt` and `doc0.html` are the Markdown document and it's corresponding generated HTML
     version that we want to have in the project's root;
+- `doc` directory along with file `doc0.html` contains the whole project's documentation;
+- `doc_src` directory contains all source files required for producing the project's
+    documentation (except file `doc0.txt` if we want it to be located in the project's root);
 - `generate_html.bat` --- the double-click script for the whole HTML documentation regeneration;
-- `md2html_list.txt` --- the project's _list file_.
+- `md2html_list.txt` --- the project's list file.
 
 Some elements may be omitted if they are not required.
 
@@ -205,7 +244,7 @@ grep -v '^\s*$' md2html_list.txt | sed -e 's/\r//' | while read args; do
 done
 ````
 
-This script uses the _list file_ `md2html_list.txt` that has been already mentioned in this
+This script uses the list file `md2html_list.txt` that has been already mentioned in this
 document. To add this hook create file `pre-commit` with the above content in directory
 `.git/hooks` of your Git repository.
 
@@ -230,12 +269,23 @@ page metadata is:
 }-->
 ````
 
-> NOTE! The page metadata (if recognized) may affect the HTML generation process and the final
-> HTML document in the end. But it is ignored as a part of the source document, so it will not
-> literally appear in the generated HTML.
+> __NOTE!__ __1.__ The page metadata may affect the HTML generation process and the final HTML 
+> document in the end. But it is ignored as a part of the source document, so it will not 
+> literally appear in the generated HTML code (though it anyway would not be visible as it's,
+> in fact, an HTML/XML comment).
+> 
+> __2.__ The placeholders are substituted without any checks and modifications that makes it
+> possible to inject any code (including JavaScript) into the generated HTML document via
+> the source texts. This must not be a problem for personal use but may be a security issue when 
+> accepting source texts from untrusted third-parties.
+> 
+> 3. The page metadata processing will not fail the page generation. If there are incorrect 
+> fragments in metadata, reasonable attempts will be done to recognize the correct elements, 
+> all the other perts will be ignored. If verbose mode is on then a warning messages will be
+> output to the console.
 
 The page metadata section must be the first non-space text in the source document, otherwise it
-will be ignored (and literally included as the the source text). The `METADATA` keyword is
+will be ignored (and literally left as the the source text). The `METADATA` keyword is
 case-insensitive and must follow directly after the opening marker `<!--` without
 any space. The metadata content must be a valid _JSON_ text, that means that the keys are
 case-sensitive and must be enclosed in double quotes. Also the root element must be an object
@@ -243,13 +293,10 @@ case-sensitive and must be enclosed in double quotes. Also the root element must
 
 > __NOTE!__ Opening `<!--` and closing markers `-->` must not be used inside  the metadata
 > section. Also consecutive hyphens `--` inside HTML comments probably may be a problem in some
-> browsers. In JSON strings Unicode entities may be used to resolve these issues, i.e. string
+> browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
 > `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
-> page content and the context, opening and closing markers, even when escaped, may cause
-> unexpected effects. Check it first if you really need to use these symbols.
-
-If page metadata section found but its content cannot be recognized it will be ignored. If 
-verbose mode is on then a warning messages will be output in the console.
+> page content and the context, opening and closing markers, even when escaped in JSON, may 
+> cause unexpected effects. Check it first if you really need to use these symbols.
 
 The following metadata parameters are supported:
 
@@ -281,19 +328,16 @@ placeholders are implemented:
 > processed.
 > 
 > 2\. Though the Python version will recognize placeholders in format `$name` (without curly
-> braces) it's not recommended to use them.
-
-The template is specified by directory in order to retain compatibility in case of further 
-modification of the utility.
+> braces), it's better not to use them for compatibility.
 
 This document is created using a __custom template__ that contains specific elements and so 
 cannot be set as the default. If you want to use this template in your project, just make a
 copy of corresponding files (the custom template and the additional CSS file) and change them
 accordingly.
 
-If no template is specified then the __default template__ is used. This template must be suitable
-for most documentation tasks. It also may be used and specified explicitly as any other
-template.
+If no template is specified then the __default template__ is used. This default template was 
+developed empirically and must be suitable for most documentation tasks. It also may be used
+and specified explicitly as any other template.
 
 
 ## CSS
@@ -304,7 +348,7 @@ use pictures and other resources). Command line arguments can redefine this beha
 ----------------------------------------------------------------------------------------------------
 # Demo
 
-This document itself demonstrates the capabilities of this implementation. This section provides
+This document itself demonstrates the capabilities of this converter. This section provides
 some other examples. See the source Markdown files, like [this](readme.txt), to know how such
 results may be obtained.
 
@@ -349,8 +393,9 @@ required.
 <a name="anchor_demo"></a>
 
 An image may be used as a link text. So the following code 
-`[![](doc/pict/target.png)](readme.html#anchor_demo)` will create the following link:
-[![](doc/pict/target.png)](readme.html#anchor_demo).
+`[![TARGET](doc/pict/target.png)](readme.html#anchor_demo)` will create the following link:
+
+[![TARGET](doc/pict/target.png)](readme.html#anchor_demo)
 
 > To place an anchor, the following code was used: `<a name="anchor_demo"></a>`.
 
@@ -373,7 +418,8 @@ Blockquotes are inserted by starting each line with `> `.
 
 > Links, images and some other Markdown elements may be used inside `blockquote`s: 
 > 
-> - Here's a link with a clickable image: [![](doc/pict/target.png)](readme.html#anchor_demo).
+> - Here's a link with a clickable image:    
+>   [![TARGET](doc/pict/target-smaller.png)](readme.html#anchor_demo)
 > - Also a list inside this `blockquote` is use for demonstration.
 
 
@@ -396,7 +442,7 @@ If we want to just align text we can use a table without a header:
 | 50 | 60  | 70  | 80  |
 | 90 | 100 | 110 | 120 |
 
-> __Note.__ Small extra gap appears above header-less tables that is not avoidable so far.
+> __Note.__ Small extra gap appears above header-less tables that is not avoidable as far now.
 
 Markdown doesn't have syntax for different table styles, but some trick may be used to get 
 this --- we can add an invisible element (an empty `<div>` in this case)
