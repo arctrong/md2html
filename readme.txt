@@ -43,12 +43,26 @@ direct HTML code.
 [This site](https://daringfireball.net/projects/markdown/) (among others) may be viewed for
 more details about _Markdown_ and its syntax.
 
+
+## Security considerations
+
+<a name="html_code_inclision"></a>
+
+This utility doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
+may contain JavaScript that will be translated unchanged into the generated HTML page. This
+must not be a problem for personal use but probably may be a security issue when converting and
+publishing source texts from untrusted third-parties. Click the image below to see how it may
+look like.
+
+<img src="doc/pict/box.png" style="cursor: pointer;" onclick="alert(
+'This is just a message but might be any JavaScript code.');" />
+
 ----------------------------------------------------------------------------------------------------
 # Implementations
 
 This utility has two _implementations_ (they will be called _versions_ sometimes in this
 documentation): in Python and in Java. They work mostly the same way, have the same command line 
-interface, can process the same input, are shipped together as source code and share some common
+syntax, process the same input, are shipped together as source code and share some common
 artifacts like templates, scripts, and this documentation. Despite this,  the versions are not
 interdependent and can be used separately. This document contains information that is common for
 all implementations. Implementation-specific details (like system requirements and installation)
@@ -206,7 +220,7 @@ $ tree -L 2 --charset=ascii --dirsfirst
 `-- md2html_list.txt
 ````
 
-- `doc0.txt` and `doc0.html` are the Markdown document and it's corresponding generated HTML
+- `doc0.txt` and `doc0.html` are the Markdown document and its corresponding generated HTML
     version that we want to have in the project's root;
 - `doc` directory along with file `doc0.html` contains the whole project's documentation;
 - `doc_src` directory contains all source files required for producing the project's
@@ -256,11 +270,26 @@ yet but they may be adapted from the above Git hook example. Some hints: in addi
 possible changes `-r` argument must be changed to `-v` and `git add` command must be removed.
 
 ----------------------------------------------------------------------------------------------------
-# Source Markdown document
+# Source input elements
 
-Along with its target content a source Markdown text document may contain page _metadata_ 
-that is processed by this utility and is not a part of the Markdown syntax. The format of the
-page metadata is:
+To generate a project's documentation or other kind of HTML-based set of documents the 
+following source elements must be prepared and defined:
+
+- source Markdown texts that may reference each other and the other content like images. 
+    These texts will typically define the inner HTML content, not the complete HTML page;
+- one or more templates that define the HTML page constant part and will be populated with 
+    the contents generated out of the source texts. There are other replacement options that
+    allow for more flexibility;
+- CSS rules that define the result documents appearance and itself may be defined in different
+    ways.
+
+Following are these elements described in more details.
+
+
+## Page metadata
+
+Along with its target content a source Markdown text may contain page _metadata_ that is not a
+part of the Markdown syntax. The format of the page metadata is:
 
 ````
 <!--METADATA {
@@ -269,17 +298,12 @@ page metadata is:
 }-->
 ````
 
-> __NOTE!__ __1.__ The page metadata may affect the HTML generation process and the final HTML 
+> __NOTE.__ __1.__ The page metadata may affect the HTML generation process and the final HTML 
 > document in the end. But it is ignored as a part of the source document, so it will not 
 > literally appear in the generated HTML code (though it anyway would not be visible as it's,
 > in fact, an HTML/XML comment).
 > 
-> __2.__ The placeholders are substituted without any checks and modifications that makes it
-> possible to inject any code (including JavaScript) into the generated HTML document via
-> the source texts. This must not be a problem for personal use but may be a security issue when 
-> accepting source texts from untrusted third-parties.
-> 
-> __3.__ The page metadata processing will not fail the page generation. If there are incorrect 
+> __2.__ The page metadata processing will not fail the page generation. If there are incorrect 
 > fragments in metadata, reasonable attempts will be done to recognize the correct elements, 
 > all the other perts will be ignored. If verbose mode is on then a warning messages will be
 > output to the console.
@@ -296,7 +320,7 @@ case-sensitive and must be enclosed in double quotes. Also the root element must
 > browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
 > `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
 > page content and the context, opening and closing markers, even when escaped in JSON, may 
-> cause unexpected effects. Check it first if you really need to use these symbols.
+> cause unexpected result. Check it first if you really need to use these symbols.
 
 The following metadata parameters are supported:
 
@@ -306,8 +330,16 @@ The following metadata parameters are supported:
 - `custom_template_placeholders` of type object, defines values that will replace custom 
     placeholders when the template is resolved. The values type must be string only.
 
-----------------------------------------------------------------------------------------------------
-# Templates
+> __NOTE.__ The placeholders are substituted without checks and modifications that makes it
+> possible to inject any code (like JavaScript) into the generated HTML documents
+> via the source texts. This must not be a problem for personal use but probably may be a
+> security issue when converting and publishing source texts from untrusted third-parties.
+> Still such inclusions may be also done with direct HTML code in the source texts (see 
+> [here](#html_code_inclision) for more more description and example).
+> 
+
+
+## Templates
 
 A template file (see the source code of [this file](doc_src/templates/default.html) as an 
 example) consists of HTML code that is translated as-is and placeholders that are replaced
@@ -323,11 +355,11 @@ placeholders are implemented:
 - `${generation_time}` --- will be replaced with the generation time (hh:mm:ss).
 - `${custom_key}` --- any custom placeholder keys defined in the page metadata.
 
-> __Notes.__ 1. In uncertain cases `$$` may be used to represent a single `$` in a template.
+> __Notes.__ __1.__ In uncertain cases `$$` may be used to represent a single `$` in a template.
 > This does not apply to the Markdown texts where expressions like `${name}` are not
 > processed.
 > 
-> 2\. Though the Python version will recognize placeholders in format `$name` (without curly
+> __2.__ Though the Python version will recognize placeholders in format `$name` (without curly
 > braces), it's better not to use them for compatibility.
 
 This document is created using a __custom template__ that contains specific elements and so 
