@@ -58,6 +58,11 @@ Then run
 >generate_html.bat
 ````
 
+Also there are a script and instructions for integration into Windows Explorer:
+context menu:
+
+![WINDOWS_EXPOLORER_CONTEXT_MENU](doc/pict/windows_context_menu.png)
+
 See the complete documentation for more details.
 
 # On Linux
