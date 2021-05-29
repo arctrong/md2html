@@ -89,7 +89,7 @@ def parse_md2html_arguments(*args):
     # noinspection PyTypeChecker
     parser = argparse.ArgumentParser(description='Converts Markdown document into HTML document.',
                                      formatter_class=formatter_creator, add_help=False)
-    parser.add_argument("-h", "--help", help="shows this help message and exit", action='store_true')
+    parser.add_argument("-h", "--help", help="shows this help message and exits", action='store_true')
     parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str)
     parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name with '.html' "
                                                "extension", type=str)

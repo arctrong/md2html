@@ -109,7 +109,7 @@ usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--template TEMPLATE]
 Converts Markdown document into HTML document.
 
 optional arguments:
-  -h, --help            shows this help message and exit
+  -h, --help            shows this help message and exits
   -i INPUT, --input INPUT
                         input Markdown file name (mandatory)
   -o OUTPUT, --output OUTPUT
