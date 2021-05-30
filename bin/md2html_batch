@@ -1,0 +1,24 @@
+#!/bin/bash
+
+exec() {
+    prog=$1
+    shift
+    echo $* | xargs $prog
+}
+
+script_dir=`dirname "$0"`
+EXEC=`"${script_dir}/_set_executable" $*`
+
+SUCCESS=Y
+
+while read args
+do
+    echo Generating: $args
+    exec $EXEC -v $args
+    if [ $? -ne 0 ]; then SUCCESS=N; fi
+    echo Done
+
+done <<<$(grep -v '^\s*$' md2html_list.txt | sed -e 's/\r//')
+
+if [ $SUCCESS == 'N' ]; then exit 1; fi
+

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+PYTHON_EXEC="python3 \"$MD2HTML_HOME/python/md2html.py\""
+JAVA_EXEC="java -jar \"$MD2HTML_HOME/java/target/md2html-0.1.2-bin.jar\""
+EXEC=$PYTHON_EXEC
+
+REMAINED_ARGS=
+
+for arg in "$@"
+do
+    FIRST_ARG_PROCESSED=N
+    if [ $FIRST_ARG_PROCESSED == 'N' ]; then
+        FIRST_ARG_PROCESSED=Y
+        if [ $arg == 'py' ]; then
+            EXEC=$PYTHON_EXEC
+            continue
+        elif [ $arg == 'java' ]; then
+            EXEC=$JAVA_EXEC
+            continue
+        fi
+    fi
+    REMAINED_ARGS="${REMAINED_ARGS} ${arg}"
+done
+
+echo "${EXEC} ${REMAINED_ARGS}"
+
