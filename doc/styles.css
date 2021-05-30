@@ -85,9 +85,9 @@ pre>code.text {
 }
 
 pre>code.shell {
-    background-color: #282c33;
-    color: #cccccc;
-    border: solid 1px #282c33;
+    background-color: darkslategray;
+    color: floralwhite;
+    border: solid 1px darkslategray;
 }
 
 pre>code.code {

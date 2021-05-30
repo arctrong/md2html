@@ -58,8 +58,7 @@ Then run
 >generate_html.bat
 ````
 
-Also there are a script and instructions for integration into Windows Explorer:
-context menu:
+Also there are a script and instructions for integration into Windows Explorer context menu:
 
 ![WINDOWS_EXPOLORER_CONTEXT_MENU](doc/pict/windows_context_menu.png)
 
@@ -67,8 +66,11 @@ See the complete documentation for more details.
 
 # On Linux
 
-The executables are platform-independent so they work on Linux and that was empirically proved.
-The scripts are not yet rewritten for Linux, planning to do it later.
+The Java and the Python executables are platform-independent so they work on Linux. The batch
+processing scripts are also provided in *Bash shell* syntax. The file explorer integration script
+is not yet ported but it may be dependent on the desktop environment and is quite straightforward,
+so prepared Linux users may port the existing `bin/context_menu/md2html_prompt.bat` script
+themselves.
 
 # More info
 

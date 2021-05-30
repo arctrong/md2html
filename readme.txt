@@ -263,11 +263,13 @@ document. To add this hook create file `pre-commit` with the above content in di
 `.git/hooks` of your Git repository.
 
 
-## In Linux
+## On Linux
 
-This utility works in Linux. The scripts for batch processing and integration are not written
-yet but they may be adapted from the above Git hook example. Some hints: in addition to other
-possible changes `-r` argument must be changed to `-v` and `git add` command must be removed.
+The Java and the Python executables are platform-independent so they work on Linux. The batch
+processing scripts are also provided in *Bash shell* syntax. The file explorer integration script
+is not yet ported but it may be dependent on the desktop environment and is quite straightforward,
+so prepared Linux users may port the existing `bin/context_menu/md2html_prompt.bat` script
+themselves.
 
 ----------------------------------------------------------------------------------------------------
 # Source input elements
