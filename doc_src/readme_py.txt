@@ -33,8 +33,8 @@ $ pip3 install markdown markdown-emdash
 # Installation
 
 The Python implementation is shipped together with other implementations that share some common
-artifacts. See the [Home page](../readme.html#implementation_specific_documents_links) for more
-details. Here's how the Python version may be installed:
+artifacts. See the [Home page](../readme.html#installation_all) for more details. 
+Here's how the Python version may be installed:
 
 - Place (or clone from the VCS) directory `md2html` (that contains directory `python`) wherever
     you like.

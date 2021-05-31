@@ -15,7 +15,6 @@ body {
     background-color: papayawhip;
     overflow: hidden;
     white-space: nowrap;
-    /* border-bottom: solid 15px white; */
 }
 
 .sidebar {
@@ -44,4 +43,17 @@ body {
 
 .sidebar_aligner td.bottom {
     font-size: smaller;
+}
+
+a[name], a[id] {
+    height: 30px;
+    display: block;
+    margin-top: -49px;
+}
+
+h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
+    content: '';
+    display: block;
+    height:      30px;
+    margin-top: -30px;
 }

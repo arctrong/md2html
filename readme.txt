@@ -74,6 +74,8 @@ are described in separate documents:
 - [for Java version](doc/readme_java.html)
 
 ----------------------------------------------------------------------------------------------------
+<a id="installation_all"></a>
+
 # Installation
 
 The Python version is ready to use though it needs the Python 3 execution environment and some
