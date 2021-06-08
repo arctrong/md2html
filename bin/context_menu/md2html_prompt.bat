@@ -1,7 +1,5 @@
 @echo off
 
-for /f "delims=" %%a in ( '%~dp0..\_set_executable.bat %*' ) do set EXEC=%%a
-
 echo.
 
 set INPUT_FILE=
@@ -18,6 +16,8 @@ set TITLE_1=%PARENT%
 set TITLE_2=%FILE_NAME%
 set TITLE_3=%TITLE_1% %TITLE_2%
 
+set IMPL=
+
 echo Converting the following file to HTML: %INPUT_FILE%
 echo.
 echo Options:
@@ -29,6 +29,8 @@ echo 2 - Generate with title "%TITLE_2%"
 echo 3 - Generate with title "%TITLE_3%"
 echo t - Enter your own title and then generate
 echo f - Set forceful HTML file regeneration and get back to this choice
+echo p - Set Python executable
+echo j - Set Java executable
 echo q - Cancel with no changes
 echo.
 set CHOICE=
@@ -54,12 +56,15 @@ if "%CHOICE%"=="3" (
     goto continue
 )
 if "%CHOICE%"=="t" goto custom_title
-if "%CHOICE%"=="f" (
-    set FORCE=-f
-    set CHOICE=
-    echo Forceful HTML file regeneration is set
-    goto again
-)
+
+if "%CHOICE%"=="f" goto set_force
+if "%CHOICE%"=="F" goto set_force
+
+if "%CHOICE%"=="p" goto set_python_impl
+if "%CHOICE%"=="P" goto set_python_impl
+if "%CHOICE%"=="j" goto set_java_impl
+if "%CHOICE%"=="J" goto set_java_impl
+
 if "%CHOICE%"=="Q" goto EOF
 if "%CHOICE%"=="q" goto EOF
 goto again
@@ -72,6 +77,29 @@ set /p TITLE="Enter your title: "
 if not ["%TITLE%"]==[] set TITLE=-t "%TITLE%"
 goto continue
 
+:set_python_impl
+set IMPL=py
+echo Python executable is set
+set CHOICE=
+goto again
+
+:set_java_impl
+set IMPL=java
+echo Java executable is set
+set CHOICE=
+goto again
+
+:set_force
+if [%FORCE%] == [-f] (
+    set FORCE=
+    echo Forceful HTML file regeneration is unset
+) else (
+   set FORCE=-f
+    echo Forceful HTML file regeneration is set
+)
+set CHOICE=
+goto again
+
 :FIND_INPUT_FILE
 if [%STATE%]==[END] exit /b
 if [%STATE%]==[-i] (
@@ -83,6 +111,7 @@ if [%~1]==[-i] set STATE=-i
 exit /b
 
 :continue
+for /f "delims=" %%a in ( '%~dp0..\_set_executable.bat %IMPL% %*' ) do set EXEC=%%a
 call %EXEC% %FORCE% %TITLE% -v
 echo.
 pause

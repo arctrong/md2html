@@ -13,7 +13,7 @@ courses, then evolved into a more flexible and powerful solution.
 # What is inside
 
 The executables are provided along with templates that must be suitable for most documentation
-tasks and scripts for integration and batch processing.
+tasks and scripts for integration and bulk processing.
 
 # Implementation
 
@@ -45,7 +45,7 @@ A simple usage example for the Python version is:
 ````
 
 This will convert file `test.txt` into file `test.html` using default parameters. The Java version
-usage is similar. With batch processing scripts, create a *list file* like this:
+usage is similar. With bulk processing scripts, create a *list file* like this:
 
 ````
 -i doc_src/index.md -o doc/index.html --title "My greatest home page"
@@ -66,7 +66,7 @@ See the complete documentation for more details.
 
 # On Linux
 
-The Java and the Python executables are platform-independent so they work on Linux. The batch
+The Java and the Python executables are platform-independent so they work on Linux. The bulk
 processing scripts are also provided in *Bash shell* syntax. The file explorer integration script
 is not yet ported but it may be dependent on the desktop environment and is quite straightforward,
 so prepared Linux users may port the existing `bin/context_menu/md2html_prompt.bat` script

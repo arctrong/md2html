@@ -8,7 +8,7 @@
 ![LOGO](doc/pict/logo.png "logo")
 
 This is a command line utility that converts _Markdown_ documents into static HTML pages. 
-It is provided with HTML templates, CSS, and scripts for batch processing and integration.
+It is provided with HTML templates, CSS, and scripts for bulk processing and integration.
 
 This documentation is created using this utility and itself demonstrates a possible obtainable
 result.
@@ -50,12 +50,14 @@ more details about _Markdown_ and its syntax.
 
 This utility doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
 may contain JavaScript that will be translated unchanged into the generated HTML page. This
-must not be a problem for personal use but probably may be a security issue when converting and
+must not be a problem for personal use but may probably be a security issue when converting and
 publishing source texts from untrusted third-parties. Click the image below to see how it may
 look like.
 
 <img src="doc/pict/box.png" style="cursor: pointer;" onclick="alert(
 'This is just a message but might be any JavaScript code.');" />
+
+See [this page](doc/text_masking.html) for more extensive example.
 
 ----------------------------------------------------------------------------------------------------
 # Implementations
@@ -309,7 +311,7 @@ part of the Markdown syntax. The format of the page metadata is:
 > 
 > __2.__ The page metadata processing will not fail the page generation. If there are incorrect 
 > fragments in metadata, reasonable attempts will be done to recognize the correct elements, 
-> all the other perts will be ignored. If verbose mode is on then a warning messages will be
+> all the other parts will be ignored. If verbose mode is on then a warning messages will be
 > output to the console.
 
 The page metadata section must be the first non-space text in the source document, otherwise it
@@ -420,7 +422,7 @@ the generated HTML. The example can be seen at the top of this page.
 
 Link and image usage is demonstrated multiple times in this document. The link syntax is 
 `[link text](path/to/doc.html "title")` where `"title"` is not required. `link text` may also
-be omitted but the link will be invisible. There's another syntax `<path/to/doc.html>` that will
+be omitted but the link will be invisible. There's the other syntax `<path/to/doc.html>` that will
 make the link text equal the link location.
 
 The image syntax is `![ALT](path/to/image.png "title")`, where `ALT` and `"title"` are not
@@ -433,7 +435,8 @@ An image may be used as a link text. So the following code
 
 [![TARGET](doc/pict/target.png)](readme.html#anchor_demo)
 
-> To place an anchor, the following code was used: `<a name="anchor_demo"></a>`.
+> To place an anchor, the following code was used: `<a name="anchor_demo"></a>`. `id` attribute 
+> instead of `name` attribute will also work.
 
 
 ## Lists

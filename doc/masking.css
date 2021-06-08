@@ -1,0 +1,42 @@
+hd {
+    display: none; 
+    color: grey; 
+    position: relative; 
+    top: -7px;
+}
+
+pw {
+    display: inline-block;
+    position: relative;
+    width: 57px;
+    height: 38px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+pw::after {
+    content: url("pict/lock_hor_sprite.png"); 
+    position: absolute;
+} 
+
+pw:active::after {
+    left: -57px;
+}
+
+hint {
+    position: relative; 
+    top: -5px; 
+    cursor: pointer;
+}
+
+hint::after {
+    content: url("pict/glasses.png");
+}
+
+hint:active::after {
+    content: "";
+}
+
+hint:active>hd {
+    display: inline;
+}

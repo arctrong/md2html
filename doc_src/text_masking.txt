@@ -1,0 +1,42 @@
+<!--METADATA {"title": "Text masking"} -->
+
+----------------------------------------------------------------------------------------------------
+# Text masking
+
+The following are secrete text strings that we want to copy to clipboard but don't want to
+discover to those who observe our screen. This may be useful, for example, when we communicate
+to a support service and share our screen.
+
+> __NOTE!__ __1.__ This solution is not secure at all as the secrete data is kept unprotected.
+> It just prevents this data from visual observation.
+> __2.__ After using the copied secret text don't forget to remove this text from clipboard by
+> copying some other text there.
+
+<pw><hd>secret1</hd></pw> <hint><hd>Hint number 1</hd></hint>
+
+<pw><hd>secret2</hd></pw> <hint><hd>Hint number 2</hd></hint>
+
+Click a lock above and use the text area below to check what was copied to clipboard.
+
+<textarea style="width: 250px; height: 80px;"></textarea>
+
+----------------------------------------------------------------------------------------------------
+# Go back
+
+To go to the Home page click the image below.
+
+[![TO HOME PAGE](pict/home_black.svg)](../readme.html)
+
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+
+<script src="masking.js"></script>
