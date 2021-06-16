@@ -464,16 +464,35 @@ Blockquotes are inserted by starting each line with `> `.
 
 ## Tables
 
-Tables may be used for representing tabular data and for text alignment sometimes. In this
-implementation light table style is selected as the default.
+In this implementation the following table appearance is selected as the default.
 
-Item No | Name | Description | Price
-:------:|------|-------------|-----:
+Item No | Name  | Description   | Price
+:------:|-------|---------------|------:
 1       | Chair | Kitchen chair |  87.50
 2       | Table | Kitchen table | 450.00
 3       | Lamp  | Standard lamp | 120.75
 
+Markdown doesn't have syntax for different table styles, but some trick may be used to get 
+this --- we can add an invisible element (an empty `<div>` in this case) right before the
+table and then use some simple CSS magic to define the appearance:
+
+````code
+<div class="tableLight"></div>
+````
+
+Then we can get styles like this:
+
+<div class="tableLight"></div>
+
+|Item No | Name | Description | Price|
+|:------:|:-----|:------------|-----:|
+|1       | Chair | Kitchen chair |  87.50|
+|2       | Table | Kitchen table | 450.00|
+|3       | Lamp  | Standard lamp | 120.75|
+
 If we want to just align text we can use a table without a header:
+
+<div class="tableLight"></div>
 
 | | | | |
 |---:|---: |---: |---: |
@@ -481,35 +500,7 @@ If we want to just align text we can use a table without a header:
 | 50 | 60  | 70  | 80  |
 | 90 | 100 | 110 | 120 |
 
-> __Note.__ Small extra gap appears above header-less tables that is not avoidable as far now.
-
-Markdown doesn't have syntax for different table styles, but some trick may be used to get 
-this --- we can add an invisible element (an empty `<div>` in this case)
-right before the table and then use some simple CSS magic to define the appearance:
-
-````code
-<div class="tableGridded"></div>
-````
-
-Then we can get styles like this:
-
-<div class="tableGridded"></div>
-
-|Item No | Name | Description | Price|
-|:------:|------|-------------|-----:|
-|1       | Chair | Kitchen chair |  87.50|
-|2       | Table | Kitchen table | 450.00|
-|3       | Lamp  | Standard lamp | 120.75|
-
-and this (`class="tablePlated"`):
-
-<div class="tablePlated"></div>
-
-Item No | Name | Description | Price
-:------:|------|-------------|-----:
-1       | Chair | Kitchen chair |  87.50
-2       | Table | Kitchen table | 450.00
-3       | Lamp  | Standard lamp | 120.75
+> __Note.__ Small extra gap appears above header-less tables that is not avoidable as for now.
 
 
 ## Fenced code blocks

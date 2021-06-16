@@ -30,18 +30,20 @@ body {
     background-color: lightskyblue;
 }
 
-.sidebar_aligner {
+table.sidebarAligner {
     height: 100%;
     width:100%;
+    border-spacing: 0;
     border-collapse: collapse;
 }
 
-.sidebar_aligner td {
+table.sidebarAligner td {
     padding: 0;
-    margin: 0;    
+    margin: 0;
+    border: none;
 }
 
-.sidebar_aligner td.bottom {
+.sidebarAligner td.bottom {
     font-size: smaller;
 }
 

@@ -117,40 +117,23 @@ blockquote p, blockquote li {
 }
 
 table {
+    border-spacing: 0;
+    border-collapse: collapse;
     font-size: 16px;
 }
 
-td, th {
-    padding: 2px 7px;
-}
-
-div.tablePlated+table {
-    border-spacing: 2px;
-    border-collapse: separate;
-}
-
-div.tablePlated+table td, div.tablePlated+table th {
-    padding: 7px 14px;
-}
-
-div.tablePlated+table th {
-    background-color: #9dbbea;
-}
-
-div.tablePlated+table td {
-    background-color: #a5dbec;
-}
-
-div.tableGridded+table {
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-div.tableGridded+table th {
-    background-color: #e9f0f2;
-}
-
-div.tableGridded+table td, div.tableGridded+table th {
+table td, table th {
     border: solid 1px #6a8fb3;
     padding: 7px 14px;
+}
+
+table th {
+    background-color: #e9f0f2;
+    font-size: 14px;
+}
+
+div.tableLight+table td, div.tableLight+table th {
+    background: none;
+    border: none;
+    padding: 2px 7px;
 }
