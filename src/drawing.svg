@@ -106,9 +106,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.91758242"
-     inkscape:cx="391.80247"
-     inkscape:cy="643.67609"
+     inkscape:zoom="5.19063"
+     inkscape:cx="299.69343"
+     inkscape:cy="207.58614"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -300,34 +300,6 @@
        d="m 299.9729,53.32866 v 6.26363 h 22.70621 v 14.4241 H 299.9729 v 6.26363 L 273.52351,66.80434 Z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:12.7px;line-height:1.25;font-family:sans-serif;fill:#0066ff;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="79.454018"
-       y="64.380058"
-       id="text881"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
-       inkscape:export-xdpi="60.259911"
-       inkscape:export-ydpi="60.259911"><tspan
-         sodipodi:role="line"
-         id="tspan879"
-         x="79.454018"
-         y="64.380058"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#0066ff;stroke-width:0.512543">H</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:12.7px;line-height:1.25;font-family:sans-serif;fill:#800000;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="67.500221"
-       y="53.260536"
-       id="text885"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
-       inkscape:export-xdpi="60.259911"
-       inkscape:export-ydpi="60.259911"><tspan
-         sodipodi:role="line"
-         id="tspan883"
-         x="67.500221"
-         y="53.260536"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#800000;stroke-width:0.512543">M</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:82.3032;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -532,24 +504,56 @@
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
+    <g
+       aria-label="M"
+       transform="scale(1.0219046,0.97856496)"
+       id="text1008"
+       style="font-style:normal;font-weight:normal;font-size:16.2022px;line-height:1.25;font-family:sans-serif;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57"
+       inkscape:export-ydpi="57">
+      <path
+         d="m 78.341404,55.468979 h -4.811007 v -3.850537 l -0.71202,1.628549 H 70.721901 L 70.00988,51.618442 v 3.850537 H 65.357098 V 43.689157 h 5.117803 l 1.378306,3.487513 1.370395,-3.487513 h 5.117802 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.2022px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#f9f9f9;stroke-width:0.512543"
+         id="path1011"
+         sodipodi:nodetypes="cccccccccccccc" />
+    </g>
+    <circle
+       style="fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle1021"
+       cx="73.566566"
+       cy="57.671906"
+       r="3.4676542"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57.138111"
+       inkscape:export-ydpi="57.138111" />
     <circle
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
        id="path947"
-       cx="75.440475"
-       cy="57.958313"
+       cx="73.566566"
+       cy="57.671909"
        r="2.1700869"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
-       inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60" />
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57.138111"
+       inkscape:export-ydpi="57.138111" />
+    <circle
+       style="fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="circle1023"
+       cx="83.339195"
+       cy="49.083256"
+       r="3.4676542"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57.138111"
+       inkscape:export-ydpi="57.138111" />
     <circle
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
        id="circle959"
-       cx="83.625603"
-       cy="50.427994"
+       cx="83.339195"
+       cy="49.083256"
        r="2.1700869"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\favicon.png"
-       inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60" />
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57.138111"
+       inkscape:export-ydpi="57.138111" />
     <image
        width="51.554924"
        height="27.856289"
@@ -891,6 +895,47 @@
          inkscape:export-xdpi="96"
          inkscape:export-ydpi="96" />
     </g>
+    <g
+       aria-label="H"
+       id="text1016"
+       style="font-style:normal;font-weight:normal;font-size:16.1003px;line-height:1.25;font-family:sans-serif;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.512542"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57"
+       inkscape:export-ydpi="57">
+      <path
+         d="m 88.228736,64.011375 h -4.904817 v -4.061202 h -1.09322 v 4.061202 H 77.325882 V 52.30564 l 4.904817,0 v 3.188578 h 1.09322 V 52.30564 l 4.904817,0 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.1003px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#f9f9f9;stroke-width:0.512542"
+         id="path1018"
+         sodipodi:nodetypes="ccccccccccccc" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:12.7px;line-height:1.25;font-family:sans-serif;fill:#800000;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="67.500221"
+       y="53.260536"
+       id="text885"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57.138111"
+       inkscape:export-ydpi="57.138111"><tspan
+         sodipodi:role="line"
+         id="tspan883"
+         x="67.500221"
+         y="53.260536"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#800000;stroke-width:0.512543">M</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:12.7px;line-height:1.25;font-family:sans-serif;fill:#0055d4;fill-opacity:1;stroke:none;stroke-width:0.512543"
+       x="77.402687"
+       y="62.711555"
+       id="text881"
+       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\favicon.png"
+       inkscape:export-xdpi="57.138111"
+       inkscape:export-ydpi="57.138111"><tspan
+         sodipodi:role="line"
+         id="tspan879"
+         x="77.402687"
+         y="62.711555"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#0055d4;stroke-width:0.512543">H</tspan></text>
   </g>
   <style
      type="text/css"
