@@ -25,9 +25,17 @@ must be installed:
 $ pip3 install markdown markdown-emdash
 ````
 
-> __Notes.__ 1. If this doesn't work, try to replace `pip3` with `python -m pip` (or probably 
+> __Notes.__ __1.__ If this doesn't work, try to replace `pip3` with `python -m pip` (or probably 
 > also use `python3` instead of `python` on Linux).
-> 2. in Windows, `pip3` command must be called just `pip`.
+> 
+> __2.__ in Windows, `pip3` command must be called just `pip`.
+> 
+> __3.__ Future versions of the packages may have changes that noticeably affect the utility work
+> results. In case it happens, the certain versions may be installed:
+> 
+>     $ pip3 uninstall markdown markdown-emdash
+>     
+>     $ pip3 install markdown==3.3.4 markdown-emdash==0.1.0
 
 ----------------------------------------------------------------------------------------------------
 # Installation

@@ -147,7 +147,7 @@ public class Md2Html {
                         TypographicExtension.create()
                 ));
         options.set(TocExtension.LEVELS, 7); // generate ToC for all header levels
-        options.set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "");
+        //options.set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "");
 
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
