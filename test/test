@@ -1,0 +1,15 @@
+#!/bin/bash
+
+ARGS=$*
+
+script_dir=`dirname "$0"`
+
+runTest() {
+    echo ===== $1 implementation integral tests =====
+    export IMPLEMENTATION=$1
+    python3 -m unittest discover $ARGS "--start-directory=${script_dir}"
+}
+
+runTest py
+runTest java
+
