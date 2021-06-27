@@ -1,0 +1,3 @@
+The following is a blockquote:
+
+> This is the __content__ of a `blockquote`.

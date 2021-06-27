@@ -1,0 +1,1 @@
+Simple text with _italic_, __bold__ and `monospaced` fragments.

@@ -1,0 +1,5 @@
+[link text](http://test_link)
+
+[hinted link text](http://test_hinted_link "test hint")
+
+<http://test_link_without_text>

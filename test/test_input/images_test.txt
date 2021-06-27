@@ -1,0 +1,5 @@
+![](../../../test_input/image1.png)
+
+![ALT TEXT](../../../test_input/test_image_with_alt.svg)
+
+![](../../../test_input/image2.jpg "test hint")

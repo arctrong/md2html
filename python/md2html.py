@@ -17,7 +17,8 @@ EXEC_NAME = 'md2html_py'
 EXEC_VERSION = '0.1.2'
 
 WORKING_DIR = Path(__file__).resolve().parent
-MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash"])
+MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash", 
+                                                   "pymdownx.superfences"])
 
 
 def read_lines_from_file(file):
@@ -227,7 +228,6 @@ def md2html(**kwargs):
 
 
 def main():
-    # print(sys.argv)
     result_type, md2html_args = parse_md2html_arguments(sys.argv[1:])
     if result_type != 'success':
         sys.exit(1)

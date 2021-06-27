@@ -22,7 +22,7 @@ This implementation requires [Python 3](https://www.python.org/). The following 
 must be installed:
 
 ````shell
-$ pip3 install markdown markdown-emdash
+$ pip3 install markdown markdown-emdash pymdown_extensions
 ````
 
 > __Notes.__ __1.__ If this doesn't work, try to replace `pip3` with `python -m pip` (or probably 
@@ -31,11 +31,18 @@ $ pip3 install markdown markdown-emdash
 > __2.__ in Windows, `pip3` command must be called just `pip`.
 > 
 > __3.__ Future versions of the packages may have changes that noticeably affect the utility work
-> results. In case it happens, the certain versions may be installed:
+> results. If it happens, the certain versions may be installed:
 > 
->     $ pip3 uninstall markdown markdown-emdash
->     
->     $ pip3 install markdown==3.3.4 markdown-emdash==0.1.0
+> ````shell
+> $ pip3 uninstall markdown markdown-emdash
+> 
+> $ pip3 install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2
+> ````
+> 
+> __4.__ Package `pymdown-extensions` 
+> ([the project's documentation](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/))
+> improves some features of the main `markdown` package.
+
 
 ----------------------------------------------------------------------------------------------------
 # Installation
@@ -87,6 +94,9 @@ Ran 40 tests in 0.021s
 
 OK
 ````
+
+Arguments may be used like this `test.bat -v` that will give a verbose output. Run 
+`python -m unittest discover --help` for all possible parameters.
 
 ----------------------------------------------------------------------------------------------------
 

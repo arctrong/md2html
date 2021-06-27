@@ -1,0 +1,6 @@
+
+[![](../../../test_input/image1.png)](http://test_link_simple "link hint 1")
+
+[![ALT TEXT](../../../test_input/test_image_with_alt.svg)](http://test_link_with_alt "link hint 2")
+
+[![](../../../test_input/image2.jpg "image hint")](http://test_link_with_hint "link hint 3")

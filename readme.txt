@@ -406,7 +406,7 @@ Text effect | Markdown syntax
 
 > __Note.__ Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
 > text is not implemented in this utility. First, these effects must not be used very often.
-> Second, such murk-up may cause problems if we write text like "C++", or `++i`.
+> Second, such markup may cause problems if we write text like "C++", or `++i`.
 
 
 ## Table of contents
@@ -551,6 +551,22 @@ and program language code block (marked as `code`):
 System.out.println("This block demonstrates " + 
     "a source code in a program language.");
 ````
+
+> Fenced blocks may be inserted inside a `blockquote`:
+> 
+> ````shell
+> $ echo Fenced blocks inside a blockquote
+> Fenced blocks inside a blockquote
+> ```` 
+> 
+> Also lists inside `blockquote`s may contain fenced blocks:
+> 
+> - Item 1:
+>     ````
+>     Fenced block, line 1
+>     Fenced block, line 2
+>     ````
+> - Item 2
 
 ----------------------------------------------------------------------------------------------------
 

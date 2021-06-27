@@ -93,6 +93,14 @@ blockquote p, blockquote li {
     max-width: 868px;
 }
 
+blockquote pre code {
+    width: 847px;
+}
+
+blockquote li pre code {
+    width: 808px;
+}
+
 table {
     border-spacing: 0;
     border-collapse: collapse;

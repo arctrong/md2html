@@ -146,7 +146,12 @@ public class Md2Html {
                         //InsExtension.create(),
                         TypographicExtension.create()
                 ));
-        options.set(TocExtension.LEVELS, 7); // generate ToC for all header levels
+        options.set(TocExtension.LEVELS, 126); // generate ToC for all header levels
+
+        // TODO Try to wrap table of contents into a `div` block.
+        //  It's really unclear how to do it.
+        //  See https://github.com/vsch/flexmark-java/wiki/Table-of-Contents-Extension
+
         //options.set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "");
 
         Parser parser = Parser.builder(options).build();

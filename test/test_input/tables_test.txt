@@ -1,0 +1,3 @@
+Default alignment | Aligned to the center | Aligned to the right
+------------------|:---------------------:|--------------------:
+Default           | Centered              | Right

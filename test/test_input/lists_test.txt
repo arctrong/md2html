@@ -1,0 +1,20 @@
+The first list, unordered:
+
+- Level 1
+    - Level 2
+        - Level 3
+            - Level 4
+            
+The second list, ordered:
+
+1. Level 1, item 1
+    1. Level 2, item 1
+    1. Level 2, item 2
+1. Level 1, item 2
+
+The third list, mixed:
+
+1. Level 1, item 1
+    - Level 2, item 1
+    - Level 2, item 2
+1. Level 1, item 2
