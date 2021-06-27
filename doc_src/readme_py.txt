@@ -82,7 +82,6 @@ To run tests execute:
 
 ````shell
 >%MD2HTML_HOME%\python\test.bat
-
 ````
 
 The output must end with something like this:
