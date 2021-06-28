@@ -1,4 +1,4 @@
-<!--METADATA {"custom_template_placeholders": {"home_path": "../", "doc_path": ""}} -->
+<!--METADATA {"placeholders": {"home_path": "../", "doc_path": ""}} -->
 
 [TOC]
 

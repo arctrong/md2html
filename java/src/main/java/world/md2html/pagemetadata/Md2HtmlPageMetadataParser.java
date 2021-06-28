@@ -52,7 +52,7 @@ public class Md2HtmlPageMetadataParser {
             }
         }
 
-        JsonValue placeholdersValue = jsonObject.get("custom_template_placeholders");
+        JsonValue placeholdersValue = jsonObject.get("placeholders");
         if (placeholdersValue != null) {
             JsonObject placeholdersObject = null;
             try {

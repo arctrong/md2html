@@ -114,7 +114,7 @@ class Md2HtmlPageMetadataParserTest {
 
     @Test
     public void parse_customTemplatePlaceholders_empty() {
-        PageMetadataParsingResult result = parseMetadata("{\"custom_template_placeholders\": {}}");
+        PageMetadataParsingResult result = parseMetadata("{\"placeholders\": {}}");
         assertTrue(result.isSuccess());
         PageMetadata metadata = result.getPageMetadata();
         assertTrue(metadata.getCustomTemplatePlaceholders().isEmpty());
@@ -124,7 +124,7 @@ class Md2HtmlPageMetadataParserTest {
     @Test
     public void parse_customTemplatePlaceholders_wrong() {
         PageMetadataParsingResult result =
-                parseMetadata("{\"custom_template_placeholders\": \"not dict\" }");
+                parseMetadata("{\"placeholders\": \"not dict\" }");
         assertTrue(result.isSuccess());
         PageMetadata metadata = result.getPageMetadata();
         assertTrue(metadata.getCustomTemplatePlaceholders().isEmpty());
@@ -133,7 +133,7 @@ class Md2HtmlPageMetadataParserTest {
 
     @Test
     public void parse_customTemplatePlaceholders_correctItems() {
-        PageMetadataParsingResult result = parseMetadata("{\"custom_template_placeholders\": " +
+        PageMetadataParsingResult result = parseMetadata("{\"placeholders\": " +
                 "{\"ph1\": \"val1\", \"ph2\": \"val2\"}}");
         assertTrue(result.isSuccess());
         PageMetadata metadata = result.getPageMetadata();
@@ -145,7 +145,7 @@ class Md2HtmlPageMetadataParserTest {
 
     @Test
     public void parse_customTemplatePlaceholders_incorrectItems() {
-        PageMetadataParsingResult result = parseMetadata("{\"custom_template_placeholders\": " +
+        PageMetadataParsingResult result = parseMetadata("{\"placeholders\": " +
                         "{\"ph1\": 101, \"ph2\": \"val2\"}}");
         assertTrue(result.isSuccess());
         PageMetadata metadata = result.getPageMetadata();

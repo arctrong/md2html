@@ -1,5 +1,5 @@
 <!--METADATA {"title": "Markdown to HTML converter", 
-"custom_template_placeholders": {"home_path": "", "doc_path": "doc/"}} -->
+"placeholders": {"home_path": "", "doc_path": "doc/"}} -->
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
@@ -300,7 +300,7 @@ part of the Markdown syntax. The format of the page metadata is:
 ````
 <!--METADATA {
 "title": "My title",
-"custom_template_placeholders": {"key1": "value1", "key2": "value2"}
+"placeholders": {"key1": "value1", "key2": "value2"}
 }-->
 ````
 
@@ -328,12 +328,14 @@ case-sensitive and must be enclosed in double quotes. Also the root element must
 > page content and the context, opening and closing markers, even when escaped in JSON, may 
 > cause unexpected result. Check it first if you really need to use these symbols.
 
+<a name="page_metadata_parameters"></a>
+
 The following metadata parameters are supported:
 
 - `title` of type string (i.e. it must always be in double quotes), defines the default page
     title. The title defined by the command line arguments (if any) will override the default
     page title.
-- `custom_template_placeholders` of type object, defines values that will replace custom 
+- `placeholders` of type object, defines values that will replace custom 
     placeholders when the template is resolved. The values type must be string only.
 
 > __NOTE.__ The placeholders are substituted without checks and modifications that makes it
@@ -359,7 +361,8 @@ placeholders are implemented:
 - `${exec_version}` --- will be replaced with the generator version;
 - `${generation_date}` --- will be replaced with the generation date (YYYY-MM-DD);
 - `${generation_time}` --- will be replaced with the generation time (hh:mm:ss).
-- `${custom_key}` --- any custom placeholder keys defined in the page metadata.
+- `${custom_key}` --- any custom placeholder keys defined in the page metadata 
+    (see [above](#page_metadata_parameters)).
 
 > __Notes.__ __1.__ In uncertain cases `$$` may be used to represent a single `$` in a template.
 > This does not apply to the Markdown texts where expressions like `${name}` are not

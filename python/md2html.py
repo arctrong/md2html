@@ -12,6 +12,7 @@ from datetime import datetime
 DEFAULT_TEMPLATE_PATH = '../doc_src/templates/default.html'
 DEFAULT_CSS_FILE_PATH = '../doc/styles.css'
 USE_HELP_TEXT = 'use -h for help'
+PLACEHOLDERS_METADATA_ITEM = 'placeholders'
 
 EXEC_NAME = 'md2html_py'
 EXEC_VERSION = '0.1.2'
@@ -54,12 +55,12 @@ def parse_metadata(metadata_section):
                 errors.append(f"Title in page metadata is of type '{type(title_item).__name__}', "
                               f"not a string, skipping.")
 
-        if 'custom_template_placeholders' in metadata:
-            custom_template_placeholders = metadata.get('custom_template_placeholders')
-            if isinstance(custom_template_placeholders, dict):
+        if PLACEHOLDERS_METADATA_ITEM in metadata:
+            placeholders = metadata.get(PLACEHOLDERS_METADATA_ITEM)
+            if isinstance(placeholders, dict):
                 new_dict = {}
-                new_metadata['custom_template_placeholders'] = new_dict
-                for k, v in custom_template_placeholders.items():
+                new_metadata[PLACEHOLDERS_METADATA_ITEM] = new_dict
+                for k, v in placeholders.items():
                     if isinstance(v, str):
                         new_dict[k] = v
                     else:
@@ -67,7 +68,7 @@ def parse_metadata(metadata_section):
                                       f"'{type(v).__name__}', not a string, skipping.")
             else:
                 errors.append(f"Custom template placeholders in page metadata is of type "
-                              f"'{type(custom_template_placeholders).__name__}', not an object, skipping.")
+                              f"'{type(placeholders).__name__}', not an object, skipping.")
 
     except Exception as e:
         errors.append(f'Page metadata cannot be parsed: {type(e).__name__}: {e}')
@@ -188,8 +189,8 @@ def md2html(**kwargs):
         if metadata:
             if substitutions['title'] is None and metadata.get('title') is not None:
                 substitutions['title'] = metadata['title']
-            if metadata.get('custom_template_placeholders'):
-                for k, v in metadata['custom_template_placeholders'].items():
+            if metadata.get(PLACEHOLDERS_METADATA_ITEM):
+                for k, v in metadata[PLACEHOLDERS_METADATA_ITEM].items():
                     substitutions[k] = v
 
     if substitutions['title'] is None:

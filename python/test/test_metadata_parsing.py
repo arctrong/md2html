@@ -36,7 +36,7 @@ class PageMetadataParsingTest(unittest.TestCase):
         metadata, errors = parse_metadata('{}')
         self.assertTrue(isinstance(metadata, dict))
         self.assertFalse('title' in metadata)
-        self.assertFalse('custom_template_placeholders' in metadata)
+        self.assertFalse('placeholders' in metadata)
         self.assertFalse(errors)
         self.assertTrue(isinstance(errors, list))
 
@@ -73,27 +73,27 @@ class PageMetadataParsingTest(unittest.TestCase):
         self.assertFalse(errors)
 
     def test_parse_metadata_customTemplatePlaceholders_empty(self):
-        metadata, errors = parse_metadata('{ "custom_template_placeholders": {} }')
-        self.assertIn('custom_template_placeholders', metadata)
+        metadata, errors = parse_metadata('{ "placeholders": {} }')
+        self.assertIn('placeholders', metadata)
         self.assertFalse(errors)
 
     def test_parse_metadata_customTemplatePlaceholders_wrong(self):
-        metadata, errors = parse_metadata('{ "custom_template_placeholders": "not dict" }')
-        self.assertNotIn('custom_template_placeholders', metadata)
+        metadata, errors = parse_metadata('{ "placeholders": "not dict" }')
+        self.assertNotIn('placeholders', metadata)
         self.assertTrue(errors)
 
     def test_parse_metadata_customTemplatePlaceholders_correctItems(self):
-        metadata, errors = parse_metadata('{ "custom_template_placeholders": {"ph1": "val1", "ph2": "val2"} }')
-        self.assertIn('custom_template_placeholders', metadata)
-        cph = metadata['custom_template_placeholders']
+        metadata, errors = parse_metadata('{ "placeholders": {"ph1": "val1", "ph2": "val2"} }')
+        self.assertIn('placeholders', metadata)
+        cph = metadata['placeholders']
         self.assertEqual('val1', cph['ph1'])
         self.assertEqual('val2', cph['ph2'])
         self.assertFalse(errors)
 
     def test_parse_metadata_customTemplatePlaceholders_incorrectItems(self):
-        metadata, errors = parse_metadata('{ "custom_template_placeholders": {"ph1": 101, "ph2": "val2"} }')
-        self.assertIn('custom_template_placeholders', metadata)
-        cph = metadata['custom_template_placeholders']
+        metadata, errors = parse_metadata('{ "placeholders": {"ph1": 101, "ph2": "val2"} }')
+        self.assertIn('placeholders', metadata)
+        cph = metadata['placeholders']
         self.assertNotIn('ph1', cph)
         self.assertEqual('val2', cph['ph2'])
         self.assertTrue(errors)

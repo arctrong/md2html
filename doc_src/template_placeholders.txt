@@ -1,4 +1,4 @@
-<!--METADATA {"custom_template_placeholders": {"Placeholder1": "Value1", "placeholder2": 150}} -->
+<!--METADATA {"placeholders": {"Placeholder1": "Value1", "placeholder2": 150}} -->
 
 # Template placeholders usage demo
 

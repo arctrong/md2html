@@ -1,5 +1,5 @@
 <!--METADATA {"title": "md2html: Integral tests",
-"custom_template_placeholders": {"home_path": "../", "doc_path": ""}} -->
+"placeholders": {"home_path": "../", "doc_path": ""}} -->
 
 [TOC]
 
