@@ -1,0 +1,3 @@
+<!--METADATA {"title": "test title from metadata"} -->
+
+This content is not going to be tested.

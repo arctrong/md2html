@@ -3,15 +3,18 @@ import os
 from bs4 import BeautifulSoup
 import helpers as h
 
-SIMPLE_TEST_TEMPLATE = f'{h.INPUT_DIR}/simple_test_template.html'
-OUTPUT_DIR = h.prepare_output_directory('Md2htmlContentIntegralTest')
+SIMPLE_TEST_TEMPLATE = f'{h.INPUT_DIR}/test_template_simple.html'
 
 
 class Md2htmlContentIntegralTest(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.OUTPUT_DIR = h.prepare_output_directory(cls.__name__)
+    
     def test_formatting(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/formatting_test.txt', 
-                                f'{OUTPUT_DIR}/formatting_test.html',
+                                f'{self.OUTPUT_DIR}/formatting_test.html',
                                 SIMPLE_TEST_TEMPLATE)
         
         paragraphs = root.body.find_all('p')
@@ -34,7 +37,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         
     def test_br(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/br_test.txt', 
-                                f'{OUTPUT_DIR}/br_test.html',
+                                f'{self.OUTPUT_DIR}/br_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         paragraphs = root.body.find_all('p')
@@ -45,7 +48,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_headers(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/headers_test.txt', 
-                                f'{OUTPUT_DIR}/headers_test.html',
+                                f'{self.OUTPUT_DIR}/headers_test.html',
                                 SIMPLE_TEST_TEMPLATE)
             
         header = root.body.contents[0].next_sibling
@@ -56,7 +59,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_toc(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/toc_test.txt', 
-                                f'{OUTPUT_DIR}/toc_test.html',
+                                f'{self.OUTPUT_DIR}/toc_test.html',
                                 SIMPLE_TEST_TEMPLATE)
         
         item = root.body.ul.li
@@ -66,7 +69,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
     
     def test_links(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/links_test.txt', 
-                                f'{OUTPUT_DIR}/links_test.html',
+                                f'{self.OUTPUT_DIR}/links_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         paragraphs = root.body.find_all('p')
@@ -84,7 +87,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
     
     def test_images(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/images_test.txt',
-                                f'{OUTPUT_DIR}/images_test.html',
+                                f'{self.OUTPUT_DIR}/images_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         paragraphs = root.body.find_all('p')
@@ -103,7 +106,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         
     def test_images_in_links(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/images_in_links_test.txt',
-                                f'{OUTPUT_DIR}/images_in_links_test.html',
+                                f'{self.OUTPUT_DIR}/images_in_links_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         paragraphs = root.body.find_all('p')
@@ -131,7 +134,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_lists(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/lists_test.txt',
-                                f'{OUTPUT_DIR}/lists_test.html',
+                                f'{self.OUTPUT_DIR}/lists_test.html',
                                 SIMPLE_TEST_TEMPLATE)
         
         paragraph = root.body.p
@@ -177,7 +180,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_blockquotes(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/blockquotes_test.txt',
-                                f'{OUTPUT_DIR}/blockquotes_test.html',
+                                f'{self.OUTPUT_DIR}/blockquotes_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         paragraph = root.body.p
@@ -198,7 +201,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_fenced_blocks(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/fenced_blocks_test.txt',
-                                f'{OUTPUT_DIR}/fenced_blocks_test.html',
+                                f'{self.OUTPUT_DIR}/fenced_blocks_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         paragraph = root.body.p
@@ -225,7 +228,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_fenced_blocks_in_blockquotes(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/fenced_blocks_in_blockquotes_test.txt',
-                                f'{OUTPUT_DIR}/fenced_blocks_in_blockquotes_test.html',
+                                f'{self.OUTPUT_DIR}/fenced_blocks_in_blockquotes_test.html',
                                 SIMPLE_TEST_TEMPLATE)
         
         paragraph = root.body.p
@@ -272,7 +275,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_fenced_blocks_in_lists(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/fenced_blocks_in_lists_test.txt',
-                                f'{OUTPUT_DIR}/fenced_blocks_in_lists_test.html',
+                                f'{self.OUTPUT_DIR}/fenced_blocks_in_lists_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         li1 = root.body.ul.li
@@ -301,7 +304,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
     def test_tables(self):
         root = h.execute_simple(f'{h.INPUT_DIR}/tables_test.txt',
-                                f'{OUTPUT_DIR}/tables_test.html',
+                                f'{self.OUTPUT_DIR}/tables_test.html',
                                 SIMPLE_TEST_TEMPLATE)
 
         table = root.body.table

@@ -1,0 +1,3 @@
+<!--METADATA {"placeholders": {"custom_key": "test custom value"}} -->
+
+This content is not going to be tested.

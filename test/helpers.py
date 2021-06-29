@@ -28,13 +28,16 @@ def prepare_output_directory(dir_name):
     return str(test_output_dir)
 
 
-def execute_simple(input_file, output_file, template):
-    run_with_parameters(['-f', '-i', input_file,
-                         '-o', output_file,
-                         '--template', template])
+def execute(params, output_file):
+    run_with_parameters(params)
     with open(output_file) as html_file:
         root = BeautifulSoup(html_file, 'html.parser')
     return root
+
+
+def execute_simple(input_file, output_file, template):
+    return execute(['-f', '-i', input_file, '-o', output_file, '--template', template], 
+                   output_file)
 
 
 IMPLEMENTATION = os.environ['IMPLEMENTATION']

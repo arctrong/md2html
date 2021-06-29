@@ -49,16 +49,16 @@ The result must look like this:
 
 ````shell
 ===== py implementation integral tests =====
-.............
+.....................
 ----------------------------------------------------------------------
-Ran 13 tests in 3.002s
+Ran 21 tests in 4.877s
 
 OK
 
 ===== java implementation integral tests =====
-.............
+.....................
 ----------------------------------------------------------------------
-Ran 13 tests in 7.200s
+Ran 21 tests in 11.038s
 
 OK
 ````
