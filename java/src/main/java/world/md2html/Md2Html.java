@@ -8,6 +8,7 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import org.apache.commons.text.StringSubstitutor;
+import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
 import world.md2html.options.Md2HtmlOptions;
 import world.md2html.pagemetadata.*;
 import world.md2html.utils.Utils;
@@ -144,7 +145,8 @@ public class Md2Html {
                         //StrikethroughExtension.create(),
                         TocExtension.create(),
                         //InsExtension.create(),
-                        TypographicExtension.create()
+                        TypographicExtension.create(),
+                        PythonMarkdownCompatibleAdmonitionExtension.create()
                 ));
         options.set(TocExtension.LEVELS, 126); // generate ToC for all header levels
 

@@ -1,0 +1,4 @@
+!!! attention
+    ````code
+    print("Code fragment inside an admonition.")
+    ````

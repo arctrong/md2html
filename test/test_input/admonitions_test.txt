@@ -1,0 +1,4 @@
+The following is an admonition:
+
+!!! note
+    This is the __content__ of an `admonition`.

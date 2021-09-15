@@ -19,7 +19,7 @@ EXEC_VERSION = '0.1.2'
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash", 
-                                                   "pymdownx.superfences"])
+                                                   "pymdownx.superfences", "admonition"])
 
 
 def read_lines_from_file(file):

@@ -467,6 +467,16 @@ Blockquotes are inserted by starting each line with `> `.
 
 ## Tables
 
+To add a table use a syntax like this:
+
+````
+Item No | Name  | Description   | Price
+:------:|-------|---------------|------:
+1       | Chair | Kitchen chair |  87.50
+2       | Table | Kitchen table | 450.00
+3       | Lamp  | Standard lamp | 120.75
+````
+
 In this implementation the following table appearance is selected as the default.
 
 Item No | Name  | Description   | Price
@@ -494,6 +504,18 @@ Then we can get styles like this:
 |3       | Lamp  | Standard lamp | 120.75|
 
 If we want to just align text we can use a table without a header:
+
+````
+<div class="tableLight"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+````
+
+This will give:
 
 <div class="tableLight"></div>
 
@@ -570,6 +592,52 @@ System.out.println("This block demonstrates " +
 >     Fenced block, line 2
 >     ````
 > - Item 2
+
+
+## Admonitions
+
+!!! info
+    Admonitions are specially formatted blocks whose purpose is drawing attention to some pieces
+    of information. To add such a block the following syntax is used:
+    
+    ````
+    !!! qualifier "Optional title"
+        block content
+        with 4 space indent on each line
+    ````
+
+!!! note
+    There are defined the following qualifiers:
+    
+    - `note`;
+    - tips: `tip`, `hint`, `important`;
+    - danger: `danger`, `error`;
+    - warning: `warning`, `attention`, `caution`.
+
+!!! important
+    Other qualifiers may be used (like `info` qualifier above). CSS file needs to be edited to
+    add special formatting for this admonitions, otherwise the default formatting will be used.
+
+!!! warning "Don't overuse!"
+    These highlighting method shouldn't be overused. When there are a lot of such blocks
+    important information may be easily missed by the reader.
+    
+    BTW, in this block a custom title is used.
+    
+!!! hint ""
+    
+    To place an admonition without a header empty quotes may be set as the title:
+    
+    ````
+    !!! hint ""
+        This admonition will not have a title.
+    ````
+
+!!! danger
+    This is a danger block.
+    
+    !!! note
+        When a default title is used its first character is capitalized.
 
 ----------------------------------------------------------------------------------------------------
 

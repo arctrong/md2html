@@ -3,8 +3,8 @@
 ----------------------------------------------------------------------------------------------------
 # Text masking
 
-The following are secrete text strings that we want to copy to clipboard but don't want to
-discover to those who observe our screen. This may be useful, for example, when we communicate
+The following are secret text strings that we want to copy to clipboard but don't want to
+expose to those who observe our screen. This may be useful, for example, when we communicate
 to a support service and share our screen.
 
 > __NOTE!__ __1.__ This solution is not secure at all as the secrete data is kept unprotected.

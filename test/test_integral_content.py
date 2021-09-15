@@ -320,6 +320,67 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('center', tds[1].get('align'))
         self.assertEqual('right', tds[2].get('align'))
 
+    def test_admonitions(self):
+        root = h.execute_simple(f'{h.INPUT_DIR}/admonitions_test.txt',
+                                f'{self.OUTPUT_DIR}/admonitions_test.html',
+                                SIMPLE_TEST_TEMPLATE)
+
+        paragraph = root.body.p
+        self.assertEqual('The following is an admonition:', paragraph.text)
+        admonition_block = root.body.div
+        self.assertEqual(['admonition', 'note'], admonition_block.get('class'))
+        admonition_title = admonition_block.p
+        self.assertEqual(['admonition-title'], admonition_title.get('class'))
+        self.assertEqual('Note', admonition_title.text)
+        
+        fragment = admonition_title.next_sibling.next_sibling
+        self.assertEqual('p', fragment.name)
+        fragment = fragment.contents[0]
+        self.assertEqual('This is the ', fragment)
+        fragment = fragment.next_sibling
+        self.assertEqual('strong', fragment.name)
+        self.assertEqual('content', fragment.text)
+        fragment = fragment.next_sibling
+        self.assertEqual(' of an ', fragment)
+        fragment = fragment.next_sibling
+        self.assertEqual('code', fragment.name)
+        self.assertEqual('admonition', fragment.text)
+        fragment = fragment.next_sibling
+        self.assertEqual('.', fragment)
+
+    def test_admonition_custom_header(self):
+        root = h.execute_simple(f'{h.INPUT_DIR}/admonition_custom_header.txt',
+                                f'{self.OUTPUT_DIR}/admonition_custom_header.html',
+                                SIMPLE_TEST_TEMPLATE)
+
+        admonition_block = root.body.div
+        self.assertEqual(['admonition', 'hint'], admonition_block.get('class'))
+        admonition_title = admonition_block.p
+        self.assertEqual('Custom header', admonition_title.text)
+        content = admonition_title.next_sibling.next_sibling.contents[0]
+        self.assertEqual('This admonition has a custom header.', content)
+
+    def test_admonition_without_header(self):
+        root = h.execute_simple(f'{h.INPUT_DIR}/admonition_without_header.txt',
+                                f'{self.OUTPUT_DIR}/admonition_without_header.html',
+                                SIMPLE_TEST_TEMPLATE)
+
+        admonition_block = root.body.div
+        self.assertEqual(['admonition', 'danger'], admonition_block.get('class'))
+        content = admonition_block.p.text
+        self.assertEqual('This admonition has no header.', content)
+
+    def test_admonition_with_fenced_block(self):
+        root = h.execute_simple(f'{h.INPUT_DIR}/admonition_with_fenced_block.txt',
+                                f'{self.OUTPUT_DIR}/admonition_with_fenced_block.html',
+                                SIMPLE_TEST_TEMPLATE)
+
+        admonition_block = root.body.div
+        self.assertEqual(['admonition', 'attention'], admonition_block.get('class'))
+        fenced_block = admonition_block.pre.code
+        self.assertEqual(['language-code'], fenced_block.get('class'))
+        self.assertEqual('print("Code fragment inside an admonition.")', fenced_block.text.strip())
+
 
 if __name__ == '__main__':
     unittest.main()

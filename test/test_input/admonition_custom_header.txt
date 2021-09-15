@@ -1,0 +1,2 @@
+!!! hint "Custom header"
+    This admonition has a custom header.
