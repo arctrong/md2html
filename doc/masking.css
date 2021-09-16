@@ -15,7 +15,7 @@ pw {
 }
 
 pw::after {
-    content: url("pict/lock_hor_sprite.png"); 
+    content: url("pict/secret_sprite.png"); 
     position: absolute;
 } 
 

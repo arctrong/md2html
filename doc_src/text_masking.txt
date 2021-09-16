@@ -16,7 +16,7 @@ to a support service and share our screen.
 
 <pw><hd>secret2</hd></pw> <hint><hd>Hint number 2</hd></hint>
 
-Click a lock above and use the text area below to check what was copied to clipboard.
+Click a picture above and use the text area below to check what was copied to clipboard.
 
 <textarea style="width: 250px; height: 80px;"></textarea>
 

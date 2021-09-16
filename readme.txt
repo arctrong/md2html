@@ -619,7 +619,7 @@ System.out.println("This block demonstrates " +
     add special formatting for this admonitions, otherwise the default formatting will be used.
 
 !!! warning "Don't overuse!"
-    These highlighting method shouldn't be overused. When there are a lot of such blocks
+    This highlighting method shouldn't be overused. When there are a lot of such blocks
     important information may be easily missed by the reader.
     
     BTW, in this block a custom title is used.

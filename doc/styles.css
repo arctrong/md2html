@@ -73,9 +73,9 @@ pre>code.language-shell {
 }
 
 pre>code.language-code {
-    color: navy;
-    border: solid 1px cornflowerblue;
-    background-color: aliceblue;
+    color: darkred;
+    border: solid 1px darkred;
+    background-color: beige;
 }
 
 blockquote {
@@ -128,8 +128,8 @@ div.tableLight+table td, div.tableLight+table th {
 }
 
 div.admonition {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     margin-left: 0;
     padding: 0;
     font-size: 16px;
