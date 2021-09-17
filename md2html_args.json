@@ -1,0 +1,44 @@
+
+# { "input": "readme.txt", "template": "doc_src/templates/custom.html", "no-css": true }
+# { "input": "doc_src/readme_py.txt", "output": "doc/readme_py.html", "title": "md2html: Python version", "template": "doc_src/templates/custom.html", "no-css": true },
+# { "input": "doc_src/readme_java.txt", "output": "doc/readme_java.html", "title": "md2html: Java version", "template": "doc_src/templates/custom.html", "no-css": true },
+# { "input": "doc_src/default_template.txt", "output": "doc/default_template.html", "title": "md2html: Default template" },
+# { "input": "doc_src/template_placeholders.txt", "output": "doc/template_placeholders.html", "title": "md2html: Template placeholders", "template": "doc_src/templates/placeholders_demo.html" },
+# { "input": "doc_src/text_masking.txt", "output": "doc/text_masking.html", "link-css": "styles.css", "link-css": "masking.css" },
+# { "input": "doc_src/integral_tests.txt", "output": "doc/integral_tests.html", "template": "doc_src/templates/custom.html", "no-css": true }
+
+{
+
+    "default": {
+        # This is the default options for all documents
+        "template": "doc_src/templates/custom.html",
+        "no-css": true,
+        
+#        "link-css": ["styles.css"],
+#        "include-css": ["doc_src/basic.css"],
+#        "force": false,
+        "verbose": true
+#        "report": true
+        
+    },
+    
+    "documents": [
+        { "input": "readme.txt" },
+        { 
+        "input": "doc_src/readme_py.txt", 
+        
+#        "no-css": true, "add-link-css": ["flags.css"],
+#        "verbose": true, "report": true,
+        
+        "output": "doc/readme_py.html", "title": "md2html: Python version" },
+        { "input": "doc_src/readme_java.txt", "output": "doc/readme_java.html", "title": "md2html: Java version" },
+        { "input": "doc_src/default_template.txt", "output": "doc/default_template.html", "title": "md2html: Default template", "template": "doc_src/templates/default.html", "no-css": false },
+        { "input": "doc_src/template_placeholders.txt", "output": "doc/template_placeholders.html", "title": "md2html: Template placeholders", "template": "doc_src/templates/placeholders_demo.html" },
+        { "input": "doc_src/text_masking.txt", "output": "doc/text_masking.html", "link-css": ["styles.css", "masking.css"], "template": "doc_src/templates/default.html" },
+        { "input": "doc_src/integral_tests.txt", "output": "doc/integral_tests.html" }
+    ]
+
+
+}
+
+
