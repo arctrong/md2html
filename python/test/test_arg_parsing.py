@@ -41,8 +41,15 @@ class ArgParseTest(unittest.TestCase):
             result_type, md2html_args = parse_md2html_arguments(['-t', 'whatever'])
         self.assertEqual('error', result_type)
 
+    def test_parse_md2html_arguments_noInputFileWithArgumentFile(self):
+        with contextlib.redirect_stdout(NonWritable()):
+            result_type, md2html_args = parse_md2html_arguments([
+                '-t', 'whatever', '--argument-file=md2html_args.json'])
+        self.assertEqual('success', result_type)
+
     def test_parse_md2html_arguments_minimalArgumentSet(self):
         result_type, md2html_args = parse_md2html_arguments(['-i', '../doc/notes.md'])
+        enrich_document_list([md2html_args])
         self.assertEqual('success', result_type)
         self.assertEqual(Path('../doc/notes.md'), md2html_args['input_file'])
         self.assertEqual(Path('../doc/notes.html'), md2html_args['output_file'])
@@ -106,6 +113,7 @@ class ArgParseTest(unittest.TestCase):
 
     def test_parse_md2html_arguments_defaultCss(self):
         result_type, md2html_args = parse_md2html_arguments(['-i', 'input.md'])
+        enrich_document_list([md2html_args])
         self.assertEqual('success', result_type)
         self.assertFalse(md2html_args['link_css'])
         self.assertEqual(1, len(md2html_args['include_css']))
@@ -122,14 +130,17 @@ class ArgParseTest(unittest.TestCase):
         self.assertEqual('error', result_type)
 
     def test_parse_md2html_arguments_wrongNoCssAndCss(self):
-        with contextlib.redirect_stdout(NonWritable()):
-            result_type, md2html_args = parse_md2html_arguments(
-                ['-i', 'readme.txt', '--no-css', '--include-css', 'styles.css'])
-        self.assertEqual('error', result_type)
-        with contextlib.redirect_stdout(NonWritable()):
-            result_type, md2html_args = parse_md2html_arguments(
-                ['-i', 'readme.txt', '--no-css', '--link-css', 'styles.css'])
-        self.assertEqual('error', result_type)
+        for css_type in ["link-css", "include-css"]:
+            with self.subTest(css_type=css_type):
+                with contextlib.redirect_stdout(NonWritable()):
+                    result_type, md2html_args = parse_md2html_arguments(
+                        ['-i', 'readme.txt', '--no-css', '--' + css_type, 'styles.css'])
+                self.assertEqual('error', result_type)
+
+    def test_parse_md2html_arguments_argumentFile(self):
+        result_type, md2html_args = parse_md2html_arguments(['--argument-file', 'md2html_args.json'])
+        self.assertEqual('success', result_type)
+        self.assertEqual(Path('md2html_args.json'), md2html_args['argument_file'])
 
 
 if __name__ == '__main__':

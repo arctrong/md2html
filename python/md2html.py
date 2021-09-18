@@ -38,6 +38,11 @@ def read_lines_from_cached_file(file):
 
 
 def read_lines_from_commented_file(file, comment_char='#'):
+    """
+    When reading ignores the content of those lines whose first non-blank symbol is `comment_char`,
+    i.e. it leaves the empty line instead. Then, when a parser points at an error, this error will be
+    found at the pointed line in the initial (commented) file.
+    """
     lines = []
     with open(file, 'r') as file_handler:
         for line in file_handler:
@@ -148,14 +153,6 @@ def parse_md2html_arguments(*args):
         return 'help', None
 
     if args.argument_file:
-        # if args.input:
-        #     parser.print_usage()
-        #     print(f'--argument-file is not compatible with --input ({USE_HELP_TEXT})')
-        #     return 'error', None
-        # elif args.output:
-        #     parser.print_usage()
-        #     print(f'--argument-file is not compatible with --output ({USE_HELP_TEXT})')
-        #     return 'error', None
         md2html_args['argument_file'] = Path(args.argument_file)
 
     if args.input:
@@ -191,6 +188,117 @@ def parse_md2html_arguments(*args):
         return 'error', None
 
     return 'success', md2html_args
+
+
+def parse_argument_file(argument_file_string, cli_args):
+    """
+    Returns a tuple (success, error_message, document_list), where success is ether `True` or `False`.
+    """
+
+    document_list = []
+
+    try:
+        arguments_item = json.loads(argument_file_string)
+    except Exception as e:
+        return False, f'Argument file cannot be parsed: {type(e).__name__}: {e}', None
+
+    if not isinstance(arguments_item, dict):
+        return False, f"The root element is of type '{type(arguments_item).__name__}', not an object.", None
+
+    if 'default' in arguments_item:
+        defaults_item = arguments_item.get('default')
+        if not isinstance(defaults_item, dict):
+            return False, f"'default' section is of type '{type(defaults_item).__name__}', not an object.", None
+    else:
+        defaults_item = {}
+
+    documents_item = arguments_item.get('documents')
+    if documents_item is None:
+        return False, f"'documents' section is absent.", None
+    elif not isinstance(documents_item, list):
+        return False, f"'documents' section is of type '{type(documents_item).__name__}', not a list.", None
+
+    if 'no-css' in defaults_item and ('link-css' in defaults_item or 'include-css' in defaults_item):
+        return (False, f"'no-css' parameter incompatible with one of the ['link-css', 'include-css'] "
+                       f"in the 'default' section.", None)
+
+    for document_item in documents_item:
+        document = {}
+
+        v = first_not_none(cli_args.get('input_file'), document_item.get("input"), defaults_item.get("input"))
+        if v is not None:
+            document['input_file'] = Path(v)
+        else:
+            return False, f"Undefined input file for 'documents' item: {document_item}.", None
+
+        v = first_not_none(cli_args.get('output_file'), document_item.get("output"), defaults_item.get("output"))
+        document['output_file'] = Path(v) if v is not None else None
+
+        attr = 'title'
+        document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
+
+        attr = 'template'
+        v = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
+        document[attr] = Path(v) if v is not None else None
+
+        link_css = []
+        include_css = []
+        no_css = False
+        if cli_args.get('no_css') or cli_args.get('link_css') or cli_args.get('include_css'):
+            if cli_args.get('no_css'):
+                no_css = True
+            else:
+                link_css.extend(first_not_none(cli_args.get('link_css'), []))
+                include_css.extend(first_not_none(cli_args.get('include_css'), []))
+        else:
+            link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
+            if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
+                q = '\''
+                return (False, f"'no-css' parameter incompatible with one of "
+                               f"[{', '.join([q + a + q for a in link_args])}] "
+                               f"in `documents` item: {document_item}.", None)
+
+            no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'), False)
+
+            link_css.extend(first_not_none(document_item.get('link-css'), defaults_item.get('link-css'), []))
+            link_css.extend(first_not_none(document_item.get('add-link-css'), []))
+            include_css.extend(first_not_none(document_item.get('include-css'),
+                                              defaults_item.get('include-css'), []))
+            include_css.extend(first_not_none(document_item.get('add-include-css'), []))
+
+            if link_css or include_css:
+                no_css = False
+
+        document['link_css'] = link_css
+        document['include_css'] = include_css
+        document['no_css'] = no_css
+
+        attr = 'force'
+        document[attr] = first_not_none(True if cli_args.get(attr) else None,
+                                        document_item.get(attr), defaults_item.get(attr), False)
+        attr = 'verbose'
+        document[attr] = first_not_none(True if cli_args.get(attr) else None,
+                                        document_item.get(attr), defaults_item.get(attr), False)
+        attr = 'report'
+        document[attr] = first_not_none(True if cli_args.get(attr) else None,
+                                        document_item.get(attr), defaults_item.get(attr), False)
+
+        if document['report'] and document['verbose']:
+            return False, f"Incompatible 'report' and 'verbose' parameters for 'documents' item: {document_item}.", None
+
+        document_list.append(document)
+
+    return True, None, document_list
+
+
+def enrich_document_list(document_list):
+    for document in document_list:
+        if not document['template']:
+            document['template'] = default_template()
+        if not document['output_file']:
+            document['output_file'] = Path(default_output_file(document['input_file']))
+        if not document['no_css'] and not document['link_css'] and not document['include_css']:
+            document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 
 
 def md2html(**kwargs):
@@ -254,9 +362,6 @@ def md2html(**kwargs):
     substitutions['generation_time'] = current_time.strftime('%H:%M:%S')
 
     template = Template(read_lines_from_cached_file(template_file))
-
-    # template = Template(read_lines_from_file(template_file))
-
     result = template.safe_substitute(substitutions)
 
     with open(output_file, 'w') as result_file:
@@ -266,137 +371,6 @@ def md2html(**kwargs):
         print(f'Output file generated: {output_file}')
     if report:
         print(output_file)
-
-
-def parse_argument_file(argument_string, cli_args):
-    """
-    Returns a tuple (success, error_message, document_list), where success is ether `True` or `False`.
-    """
-
-    arg_file_default_item = 'default'
-    arg_file_documents_item = 'documents'
-
-    # cli_input_file = cli_args.get('input_file')
-    # cli_output_file = cli_args.get('output_file')
-    # cli_title = cli_args.get('title')
-    # cli_template_file = cli_args.get('template')
-    # cli_link_css = cli_args.get('link_css')
-    # cli_include_css = cli_args.get('include_css')
-    # cli_no_css = cli_args.get('no_css')
-    # cli_force = cli_args.get('force')
-    # cli_verbose = cli_args.get('verbose')
-    # cli_report = cli_args.get('report')
-
-    document_list = []
-
-    try:
-        arguments_item = json.loads(argument_string)
-    except Exception as e:
-        return False, f'Argument file cannot be parsed: {type(e).__name__}: {e}', None
-
-    if not isinstance(arguments_item, dict):
-        return False, f"The root element is of type '{type(arguments_item).__name__}', not an object.", None
-
-    if arg_file_default_item in arguments_item:
-        defaults_item = arguments_item.get(arg_file_default_item)
-        if not isinstance(defaults_item, dict):
-            return False, f"'default' section is of type '{type(defaults_item).__name__}', not an object.", None
-    else:
-        defaults_item = {}
-
-    documents_item = arguments_item.get(arg_file_documents_item)
-    if documents_item is None:
-        return False, f"'documents' section is absent.", None
-    elif not isinstance(documents_item, list):
-        return False, f"'documents' section is of type '{type(documents_item).__name__}', not a list.", None
-
-    if 'no-css' in defaults_item and ('link-css' in defaults_item or 'include-css' in defaults_item):
-        return (False, f"'no-css' parameter incompatible with one of the ['link-css', 'include-css'] "
-                       f"in the 'default' section.", None)
-
-    for document_item in documents_item:
-        document = {}
-
-        v = first_not_none(cli_args.get('input_file'), document_item.get("input"), defaults_item.get("input"))
-        if v is not None:
-            document['input_file'] = Path(v)
-        else:
-            return False, f"Undefined input file for 'documents' item: {document_item}.", None
-
-        v = first_not_none(cli_args.get('output_file'), document_item.get("output"), defaults_item.get("output"))
-        document['output_file'] = Path(v) if v is not None else None
-
-        attr = 'title'
-        document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
-
-        attr = 'template'
-        v = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
-        document[attr] = Path(v) if v is not None else None
-
-        # if 'no-css' in defaults_item:
-        #     return False, "'no-css' parameter cannot be set in the 'default' section. It's implied anyway.", None
-        link_css = []
-        include_css = []
-        no_css = False
-        if cli_args.get('no_css') or cli_args.get('link_css') or cli_args.get('include_css'):
-            if cli_args.get('no_css'):
-                no_css = True
-            else:
-                link_css.extend(first_not_none(cli_args.get('link_css'), []))
-                include_css.extend(first_not_none(cli_args.get('include_css'), []))
-        else:
-            link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
-            if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
-                q = '\''
-                return (False, f"'no-css' parameter incompatible with one of "
-                               f"[{', '.join([q + a + q for a in link_args])}] "
-                               f"in `documents` item: {document_item}.", None)
-
-            no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'), False)
-
-            link_css.extend(first_not_none(document_item.get('link-css'), defaults_item.get('link-css'), []))
-            link_css.extend(first_not_none(defaults_item.get('add-link-css'), []))
-            include_css.extend(first_not_none(document_item.get('include-css'),
-                                              defaults_item.get('include-css'), []))
-            include_css.extend(first_not_none(defaults_item.get('add-include-css'), []))
-
-            if link_css or include_css:
-                no_css = False
-
-        document['link_css'] = link_css
-        document['include_css'] = include_css
-        document['no_css'] = no_css
-
-        # print(document['link_css'])
-        # print(document['include_css'])
-        # print(document['no_css'])
-
-        attr = 'force'
-        document[attr] = first_not_none(True if cli_args.get(attr) else None,
-                                        document_item.get(attr), defaults_item.get(attr), False)
-        attr = 'verbose'
-        document[attr] = first_not_none(True if cli_args.get(attr) else None,
-                                        document_item.get(attr), defaults_item.get(attr), False)
-        attr = 'report'
-        document[attr] = first_not_none(True if cli_args.get(attr) else None,
-                                        document_item.get(attr), defaults_item.get(attr), False)
-
-        if document['report'] and document['verbose']:
-            return False, f"Incompatible 'report' and 'verbose' parameters for 'documents' item: {document_item}.", None
-
-        document_list.append(document)
-
-    return True, None, document_list
-
-
-def enrich_document_list(document_list):
-    for document in document_list:
-        if not document['template']:
-            document['template'] = default_template()
-        if not document['output_file']:
-            document['output_file'] = Path(default_output_file(document['input_file']))
-        if not document['no_css'] and not document['link_css'] and not document['include_css']:
-            document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 
 
 def main():
@@ -415,12 +389,6 @@ def main():
         document_list = [md2html_args]
 
     enrich_document_list(document_list)
-
-    # for doc in document_list:
-    #     print(doc)
-    # if argument_file:
-    #     print("--argument_file option is now under construction")
-    #     sys.exit(1)
 
     for document in document_list:
         md2html(**document)

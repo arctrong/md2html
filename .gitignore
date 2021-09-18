@@ -3,3 +3,5 @@ __pycache__
 /java/.idea/
 /java/md2html.iml
 /test/test_output/
+/python/test/test_output/*
+!/python/test/test_output/.gitkeep
