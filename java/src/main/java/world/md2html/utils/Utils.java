@@ -1,13 +1,20 @@
 package world.md2html.utils;
 
+import com.eclipsesource.json.JsonObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utils {
+
+    private static final Map<Path, String> CACHED_FILES = new HashMap<>();
 
     private Utils() {
     }
@@ -36,6 +43,59 @@ public class Utils {
             }
         }
         return result.toString();
+    }
+
+    public static String readStringFromCachedUtf8File(Path filePath) {
+        return CACHED_FILES.computeIfAbsent(filePath, path -> {
+            try {
+                return readStringFromUtf8File(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public static String readStringFromCommentedFile(Path filePath, String commentChar,
+            Charset charset) throws IOException {
+        StringBuilder result = new StringBuilder();
+        try (BufferedReader reader = Files.newBufferedReader(filePath, charset)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().startsWith(commentChar)) {
+                    result.append("\n");
+                } else {
+                    result.append(line).append("\n");
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    public static <T> boolean isNullOrEmpty(Collection<T> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    public static boolean jsonObjectContains(JsonObject jsonObject, String memberName) {
+        return jsonObject.get(memberName) != null;
+    }
+
+    public static boolean jsonObjectContainsAny(JsonObject jsonObject, String... memberNames) {
+        for (String mn : memberNames) {
+            if (jsonObject.get(mn) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @SafeVarargs
+    public static <T> T firstNotNull(T... values) {
+        for (T value : values) {
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
     }
 
 }

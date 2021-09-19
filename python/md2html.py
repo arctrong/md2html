@@ -61,14 +61,6 @@ def first_not_none(*values):
     return next((v for v in values if v is not None), None)
 
 
-def default_output_file(input_file):
-    return strip_extension(input_file) + '.html'
-
-
-def default_template():
-    return WORKING_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
-
-
 def extract_metadata_section(text):
     match = re.search('^\\s*(<!--METADATA(.*?)-->)', text, flags=re.IGNORECASE + re.DOTALL)
     return (match.group(2), match.start(1), match.end(1)) if match else (None, 0, 0)
@@ -294,9 +286,9 @@ def parse_argument_file(argument_file_string, cli_args):
 def enrich_document_list(document_list):
     for document in document_list:
         if not document['template']:
-            document['template'] = default_template()
+            document['template'] = WORKING_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
         if not document['output_file']:
-            document['output_file'] = Path(default_output_file(document['input_file']))
+            document['output_file'] = Path(strip_extension(document['input_file']) + '.html')
         if not document['no_css'] and not document['link_css'] and not document['include_css']:
             document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 

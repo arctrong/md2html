@@ -1,6 +1,8 @@
 package world.md2html.options;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.nio.file.Paths;
 
@@ -9,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CliParserHelperTest {
 
     @Test
-    public void getMd2HtmlOptions_helpRequested() {
+    public void helpRequested() {
         testHelp();
         testHelp("-h");
         testHelp("--help");
@@ -17,8 +19,9 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_minimalArgumentSet() throws Exception {
+    public void minimalArgumentSet() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "../doc/notes.md");
+        options = Md2HtmlOptionUtils.enrichDocumentMd2HtmlOptions(options);
         assertEquals(Paths.get("../doc/notes.md"), options.getInputFile());
         assertEquals(Paths.get("../doc/notes.html"), options.getOutputFile());
         assertNull(options.getTitle());
@@ -31,7 +34,18 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_maxArguments() throws Exception {
+    public void argumentFile() throws Exception {
+        Md2HtmlOptions options = getParsingResult("--argument-file", "md2html_args.json");
+        assertEquals(Paths.get("md2html_args.json"), options.getArgumentFile());
+    }
+
+    @Test
+    public void noInputFileWithArgumentFile() throws Exception {
+        getParsingResult("-t", "whatever", "--argument-file=md2html_args.json");
+    }
+
+    @Test
+    public void maxArguments() throws Exception {
 
         // Short form
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "-o", "doc/output.htm",
@@ -56,7 +70,7 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_includeCss() throws Exception {
+    public void includeCss() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "--include-css=styles1.css",
                 "--include-css=styles2.css");
         assertEquals(2, options.getIncludeCss().size());
@@ -66,7 +80,7 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_linkCss() throws Exception {
+    public void linkCss() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "--link-css=styles1.css",
                 "--link-css=styles2.css");
         assertEquals(2, options.getLinkCss().size());
@@ -76,7 +90,7 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_linkAndIncludeCss() throws Exception {
+    public void linkAndIncludeCss() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "--link-css=styles1.css",
                 "--include-css=styles2.css");
         assertEquals(1, options.getLinkCss().size());
@@ -86,27 +100,28 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_defaultCss() throws Exception {
+    public void defaultCss() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "input.md");
+        options = Md2HtmlOptionUtils.enrichDocumentMd2HtmlOptions(options);
         assertTrue(options.getLinkCss() == null || options.getLinkCss().isEmpty());
         assertEquals(1, options.getIncludeCss().size());
     }
 
     @Test
-    public void getMd2HtmlOptions_noCss() throws Exception {
+    public void noCss() throws Exception {
         Md2HtmlOptions options = getParsingResult("-i", "input.md", "--no-css");
         assertTrue(options.getLinkCss() == null || options.getLinkCss().isEmpty());
         assertTrue(options.getIncludeCss() == null || options.getIncludeCss().isEmpty());
     }
 
     @Test
-    public void getMd2HtmlOptions_unknownKeys() {
+    public void unknownKeys() {
         assertThrows(CliArgumentsException.class, () -> getParsingResult("-u"));
         assertThrows(CliArgumentsException.class, () -> getParsingResult("--unknown"));
     }
 
     @Test
-    public void getMd2HtmlOptions_missingKeyArgument() {
+    public void missingKeyArgument() {
         assertThrows(CliArgumentsException.class, () -> getParsingResult("-i"));
         assertThrows(CliArgumentsException.class, () -> getParsingResult("-o", "-i", "input.txt"));
         assertThrows(CliArgumentsException.class,
@@ -114,24 +129,23 @@ class CliParserHelperTest {
     }
 
     @Test
-    public void getMd2HtmlOptions_positionalArguments_mustFail() {
+    public void positionalArguments_mustFail() {
         assertThrows(CliArgumentsException.class, () -> getParsingResult("input.txt"));
         assertThrows(CliArgumentsException.class,
                 () -> getParsingResult("input.txt", "output.html"));
     }
 
     @Test
-    public void getMd2HtmlOptions_wrongVerboseAndReportFlags() {
+    public void wrongVerboseAndReportFlags() {
         assertThrows(CliArgumentsException.class,
                 () -> getParsingResult("-i", "readme.txt", "-vr"));
     }
 
-    @Test
-    public void getMd2HtmlOptions_wrongNoCssAndCss() {
+    @ParameterizedTest
+    @CsvSource({"--include-css", "--link-css"})
+    public void wrongNoCssAndCss(String cssOption) {
         assertThrows(CliArgumentsException.class, () -> getParsingResult("-i", "readme.txt",
-                "--no-css", "--include-css", "styles.css"));
-        assertThrows(CliArgumentsException.class, () -> getParsingResult("-i", "readme.txt",
-                "--no-css", "--link-css", "styles.css"));
+                "--no-css", cssOption, "styles.css"));
     }
 
     private void assertMd2HtmlOptionsEquals(Md2HtmlOptions o1, Md2HtmlOptions o2) {

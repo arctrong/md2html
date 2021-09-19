@@ -12,9 +12,6 @@ import java.util.Map;
 
 public class Md2HtmlPageMetadataParser {
 
-    /**
-     * Private constructor prevent instantiation.
-     */
     private Md2HtmlPageMetadataParser() {
     }
 

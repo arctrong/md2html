@@ -122,7 +122,7 @@ public class Md2Html {
         stringSubstitutor.setEnableUndefinedVariableException(false);
         stringSubstitutor.setDisableSubstitutionInValues(true);
 
-        String template = Utils.readStringFromUtf8File(options.getTemplate());
+        String template = Utils.readStringFromCachedUtf8File(options.getTemplate());
         try (Writer out = Files.newBufferedWriter(options.getOutputFile())) {
             out.write(stringSubstitutor.replace(template));
         }

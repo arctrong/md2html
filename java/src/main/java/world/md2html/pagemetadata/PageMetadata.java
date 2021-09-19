@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class PageMetadata {
 
-    private String title;
-    private Map<String, String> customTemplatePlaceholders;
+    private final String title;
+    private final Map<String, String> customTemplatePlaceholders;
 
     public PageMetadata(String title,
             Map<String, String> customTemplatePlaceholders) {

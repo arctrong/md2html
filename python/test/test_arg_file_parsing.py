@@ -7,23 +7,23 @@ from md2html import *
 
 class ArgFileParseTest(unittest.TestCase):
 
-    def test_parse_argument_file_emptyFile_NegativeScenario(self):
+    def test_emptyFile_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file('', {})
         self.assertFalse(success)
     
-    def test_parse_argument_file_rootElementIsNotObject_NegativeScenario(self):
+    def test_rootElementIsNotObject_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file('[1, 2]', {})
         self.assertFalse(success)
 
-    def test_parse_argument_file_defaultElementIsNotObject_NegativeScenario(self):
+    def test_defaultElementIsNotObject_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file('{"default": []}', {})
         self.assertFalse(success)
 
-    def test_parse_argument_file_noDefaultElement_PositiveScenario(self):
+    def test_noDefaultElement_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file('{"documents": []}', {})
         self.assertTrue(success)
 
-    def test_parse_argument_file_fullDefaultElement_PositiveScenario(self):
+    def test_fullDefaultElement_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"default": {"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
@@ -41,21 +41,21 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(doc["force"])
         self.assertTrue(doc["verbose"])
 
-    def test_parse_argument_file_noDocumentsElement_PositiveScenario(self):
+    def test_noDocumentsElement_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file('{"default": {}}', {})
         self.assertTrue('documents' in error_message)
         self.assertFalse(success)
 
-    def test_parse_argument_file_documentsElementIsNotList_NegativeScenario(self):
+    def test_documentsElementIsNotList_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file('{"documents": "not a list"}', {})
         self.assertFalse(success)
         
-    def test_parse_argument_file_emptyDocumentsElement_PositiveScenario(self):
+    def test_emptyDocumentsElement_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file('{"documents": []}', {})
         self.assertTrue(success)
         self.assertEqual([], document_list)
 
-    def test_parse_argument_file_defaultElementNoCssWithCssDefinitions_NegativeScenario(self):
+    def test_defaultElementNoCssWithCssDefinitions_NegativeScenario(self):
         for css_type in ["link-css", "include-css"]:
             with self.subTest(css_type=css_type):
                 success, error_message, document_list = parse_argument_file(
@@ -64,7 +64,7 @@ class ArgFileParseTest(unittest.TestCase):
                 self.assertTrue('no-css' in error_message)
                 self.assertTrue(css_type in error_message)
 
-    def test_parse_argument_file_minimalDocument_PositiveScenario(self):
+    def test_minimalDocument_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"documents": [{"input": "index.txt"}]}', {})
         self.assertTrue(success)
@@ -74,7 +74,7 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('index' in str(doc["output_file"]))
 
-    def test_parse_argument_file_severalDocuments_PositiveScenario(self):
+    def test_severalDocuments_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"documents": [{"input": "index.txt"}, {"input": "about.txt"}], '
             '"default": {"template": "common_template.html"}}', {})
@@ -92,7 +92,7 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('about' in str(doc["output_file"]))
 
-    def test_parse_argument_file_fullDocument_PositiveScenario(self):
+    def test_fullDocument_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"documents": [{"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
@@ -112,13 +112,13 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(doc["force"])
         self.assertTrue(doc["verbose"])
 
-    def test_parse_argument_file_documentsElementNoInputFile_NegativeScenario(self):
+    def test_documentsElementNoInputFile_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"documents": [{"output": "index.html"}]}', {})
         self.assertFalse(success)
         self.assertTrue('INPUT' in error_message.upper())
 
-    def test_parse_argument_file_documentNoCssWithCssDefinitions_NegativeScenario(self):
+    def test_documentNoCssWithCssDefinitions_NegativeScenario(self):
         for css_type in ["link-css", "add-link-css", "include-css", "add-include-css"]:
             with self.subTest(css_type=css_type):
                 success, error_message, document_list = parse_argument_file(
@@ -127,14 +127,14 @@ class ArgFileParseTest(unittest.TestCase):
                 self.assertTrue('no-css' in error_message)
                 self.assertTrue(css_type in error_message)
 
-    def test_parse_argument_file_documentVerboseAndReportFlags_NegativeScenario(self):
+    def test_documentVerboseAndReportFlags_NegativeScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"documents": [{"output": "index.html", "verbose": true, "report": true}]}', {})
         self.assertFalse(success)
         self.assertTrue('verbose' in error_message)
         self.assertTrue('report' in error_message)
 
-    def test_parse_argument_file_overridingWithCliArgs_PositiveScenario(self):
+    def test_overridingWithCliArgs_PositiveScenario(self):
         success, error_message, document_list = parse_argument_file(
             '{"documents": [{"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
