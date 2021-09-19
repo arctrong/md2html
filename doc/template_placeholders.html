@@ -34,34 +34,23 @@ td, th {border: solid 1px whitesmoke; padding: 7px 14px;}
 <div id="content">
 <h1 id="template-placeholders-usage-demo">Template placeholders usage demo</h1>
 <p>This page is generated using a special template that demonstrates template placeholders usage.</p>
-<p>The predefined <code>${styles}</code> placeholder is not used in this template, so no CSS were added 
+<p>The predefined <code>${styles}</code> placeholder is not used in this template, so no CSS were added
 during the page processing. The styles are defined directly in the template.</p>
 <p>Several custom template placeholders were defined in this page metadata correctly and incorrectly:</p>
 <table>
 <thead>
-<tr>
-<th>Placeholder key</th>
-<th>Placeholder definition</th>
-</tr>
+<tr><th>Placeholder key</th><th>Placeholder definition</th></tr>
 </thead>
 <tbody>
-<tr>
-<td><code>${placeholder1}</code></td>
-<td>undefined and must be represented as is</td>
-</tr>
-<tr>
-<td><code>${Placeholder1}</code></td>
-<td>defined, placeholder keys are case sensitive</td>
-</tr>
-<tr>
-<td><code>${placeholder2}</code></td>
-<td>defined but its value is not a string</td>
-</tr>
+<tr><td><code>${placeholder1}</code></td><td>undefined and must be represented as is</td></tr>
+<tr><td><code>${Placeholder1}</code></td><td>defined, placeholder keys are case sensitive</td></tr>
+<tr><td><code>${placeholder2}</code></td><td>defined but its value is not a string</td></tr>
 </tbody>
 </table>
-<p>Incorrectly defined placeholders are represented as is, the page processing doesn't stop.</p>
-<p>Also note that using double dollar character (<code>$${Placeholder1}</code>) in a template escapes the 
+<p>Incorrectly defined placeholders are represented as is, the page processing doesn&rsquo;t stop.</p>
+<p>Also note that using double dollar character (<code>$${Placeholder1}</code>) in a template escapes the
 dollar character from being interpreted as the a placeholder marker.</p>
+
 </div>
 
 </body>

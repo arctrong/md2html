@@ -57,7 +57,7 @@ look like.
 <img src="doc/pict/box.png" style="cursor: pointer;" onclick="alert(
 'This is just a message but might be any JavaScript code.');" />
 
-See [this page](doc/text_masking.html) for more extensive example.
+See [this page](doc/text_masking.html) for more extensive (and useful) example.
 
 ----------------------------------------------------------------------------------------------------
 # Implementations
@@ -106,9 +106,9 @@ The other options are:
 
 ````shell
 >python %MD2HTML_HOME%/python/md2html.py -h
-usage: md2html.py [-h] [-i INPUT] [-o OUTPUT] [-t TITLE] [--template TEMPLATE]
-                  [--link-css LINK_CSS] [--include-css INCLUDE_CSS] [--no-css]
-                  [-f] [-v] [-r]
+usage: md2html.py [-h] [-i INPUT] [--argument-file ARGUMENT_FILE] [-o OUTPUT]
+                  [-t TITLE] [--template TEMPLATE] [--link-css LINK_CSS]
+                  [--include-css INCLUDE_CSS] [--no-css] [-f] [-v] [-r]
 
 Converts Markdown document into HTML document.
 
@@ -116,6 +116,8 @@ optional arguments:
   -h, --help            shows this help message and exits
   -i INPUT, --input INPUT
                         input Markdown file name (mandatory)
+  --argument-file ARGUMENT_FILE
+                        argument file
   -o OUTPUT, --output OUTPUT
                         output HTML file name, defaults to input file name with
                         '.html' extension
@@ -137,7 +139,13 @@ optional arguments:
 ````
 
 
-## Bulk processing
+<a name="bulk_processing_legacy"></a>
+## Bulk processing (legacy)
+
+!!! important
+    There is more convenient and much faster bulk processing implementation described 
+    [here](#bulk_processing). This implementation is left in order to make previous documentation
+    projects work.
 
 File `bin/md2html_batch.bat` may be used for generating several HTML pages in one run. It uses
 the _list file_, the file `md2html_list.txt` in the current directory. The list file contains
@@ -162,12 +170,73 @@ The above command may be executed in any directory and it will process the list 
 directory. If `%MD2HTML_HOME%\bin` is added to the `PATH` then this prefix will not be required.
 
 
+<a name="bulk_processing"></a>
+## Bulk processing
+
+File `bin/md2html.bat` automates running the converter in bulk mode. It uses _argument file_
+`md2html_args.json` in the current directory. The _argument file_ content looks like this:
+
+````code
+{
+    "default": {
+        # This is the default options for all documents
+        "template": "doc_src/templates/custom.html",
+        "no-css": true,
+        "verbose": true
+    },
+    "documents": [
+        { "input": "readme.txt" },
+        { "input": "doc_src/about.txt", "output": "doc/about.html", "title": "About the project" },
+        { "input": "doc_src/get_started.txt", "output": "doc/get_started.html", "Get started!" },
+    ]
+}
+````
+
+After processing this _argument file_, three HTML documents will be generated.
+
+Bulk processing may be run with the command:
+
+````shell
+> %MD2HTML_HOME%\bin\md2html.bat java -f
+````
+
+The two arguments are optional and have the same meaning as in the
+[older implementation](#bulk_processing_legacy).
+
+The _argument file_ format is [_JSON_](https://en.wikipedia.org/wiki/JSON).
+
+!!! note
+    Comments are not allowed in JSON syntax, but in this converter line comments may be added
+    with symbol `#` in the beginning of the line. Also the processing algorithm is permissive,
+    so if unknown parameters are added they will be just ignored. This may by used as a way
+    of temporarily disabling parameters.
+    
+The command line arguments are taken into account even if an _argument file_ is used. Even more,
+command line parameters will always override the corresponding parameters in the _argument file_.
+
+The `documents` section contains definitions of documents that must be processed. Some parameters
+may be specified in the `default` section and will be used if a document definition doesn't 
+have these parameters.
+
+Here is the complete list of possible parameters: `input`, `output`, `template`, `title`,
+`link-css`, `include-css`,`no-css`, `add-link-css`, `add-include-css`, `force`, `verbose`,
+`report`.
+
+Parameters `add-link-css` and `add-include-css` will add corresponding CSS definitions to the
+file. Unlike parameters `link-css` and `include-css`, they will not override the corresponding
+default parameters.
+
+
 ## Double-click script
 
 File `generate_html.bat` may be run by double-click from Windows file explorer. It works the same
 way as script `md2html_batch.bat` except it doesn't finish in case of errors so the command
 window remains open. This scripts is very small and is intended to be copied to a project's
 directory where it will process the project's list file.
+
+!!! note
+    The script `generate_html.bat` is now rewritten and uses the _argument file_
+    `md2html_args.json`. The previous version is preserved as `generate_html_OLD.bat` for now.
 
 
 ## Windows Explorer context menu
@@ -269,7 +338,7 @@ document. To add this hook create file `pre-commit` with the above content in di
 
 ## On Linux
 
-The Java and the Python executables are platform-independent so they work on Linux. The batch
+The Java and the Python executables are platform-independent so they work on Linux. The bulk
 processing scripts are also provided in *Bash shell* syntax. The file explorer integration script
 is not yet ported but it may be dependent on the desktop environment and is quite straightforward,
 so prepared Linux users may port the existing `bin/context_menu/md2html_prompt.bat` script
