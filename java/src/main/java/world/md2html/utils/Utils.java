@@ -62,6 +62,9 @@ public class Utils {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.trim().startsWith(commentChar)) {
+                    // When ignoring a line, leaving an empty line instead. Then, when a
+                    // parser points at an error, this error will be found at the pointed
+                    // line in the initial (commented) file.
                     result.append("\n");
                 } else {
                     result.append(line).append("\n");

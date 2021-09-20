@@ -3,6 +3,7 @@ package world.md2html;
 import world.md2html.options.*;
 import world.md2html.utils.Utils;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -21,12 +22,22 @@ public class Md2HtmlRunner {
             System.exit(1);
         }
 
-        List<Md2HtmlOptions> md2HtmlOptionsList;
+        List<Md2HtmlOptions> md2HtmlOptionsList = null;
         Path argumentFile = md2HtmlOptions.getArgumentFile();
         if (argumentFile != null) {
-            String argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
-                    StandardCharsets.UTF_8);
-            md2HtmlOptionsList = ArgumentFileParser.parse(argumentFileString, md2HtmlOptions);
+            try {
+                String argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
+                        StandardCharsets.UTF_8);
+                md2HtmlOptionsList = ArgumentFileParser.parse(argumentFileString, md2HtmlOptions);
+            } catch (IOException e) {
+                System.out.println("Error parsing argument file '" + argumentFile +
+                        "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                System.exit(1);
+            } catch (ArgumentFileParseException e) {
+                System.out.println("Error parsing argument file '" + argumentFile + "': " +
+                        e.getMessage());
+                System.exit(1);
+            }
         } else {
             md2HtmlOptionsList = Collections.singletonList(md2HtmlOptions);
         }

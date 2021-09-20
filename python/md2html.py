@@ -15,7 +15,7 @@ USE_HELP_TEXT = 'use -h for help'
 PLACEHOLDERS_METADATA_ITEM = 'placeholders'
 
 EXEC_NAME = 'md2html_py'
-EXEC_VERSION = '0.1.2'
+EXEC_VERSION = '0.1.3'
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
