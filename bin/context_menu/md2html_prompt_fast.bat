@@ -4,7 +4,7 @@ echo.
 
 set INPUT_FILE=
 set STATE=
-for %%a in ('%~dp0_find_input_file.bat %IMPL% %*') do set INPUT_FILE=%%a
+for %%a in ('%~dp0_find_input_file.bat %IMPL% %*') do set INPUT_FILE="%%a"
 
 echo Converting the following file to HTML: %INPUT_FILE%
 echo.

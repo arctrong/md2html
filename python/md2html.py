@@ -1,18 +1,23 @@
 import argparse
-import os
-import sys
-from pathlib import Path
-from subprocess import check_output
-import markdown
-from string import Template
-import re
 import json
+import os
+import re
+import sys
 from datetime import datetime
+from pathlib import Path
+from string import Template
+
+import markdown
+
+from md2html_plugin import PluginDataError
+from relative_paths_plugin import RelativePathsPlugin
 
 DEFAULT_TEMPLATE_PATH = '../doc_src/templates/default.html'
 DEFAULT_CSS_FILE_PATH = '../doc/styles.css'
 USE_HELP_TEXT = 'use -h for help'
 PLACEHOLDERS_METADATA_ITEM = 'placeholders'
+
+OPTIONS_DOCUMENT_LIST_SECTION = "document_list"
 
 EXEC_NAME = 'md2html_py'
 EXEC_VERSION = '0.1.3'
@@ -20,6 +25,9 @@ EXEC_VERSION = '0.1.3'
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
                                                    "pymdownx.superfences", "admonition"])
+
+RELATIVE_PATHS_PLUGIN = 'relative-paths'
+PLUGINS = {RELATIVE_PATHS_PLUGIN: RelativePathsPlugin()}
 
 CACHED_FILES = {}
 
@@ -61,6 +69,30 @@ def first_not_none(*values):
     return next((v for v in values if v is not None), None)
 
 
+def relativize_relative_resource(resource, page):
+    """
+    The `page` argument is an HTML page.
+    The `resource` argument is a relative location of an HTML page resource (like another page,
+    a picture, a CSS file etc.). So the both arguments cannot be empty or end with a '/'.
+
+    The method considers the both arguments being relative to the same location. It returns the
+    relative location that being applied on the HTML page `page` will resolve to `path`.
+
+    ATTENTION! This method wasn't tested with absolute paths as any of the arguments.
+    """
+    page = (page or '').replace('\\', '/')
+    if not page or page.endswith('/'):
+        raise ValueError(f"'page' argument is not a relatively located resource: {page}")
+    resource = (resource or '').replace('\\', '/')
+    if not resource or resource.endswith('/'):
+        raise ValueError(f"'page' argument is not a relatively located resource: {resource}")
+
+    base_path = Path(page).resolve()
+    if len(base_path.parents) < 1:
+        return resource
+    return str(os.path.relpath(resource, base_path.parent)).replace('\\', '/')
+
+
 def extract_metadata_section(text):
     match = re.search('^\\s*(<!--METADATA(.*?)-->)', text, flags=re.IGNORECASE + re.DOTALL)
     return (match.group(2), match.start(1), match.end(1)) if match else (None, 0, 0)
@@ -94,8 +126,8 @@ def parse_metadata(metadata_section):
                     if isinstance(v, str):
                         new_dict[k] = v
                     else:
-                        errors.append(f"Custom template placeholder '{k}' in page metadata is of type "
-                                      f"'{type(v).__name__}', not a string, skipping.")
+                        errors.append(f"Custom template placeholder '{k}' in page metadata is "
+                                      f"of type '{type(v).__name__}', not a string, skipping.")
             else:
                 errors.append(f"Custom template placeholders in page metadata is of type "
                               f"'{type(placeholders).__name__}', not an object, skipping.")
@@ -109,8 +141,9 @@ def parse_metadata(metadata_section):
 
 def parse_md2html_arguments(*args):
     """
-    Returns a tuple of (result_type, result), where result_type is one of the 'success', 'help' or 'error'.
-    If the result is not successful then all user information messages are already printed into console.
+    Returns a tuple of (result_type, result), where result_type is one of the 'success',
+    'help' or 'error'. If the result is not successful then all user information messages are
+    already printed into console.
     """
 
     md2html_args = {}
@@ -121,23 +154,29 @@ def parse_md2html_arguments(*args):
     # noinspection PyTypeChecker
     parser = argparse.ArgumentParser(description='Converts Markdown document into HTML document.',
                                      formatter_class=formatter_creator, add_help=False)
-    parser.add_argument("-h", "--help", help="shows this help message and exits", action='store_true')
+    parser.add_argument("-h", "--help", help="shows this help message and exits",
+                        action='store_true')
     parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str)
     parser.add_argument("--argument-file", help="argument file", type=str)
-    parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name with '.html' "
-                                               "extension", type=str)
-    parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an empty title", type=str)
+    parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name"
+                                               "with '.html' extension", type=str)
+    parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an "
+                                              "empty title", type=str)
     parser.add_argument("--template", help="custom template directory", type=str)
-    parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str, action='append')
-    parser.add_argument("--include-css", help="includes content of the CSS file into HTML, multiple entries allowed",
-                        type=str, action='append')
-    parser.add_argument("--no-css", help="creates HTML with no CSS. If no CSS-related arguments is specified, "
-                                         "the default CSS will be included", action='store_true')
-    parser.add_argument("-f", "--force", help="rewrites HTML output file even if it was modified later than the input "
-                                              "file", action='store_true')
-    parser.add_argument("-v", "--verbose", help="outputs human readable information messages", action='store_true')
-    parser.add_argument("-r", "--report", help="if HTML file is generated, outputs the path of this file, "
-                                               "incompatible with -v", action='store_true')
+    parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str,
+                        action='append')
+    parser.add_argument("--include-css", help="includes content of the CSS file into HTML, "
+                                              "multiple entries allowed", type=str, action='append')
+    parser.add_argument("--no-css", help="creates HTML with no CSS. If no CSS-related arguments "
+                                         "is specified, the default CSS will be included",
+                        action='store_true')
+    parser.add_argument("-f", "--force", help="rewrites HTML output file even if it was modified "
+                                              "later than the input file", action='store_true')
+    parser.add_argument("-v", "--verbose", help="outputs human readable information messages",
+                        action='store_true')
+    parser.add_argument("-r", "--report", help="if HTML file is generated, outputs the path of "
+                                               "this file, incompatible with -v",
+                        action='store_true')
     args = parser.parse_args(*args)
 
     if args.help:
@@ -280,7 +319,20 @@ def parse_argument_file(argument_file_string, cli_args):
 
         document_list.append(document)
 
-    return True, None, document_list
+        plugins_item = arguments_item.get('plugins')
+        if plugins_item is not None:
+            if not isinstance(plugins_item, dict):
+                return (False, f"'plugins' section is of type '{type(defaults_item).__name__}', "
+                               f"not an object.", None)
+            for k, v in plugins_item.items():
+                plugin = PLUGINS.get(k)
+                if plugin:
+                    try:
+                        plugin.accept_data(v)
+                    except PluginDataError as e:
+                        return False, f"Error initializing plugin '{k}': {e}", None
+
+    return True, None, {OPTIONS_DOCUMENT_LIST_SECTION: document_list}
 
 
 def enrich_document_list(document_list):
@@ -330,20 +382,25 @@ def md2html(**kwargs):
                 for k, v in metadata[PLACEHOLDERS_METADATA_ITEM].items():
                     substitutions[k] = v
 
+    for plugin in PLUGINS.values():
+        substitutions.update(plugin.variables(kwargs))
+
     if substitutions['title'] is None:
         substitutions['title'] = ''
 
     styles = []
     if link_css:
-        styles.extend([f'<link rel="stylesheet" type="text/css" href="{item}">' for item in link_css])
+        styles.extend([f'<link rel="stylesheet" type="text/css" href="{item}">'
+                       for item in link_css])
     if include_css:
-        styles.extend(['<style>\n' + read_lines_from_file(item) + '\n</style>' for item in include_css])
+        styles.extend(['<style>\n' + read_lines_from_file(item) + '\n</style>'
+                       for item in include_css])
     substitutions['styles'] = '\n'.join(styles) if styles else ''
 
-    # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from their inside
-    # implementation. So we are going to use methods `markdown.markdown()` and `Markdown.convert()` instead.
-    # And anyway the first two methods read the md-file completely before conversion, so they give
-    # no memory save.
+    # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from
+    # their inside implementation. So we are going to use methods `markdown.markdown()` and
+    # `Markdown.convert()` instead. And anyway the first two methods read the md-file
+    # completely before conversion, so they give no memory save.
 
     substitutions['content'] = MARKDOWN_CONVERTER.convert(source=md_lines)
 
@@ -366,6 +423,9 @@ def md2html(**kwargs):
 
 
 def main():
+
+    global PLUGINS
+
     result_type, md2html_args = parse_md2html_arguments(sys.argv[1:])
     if result_type != 'success':
         sys.exit(1)
@@ -373,10 +433,12 @@ def main():
     argument_file = md2html_args.get('argument_file')
     if argument_file:
         argument_file_string = read_lines_from_commented_file(argument_file)
-        success, error_message, document_list = parse_argument_file(argument_file_string, md2html_args)
+        success, error_message, options = parse_argument_file(argument_file_string, md2html_args)
         if not success:
             print(f"Error parsing argument file '{argument_file}': " + error_message)
             sys.exit(1)
+        document_list = options[OPTIONS_DOCUMENT_LIST_SECTION]
+        PLUGINS = {k: v for k, v in PLUGINS.items() if v.activated}
     else:
         document_list = [md2html_args]
 

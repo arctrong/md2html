@@ -10,4 +10,3 @@ def create_temp_file(content: str):
     with open(file_path, 'w') as f:
         f.write(content)
     return file_path
-    
