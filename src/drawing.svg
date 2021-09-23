@@ -106,9 +106,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.3804806"
-     inkscape:cx="319.08876"
-     inkscape:cy="906.77397"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="250.70705"
+     inkscape:cy="1017.6672"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -122,7 +122,7 @@
      inkscape:snap-bbox-midpoints="true"
      inkscape:snap-center="false"
      inkscape:snap-intersection-paths="true"
-     inkscape:snap-global="true"
+     inkscape:snap-global="false"
      inkscape:object-paths="true"
      inkscape:snap-smooth-nodes="true"
      inkscape:snap-others="true"
@@ -1164,6 +1164,44 @@
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="60.51067"
+       y="269.19809"
+       id="text1049"><tspan
+         sodipodi:role="line"
+         id="tspan1047"
+         x="60.51067"
+         y="269.19809"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.7625px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI';stroke-width:0.264583">Previous</tspan></text>
+    <path
+       id="path1051"
+       style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 59.107066,265.53878 v 4.69183 l -4.977957,-2.23415 z"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="D:\8230o\Projects\study\template_engines\templates\mustache\doc\pict\previous_page.png" />
+    <path
+       id="path1053"
+       style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 93.955081,265.53878 v 4.69183 l 4.97795,-2.23415 z"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="D:\8230o\Projects\study\template_engines\templates\mustache\doc\pict\next_page.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="82.735672"
+       y="269.19809"
+       id="text1057"><tspan
+         sodipodi:role="line"
+         id="tspan1055"
+         x="82.735672"
+         y="269.19809"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.7625px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI';stroke-width:0.264583">Next</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
