@@ -207,9 +207,9 @@ The _argument file_ format is [_JSON_](https://en.wikipedia.org/wiki/JSON).
 
 !!! note
     Comments are not allowed in JSON syntax, but in this converter line comments may be added
-    with symbol `#` in the beginning of the line. Also the processing algorithm is permissive,
+    with symbol `#` at the beginning of the line. Also the processing algorithm is permissive,
     so if unknown parameters are added they will be just ignored. This may by used as a way
-    of temporarily disabling parameters.
+    of temporarily removing parameters.
     
 The command line arguments are taken into account even if an _argument file_ is used. Even more,
 command line parameters will always override the corresponding parameters in the _argument file_.
@@ -246,23 +246,32 @@ context menu:
 
 ![WINDOWS_EXPOLORER_CONTEXT_MENU](doc/pict/windows_context_menu.png)
 
-It opens a command line prompt window and allows to redefine some options. Just pressing
-`Enter` will fulfill generation with default options.
+The "no prompt" version generates HTML on the selected file with default options. It leaves
+the command window open in case of errors. The second version opens a command line window and
+allows to redefine some options. Just pressing `Enter` will fulfill generation with the default
+options.
 
-To add this context menu item, open the Windows Registry editor (press `Win`+`R`, type `regedit`
+To add these context menu items, open the Windows Registry editor (press `Win`+`R`, type `regedit`
 and press `Enter`) and add the following keys and values:
 
 ````
 [HKEY_CURRENT_USER\Software\Classes\*\shell\md2html]
-@="Markdown to HTML"
-"icon"="X:\\path\\to\\md2html\\win_context_menu\\icon.ico"
+@="Markdown to HTML..."
+"icon"="\"X:\\path\\to\\md2html\\bin\\context_menu\\icon.ico"
 
 [HKEY_CURRENT_USER\Software\Classes\*\shell\md2html\command]
-@="\"X:\\path\\to\\md2html\\bin\\context_menu\\md2html_prompt.bat\" -i \"%1\""
+@="\"\"X:\\path\\to\\md2html\\bin\\context_menu\\md2html_prompt.bat\" -i \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\md2html_fast]
+@="Markdown to HTML (no prompt)"
+"icon"="\"X:\\path\\to\\md2html\\bin\\context_menu\\icon.ico"
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\md2html_fast\command]
+@="\"X:\\path\\to\\md2html\\bin\\context_menu\\md2html_prompt_fast.bat\" -i \"%1\""
 ````
 
-__Note.__  1. `@` stands for `(Default)` value name. 2. `py` or `java` may be added before `-i`.
-3. The quotes must be set like this:
+Here `@` stands for `(Default)` value name. `py` or `java` may be added before `-i` argument.
+The quotes must be set like this:
 
 ![](doc/pict/reg_value.png)
 
