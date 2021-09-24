@@ -2,7 +2,7 @@ import unittest
 import sys
 from pathlib import Path
 
-from utils import relativize_relative_resource_path
+from utils import relativize_relative_resource_path, relativize_relative_resource
 
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *

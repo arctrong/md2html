@@ -8,29 +8,29 @@ from md2html import *
 class ArgFileParseTest(unittest.TestCase):
 
     def test_emptyFile_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file('', {})
+        success, error_message, options = parse_argument_file('', {})
         self.assertFalse(success)
     
     def test_rootElementIsNotObject_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file('[1, 2]', {})
+        success, error_message, options = parse_argument_file('[1, 2]', {})
         self.assertFalse(success)
 
     def test_defaultElementIsNotObject_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file('{"default": []}', {})
+        success, error_message, options = parse_argument_file('{"default": []}', {})
         self.assertFalse(success)
 
     def test_noDefaultElement_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file('{"documents": []}', {})
+        success, error_message, options = parse_argument_file('{"documents": []}', {})
         self.assertTrue(success)
 
     def test_fullDefaultElement_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"default": {"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "include-css": ["include.css"], '
             '"force": true, "verbose": true}, "documents": [{}]}', {})
         self.assertTrue(success)
-        doc = document_list[0]
+        doc = options["document-list"][0]
         self.assertEqual(Path('index.txt'), doc["input_file"])
         self.assertEqual(Path('index.html'), doc["output_file"])
         self.assertEqual('some title', doc["title"])
@@ -42,65 +42,65 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(doc["verbose"])
 
     def test_noDocumentsElement_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file('{"default": {}}', {})
+        success, error_message, options = parse_argument_file('{"default": {}}', {})
         self.assertTrue('documents' in error_message)
         self.assertFalse(success)
 
     def test_documentsElementIsNotList_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file('{"documents": "not a list"}', {})
+        success, error_message, options = parse_argument_file('{"documents": "not a list"}', {})
         self.assertFalse(success)
         
     def test_emptyDocumentsElement_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file('{"documents": []}', {})
+        success, error_message, options = parse_argument_file('{"documents": []}', {})
         self.assertTrue(success)
-        self.assertEqual([], document_list)
+        self.assertEqual([], options["document-list"])
 
     def test_defaultElementNoCssWithCssDefinitions_NegativeScenario(self):
         for css_type in ["link-css", "include-css"]:
             with self.subTest(css_type=css_type):
-                success, error_message, document_list = parse_argument_file(
+                success, error_message, options = parse_argument_file(
                     '{"default": {"no-css": true, "' + css_type + '": ["some.css"]}, "documents": []}', {})
                 self.assertFalse(success)
                 self.assertTrue('no-css' in error_message)
                 self.assertTrue(css_type in error_message)
 
     def test_minimalDocument_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"documents": [{"input": "index.txt"}]}', {})
         self.assertTrue(success)
-        doc = document_list[0]
+        doc = options["document-list"][0]
         self.assertEqual(Path('index.txt'), doc["input_file"])
-        enrich_document_list(document_list)
+        enrich_document_list(options["document-list"])
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('index' in str(doc["output_file"]))
 
     def test_severalDocuments_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"documents": [{"input": "index.txt"}, {"input": "about.txt"}], '
             '"default": {"template": "common_template.html"}}', {})
         self.assertTrue(success)
-        doc = document_list[0]
+        doc = options["document-list"][0]
         self.assertEqual(Path('index.txt'), doc["input_file"])
         self.assertEqual(Path('common_template.html'), doc["template"])
-        enrich_document_list(document_list)
+        enrich_document_list(options["document-list"])
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('index' in str(doc["output_file"]))
-        doc = document_list[1]
+        doc = options["document-list"][1]
         self.assertEqual(Path('about.txt'), doc["input_file"])
         self.assertEqual(Path('common_template.html'), doc["template"])
-        enrich_document_list(document_list)
+        enrich_document_list(options["document-list"])
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('about' in str(doc["output_file"]))
 
     def test_fullDocument_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"documents": [{"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
             '"include-css": ["include.css"], "add-include-css": ["add_include1.css", "add_include1.css"], '
             '"force": true, "verbose": true}]}', {})
         self.assertTrue(success)
-        doc = document_list[0]
+        doc = options["document-list"][0]
         self.assertEqual(Path('index.txt'), doc["input_file"])
         self.assertEqual(Path('index.html'), doc["output_file"])
         self.assertEqual('some title', doc["title"])
@@ -113,7 +113,7 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(doc["verbose"])
 
     def test_documentsElementNoInputFile_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"documents": [{"output": "index.html"}]}', {})
         self.assertFalse(success)
         self.assertTrue('INPUT' in error_message.upper())
@@ -121,21 +121,21 @@ class ArgFileParseTest(unittest.TestCase):
     def test_documentNoCssWithCssDefinitions_NegativeScenario(self):
         for css_type in ["link-css", "add-link-css", "include-css", "add-include-css"]:
             with self.subTest(css_type=css_type):
-                success, error_message, document_list = parse_argument_file(
+                success, error_message, options = parse_argument_file(
                     '{"documents": [{"no-css": true, "' + css_type + '": ["some.css"]}]}', {})
                 self.assertFalse(success)
                 self.assertTrue('no-css' in error_message)
                 self.assertTrue(css_type in error_message)
 
     def test_documentVerboseAndReportFlags_NegativeScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"documents": [{"output": "index.html", "verbose": true, "report": true}]}', {})
         self.assertFalse(success)
         self.assertTrue('verbose' in error_message)
         self.assertTrue('report' in error_message)
 
     def test_overridingWithCliArgs_PositiveScenario(self):
-        success, error_message, document_list = parse_argument_file(
+        success, error_message, options = parse_argument_file(
             '{"documents": [{"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
@@ -148,7 +148,7 @@ class ArgFileParseTest(unittest.TestCase):
              "force": True, "verbose": True
             })
         self.assertTrue(success)
-        doc = document_list[0]
+        doc = options["document-list"][0]
         self.assertEqual(Path('cli_index.txt'), doc["input_file"])
         self.assertEqual(Path('cli_index.html'), doc["output_file"])
         self.assertEqual('cli_title', doc["title"])

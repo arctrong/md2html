@@ -7,7 +7,6 @@ class PluginDataError(ValueError):
 
 class Md2HtmlPlugin(ABC):
 
-    @abstractmethod
     def accept_data(self, data):
         pass
 

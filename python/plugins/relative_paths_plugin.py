@@ -1,12 +1,11 @@
-from md2html_plugin import Md2HtmlPlugin
-from md2html_plugin import PluginDataError
+from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import PluginDataError
 from utils import relativize_relative_resource_path
 
 
 class RelativePathsPlugin(Md2HtmlPlugin):
 
     def __init__(self):
-        self.activated = False
         # noinspection PyTypeChecker
         self.data: dict = None
 
@@ -14,7 +13,6 @@ class RelativePathsPlugin(Md2HtmlPlugin):
         if not isinstance(data, dict):
             raise PluginDataError(f"Plugin data is of type '{type(data).__name__}', not a dict.")
         self.data = data
-        self.activated = True
 
     def variables(self, doc: dict) -> dict:
         result = {}

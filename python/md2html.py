@@ -7,27 +7,29 @@ from datetime import datetime
 from pathlib import Path
 from string import Template
 
+import chevron
 import markdown
 
-from md2html_plugin import PluginDataError
-from relative_paths_plugin import RelativePathsPlugin
+from plugins.md2html_plugin import PluginDataError
+from plugins.page_flows_plugin import PageFlowsPlugin
+from plugins.relative_paths_plugin import RelativePathsPlugin
 
 DEFAULT_TEMPLATE_PATH = '../doc_src/templates/default.html'
 DEFAULT_CSS_FILE_PATH = '../doc/styles.css'
 USE_HELP_TEXT = 'use -h for help'
 PLACEHOLDERS_METADATA_ITEM = 'placeholders'
 
-OPTIONS_DOCUMENT_LIST_SECTION = "document_list"
+OPTIONS_DOCUMENT_LIST_SECTION = "document-list"
+OPTIONS_PLUGINS_SECTION = "plugins"
 
 EXEC_NAME = 'md2html_py'
 EXEC_VERSION = '0.1.3'
 
 WORKING_DIR = Path(__file__).resolve().parent
-MARKDOWN_CONVERTER = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
-                                                   "pymdownx.superfences", "admonition"])
+MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
+                                         "pymdownx.superfences", "admonition"])
 
-RELATIVE_PATHS_PLUGIN = 'relative-paths'
-PLUGINS = {RELATIVE_PATHS_PLUGIN: RelativePathsPlugin()}
+PLUGINS = {'relative-paths': RelativePathsPlugin(), "page-flows": PageFlowsPlugin()}
 
 CACHED_FILES = {}
 
@@ -67,30 +69,6 @@ def strip_extension(path):
 
 def first_not_none(*values):
     return next((v for v in values if v is not None), None)
-
-
-def relativize_relative_resource(resource, page):
-    """
-    The `page` argument is an HTML page.
-    The `resource` argument is a relative location of an HTML page resource (like another page,
-    a picture, a CSS file etc.). So the both arguments cannot be empty or end with a '/'.
-
-    The method considers the both arguments being relative to the same location. It returns the
-    relative location that being applied on the HTML page `page` will resolve to `path`.
-
-    ATTENTION! This method wasn't tested with absolute paths as any of the arguments.
-    """
-    page = (page or '').replace('\\', '/')
-    if not page or page.endswith('/'):
-        raise ValueError(f"'page' argument is not a relatively located resource: {page}")
-    resource = (resource or '').replace('\\', '/')
-    if not resource or resource.endswith('/'):
-        raise ValueError(f"'page' argument is not a relatively located resource: {resource}")
-
-    base_path = Path(page).resolve()
-    if len(base_path.parents) < 1:
-        return resource
-    return str(os.path.relpath(resource, base_path.parent)).replace('\\', '/')
 
 
 def extract_metadata_section(text):
@@ -187,14 +165,13 @@ def parse_md2html_arguments(*args):
         md2html_args['argument_file'] = Path(args.argument_file)
 
     if args.input:
-        input_file = Path(args.input)
-        md2html_args['input_file'] = input_file
+        md2html_args['input_file'] = args.input
     elif not args.argument_file:
         parser.print_usage()
         print(f'Input file is not specified ({USE_HELP_TEXT})')
         return 'error', None
 
-    md2html_args['output_file'] = Path(args.output) if args.output else None
+    md2html_args['output_file'] = args.output
 
     md2html_args['title'] = args.title
 
@@ -227,6 +204,7 @@ def parse_argument_file(argument_file_string, cli_args):
     """
 
     document_list = []
+    plugins = []
 
     try:
         arguments_item = json.loads(argument_file_string)
@@ -256,14 +234,16 @@ def parse_argument_file(argument_file_string, cli_args):
     for document_item in documents_item:
         document = {}
 
-        v = first_not_none(cli_args.get('input_file'), document_item.get("input"), defaults_item.get("input"))
+        v = first_not_none(cli_args.get('input_file'), document_item.get("input"),
+                           defaults_item.get("input"))
         if v is not None:
-            document['input_file'] = Path(v)
+            document['input_file'] = v
         else:
             return False, f"Undefined input file for 'documents' item: {document_item}.", None
 
-        v = first_not_none(cli_args.get('output_file'), document_item.get("output"), defaults_item.get("output"))
-        document['output_file'] = Path(v) if v is not None else None
+        v = first_not_none(cli_args.get('output_file'), document_item.get("output"),
+                           defaults_item.get("output"))
+        document['output_file'] = v
 
         attr = 'title'
         document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
@@ -319,20 +299,22 @@ def parse_argument_file(argument_file_string, cli_args):
 
         document_list.append(document)
 
-        plugins_item = arguments_item.get('plugins')
-        if plugins_item is not None:
-            if not isinstance(plugins_item, dict):
-                return (False, f"'plugins' section is of type '{type(defaults_item).__name__}', "
-                               f"not an object.", None)
-            for k, v in plugins_item.items():
-                plugin = PLUGINS.get(k)
-                if plugin:
-                    try:
-                        plugin.accept_data(v)
-                    except PluginDataError as e:
-                        return False, f"Error initializing plugin '{k}': {e}", None
+    plugins_item = arguments_item.get('plugins')
+    if plugins_item is not None:
+        if not isinstance(plugins_item, dict):
+            return (False, f"'plugins' section is of type '{type(defaults_item).__name__}', "
+                           f"not an object.", None)
+        for k, v in plugins_item.items():
+            plugin = PLUGINS.get(k)
+            if plugin:
+                try:
+                    plugin.accept_data(v)
+                    plugins.append(plugin)
+                except PluginDataError as e:
+                    return False, f"Error initializing plugin '{k}': {e}", None
 
-    return True, None, {OPTIONS_DOCUMENT_LIST_SECTION: document_list}
+    return True, None, {OPTIONS_DOCUMENT_LIST_SECTION: document_list,
+                        OPTIONS_PLUGINS_SECTION: plugins}
 
 
 def enrich_document_list(document_list):
@@ -340,21 +322,22 @@ def enrich_document_list(document_list):
         if not document['template']:
             document['template'] = WORKING_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
         if not document['output_file']:
-            document['output_file'] = Path(strip_extension(document['input_file']) + '.html')
+            document['output_file'] = str(Path(strip_extension(document['input_file']) + '.html')
+                                          ).replace('\\', '/')
         if not document['no_css'] and not document['link_css'] and not document['include_css']:
             document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 
 
-def md2html(**kwargs):
-    input_file = kwargs['input_file']
-    output_file = kwargs['output_file']
-    title = kwargs['title']
-    template_file = kwargs['template']
-    link_css = kwargs['link_css']
-    include_css = kwargs['include_css']
-    force = kwargs['force']
-    verbose = kwargs['verbose']
-    report = kwargs['report']
+def md2html(document, plugins):
+    input_file = document['input_file']
+    output_file = document['output_file']
+    title = document['title']
+    template_file = document['template']
+    link_css = document['link_css']
+    include_css = document['include_css']
+    force = document['force']
+    verbose = document['verbose']
+    report = document['report']
 
     if not force and output_file.exists():
         output_file_mtime = os.path.getmtime(output_file)
@@ -382,8 +365,8 @@ def md2html(**kwargs):
                 for k, v in metadata[PLACEHOLDERS_METADATA_ITEM].items():
                     substitutions[k] = v
 
-    for plugin in PLUGINS.values():
-        substitutions.update(plugin.variables(kwargs))
+    for plugin in plugins:
+        substitutions.update(plugin.variables(document))
 
     if substitutions['title'] is None:
         substitutions['title'] = ''
@@ -402,7 +385,7 @@ def md2html(**kwargs):
     # `Markdown.convert()` instead. And anyway the first two methods read the md-file
     # completely before conversion, so they give no memory save.
 
-    substitutions['content'] = MARKDOWN_CONVERTER.convert(source=md_lines)
+    substitutions['content'] = MARKDOWN.convert(source=md_lines)
 
     substitutions['exec_name'] = EXEC_NAME
     substitutions['exec_version'] = EXEC_VERSION
@@ -410,8 +393,10 @@ def md2html(**kwargs):
     substitutions['generation_date'] = current_time.strftime('%Y-%m-%d')
     substitutions['generation_time'] = current_time.strftime('%H:%M:%S')
 
-    template = Template(read_lines_from_cached_file(template_file))
-    result = template.safe_substitute(substitutions)
+    # template = Template(read_lines_from_cached_file(template_file))
+    # result = template.safe_substitute(substitutions)
+
+    result = chevron.render(read_lines_from_cached_file(template_file), substitutions)
 
     with open(output_file, 'w') as result_file:
         result_file.write(result)
@@ -424,8 +409,6 @@ def md2html(**kwargs):
 
 def main():
 
-    global PLUGINS
-
     result_type, md2html_args = parse_md2html_arguments(sys.argv[1:])
     if result_type != 'success':
         sys.exit(1)
@@ -433,19 +416,20 @@ def main():
     argument_file = md2html_args.get('argument_file')
     if argument_file:
         argument_file_string = read_lines_from_commented_file(argument_file)
-        success, error_message, options = parse_argument_file(argument_file_string, md2html_args)
+        success, error_message, arguments = parse_argument_file(argument_file_string, md2html_args)
         if not success:
             print(f"Error parsing argument file '{argument_file}': " + error_message)
             sys.exit(1)
-        document_list = options[OPTIONS_DOCUMENT_LIST_SECTION]
-        PLUGINS = {k: v for k, v in PLUGINS.items() if v.activated}
+        document_list = arguments[OPTIONS_DOCUMENT_LIST_SECTION]
+        plugins = arguments[OPTIONS_PLUGINS_SECTION]
     else:
         document_list = [md2html_args]
+        plugins = []
 
     enrich_document_list(document_list)
 
     for document in document_list:
-        md2html(**document)
+        md2html(document, plugins)
 
 
 if __name__ == '__main__':
