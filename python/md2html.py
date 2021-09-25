@@ -3,12 +3,14 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime
+from datetime import timedelta
 from pathlib import Path
-from string import Template
 
 import chevron
 import markdown
+from jsonschema import validate
 
 from plugins.md2html_plugin import PluginDataError
 from plugins.page_flows_plugin import PageFlowsPlugin
@@ -19,8 +21,9 @@ DEFAULT_CSS_FILE_PATH = '../doc/styles.css'
 USE_HELP_TEXT = 'use -h for help'
 PLACEHOLDERS_METADATA_ITEM = 'placeholders'
 
-OPTIONS_DOCUMENT_LIST_SECTION = "document-list"
-OPTIONS_PLUGINS_SECTION = "plugins"
+ARGUMENTS_DOCUMENT_LIST_SECTION = "document-list"
+ARGUMENTS_PLUGINS_SECTION = "plugins"
+ARGUMENTS_OPTIONS_SECTION = "options"
 
 EXEC_NAME = 'md2html_py'
 EXEC_VERSION = '0.1.3'
@@ -49,15 +52,15 @@ def read_lines_from_cached_file(file):
 
 def read_lines_from_commented_file(file, comment_char='#'):
     """
-    When reading ignores the content of those lines whose first non-blank symbol is `comment_char`,
-    i.e. it leaves the empty line instead. Then, when a parser points at an error, this error will be
-    found at the pointed line in the initial (commented) file.
+    When reading replaces with spaces the content of those lines whose first non-blank symbol is
+    `comment_char`. Then, when a parser points at an error, this error will be found at the
+    pointed line and at the pointed position in the initial (commented) file.
     """
     lines = []
     with open(file, 'r') as file_handler:
         for line in file_handler:
             if line.strip().startswith(comment_char):
-                lines.append(re.sub(r'[^\r\n]', '', line))
+                lines.append(re.sub(r'[^\s]', ' ', line))
             else:
                 lines.append(line)
     return ''.join([item for item in lines])
@@ -205,31 +208,53 @@ def parse_argument_file(argument_file_string, cli_args):
 
     document_list = []
     plugins = []
+    options = {}
 
     try:
         arguments_item = json.loads(argument_file_string)
     except Exception as e:
-        return False, f'Argument file cannot be parsed: {type(e).__name__}: {e}', None
+        return False, f'Error loading arguments file: {type(e).__name__}: {e}', None
 
-    if not isinstance(arguments_item, dict):
-        return False, f"The root element is of type '{type(arguments_item).__name__}', not an object.", None
+    # >python -m pip install jsonschema
+    # Collecting jsonschema
+    #   Downloading jsonschema-3.2.0-py2.py3-none-any.whl (56 kB)
+    # Collecting pyrsistent>=0.14.0
+    #   Downloading pyrsistent-0.18.0-cp38-cp38-win_amd64.whl (62 kB)
+    # Collecting attrs>=17.4.0
+    #   Downloading attrs-21.2.0-py2.py3-none-any.whl (53 kB)
+    # Installing collected packages: pyrsistent, attrs, jsonschema
+    # Successfully installed attrs-21.2.0 jsonschema-3.2.0 pyrsistent-0.18.0
+
+    try:
+        schema = json.loads(
+            read_lines_from_commented_file(WORKING_DIR.joinpath('args_file_schema.json')))
+        validate(instance=arguments_item, schema=schema)
+    except Exception as e:
+        return False, f'Error validating arguments file: {type(e).__name__}: {e}', None
+
+    if 'options' in arguments_item:
+        options = arguments_item.get('options')
+        if 'verbose' in options:
+            if cli_args.get("report"):
+                return (False, "'verbose' parameter in 'options' section is incompatible "
+                               "with '--report' command line argument.", None)
+        else:
+            options["verbose"] = cli_args["verbose"]
 
     if 'default' in arguments_item:
         defaults_item = arguments_item.get('default')
-        if not isinstance(defaults_item, dict):
-            return False, f"'default' section is of type '{type(defaults_item).__name__}', not an object.", None
     else:
         defaults_item = {}
 
     documents_item = arguments_item.get('documents')
     if documents_item is None:
         return False, f"'documents' section is absent.", None
-    elif not isinstance(documents_item, list):
-        return False, f"'documents' section is of type '{type(documents_item).__name__}', not a list.", None
 
-    if 'no-css' in defaults_item and ('link-css' in defaults_item or 'include-css' in defaults_item):
-        return (False, f"'no-css' parameter incompatible with one of the ['link-css', 'include-css'] "
-                       f"in the 'default' section.", None)
+    if 'no-css' in defaults_item and (
+            'link-css' in defaults_item or 'include-css' in defaults_item):
+        return (
+            False, f"'no-css' parameter incompatible with one of the ['link-css', 'include-css'] "
+                   f"in the 'default' section.", None)
 
     for document_item in documents_item:
         document = {}
@@ -271,7 +296,8 @@ def parse_argument_file(argument_file_string, cli_args):
 
             no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'), False)
 
-            link_css.extend(first_not_none(document_item.get('link-css'), defaults_item.get('link-css'), []))
+            link_css.extend(first_not_none(document_item.get('link-css'),
+                                           defaults_item.get('link-css'), []))
             link_css.extend(first_not_none(document_item.get('add-link-css'), []))
             include_css.extend(first_not_none(document_item.get('include-css'),
                                               defaults_item.get('include-css'), []))
@@ -295,7 +321,8 @@ def parse_argument_file(argument_file_string, cli_args):
                                         document_item.get(attr), defaults_item.get(attr), False)
 
         if document['report'] and document['verbose']:
-            return False, f"Incompatible 'report' and 'verbose' parameters for 'documents' item: {document_item}.", None
+            return False, f"Incompatible 'report' and 'verbose' parameters for 'documents' " \
+                          f"item: {document_item}.", None
 
         document_list.append(document)
 
@@ -313,8 +340,9 @@ def parse_argument_file(argument_file_string, cli_args):
                 except PluginDataError as e:
                     return False, f"Error initializing plugin '{k}': {e}", None
 
-    return True, None, {OPTIONS_DOCUMENT_LIST_SECTION: document_list,
-                        OPTIONS_PLUGINS_SECTION: plugins}
+    return True, None, {ARGUMENTS_DOCUMENT_LIST_SECTION: document_list,
+                        ARGUMENTS_PLUGINS_SECTION: plugins,
+                        ARGUMENTS_OPTIONS_SECTION: options}
 
 
 def enrich_document_list(document_list):
@@ -408,6 +436,7 @@ def md2html(document, plugins):
 
 
 def main():
+    start_moment = time.monotonic()
 
     result_type, md2html_args = parse_md2html_arguments(sys.argv[1:])
     if result_type != 'success':
@@ -420,8 +449,8 @@ def main():
         if not success:
             print(f"Error parsing argument file '{argument_file}': " + error_message)
             sys.exit(1)
-        document_list = arguments[OPTIONS_DOCUMENT_LIST_SECTION]
-        plugins = arguments[OPTIONS_PLUGINS_SECTION]
+        document_list = arguments[ARGUMENTS_DOCUMENT_LIST_SECTION]
+        plugins = arguments[ARGUMENTS_PLUGINS_SECTION]
     else:
         document_list = [md2html_args]
         plugins = []
@@ -430,6 +459,10 @@ def main():
 
     for document in document_list:
         md2html(document, plugins)
+
+    if arguments[ARGUMENTS_OPTIONS_SECTION]["verbose"]:
+        end_moment = time.monotonic()
+        print('Finished in: ' + str(timedelta(seconds=end_moment - start_moment)))
 
 
 if __name__ == '__main__':

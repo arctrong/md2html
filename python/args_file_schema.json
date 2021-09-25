@@ -1,0 +1,42 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "options": {
+            "type": "object",
+            "properties": {
+                "verbose": { "type": "boolean" }
+            }
+        },
+        "default": {
+            "type": "object",
+            "properties": {
+                "template": { "type": "string" },
+                "no-css": { "type": "boolean" },
+                "verbose": { "type": "boolean" },
+                "input": { "type": "string" },
+                "output": { "type": "string" },
+                "title": { "type": "string" },
+                "link-css": { "type": "array", "items": { "type": "string" } }
+            }
+        },
+        "documents": {
+            "type": "array",
+            "items": { 
+                "type": "object",
+                "properties": {
+                    "template": { "type": "string" },
+                    "no-css": { "type": "boolean" },
+                    "verbose": { "type": "boolean" },
+                    "input": { "type": "string" },
+                    "output": { "type": "string" },
+                    "title": { "type": "string" },
+                    "link-css": { "type": "array", "items": { "type": "string" } }
+                }
+            }
+        }
+    },
+    "required": [
+        "documents"
+    ]
+}

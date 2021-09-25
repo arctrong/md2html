@@ -106,9 +106,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="250.70705"
-     inkscape:cy="1017.6672"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="452.81687"
+     inkscape:cy="1119.5231"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -1202,6 +1202,39 @@
          x="82.735672"
          y="269.19809"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.7625px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI';stroke-width:0.264583">Next</tspan></text>
+    <path
+       id="path1052"
+       style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 223.39648,1051.6953 -25.35519,15.584 25.35519,14.168 0,-7.1368 h 17.90374 v -15.4785 h -17.90374 z"
+       transform="scale(0.26458333)"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\previous_page.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="path1061"
+       style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 78.566705,278.26104 6.708561,4.12327 -6.708561,3.74862 v -1.88828 h -4.737031 v -4.09535 h 4.737031 z"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\next_page.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="path1063"
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 59.106985,288.31521 -6.708561,4.12327 6.708561,3.74861 v -1.88827 h 4.737031 v -4.09536 h -4.737031 z"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\previous_page_inective.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="path1065"
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 78.566705,288.31521 6.708561,4.12327 -6.708561,3.74862 v -1.88828 h -4.737031 v -4.09535 h 4.737031 z"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\next_page_inective.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
   </g>
   <g
      inkscape:groupmode="layer"

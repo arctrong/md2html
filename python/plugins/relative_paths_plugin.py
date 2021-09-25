@@ -1,6 +1,10 @@
-from plugins.md2html_plugin import Md2HtmlPlugin
+from pathlib import Path
+
+from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
 from plugins.md2html_plugin import PluginDataError
 from utils import relativize_relative_resource_path
+
+MODULE_DIR = Path(__file__).resolve().parent
 
 
 class RelativePathsPlugin(Md2HtmlPlugin):
@@ -10,6 +14,7 @@ class RelativePathsPlugin(Md2HtmlPlugin):
         self.data: dict = None
 
     def accept_data(self, data):
+        validate_data(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
         if not isinstance(data, dict):
             raise PluginDataError(f"Plugin data is of type '{type(data).__name__}', not a dict.")
         self.data = data

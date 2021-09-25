@@ -1,7 +1,10 @@
-from plugins.md2html_plugin import Md2HtmlPlugin
-from plugins.md2html_plugin import PluginDataError
-from utils import relativize_relative_resource
 from collections.abc import Iterator
+from pathlib import Path
+
+from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
+from utils import relativize_relative_resource
+
+MODULE_DIR = Path(__file__).resolve().parent
 
 
 class PageFlow(Iterator):
@@ -11,6 +14,9 @@ class PageFlow(Iterator):
         self.previous = previous_page
         self.current = current_page
         self.next = next_page
+        # For a logic-less template like Mustache the following calculated fields will help a lot.
+        self.has_navigation = self.previous is not None or self.next is not None
+        self.not_empty = self.pages is not None and len(self.pages) > 0
 
     def __iter__(self):
         return self.pages.__iter__()
@@ -55,34 +61,19 @@ class PageFlowsPlugin(Md2HtmlPlugin):
         self.data: dict = None
 
     def accept_data(self, data):
-        if not isinstance(data, dict):
-            raise PluginDataError(f"Plugin data is of type '{type(data).__name__}', not a dict.")
+        validate_data(data, MODULE_DIR.joinpath('page_flows_schema.json'))
         result = {}
         for k, v in data.items():
-            if not isinstance(v, list):
-                raise PluginDataError( f"Page flow section '{k}' is of type "
-                                       f"'{type(v).__name__}', not a list.")
             page_flow_items = []
             for item in v:
-                if not isinstance(item, dict):
-                    raise PluginDataError(f"Page flow section '{k}' item is of type "
-                                          f"'{type(item).__name__}', not a list: {item}")
-                if "link" not in item:
-                    raise PluginDataError(f"Page flow section '{k}' does not contain 'link' "
-                                          f"parameter: {item}")
-                if "title" not in item:
-                    raise PluginDataError(f"Page flow section '{k}' does not contain 'title' "
-                                          f"parameter: {item}")
+
+                # TODO Consider letting other arbitrary fields. Then they might be used in
+                #  the template. Though this may be a problem in the Java version... but
+                #  probably not as we are going to use a Map.
+
                 page_flow_item = {"link": item["link"], "title": item["title"]}
                 is_external = item.get("external")
-                if is_external is not None:
-                    if not isinstance(is_external, bool):
-                        raise PluginDataError(f"Page flow section '{k}' item 'external' parameter "
-                                              f"is of type '{type(is_external).__name__}', not a "
-                                              f"boolean: {item}")
-                    page_flow_item["external"] = is_external
-                else:
-                    page_flow_item["external"] = False
+                page_flow_item["external"] = is_external if is_external is not None else False
                 page_flow_items.append(page_flow_item)
             result[k] = page_flow_items
         self.data = result
