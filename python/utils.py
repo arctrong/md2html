@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 
 
@@ -9,6 +10,10 @@ class UserError(Exception):
     without a stack trace.
     """
     pass
+
+
+CACHED_FILES = {}
+JSON_COMMENT_BLANKING_PATTERN = re.compile(r'[^\s]')
 
 
 def reduce_json_validation_error_message(error_message: str) -> str:
@@ -66,3 +71,44 @@ def relativize_relative_resource(resource, page):
     if len(base_path.parents) < 1:
         return resource
     return str(os.path.relpath(resource, base_path.parent)).replace('\\', '/')
+
+
+def read_lines_from_file(file):
+    with open(file, 'r') as file_handler:
+        return file_handler.read()
+
+
+def read_lines_from_commented_json_file(file, comment_char='#'):
+    """
+    When reading replaces with spaces the content of those lines whose first non-blank symbol is
+    `comment_char`.
+    Then, when a parser points at an error, this error will be found at the
+    pointed line and at the pointed position in the initial (commented) file.
+
+    NOTE. JSON syntax does not allow comments. In this application, this function was added
+    for convenience.
+    """
+    lines = []
+    with open(file, 'r') as file_handler:
+        for line in file_handler:
+            if line.strip().startswith(comment_char):
+                lines.append(JSON_COMMENT_BLANKING_PATTERN.sub(' ', line))
+            else:
+                lines.append(line)
+    return ''.join(lines)
+
+
+def strip_extension(path):
+    return os.path.splitext(path)[0]
+
+
+def first_not_none(*values):
+    return next((v for v in values if v is not None), None)
+
+
+def read_lines_from_cached_file(file):
+    lines = CACHED_FILES.get(file)
+    if lines is None:
+        lines = read_lines_from_file(file)
+        CACHED_FILES[file] = lines
+    return lines

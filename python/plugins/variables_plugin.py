@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
-from utils import relativize_relative_resource_path
 
 MODULE_DIR = Path(__file__).resolve().parent
 

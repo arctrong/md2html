@@ -38,49 +38,49 @@ class UtilTest(unittest.TestCase):
     def test_read_lines_from_commented_file_simple(self):
         try:
             f = create_temp_file('line1\n#comment\nline2')
-            self.assertEqual('line1\n\nline2', read_lines_from_commented_file(f))
+            self.assertEqual('line1\n\nline2', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 
     def test_read_lines_from_commented_file_comment_starts_not_from_beginning_of_line(self):
         try:
             f = create_temp_file('line1\n #comment\nline2')
-            self.assertEqual('line1\n\nline2', read_lines_from_commented_file(f))
+            self.assertEqual('line1\n\nline2', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 
     def test_read_lines_from_commented_file_comment_in_first_line(self):
         try:
             f = create_temp_file('#comment\nline2')
-            self.assertEqual('\nline2', read_lines_from_commented_file(f))
+            self.assertEqual('\nline2', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 
     def test_read_lines_from_commented_file_comment_in_last_line(self):
         try:
             f = create_temp_file('line1\n#comment')
-            self.assertEqual('line1\n', read_lines_from_commented_file(f))
+            self.assertEqual('line1\n', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 
     def test_read_lines_from_commented_file_two_comments_in_a_row(self):
         try:
             f = create_temp_file('line1\n#comment1\n#comment2\nline2')
-            self.assertEqual('line1\n\n\nline2', read_lines_from_commented_file(f))
+            self.assertEqual('line1\n\n\nline2', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 
     def test_read_lines_from_commented_file_two_comments_in_a_distance(self):
         try:
             f = create_temp_file('line1\n#comment1\nline2\n#comment2\nline3')
-            self.assertEqual('line1\n\nline2\n\nline3', read_lines_from_commented_file(f))
+            self.assertEqual('line1\n\nline2\n\nline3', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 
     def test_read_lines_from_commented_file_empty_comment(self):
         try:
             f = create_temp_file('line1\n#\nline2')
-            self.assertEqual('line1\n\nline2', read_lines_from_commented_file(f))
+            self.assertEqual('line1\n\nline2', read_lines_from_commented_json_file(f))
         finally:
             os.remove(f)
 

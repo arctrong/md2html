@@ -2,6 +2,8 @@ import sys
 import unittest
 from pathlib import Path
 
+from argument_file_utils import enrich_document
+
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
 
