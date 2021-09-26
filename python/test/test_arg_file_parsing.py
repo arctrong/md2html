@@ -70,7 +70,7 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(success)
         doc = options["document-list"][0]
         self.assertEqual(Path('index.txt'), doc["input_file"])
-        enrich_document_list(options["document-list"])
+        enrich_document(options["document-list"])
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('index' in str(doc["output_file"]))
 
@@ -82,13 +82,13 @@ class ArgFileParseTest(unittest.TestCase):
         doc = options["document-list"][0]
         self.assertEqual(Path('index.txt'), doc["input_file"])
         self.assertEqual(Path('common_template.html'), doc["template"])
-        enrich_document_list(options["document-list"])
+        enrich_document(options["document-list"])
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('index' in str(doc["output_file"]))
         doc = options["document-list"][1]
         self.assertEqual(Path('about.txt'), doc["input_file"])
         self.assertEqual(Path('common_template.html'), doc["template"])
-        enrich_document_list(options["document-list"])
+        enrich_document(options["document-list"])
         self.assertTrue(isinstance(doc["output_file"], Path))
         self.assertTrue('about' in str(doc["output_file"]))
 

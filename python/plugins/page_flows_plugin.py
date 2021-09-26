@@ -57,14 +57,16 @@ def process_page_flow(page_flow, output_file):
 class PageFlowsPlugin(Md2HtmlPlugin):
 
     def __init__(self):
-        # noinspection PyTypeChecker
-        self.data: dict = None
+        self.data: dict = {}
 
     def accept_data(self, data):
+        """
+        May accept data several times. Subsequent accepting will add pages to the end of the
+        corresponding page flows.
+        """
         validate_data(data, MODULE_DIR.joinpath('page_flows_schema.json'))
-        result = {}
         for k, v in data.items():
-            page_flow_items = []
+            page_flow_items = self.data.setdefault(k, [])
             for item in v:
 
                 # TODO Consider letting other arbitrary fields. Then they might be used in
@@ -75,8 +77,6 @@ class PageFlowsPlugin(Md2HtmlPlugin):
                 is_external = item.get("external")
                 page_flow_item["external"] = is_external if is_external is not None else False
                 page_flow_items.append(page_flow_item)
-            result[k] = page_flow_items
-        self.data = result
         return bool(self.data)
 
     def variables(self, doc: dict) -> dict:

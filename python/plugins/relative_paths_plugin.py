@@ -15,6 +15,7 @@ class RelativePathsPlugin(Md2HtmlPlugin):
     def accept_data(self, data):
         validate_data(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
         self.data = data
+        return bool(self.data)
 
     def variables(self, doc: dict) -> dict:
         result = {}

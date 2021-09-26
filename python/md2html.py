@@ -229,6 +229,16 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
     documents = []
     plugins = []
     options = {}
+    documents_page_flows = {}
+
+    plugins_item = argument.get('plugins')
+    page_flows_plugin = None
+    # Even if all page flows are defined in the 'documents' section, at least empty 'page-flows'
+    # plugin must be defined in order to activate page flows processing.
+    page_flows_plugin_defined = False
+    if plugins_item is not None:
+        page_flows_plugin = PLUGINS.get("page-flows")
+        page_flows_plugin_defined = "page-flows" in plugins_item
 
     if 'options' in argument:
         options = argument['options']
@@ -268,8 +278,7 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
 
         attr = 'title'
         document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr),
-                                        defaults_item.get(attr))
-
+                                        defaults_item.get(attr), '')
         attr = 'template'
         v = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
         document[attr] = Path(v) if v is not None else None
@@ -321,7 +330,29 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
             raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
                             f"item: {document_item}.")
 
+        enrich_document(document)
+
+        if page_flows_plugin_defined:
+            if ((1 if 'no-page-flows' in document_item else 0) +
+                    (1 if 'page-flows' in document_item else 0) +
+                    (1 if 'add-page-flows' in document_item else 0) > 1):
+                raise UserError(f"Incompatible 'no-page-flows', 'page-flows' and 'add-page-flows' "
+                                f"parameters for 'documents' item: {document_item}.")
+            attr = 'page-flows'
+            page_flows = first_not_none([] if document_item.get('no-page-flows') else
+                                        document_item.get(attr), defaults_item.get(attr), [])
+            for page_flow in page_flows:
+                page_flow_list = documents_page_flows.setdefault(page_flow, [])
+                page_flow_list.append({"link": document["output_file"], "title": document["title"]})
+            add_page_flows = first_not_none(document_item.get("add-page-flows"), [])
+            for page_flow in add_page_flows:
+                page_flow_list = documents_page_flows.setdefault(page_flow, [])
+                page_flow_list.append({"link": document["output_file"], "title": document["title"]})
+
         documents.append(document)
+
+    if documents_page_flows and page_flows_plugin_defined:
+        page_flows_plugin.accept_data(documents_page_flows)
 
     plugins_item = argument.get('plugins')
     if plugins_item is not None:
@@ -329,23 +360,22 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
             plugin = PLUGINS.get(k)
             if plugin:
                 try:
-                    plugin.accept_data(v)
-                    plugins.append(plugin)
+                    if plugin.accept_data(v):
+                        plugins.append(plugin)
                 except UserError as e:
                     raise UserError(f"Error initializing plugin '{k}': {type(e).__name__}: {e}")
 
     return Arguments(options, documents, plugins)
 
 
-def enrich_document_list(document_list):
-    for document in document_list:
-        if not document['template']:
-            document['template'] = WORKING_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
-        if not document['output_file']:
-            document['output_file'] = str(Path(strip_extension(document['input_file']) + '.html')
-                                          ).replace('\\', '/')
-        if not document['no_css'] and not document['link_css'] and not document['include_css']:
-            document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
+def enrich_document(document):
+    if not document['template']:
+        document['template'] = WORKING_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
+    if not document['output_file']:
+        document['output_file'] = str(Path(strip_extension(document['input_file']) + '.html')
+                                      ).replace('\\', '/')
+    if not document['no_css'] and not document['link_css'] and not document['include_css']:
+        document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 
 
 def md2html(document, plugins, metadata_handlers):
@@ -425,16 +455,14 @@ def main():
     argument_file = md2html_args.get('argument_file')
     if argument_file:
         argument_file_string = read_lines_from_commented_file(argument_file)
-        argument_file_dict = load_json_argument_file(argument_file_string)
         try:
+            argument_file_dict = load_json_argument_file(argument_file_string)
             arguments = parse_argument_file_content(argument_file_dict, md2html_args)
         except UserError as e:
             raise UserError(f"Error parsing argument file '{argument_file}': {type(e).__name__}: "
                             f"{e}")
     else:
         arguments = parse_argument_file_content({"documents": [{}]}, md2html_args)
-
-    enrich_document_list(arguments.documents)
 
     metadata_handlers = register_page_metadata_handlers(arguments.plugins)
 

@@ -49,7 +49,7 @@ class ArgParseTest(unittest.TestCase):
 
     def test_parse_md2html_arguments_minimalArgumentSet(self):
         result_type, md2html_args = parse_md2html_arguments(['-i', '../doc/notes.md'])
-        enrich_document_list([md2html_args])
+        enrich_document([md2html_args])
         self.assertEqual('success', result_type)
         self.assertEqual(Path('../doc/notes.md'), md2html_args['input_file'])
         self.assertEqual(Path('../doc/notes.html'), md2html_args['output_file'])
@@ -113,7 +113,7 @@ class ArgParseTest(unittest.TestCase):
 
     def test_parse_md2html_arguments_defaultCss(self):
         result_type, md2html_args = parse_md2html_arguments(['-i', 'input.md'])
-        enrich_document_list([md2html_args])
+        enrich_document([md2html_args])
         self.assertEqual('success', result_type)
         self.assertFalse(md2html_args['link_css'])
         self.assertEqual(1, len(md2html_args['include_css']))
