@@ -5,7 +5,8 @@
         "options": {
             "type": "object",
             "properties": {
-                "verbose": { "type": "boolean" }
+                "verbose": { "type": "boolean" },
+                "legacy-mode": { "type": "boolean" }
             }
         },
         "default": {

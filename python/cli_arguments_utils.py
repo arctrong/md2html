@@ -22,7 +22,9 @@ def parse_cli_arguments(*args):
     parser.add_argument("-h", "--help", help="shows this help message and exits",
                         action='store_true')
     parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str)
-    parser.add_argument("--argument-file", help="argument file", type=str)
+    parser.add_argument("--argument-file",
+                        help="argument file. Allows processing multiple documents with a single"
+                             "run. Also provides different adjustment possibilities.", type=str)
     parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name"
                                                "with '.html' extension", type=str)
     parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an "
@@ -39,9 +41,14 @@ def parse_cli_arguments(*args):
                                               "later than the input file", action='store_true')
     parser.add_argument("-v", "--verbose", help="outputs human readable information messages",
                         action='store_true')
-    parser.add_argument("-r", "--report", help="if HTML file is generated, outputs the path of "
-                                               "this file, incompatible with -v",
-                        action='store_true')
+    parser.add_argument("-r", "--report",
+                        help="if HTML file is generated, outputs the path of this file, "
+                             "incompatible with -v", action='store_true')
+    parser.add_argument("--legacy-mode",
+                        help="Allows processing documentation projects prepared for version of "
+                             "the program prior to 1.0.0. Still it's recommended to migrate the "
+                             "projects to the newer version.", action='store_true')
+
     args = parser.parse_args(*args)
 
     if args.help:
@@ -83,5 +90,7 @@ def parse_cli_arguments(*args):
         parser.print_usage()
         print(f'--report and --verbose arguments are not compatible ({USE_HELP_TEXT})')
         return 'error', None
+
+    md2html_args['legacy_mode'] = args.legacy_mode
 
     return 'success', md2html_args

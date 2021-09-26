@@ -66,7 +66,7 @@ def apply_metadata_handlers(text, handlers: PageMetadataHandlers, output_file):
     replacement_done = False
     for matchObj in metadata_finder(text):
         first_non_blank = not bool(matchObj.before.strip())
-
+        last_position = matchObj.end_position
         handlers = marker_handlers.get((matchObj.marker, first_non_blank))
         if handlers is None and first_non_blank:
             handlers = marker_handlers.get((matchObj.marker, False))

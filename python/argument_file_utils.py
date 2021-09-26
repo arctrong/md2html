@@ -38,14 +38,14 @@ class Arguments:
         self.plugins = plugins
 
 
-def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
+def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arguments:
 
     documents = []
     plugins = []
     options = {}
     documents_page_flows = {}
 
-    plugins_item = argument.get('plugins')
+    plugins_item = argument_file_dict.get('plugins')
     page_flows_plugin = None
     # Even if all page flows are defined in the 'documents' section, at least empty 'page-flows'
     # plugin must be defined in order to activate page flows processing.
@@ -54,8 +54,8 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
         page_flows_plugin = PLUGINS.get("page-flows")
         page_flows_plugin_defined = "page-flows" in plugins_item
 
-    if 'options' in argument:
-        options = argument['options']
+    if 'options' in argument_file_dict:
+        options = argument_file_dict['options']
         if 'verbose' in options:
             if cli_args.get("report"):
                 raise UserError("'verbose' parameter in 'options' section is incompatible "
@@ -64,12 +64,14 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
             options["verbose"] = cli_args["verbose"]
     else:
         options["verbose"] = cli_args["verbose"]
+    options['legacy_mode'] = first_not_none(cli_args.get('legacy_mode'),
+                                            options.get('legacy_mode'), False)
 
-    defaults_item = argument.get('default')
+    defaults_item = argument_file_dict.get('default')
     if defaults_item is None:
         defaults_item = {}
 
-    documents_item = argument['documents']
+    documents_item = argument_file_dict['documents']
 
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
@@ -168,7 +170,7 @@ def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
     if documents_page_flows and page_flows_plugin_defined:
         page_flows_plugin.accept_data(documents_page_flows)
 
-    plugins_item = argument.get('plugins')
+    plugins_item = argument_file_dict.get('plugins')
     if plugins_item is not None:
         for k, v in plugins_item.items():
             plugin = PLUGINS.get(k)

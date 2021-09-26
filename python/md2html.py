@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import time
 from datetime import datetime
@@ -19,8 +20,11 @@ WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
                                          "pymdownx.superfences", "admonition"])
 
+LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${([^}]+)}')
+LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${(styles|content)}')
 
-def md2html(document, plugins, metadata_handlers):
+
+def md2html(document, plugins, metadata_handlers, options):
     input_location = document['input_file']
     output_location = document['output_file']
     title = document['title']
@@ -60,8 +64,22 @@ def md2html(document, plugins, metadata_handlers):
         plugin.new_page()
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, output_location)
 
+    substitutions['content'] = MARKDOWN.convert(source=md_lines)
+
     for plugin in plugins:
         substitutions.update(plugin.variables(document))
+
+    template = read_lines_from_cached_file(template_file)
+
+    if options['legacy_mode']:
+        placeholders = substitutions.get('placeholders')
+        if placeholders is not None:
+            del substitutions['placeholders']
+            substitutions.update(placeholders)
+        template = re.sub(LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN, r'\1{{{\2}}}',
+                          template)
+        template = re.sub(LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN, r'\1{{\2}}',
+                          template)
 
     if substitutions['title'] is None:
         substitutions['title'] = ''
@@ -71,9 +89,7 @@ def md2html(document, plugins, metadata_handlers):
     # `Markdown.convert()` instead. And anyway the first two methods read the md-file
     # completely before conversion, so they give no memory save.
 
-    substitutions['content'] = MARKDOWN.convert(source=md_lines)
-
-    result = chevron.render(read_lines_from_cached_file(template_file), substitutions)
+    result = chevron.render(template, substitutions)
 
     with open(output_file, 'w') as result_file:
         result_file.write(result)
@@ -88,26 +104,31 @@ def main():
     try:
         start_moment = time.monotonic()
 
-        result_type, md2html_args = parse_cli_arguments(sys.argv[1:])
+        result_type, cli_args = parse_cli_arguments(sys.argv[1:])
         if result_type != 'success':
             sys.exit(1)
 
-        argument_file = md2html_args.get('argument_file')
+        argument_file = cli_args.get('argument_file')
         if argument_file:
             argument_file_string = read_lines_from_commented_json_file(argument_file)
             try:
                 argument_file_dict = load_json_argument_file(argument_file_string)
-                arguments = parse_argument_file_content(argument_file_dict, md2html_args)
+                arguments = parse_argument_file_content(argument_file_dict, cli_args)
             except UserError as e:
                 raise UserError(f"Error parsing argument file '{argument_file}': "
                                 f"{type(e).__name__}: {e}")
         else:
-            arguments = parse_argument_file_content({"documents": [{}]}, md2html_args)
+            # Need implicitly added plugin for extraction of page title from the source text.
+            argument_file_dict = {"options": {"legacy-mode": cli_args["legacy_mode"]},
+                                  "documents": [{}],
+                                  "plugins": {"page-variables": {"markers": ["METADATA"],
+                                                                 "only-at-page-start": True}}}
+            arguments = parse_argument_file_content(argument_file_dict, cli_args)
 
         metadata_handlers = register_page_metadata_handlers(arguments.plugins)
 
         for document in arguments.documents:
-            md2html(document, arguments.plugins, metadata_handlers)
+            md2html(document, arguments.plugins, metadata_handlers, arguments.options)
 
         if arguments.options["verbose"]:
             end_moment = time.monotonic()

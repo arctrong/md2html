@@ -45,7 +45,7 @@ if IMPLEMENTATION == 'py':
     EXEC = ['python' if os.name == 'nt' else 'python3', 
             os.environ['MD2HTML_HOME'] + '/python/md2html.py']
 elif IMPLEMENTATION == 'java':
-    EXEC = ['java', '-jar', os.environ['MD2HTML_HOME'] + '/java/target/md2html-0.1.2-bin.jar']
+    EXEC = ['java', '-jar', os.environ['MD2HTML_HOME'] + '/java/target/md2html-0.1.3-bin.jar']
 else:
     raise Exception('Unknown implementation')
 
