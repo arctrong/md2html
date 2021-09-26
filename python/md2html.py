@@ -17,6 +17,7 @@ from page_metadata_utils import register_page_metadata_handlers, apply_metadata_
 from plugins.page_flows_plugin import PageFlowsPlugin
 from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
+from plugins.variables_plugin import VariablesPlugin
 from utils import UserError, reduce_json_validation_error_message
 
 
@@ -43,7 +44,7 @@ WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
                                          "pymdownx.superfences", "admonition"])
 PLUGINS = {'relative-paths': RelativePathsPlugin(), "page-flows": PageFlowsPlugin(),
-           'page-variables': PageVariablesPlugin()}
+           'page-variables': PageVariablesPlugin(), "variables": VariablesPlugin()}
 CACHED_FILES = {}
 
 
