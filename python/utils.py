@@ -1,5 +1,7 @@
 import os
+import re
 from pathlib import Path
+from typing import Iterator
 
 
 def relativize_relative_resource_path(path: str, page: str):

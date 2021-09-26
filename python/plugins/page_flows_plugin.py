@@ -77,6 +77,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
                 page_flow_items.append(page_flow_item)
             result[k] = page_flow_items
         self.data = result
+        return bool(self.data)
 
     def variables(self, doc: dict) -> dict:
         output_file = str(doc['output_file'])

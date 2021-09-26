@@ -12,8 +12,10 @@ import chevron
 import markdown
 from jsonschema import validate
 
+from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
 from plugins.md2html_plugin import PluginDataError
 from plugins.page_flows_plugin import PageFlowsPlugin
+from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
 
 DEFAULT_TEMPLATE_PATH = '../doc_src/templates/default.html'
@@ -31,9 +33,8 @@ EXEC_VERSION = '0.1.3'
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
                                          "pymdownx.superfences", "admonition"])
-
-PLUGINS = {'relative-paths': RelativePathsPlugin(), "page-flows": PageFlowsPlugin()}
-
+PLUGINS = {'relative-paths': RelativePathsPlugin(), "page-flows": PageFlowsPlugin(),
+           'page-variables': PageVariablesPlugin()}
 CACHED_FILES = {}
 
 
@@ -63,7 +64,7 @@ def read_lines_from_commented_file(file, comment_char='#'):
                 lines.append(re.sub(r'[^\s]', ' ', line))
             else:
                 lines.append(line)
-    return ''.join([item for item in lines])
+    return ''.join(lines)
 
 
 def strip_extension(path):
@@ -72,11 +73,6 @@ def strip_extension(path):
 
 def first_not_none(*values):
     return next((v for v in values if v is not None), None)
-
-
-def extract_metadata_section(text):
-    match = re.search('^\\s*(<!--METADATA(.*?)-->)', text, flags=re.IGNORECASE + re.DOTALL)
-    return (match.group(2), match.start(1), match.end(1)) if match else (None, 0, 0)
 
 
 def parse_metadata(metadata_section):
@@ -203,7 +199,8 @@ def parse_md2html_arguments(*args):
 
 def parse_argument_file(argument_file_string, cli_args):
     """
-    Returns a tuple (success, error_message, document_list), where success is ether `True` or `False`.
+    Returns a tuple (success, error_message, document_list), where success is ether
+    `True` or `False`.
     """
 
     document_list = []
@@ -356,9 +353,9 @@ def enrich_document_list(document_list):
             document['include_css'] = [WORKING_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
 
 
-def md2html(document, plugins):
-    input_file = document['input_file']
-    output_file = document['output_file']
+def md2html(document, plugins, metadata_handlers):
+    input_location = document['input_file']
+    output_location = document['output_file']
     title = document['title']
     template_file = document['template']
     link_css = document['link_css']
@@ -367,32 +364,23 @@ def md2html(document, plugins):
     verbose = document['verbose']
     report = document['report']
 
+    output_file = Path(output_location)
+    input_file = Path(input_location)
+
     if not force and output_file.exists():
         output_file_mtime = os.path.getmtime(output_file)
         input_file_mtime = os.path.getmtime(input_file)
         if output_file_mtime > input_file_mtime:
             if verbose:
-                print(f'The output file is up-to-date. Skipping: {output_file}')
+                print(f'The output file is up-to-date. Skipping: {output_location}')
             return
 
     md_lines = read_lines_from_file(input_file)
+    for plugin in plugins:
+        plugin.new_page()
+    md_lines = apply_metadata_handlers(md_lines, metadata_handlers, output_location)
 
     substitutions = {'title': title}
-
-    metadata_section, metadata_start, metadata_end = extract_metadata_section(md_lines)
-    if metadata_section:
-        md_lines = md_lines[:metadata_start] + md_lines[metadata_end:]
-        metadata, errors = parse_metadata(metadata_section)
-        if verbose:
-            for error in errors:
-                print('WARNING: ' + error)
-        if metadata:
-            if substitutions['title'] is None and metadata.get('title') is not None:
-                substitutions['title'] = metadata['title']
-            if metadata.get(PLACEHOLDERS_METADATA_ITEM):
-                for k, v in metadata[PLACEHOLDERS_METADATA_ITEM].items():
-                    substitutions[k] = v
-
     for plugin in plugins:
         substitutions.update(plugin.variables(document))
 
@@ -421,18 +409,15 @@ def md2html(document, plugins):
     substitutions['generation_date'] = current_time.strftime('%Y-%m-%d')
     substitutions['generation_time'] = current_time.strftime('%H:%M:%S')
 
-    # template = Template(read_lines_from_cached_file(template_file))
-    # result = template.safe_substitute(substitutions)
-
     result = chevron.render(read_lines_from_cached_file(template_file), substitutions)
 
     with open(output_file, 'w') as result_file:
         result_file.write(result)
 
     if verbose:
-        print(f'Output file generated: {output_file}')
+        print(f'Output file generated: {output_location}')
     if report:
-        print(output_file)
+        print(output_location)
 
 
 def main():
@@ -457,8 +442,10 @@ def main():
 
     enrich_document_list(document_list)
 
+    metadata_handlers = register_page_metadata_handlers(plugins)
+
     for document in document_list:
-        md2html(document, plugins)
+        md2html(document, plugins, metadata_handlers)
 
     if arguments[ARGUMENTS_OPTIONS_SECTION]["verbose"]:
         end_moment = time.monotonic()

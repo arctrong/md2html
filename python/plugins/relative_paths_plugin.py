@@ -15,8 +15,6 @@ class RelativePathsPlugin(Md2HtmlPlugin):
 
     def accept_data(self, data):
         validate_data(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
-        if not isinstance(data, dict):
-            raise PluginDataError(f"Plugin data is of type '{type(data).__name__}', not a dict.")
         self.data = data
 
     def variables(self, doc: dict) -> dict:

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "patternProperties": {
-        "^[\\w\\d_]+$": { "type": "string" }
+        "^[\\w\\d_]+$": { "type": ["number", "string", "boolean", "null"] }
     },
     "additionalProperties": false
 }
