@@ -39,7 +39,7 @@ class MetadataMatchObject:
 
 def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
     """
-    If this is done completely in regex, it works about 100 times slower.
+    If this is done completely in regex, it works about 100 times longer.
     """
     start = 0
     while True:
@@ -64,15 +64,7 @@ def apply_metadata_handlers(text, handlers: PageMetadataHandlers, output_file):
     new_md_lines_list = []
     last_position = 0
     replacement_done = False
-    # pattern = re.compile(r'(.*?)(<!--([^\s]+)\s+(.+?)-->)', re.DOTALL)
-    # for match in re.finditer(pattern, text):
-    #     marker = match.group(3)
-    #     first_non_blank = not bool(match.group(1).strip())
-    #     metadata = match.group(4)
-    #     metadata_block = match.group(2)
-    #     last_position = match.end(2)
     for matchObj in metadata_finder(text):
-        #     before, marker, metadata, metadata_block, last_position
         first_non_blank = not bool(matchObj.before.strip())
 
         handlers = marker_handlers.get((matchObj.marker, first_non_blank))
@@ -81,10 +73,9 @@ def apply_metadata_handlers(text, handlers: PageMetadataHandlers, output_file):
         replacement = matchObj.metadata_block
         if handlers:
             for h in handlers:
-                replacement = h.accept_page_metadatum(output_file, matchObj.marker,
-                                                      matchObj.metadata, matchObj.metadata_block)
+                replacement = h.accept_page_metadata(output_file, matchObj.marker,
+                                                     matchObj.metadata, matchObj.metadata_block)
                 replacement_done = True
-        # new_md_lines_list.append(match.group(1))
         new_md_lines_list.append(matchObj.before)
         new_md_lines_list.append(replacement)
         if all_only_at_page_start:

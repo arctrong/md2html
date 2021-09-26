@@ -22,7 +22,7 @@
         },
         "documents": {
             "type": "array",
-            "items": { 
+            "items": {
                 "type": "object",
                 "properties": {
                     "template": { "type": "string" },
@@ -34,9 +34,8 @@
                     "link-css": { "type": "array", "items": { "type": "string" } }
                 }
             }
-        }
+        },
+        "plugins": { "type": "object" }
     },
-    "required": [
-        "documents"
-    ]
+    "required": [ "documents" ]
 }

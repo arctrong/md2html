@@ -6,17 +6,26 @@ import sys
 import time
 from datetime import datetime
 from datetime import timedelta
+from json.decoder import JSONDecodeError
 from pathlib import Path
 
 import chevron
 import markdown
-from jsonschema import validate
+from jsonschema import validate, ValidationError
 
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
-from plugins.md2html_plugin import PluginDataError
 from plugins.page_flows_plugin import PageFlowsPlugin
 from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
+from utils import UserError, reduce_json_validation_error_message
+
+
+class Arguments:
+    def __init__(self, options, documents, plugins):
+        self.options = options
+        self.documents = documents
+        self.plugins = plugins
+
 
 DEFAULT_TEMPLATE_PATH = '../doc_src/templates/default.html'
 DEFAULT_CSS_FILE_PATH = '../doc/styles.css'
@@ -179,11 +188,13 @@ def parse_md2html_arguments(*args):
     md2html_args['no_css'] = True if args.no_css else False
     if args.no_css and (args.link_css or args.include_css):
         parser.print_usage()
-        print(f'--no-css argument is not compatible with --link-css and --include-css arguments ({USE_HELP_TEXT})')
+        print(f'--no-css argument is not compatible with --link-css and --include-css '
+              f'arguments ({USE_HELP_TEXT})')
         return 'error', None
 
     md2html_args['link_css'] = args.link_css if args.link_css else []
-    md2html_args['include_css'] = [Path(item) for item in args.include_css] if args.include_css else []
+    md2html_args['include_css'] = [Path(item) for item in
+                                   args.include_css] if args.include_css else []
 
     md2html_args['force'] = args.force
     md2html_args['verbose'] = args.verbose
@@ -197,61 +208,49 @@ def parse_md2html_arguments(*args):
     return 'success', md2html_args
 
 
-def parse_argument_file(argument_file_string, cli_args):
-    """
-    Returns a tuple (success, error_message, document_list), where success is ether
-    `True` or `False`.
-    """
-
-    document_list = []
-    plugins = []
-    options = {}
-
+def load_json_argument_file(argument_file_string) -> dict:
     try:
         arguments_item = json.loads(argument_file_string)
-    except Exception as e:
-        return False, f'Error loading arguments file: {type(e).__name__}: {e}', None
-
-    # >python -m pip install jsonschema
-    # Collecting jsonschema
-    #   Downloading jsonschema-3.2.0-py2.py3-none-any.whl (56 kB)
-    # Collecting pyrsistent>=0.14.0
-    #   Downloading pyrsistent-0.18.0-cp38-cp38-win_amd64.whl (62 kB)
-    # Collecting attrs>=17.4.0
-    #   Downloading attrs-21.2.0-py2.py3-none-any.whl (53 kB)
-    # Installing collected packages: pyrsistent, attrs, jsonschema
-    # Successfully installed attrs-21.2.0 jsonschema-3.2.0 pyrsistent-0.18.0
-
+    except JSONDecodeError as e:
+        raise UserError(f"Error loading JSON argument file: {type(e).__name__}: {e}")
     try:
         schema = json.loads(
             read_lines_from_commented_file(WORKING_DIR.joinpath('args_file_schema.json')))
         validate(instance=arguments_item, schema=schema)
-    except Exception as e:
-        return False, f'Error validating arguments file: {type(e).__name__}: {e}', None
+    except ValidationError as e:
+        raise UserError(f"Error validating argument file content: {type(e).__name__}: " +
+                        reduce_json_validation_error_message(str(e)))
 
-    if 'options' in arguments_item:
-        options = arguments_item.get('options')
+    return arguments_item
+
+
+def parse_argument_file_content(argument: dict, cli_args: dict) -> Arguments:
+
+    documents = []
+    plugins = []
+    options = {}
+
+    if 'options' in argument:
+        options = argument['options']
         if 'verbose' in options:
             if cli_args.get("report"):
-                return (False, "'verbose' parameter in 'options' section is incompatible "
-                               "with '--report' command line argument.", None)
+                raise UserError("'verbose' parameter in 'options' section is incompatible "
+                                "with '--report' command line argument.")
         else:
             options["verbose"] = cli_args["verbose"]
-
-    if 'default' in arguments_item:
-        defaults_item = arguments_item.get('default')
     else:
+        options["verbose"] = cli_args["verbose"]
+
+    defaults_item = argument.get('default')
+    if defaults_item is None:
         defaults_item = {}
 
-    documents_item = arguments_item.get('documents')
-    if documents_item is None:
-        return False, f"'documents' section is absent.", None
+    documents_item = argument['documents']
 
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
-        return (
-            False, f"'no-css' parameter incompatible with one of the ['link-css', 'include-css'] "
-                   f"in the 'default' section.", None)
+        raise UserError(f"'no-css' parameter incompatible with one of the ['link-css', "
+                        f"'include-css'] in the 'default' section.")
 
     for document_item in documents_item:
         document = {}
@@ -261,14 +260,15 @@ def parse_argument_file(argument_file_string, cli_args):
         if v is not None:
             document['input_file'] = v
         else:
-            return False, f"Undefined input file for 'documents' item: {document_item}.", None
+            raise UserError(f"Undefined input file for 'documents' item: {document_item}.")
 
         v = first_not_none(cli_args.get('output_file'), document_item.get("output"),
                            defaults_item.get("output"))
         document['output_file'] = v
 
         attr = 'title'
-        document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
+        document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr),
+                                        defaults_item.get(attr))
 
         attr = 'template'
         v = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
@@ -287,9 +287,9 @@ def parse_argument_file(argument_file_string, cli_args):
             link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
             if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
                 q = '\''
-                return (False, f"'no-css' parameter incompatible with one of "
-                               f"[{', '.join([q + a + q for a in link_args])}] "
-                               f"in `documents` item: {document_item}.", None)
+                raise UserError(f"'no-css' parameter incompatible with one of "
+                                f"[{', '.join([q + a + q for a in link_args])}] "
+                                f"in `documents` item: {document_item}.")
 
             no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'), False)
 
@@ -318,28 +318,23 @@ def parse_argument_file(argument_file_string, cli_args):
                                         document_item.get(attr), defaults_item.get(attr), False)
 
         if document['report'] and document['verbose']:
-            return False, f"Incompatible 'report' and 'verbose' parameters for 'documents' " \
-                          f"item: {document_item}.", None
+            raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
+                            f"item: {document_item}.")
 
-        document_list.append(document)
+        documents.append(document)
 
-    plugins_item = arguments_item.get('plugins')
+    plugins_item = argument.get('plugins')
     if plugins_item is not None:
-        if not isinstance(plugins_item, dict):
-            return (False, f"'plugins' section is of type '{type(defaults_item).__name__}', "
-                           f"not an object.", None)
         for k, v in plugins_item.items():
             plugin = PLUGINS.get(k)
             if plugin:
                 try:
                     plugin.accept_data(v)
                     plugins.append(plugin)
-                except PluginDataError as e:
-                    return False, f"Error initializing plugin '{k}': {e}", None
+                except UserError as e:
+                    raise UserError(f"Error initializing plugin '{k}': {type(e).__name__}: {e}")
 
-    return True, None, {ARGUMENTS_DOCUMENT_LIST_SECTION: document_list,
-                        ARGUMENTS_PLUGINS_SECTION: plugins,
-                        ARGUMENTS_OPTIONS_SECTION: options}
+    return Arguments(options, documents, plugins)
 
 
 def enrich_document_list(document_list):
@@ -430,27 +425,30 @@ def main():
     argument_file = md2html_args.get('argument_file')
     if argument_file:
         argument_file_string = read_lines_from_commented_file(argument_file)
-        success, error_message, arguments = parse_argument_file(argument_file_string, md2html_args)
-        if not success:
-            print(f"Error parsing argument file '{argument_file}': " + error_message)
-            sys.exit(1)
-        document_list = arguments[ARGUMENTS_DOCUMENT_LIST_SECTION]
-        plugins = arguments[ARGUMENTS_PLUGINS_SECTION]
+        argument_file_dict = load_json_argument_file(argument_file_string)
+        try:
+            arguments = parse_argument_file_content(argument_file_dict, md2html_args)
+        except UserError as e:
+            raise UserError(f"Error parsing argument file '{argument_file}': {type(e).__name__}: "
+                            f"{e}")
     else:
-        document_list = [md2html_args]
-        plugins = []
+        arguments = parse_argument_file_content({"documents": [{}]}, md2html_args)
 
-    enrich_document_list(document_list)
+    enrich_document_list(arguments.documents)
 
-    metadata_handlers = register_page_metadata_handlers(plugins)
+    metadata_handlers = register_page_metadata_handlers(arguments.plugins)
 
-    for document in document_list:
-        md2html(document, plugins, metadata_handlers)
+    for document in arguments.documents:
+        md2html(document, arguments.plugins, metadata_handlers)
 
-    if arguments[ARGUMENTS_OPTIONS_SECTION]["verbose"]:
+    if arguments.options["verbose"]:
         end_moment = time.monotonic()
         print('Finished in: ' + str(timedelta(seconds=end_moment - start_moment)))
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except UserError as ue:
+        print(str(ue))
+        sys.exit(2)

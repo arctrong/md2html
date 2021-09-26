@@ -1,20 +1,23 @@
 import json
 from abc import ABC
 
-from jsonschema import validate
+from jsonschema import validate, ValidationError
+
+from utils import UserError, reduce_json_validation_error_message
 
 
-class PluginDataError(ValueError):
+class PluginDataUserError(UserError):
     pass
 
 
 def validate_data(data, schema_file):
+    with open(schema_file, 'r') as schema_file:
+        schema = json.load(schema_file)
     try:
-        with open(schema_file, 'r') as schema_file:
-            schema = json.load(schema_file)
         validate(instance=data, schema=schema)
-    except Exception as e:
-        raise PluginDataError(f'Error validating plugin data: {type(e).__name__}: {e}')
+    except ValidationError as e:
+        raise UserError(f"Error validating plugin data: {type(e).__name__}: " +
+                        reduce_json_validation_error_message(str(e)))
 
 
 class Md2HtmlPlugin(ABC):
@@ -29,22 +32,22 @@ class Md2HtmlPlugin(ABC):
     def metadata_handler_registration_info(self):
         """
         Returns a triple:
-        - the handler that has a method `accept_page_metadatum`;
+        - the handler that has a method `accept_page_metadata`;
         - the list of markers this handler must accept;
         - `True` if the handler accepts only the metadata sections that are the first non-blank
             content on the page, `False` if the handler accepts all metadata on the page.
         """
         return None, None, False
 
-    def accept_page_metadatum(self, output_file: str, marker: str, metadatum, metadatum_section):
+    def accept_page_metadata(self, output_file: str, marker: str, metadata, metadata_section):
         """
-        Accepts `output_file` where the `metadatum` was found, the metadatum marker, the
-        `metadatum` itself (as a string) and the whole section `metadatum_section` from
-        which the `metadatum` was extracted.
+        Accepts `output_file` where the `metadata` was found, the metadata marker, the
+        `metadata` itself (as a string) and the whole section `metadata_section` from
+        which the `metadata` was extracted.
         Adjusts its internal state accordingly, and returns the text that must replace
-        the metadatum section in the source text.
+        the metadata section in the source text.
         """
-        return metadatum_section
+        return metadata_section
 
     def variables(self, doc: dict) -> dict:
         return {}

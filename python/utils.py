@@ -1,7 +1,18 @@
 import os
-import re
 from pathlib import Path
-from typing import Iterator
+
+
+class UserError(Exception):
+    """
+    Error that was caused by correct processing of incorrect user input or actions.
+    The message must be more user friendly, and the application output may be simpler, e.g.
+    without a stack trace.
+    """
+    pass
+
+
+def reduce_json_validation_error_message(error_message: str) -> str:
+    return error_message.splitlines()[0]
 
 
 def relativize_relative_resource_path(path: str, page: str):
