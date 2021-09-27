@@ -30,7 +30,7 @@ class Md2htmlTemplateIntegralTest(unittest.TestCase):
     def test_not_empty_title_metadata(self):
         output_file = f'{self.OUTPUT_DIR}/not_empty_title_metadata_test.html'
         root = h.execute(['-f', '-i', f'{h.INPUT_DIR}/not_empty_title_metadata_test.txt',
-                          '-o', output_file, 
+                          '-o', output_file, '--legacy-mode',
                           '--template', f'{h.INPUT_DIR}/test_template_title.html'], 
                           output_file)
         
@@ -84,7 +84,7 @@ class Md2htmlTemplateIntegralTest(unittest.TestCase):
         output_file = f'{self.OUTPUT_DIR}/placeholders_test.html'
         root = h.execute(['-f', '-i', f'{h.INPUT_DIR}/placeholders_test.txt', '-o', output_file, 
                           '--template', f'{h.INPUT_DIR}/test_template_placeholders.html',
-                          '--no-css'],
+                          '--no-css', '--legacy-mode'],
                           output_file)
                           
         pattern = re.compile('\d')
