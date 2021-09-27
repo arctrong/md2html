@@ -1,9 +1,5 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "propertyNames": { "pattern": "^[\\w\\d_]+$" },
-    "properties": {
-        "placeholders": { "type": "object" }
-    },
-    "additionalProperties": { "type": ["number", "string", "boolean", "null"] }
+    "propertyNames": { "pattern": "^[\\w_][\\w\\d_]*$" }
 }

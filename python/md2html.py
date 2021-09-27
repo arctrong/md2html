@@ -23,6 +23,18 @@ MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
 LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${([^}]+)}')
 LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${(styles|content)}')
 
+CACHED_FILES = {}
+
+
+def read_lines_from_cached_file_legacy(template_file):
+    lines = CACHED_FILES.get(template_file)
+    if lines is None:
+        lines = read_lines_from_file(template_file)
+        lines = re.sub(LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN, r'\1{{{\2}}}', lines)
+        lines = re.sub(LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN, r'\1{{\2}}', lines)
+        CACHED_FILES[template_file] = lines
+    return lines
+
 
 def md2html(document, plugins, metadata_handlers, options):
     input_location = document['input_file']
@@ -69,17 +81,14 @@ def md2html(document, plugins, metadata_handlers, options):
     for plugin in plugins:
         substitutions.update(plugin.variables(document))
 
-    template = read_lines_from_cached_file(template_file)
-
     if options['legacy_mode']:
         placeholders = substitutions.get('placeholders')
         if placeholders is not None:
             del substitutions['placeholders']
             substitutions.update(placeholders)
-        template = re.sub(LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN, r'\1{{{\2}}}',
-                          template)
-        template = re.sub(LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN, r'\1{{\2}}',
-                          template)
+        template = read_lines_from_cached_file_legacy(template_file)
+    else:
+        template = read_lines_from_cached_file(template_file)
 
     if substitutions['title'] is None:
         substitutions['title'] = ''
@@ -118,10 +127,13 @@ def main():
                 raise UserError(f"Error parsing argument file '{argument_file}': "
                                 f"{type(e).__name__}: {e}")
         else:
-            # Need implicitly added plugin for extraction of page title from the source text.
-            argument_file_dict = {"options": {"legacy-mode": cli_args["legacy_mode"]},
-                                  "documents": [{}],
-                                  "plugins": {"page-variables": {"markers": ["METADATA"],
+            page_variables_markers = ["VARIABLES"]
+            if cli_args["legacy_mode"]:
+                page_variables_markers.append("METADATA")
+            argument_file_dict = {"documents": [{}],
+                                  # When run without an argument file, need implicitly added
+                                  # plugin for extraction of page title from the source text.
+                                  "plugins": {"page-variables": {"markers": page_variables_markers,
                                                                  "only-at-page-start": True}}}
             arguments = parse_argument_file_content(argument_file_dict, cli_args)
 

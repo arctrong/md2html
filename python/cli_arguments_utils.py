@@ -23,13 +23,14 @@ def parse_cli_arguments(*args):
                         action='store_true')
     parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str)
     parser.add_argument("--argument-file",
-                        help="argument file. Allows processing multiple documents with a single"
-                             "run. Also provides different adjustment possibilities.", type=str)
+                        help="argument file. Allows processing multiple documents with a single "
+                             "run. Also provides different adjustment possibilities", type=str)
     parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name"
-                                               "with '.html' extension", type=str)
+                                               " with '.html' extension", type=str)
     parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an "
                                               "empty title", type=str)
-    parser.add_argument("--template", help="custom template directory", type=str)
+    parser.add_argument("--template", help="template that will be used for HTML document "
+                                           "generation", type=str)
     parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str,
                         action='append')
     parser.add_argument("--include-css", help="includes content of the CSS file into HTML, "
@@ -47,7 +48,7 @@ def parse_cli_arguments(*args):
     parser.add_argument("--legacy-mode",
                         help="Allows processing documentation projects prepared for version of "
                              "the program prior to 1.0.0. Still it's recommended to migrate the "
-                             "projects to the newer version.", action='store_true')
+                             "projects to the newer version", action='store_true')
 
     args = parser.parse_args(*args)
 

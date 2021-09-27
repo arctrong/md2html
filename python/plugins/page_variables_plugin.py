@@ -4,7 +4,7 @@ from pathlib import Path
 from jsonschema import validate, ValidationError
 
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
-from utils import UserError, reduce_json_validation_error_message
+from utils import UserError, reduce_json_validation_error_message, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -13,19 +13,19 @@ class PageVariablesPlugin(Md2HtmlPlugin):
 
     def __init__(self):
         self.markers = None
-        self.only_at_page_start = False
+        self.only_at_page_start = None
         self.page_variables = {}
         with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r') as schema_file:
             self.metadata_schema = json.load(schema_file)
 
     def accept_data(self, data):
         validate_data(data, MODULE_DIR.joinpath('page_variables_schema.json'))
-        self.markers = data["markers"]
-        self.only_at_page_start = bool(data.get("only-at-page-start"))
-        return bool(self.markers)
+        self.markers = first_not_none(data.get("markers"), ["VARIABLES"])
+        self.only_at_page_start = first_not_none(data.get("only-at-page-start"), False)
+        return True
 
-    def metadata_handler_registration_info(self):
-        return self, self.markers, self.only_at_page_start
+    def page_metadata_handler(self):
+        return self
 
     def accept_page_metadata(self, output_file: str, marker: str, metadata: str,
                              metadata_section):

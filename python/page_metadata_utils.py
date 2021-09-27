@@ -16,12 +16,12 @@ def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadat
     marker_handlers = {}
     all_only_at_page_start = True
     for plugin in plugins:
-        handler, markers, only_at_page_start = plugin.metadata_handler_registration_info()
+        handler = plugin.page_metadata_handler()
         if handler is not None:
-            if not only_at_page_start:
+            if not handler.only_at_page_start:
                 all_only_at_page_start = False
-            for marker in markers:
-                key = marker, only_at_page_start
+            for marker in handler.markers:
+                key = marker, handler.only_at_page_start
                 value = marker_handlers.setdefault(key, [])
                 value.append(handler)
     return PageMetadataHandlers(marker_handlers, all_only_at_page_start)

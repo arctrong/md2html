@@ -29,15 +29,16 @@ class Md2HtmlPlugin(ABC):
         """
         return False
 
-    def metadata_handler_registration_info(self):
+    def page_metadata_handler(self):
         """
-        Returns a triple:
-        - the handler that has a method `accept_page_metadata`;
-        - the list of markers this handler must accept;
-        - `True` if the handler accepts only the metadata sections that are the first non-blank
-            content on the page, `False` if the handler accepts all metadata on the page.
+        Returns a page metadata handler that must have the following members:
+        - the method `accept_page_metadata`;
+        - the property `markers` as a list of markers that the handler must accept;
+        - the boolean property `only_at_page_start` that states if the handler accepts only
+            the metadata sections that are the first non-blank content on the page,
+            `False` means that the handler accepts all metadata on the page.
         """
-        return None, None, False
+        return None
 
     def accept_page_metadata(self, output_file: str, marker: str, metadata, metadata_section):
         """

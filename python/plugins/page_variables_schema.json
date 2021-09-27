@@ -2,8 +2,10 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
-        "markers": { "type": "array", "items": { "type": "string" } },
+        "markers": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[\\w_][\\w\\d_]*$" }
+        },
         "only-at-page-start": { "type": "boolean" }
-    },
-    "required": [ "markers" ]
+    }
 }
