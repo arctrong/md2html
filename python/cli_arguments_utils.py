@@ -1,14 +1,22 @@
 import argparse
 from pathlib import Path
 
+from utils import UserError
+
 USE_HELP_TEXT = 'use -h for help'
 
 
-def parse_cli_arguments(*args):
+class CliError(UserError):
+    def __init__(self, help_requested: bool):
+        self.help_requested = help_requested
+
+
+def parse_cli_arguments(*args) -> dict:
     """
-    Returns a tuple of (result_type, result), where result_type is one of the 'success',
-    'help' or 'error'. If the result is not successful then all user information messages are
-    already printed into console.
+    If the declarative constraints, defined in the used command line parser, are broken then
+    the parser prints the error message to the console and exits the program.
+    Further procedural checks behave the same way. `CliError` will tell whether help was requested.
+    This lets the caller to, for example, define the program's exit code.
     """
 
     md2html_args = {}
@@ -54,7 +62,7 @@ def parse_cli_arguments(*args):
 
     if args.help:
         parser.print_help()
-        return 'help', None
+        raise CliError(True)
 
     if args.argument_file:
         md2html_args['argument_file'] = Path(args.argument_file)
@@ -64,7 +72,7 @@ def parse_cli_arguments(*args):
     elif not args.argument_file:
         parser.print_usage()
         print(f'Input file is not specified ({USE_HELP_TEXT})')
-        return 'error', None
+        raise CliError(False)
 
     md2html_args['output_file'] = args.output
 
@@ -77,7 +85,7 @@ def parse_cli_arguments(*args):
         parser.print_usage()
         print(f'--no-css argument is not compatible with --link-css and --include-css '
               f'arguments ({USE_HELP_TEXT})')
-        return 'error', None
+        raise CliError(False)
 
     md2html_args['link_css'] = args.link_css if args.link_css else []
     md2html_args['include_css'] = [Path(item) for item in
@@ -90,8 +98,8 @@ def parse_cli_arguments(*args):
     if md2html_args['report'] and md2html_args['verbose']:
         parser.print_usage()
         print(f'--report and --verbose arguments are not compatible ({USE_HELP_TEXT})')
-        return 'error', None
+        raise CliError(False)
 
     md2html_args['legacy_mode'] = args.legacy_mode
 
-    return 'success', md2html_args
+    return md2html_args

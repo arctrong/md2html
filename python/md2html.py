@@ -10,7 +10,7 @@ import chevron
 import markdown
 
 from argument_file_utils import load_json_argument_file, parse_argument_file_content
-from cli_arguments_utils import parse_cli_arguments
+from cli_arguments_utils import parse_cli_arguments, CliError
 from constants import EXEC_NAME, EXEC_VERSION
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
 from utils import UserError, read_lines_from_file, \
@@ -113,8 +113,9 @@ def main():
     try:
         start_moment = time.monotonic()
 
-        result_type, cli_args = parse_cli_arguments(sys.argv[1:])
-        if result_type != 'success':
+        try:
+            cli_args = parse_cli_arguments(sys.argv[1:])
+        except CliError:
             sys.exit(1)
 
         argument_file = cli_args.get('argument_file')

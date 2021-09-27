@@ -12,18 +12,19 @@ class LegacyModeTest(unittest.TestCase):
         cls.CLASS_NAME = cls.__name__
         cls.OUTPUT_DIR = h.prepare_output_directory(cls.__name__)
 
-    def test_in_legacy_mode(self):
+    def test_legacy_mode(self):
         without_arg_file = h.execute_simple(f'{h.INPUT_DIR}/{self.CLASS_NAME}/legacy_source_text.txt', 
                                             f'{self.OUTPUT_DIR}/test_in_legacy_mode_without_arg_file.html',
                                             f'{h.INPUT_DIR}/{self.CLASS_NAME}/legacy_template.html',
                                             '--legacy-mode', 
                                             '--link-css', '../../../test_input/test_styles.css')
+
         output_file = f'{self.OUTPUT_DIR}/test_in_legacy_mode_with_arg_file.html'
         with_arg_file = h.execute(['--argument-file', f'{h.INPUT_DIR}/{self.CLASS_NAME}/argument_file.json',
                                   '--output', output_file, '--legacy-mode'], output_file)
         
         for root, test_name in [(without_arg_file, 'without_arg_file'), (with_arg_file, 'with_arg_file')]:
-            with self.subTest(root=test_name):
+            with self.subTest(test_name=test_name):
                 self.assertEqual('test title from metadata', root.head.title.text)
 
                 self.assertIsNone(root.head.style)
