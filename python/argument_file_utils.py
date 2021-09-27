@@ -67,6 +67,15 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arg
     options['legacy_mode'] = first_not_none(cli_args.get('legacy_mode'),
                                             options.get('legacy_mode'), False)
 
+    plugins_item = argument_file_dict.setdefault('plugins', {})
+    if options['legacy_mode']:
+        page_variables = plugins_item.setdefault("page-variables", {})
+        markers = page_variables.setdefault("markers", [])
+        if "METADATA" not in markers:
+            markers.append("METADATA")
+        attr = "only-at-page-start"
+        page_variables[attr] = first_not_none(page_variables.get(attr), True)
+
     defaults_item = argument_file_dict.get('default')
     if defaults_item is None:
         defaults_item = {}
@@ -170,16 +179,14 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arg
     if documents_page_flows and page_flows_plugin_defined:
         page_flows_plugin.accept_data(documents_page_flows)
 
-    plugins_item = argument_file_dict.get('plugins')
-    if plugins_item is not None:
-        for k, v in plugins_item.items():
-            plugin = PLUGINS.get(k)
-            if plugin:
-                try:
-                    if plugin.accept_data(v):
-                        plugins.append(plugin)
-                except UserError as e:
-                    raise UserError(f"Error initializing plugin '{k}': {type(e).__name__}: {e}")
+    for k, v in plugins_item.items():
+        plugin = PLUGINS.get(k)
+        if plugin:
+            try:
+                if plugin.accept_data(v):
+                    plugins.append(plugin)
+            except UserError as e:
+                raise UserError(f"Error initializing plugin '{k}': {type(e).__name__}: {e}")
 
     return Arguments(options, documents, plugins)
 

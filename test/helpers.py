@@ -35,9 +35,11 @@ def execute(params, output_file):
     return root
 
 
-def execute_simple(input_file, output_file, template):
-    return execute(['-f', '-i', input_file, '-o', output_file, '--template', template], 
-                   output_file)
+def execute_simple(input_file, output_file, template, *args):
+    cli_args = ['-f', '-i', input_file, '-o', output_file, '--template', template]
+    for arg in args:
+        cli_args.append(arg)
+    return execute(cli_args, output_file)
 
 
 IMPLEMENTATION = os.environ['IMPLEMENTATION']
