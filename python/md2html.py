@@ -74,7 +74,7 @@ def md2html(document, plugins, metadata_handlers, options):
     md_lines = read_lines_from_file(input_file)
     for plugin in plugins:
         plugin.new_page()
-    md_lines = apply_metadata_handlers(md_lines, metadata_handlers, output_location)
+    md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
 
     substitutions['content'] = MARKDOWN.convert(source=md_lines)
 

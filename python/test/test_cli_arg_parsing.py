@@ -14,7 +14,7 @@ class NonWritable:
         pass
 
 
-class ArgParseTest(unittest.TestCase):
+class CliArgParseTest(unittest.TestCase):
 
     def _assertMd2HtmlOptionsEquals(self, o1, o2):
         self.assertEqual(o1['input_file'], o2['input_file'])

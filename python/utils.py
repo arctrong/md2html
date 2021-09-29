@@ -78,6 +78,13 @@ def read_lines_from_file(file):
         return file_handler.read()
 
 
+def blank_comment_line(line, comment_char):
+    if line.strip().startswith(comment_char):
+        return JSON_COMMENT_BLANKING_PATTERN.sub(' ', line)
+    else:
+        return line
+
+
 def read_lines_from_commented_json_file(file, comment_char='#'):
     """
     When reading replaces with spaces the content of those lines whose first non-blank symbol is
@@ -91,10 +98,7 @@ def read_lines_from_commented_json_file(file, comment_char='#'):
     lines = []
     with open(file, 'r') as file_handler:
         for line in file_handler:
-            if line.strip().startswith(comment_char):
-                lines.append(JSON_COMMENT_BLANKING_PATTERN.sub(' ', line))
-            else:
-                lines.append(line)
+            lines.append(blank_comment_line(line, comment_char))
     return ''.join(lines)
 
 

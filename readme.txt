@@ -712,7 +712,7 @@ System.out.println("This block demonstrates " +
     ````
 
 !!! danger
-    This is a danger block.
+    Admonitions are not supported in GitHub and StackOverflow.
     
     !!! note
         When a default title is used its first character is capitalized.

@@ -10,7 +10,6 @@ MODULE_DIR = Path(__file__).resolve().parent
 
 
 class PageVariablesPlugin(Md2HtmlPlugin):
-
     def __init__(self):
         self.markers = None
         self.only_at_page_start = None
@@ -27,7 +26,7 @@ class PageVariablesPlugin(Md2HtmlPlugin):
     def page_metadata_handler(self):
         return self
 
-    def accept_page_metadata(self, output_file: str, marker: str, metadata: str,
+    def accept_page_metadata(self, doc: dict, marker: str, metadata: str,
                              metadata_section):
         try:
             metadata = json.loads(metadata)

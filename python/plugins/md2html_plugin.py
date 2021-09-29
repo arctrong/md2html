@@ -40,12 +40,12 @@ class Md2HtmlPlugin(ABC):
         """
         return None
 
-    def accept_page_metadata(self, output_file: str, marker: str, metadata, metadata_section):
+    def accept_page_metadata(self, doc: dict, marker: str, metadata, metadata_section):
         """
-        Accepts `output_file` where the `metadata` was found, the metadata marker, the
+        Accepts document `doc` where the `metadata` was found, the metadata marker, the
         `metadata` itself (as a string) and the whole section `metadata_section` from
         which the `metadata` was extracted.
-        Adjusts its internal state accordingly, and returns the text that must replace
+        Adjusts the plugin's internal state accordingly, and returns the text that must replace
         the metadata section in the source text.
         """
         return metadata_section

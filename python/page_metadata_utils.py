@@ -58,7 +58,7 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
             return
 
 
-def apply_metadata_handlers(text, handlers: PageMetadataHandlers, output_file):
+def apply_metadata_handlers(text, handlers: PageMetadataHandlers, doc: dict):
     marker_handlers = handlers.marker_handlers
     all_only_at_page_start = handlers.all_only_at_page_start
     new_md_lines_list = []
@@ -73,7 +73,7 @@ def apply_metadata_handlers(text, handlers: PageMetadataHandlers, output_file):
         replacement = matchObj.metadata_block
         if handlers:
             for h in handlers:
-                replacement = h.accept_page_metadata(output_file, matchObj.marker,
+                replacement = h.accept_page_metadata(doc, matchObj.marker,
                                                      matchObj.metadata, matchObj.metadata_block)
                 replacement_done = True
         new_md_lines_list.append(matchObj.before)

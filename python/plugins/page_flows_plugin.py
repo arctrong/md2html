@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
-from utils import relativize_relative_resource
+from utils import relativize_relative_resource, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -33,12 +33,13 @@ def process_page_flow(page_flow, output_file):
 
     for page in page_flow:
         if page["external"]:
-            pages.append(page)
+            new_page = dict(page)
+            new_page["current"] = False
+            pages.append(new_page)
         else:
             is_current = page["link"] == output_file
             new_page = {"link": relativize_relative_resource(page["link"], output_file),
-                        "title": page["title"],
-                        "current": is_current}
+                        "title": page["title"], "current": is_current, "external": page["external"]}
             pages.append(new_page)
             if current_page is None:
                 if is_current:
@@ -55,28 +56,24 @@ def process_page_flow(page_flow, output_file):
 
 
 class PageFlowsPlugin(Md2HtmlPlugin):
-
     def __init__(self):
         self.data: dict = {}
 
     def accept_data(self, data):
-        """
-        May accept data several times. Subsequent accepting will add pages to the end of the
-        corresponding page flows.
-        """
         validate_data(data, MODULE_DIR.joinpath('page_flows_schema.json'))
+        result = {}
         for k, v in data.items():
-            page_flow_items = self.data.setdefault(k, [])
+            page_flow_items = []
             for item in v:
 
                 # TODO Consider letting other arbitrary fields. Then they might be used in
                 #  the template. Though this may be a problem in the Java version... but
-                #  probably not as we are going to use a Map.
+                #  probably not because we are going to use a Map.
 
-                page_flow_item = {"link": item["link"], "title": item["title"]}
-                is_external = item.get("external")
-                page_flow_item["external"] = is_external if is_external is not None else False
-                page_flow_items.append(page_flow_item)
+                page_flow_items.append({"link": item["link"], "title": item["title"],
+                                        "external": first_not_none(item.get("external"), False)})
+            result[k] = page_flow_items
+        self.data = result
         return bool(self.data)
 
     def variables(self, doc: dict) -> dict:
