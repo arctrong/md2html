@@ -121,6 +121,5 @@ class PageVariablesPluginTest(unittest.TestCase):
         self.assertEqual('     other text  some more text', result)
 
 
-
 if __name__ == '__main__':
     unittest.main()

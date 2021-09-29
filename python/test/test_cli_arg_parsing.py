@@ -66,8 +66,8 @@ class CliArgParseTest(unittest.TestCase):
     def test_parse_md2html_arguments_maxArguments(self):
         # Short form
         md2html_args = parse_cli_arguments(
-                ['-i', 'input.md', '-o', 'doc/output.htm', '-t', 'someTitle', '--template', '../templateDir',
-                 '--link-css=someStyles.css', '-fv'])
+                ['-i', 'input.md', '-o', 'doc/output.htm', '-t', 'someTitle', '--template',
+                 '../templateDir', '--link-css=someStyles.css', '-fv'])
         self.assertEqual('input.md', md2html_args['input_file'])
         self.assertEqual('doc/output.htm', md2html_args['output_file'])
         self.assertEqual('someTitle', md2html_args['title'])
@@ -80,8 +80,8 @@ class CliArgParseTest(unittest.TestCase):
         self.assertFalse(md2html_args['report'])
         # Long form
         md2html_args1 = parse_cli_arguments(
-            ['--input', 'input.md', '--output=doc/output.htm', '--title', 'someTitle', '--template', '../templateDir',
-             '--link-css', 'someStyles.css', '--force', '--verbose'])
+            ['--input', 'input.md', '--output=doc/output.htm', '--title', 'someTitle', '--template',
+             '../templateDir', '--link-css', 'someStyles.css', '--force', '--verbose'])
         self._assertMd2HtmlOptionsEquals(md2html_args, md2html_args1)
 
     def test_parse_md2html_arguments_includeCss(self):
@@ -127,7 +127,8 @@ class CliArgParseTest(unittest.TestCase):
         for css_type in ["link-css", "include-css"]:
             with self.subTest(css_type=css_type):
                 with contextlib.redirect_stdout(NonWritable()):
-                    self._assert_cli_error(['-i', 'readme.txt', '--no-css', '--' + css_type, 'styles.css'])
+                    self._assert_cli_error(['-i', 'readme.txt', '--no-css', '--' + css_type,
+                                            'styles.css'])
 
     def test_parse_md2html_arguments_argumentFile(self):
         md2html_args = parse_cli_arguments(['--argument-file', 'md2html_args.json'])
