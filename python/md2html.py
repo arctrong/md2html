@@ -128,14 +128,13 @@ def main():
                 raise UserError(f"Error parsing argument file '{argument_file}': "
                                 f"{type(e).__name__}: {e}")
         else:
-            page_variables_markers = ["VARIABLES"]
+            page_variables = {"VARIABLES": {"only-at-page-start": True}}
             if cli_args["legacy_mode"]:
-                page_variables_markers.append("METADATA")
+                page_variables["METADATA"] = {"only-at-page-start": True}
             argument_file_dict = {"documents": [{}],
-                                  # When run without an argument file, need implicitly added
-                                  # plugin for extraction of page title from the source text.
-                                  "plugins": {"page-variables": {"markers": page_variables_markers,
-                                                                 "only-at-page-start": True}}}
+                                  # When run without argument file, need implicitly added
+                                  # plugin for page title extraction from the source text.
+                                  "plugins": {"page-variables": page_variables}}
             arguments = parse_argument_file_content(argument_file_dict, cli_args)
 
         metadata_handlers = register_page_metadata_handlers(arguments.plugins)

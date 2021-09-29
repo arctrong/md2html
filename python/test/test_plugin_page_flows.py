@@ -5,7 +5,6 @@ from pathlib import Path
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
 from plugins.page_flows_plugin import *
-from constants import PLUGINS
 
 
 class PageFlowsPluginTest(unittest.TestCase):

@@ -181,7 +181,7 @@ class ArgFileParseTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}], '
             '"plugins": {"relative-paths": {"rel_path": "/doc"}, '
             '"page-flows": {"sections": [{"link": "doc/about.html", "title": "About"}]}, '
-            '"page-variables":{}, '
+            '"page-variables":{"v": {}}, '
             '"variables": {"logo": "THE GREATEST SITE EVER!"}}}')
         plugins = parse_argument_file_content(argument_file_dict, {}).plugins
         self.assertEqual(4, len(plugins))

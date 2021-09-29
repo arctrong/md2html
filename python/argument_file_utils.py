@@ -58,14 +58,6 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arg
     page_flows_plugin_item = plugins_item.get("page-flows")
     documents_page_flows = {}
 
-    # page_flows_plugin = None
-    # # Even if all page flows are defined in the 'documents' section, at least empty 'page-flows'
-    # # plugin must be defined in order to activate page flows processing.
-    # page_flows_plugin_defined = False
-    # if plugins_item is not None:
-    #     page_flows_plugin = PLUGINS.get("page-flows")
-    #     page_flows_plugin_defined = "page-flows" in plugins_item
-
     if bool(options.get('verbose')) and bool(cli_args.get("report")):
         raise UserError("'verbose' parameter in 'options' section is incompatible "
                         "with '--report' command line argument.")
@@ -78,11 +70,8 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arg
 
     if options['legacy_mode']:
         page_variables = plugins_item.setdefault("page-variables", {})
-        markers = page_variables.setdefault("markers", [])
-        if "METADATA" not in markers:
-            markers.append("METADATA")
-        attr = "only-at-page-start"
-        page_variables[attr] = first_not_none(page_variables.get(attr), True)
+        if "METADATA" not in page_variables:
+            page_variables["METADATA"] = {"only-at-page-start": True}
 
     defaults_item = argument_file_dict.get('default')
     if defaults_item is None:

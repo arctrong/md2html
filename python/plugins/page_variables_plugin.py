@@ -11,30 +11,30 @@ MODULE_DIR = Path(__file__).resolve().parent
 
 class PageVariablesPlugin(Md2HtmlPlugin):
     def __init__(self):
-        self.markers = None
-        self.only_at_page_start = None
+        self.data = None
         self.page_variables = {}
         with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r') as schema_file:
             self.metadata_schema = json.load(schema_file)
 
     def accept_data(self, data):
         validate_data(data, MODULE_DIR.joinpath('page_variables_schema.json'))
-        self.markers = first_not_none(data.get("markers"), ["VARIABLES"])
-        self.only_at_page_start = first_not_none(data.get("only-at-page-start"), False)
-        return True
+        self.data = data
+        return bool(self.data)
 
-    def page_metadata_handler(self):
-        return self
+    def page_metadata_handlers(self):
+        result = []
+        for k, v in self.data.items():
+            result.append((self, k, first_not_none(v.get("only-at-page-start"), True)))
+        return result
 
-    def accept_page_metadata(self, doc: dict, marker: str, metadata: str,
-                             metadata_section):
+    def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section):
         try:
-            metadata = json.loads(metadata)
+            metadata = json.loads(metadata_str)
             validate(instance=metadata, schema=self.metadata_schema)
         except ValidationError as e:
             raise UserError(f"Error validating page metadata: {type(e).__name__}: " +
                             reduce_json_validation_error_message(str(e)))
-        self.page_variables = metadata
+        self.page_variables.update(metadata)
         return ''
 
     def variables(self, doc: dict) -> dict:

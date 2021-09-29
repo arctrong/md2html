@@ -3,7 +3,7 @@ from typing import List, Iterator
 
 from plugins.md2html_plugin import Md2HtmlPlugin
 
-METADATA_PATTERN = re.compile(r'^([^\s]+)\s+(.+)$', re.DOTALL)
+METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]+.*)$', re.DOTALL)
 
 
 class PageMetadataHandlers:
@@ -16,12 +16,12 @@ def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadat
     marker_handlers = {}
     all_only_at_page_start = True
     for plugin in plugins:
-        handler = plugin.page_metadata_handler()
-        if handler is not None:
-            if not handler.only_at_page_start:
-                all_only_at_page_start = False
-            for marker in handler.markers:
-                key = marker, handler.only_at_page_start
+        handlers = plugin.page_metadata_handlers()
+        if handlers is not None:
+            for handler, marker, only_at_page_start in handlers:
+                if not only_at_page_start:
+                    all_only_at_page_start = False
+                key = marker.upper(), only_at_page_start
                 value = marker_handlers.setdefault(key, [])
                 value.append(handler)
     return PageMetadataHandlers(marker_handlers, all_only_at_page_start)
@@ -45,7 +45,7 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
     while True:
         begin = text.find('<!--', start)
         if begin >= 0:
-            end = text.find('-->')
+            end = text.find('-->', begin + 4)
             if end >= 0:
                 match = METADATA_PATTERN.search(text[begin + 4:end])
                 if match:
@@ -58,18 +58,19 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
             return
 
 
-def apply_metadata_handlers(text, handlers: PageMetadataHandlers, doc: dict):
-    marker_handlers = handlers.marker_handlers
-    all_only_at_page_start = handlers.all_only_at_page_start
+def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: dict):
+    marker_handlers = page_metadata_handlers.marker_handlers
+    all_only_at_page_start = page_metadata_handlers.all_only_at_page_start
     new_md_lines_list = []
     last_position = 0
     replacement_done = False
     for matchObj in metadata_finder(text):
         first_non_blank = not bool(matchObj.before.strip())
         last_position = matchObj.end_position
-        handlers = marker_handlers.get((matchObj.marker, first_non_blank))
+        lookup_marker = matchObj.marker.upper()
+        handlers = marker_handlers.get((lookup_marker, first_non_blank))
         if handlers is None and first_non_blank:
-            handlers = marker_handlers.get((matchObj.marker, False))
+            handlers = marker_handlers.get((lookup_marker, False))
         replacement = matchObj.metadata_block
         if handlers:
             for h in handlers:

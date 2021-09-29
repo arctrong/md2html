@@ -1,11 +1,11 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "properties": {
-        "markers": {
-            "type": "array",
-            "items": { "type": "string", "pattern": "^[\\w_][\\w\\d_]*$" }
-        },
-        "only-at-page-start": { "type": "boolean" }
-    }
+    "patternProperties": {
+        "^[\\w_][\\w\\d_]*$": {
+            "type": "object",
+            "properties": { "only-at-page-start": { "type": "boolean" } }
+        }
+    },
+    "additionalProperties": false
 }
