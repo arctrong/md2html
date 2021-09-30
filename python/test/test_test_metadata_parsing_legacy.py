@@ -5,6 +5,8 @@ from pathlib import Path
 sys.path.append(Path(__file__).resolve().parent.parent)
 from page_metadata_utils import *
 from argument_file_utils import *
+from plugins.page_variables_plugin import PageVariablesPlugin
+from .utils_for_tests import find_single_instance_of_type
 
 
 class PageMetadataUtilsTest(unittest.TestCase):
@@ -17,7 +19,7 @@ class PageMetadataUtilsTest(unittest.TestCase):
             '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
         plugins = parse_argument_file_content(argument_file_dict, {}).plugins
         metadata_handlers = register_page_metadata_handlers(plugins)
-        plugin = plugins[0]
+        plugin = find_single_instance_of_type(plugins, PageVariablesPlugin)
         page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
         plugin.new_page()
         result = apply_metadata_handlers(page_content, metadata_handlers, {})

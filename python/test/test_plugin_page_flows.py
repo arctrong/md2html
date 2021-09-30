@@ -5,19 +5,13 @@ from pathlib import Path
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
 from plugins.page_flows_plugin import *
+from .utils_for_tests import find_single_instance_of_type
 
 
 class PageFlowsPluginTest(unittest.TestCase):
 
     def _find_single_plugin(self, plugins):
-        result = None
-        for plugin in plugins:
-            if isinstance(plugin, PageFlowsPlugin):
-                if result is None:
-                    result = plugin
-                else:
-                    self.fail(f"More than one plugins of type '{type(plugin).__name__}' found.")
-        return result
+        return find_single_instance_of_type(plugins, PageFlowsPlugin)
 
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}], '
