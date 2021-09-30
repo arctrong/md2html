@@ -3,7 +3,7 @@ from typing import List, Iterator
 
 from plugins.md2html_plugin import Md2HtmlPlugin
 
-METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]+.*)$', re.DOTALL)
+METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
 
 
 class PageMetadataHandlers:

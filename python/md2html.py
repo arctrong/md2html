@@ -140,7 +140,12 @@ def main():
         metadata_handlers = register_page_metadata_handlers(arguments.plugins)
 
         for document in arguments.documents:
-            md2html(document, arguments.plugins, metadata_handlers, arguments.options)
+            try:
+                md2html(document, arguments.plugins, metadata_handlers, arguments.options)
+            except UserError as e:
+                error_input_file = document["input_file"]
+                raise UserError(f"Error processing input file '{error_input_file}': "
+                                f"{type(e).__name__}: {e}")
 
         if arguments.options["verbose"]:
             end_moment = time.monotonic()

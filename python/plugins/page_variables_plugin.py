@@ -1,4 +1,5 @@
 import json
+from json import JSONDecodeError
 from pathlib import Path
 
 from jsonschema import validate, ValidationError
@@ -31,6 +32,8 @@ class PageVariablesPlugin(Md2HtmlPlugin):
         try:
             metadata = json.loads(metadata_str)
             validate(instance=metadata, schema=self.metadata_schema)
+        except JSONDecodeError as e:
+            raise UserError(f"Incorrect JSON in page metadata: {type(e).__name__}: {str(e)}")
         except ValidationError as e:
             raise UserError(f"Error validating page metadata: {type(e).__name__}: " +
                             reduce_json_validation_error_message(str(e)))
