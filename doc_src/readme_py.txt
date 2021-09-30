@@ -22,7 +22,7 @@ This implementation requires [Python 3](https://www.python.org/). The following 
 must be installed:
 
 ````shell
-$ pip3 install markdown markdown-emdash pymdown_extensions jsonschema
+$ pip3 install markdown markdown-emdash pymdown_extensions jsonschema chevron
 ````
 
 > __Notes.__ __1.__ If this doesn't work, try to replace `pip3` with `python -m pip` (or probably 
@@ -36,7 +36,7 @@ $ pip3 install markdown markdown-emdash pymdown_extensions jsonschema
 > ````shell
 > $ pip3 uninstall markdown markdown-emdash
 > 
-> $ pip3 install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2 jsonschema==3.2.0
+> $ pip3 install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2 jsonschema==3.2.0 chevron-0.14.0
 > ````
 > 
 > __4.__ Package `pymdown-extensions` 
