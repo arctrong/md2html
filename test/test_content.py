@@ -1,6 +1,5 @@
 import unittest
-import os
-from bs4 import BeautifulSoup
+
 import helpers as h
 
 SIMPLE_TEST_TEMPLATE = f'{h.INPUT_DIR}/test_template_simple.html'

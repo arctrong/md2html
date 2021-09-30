@@ -6,3 +6,4 @@ __pycache__
 /python/test/test_output/*
 !/python/test/test_output/.gitkeep
 /python/.idea/
+/test/.idea/

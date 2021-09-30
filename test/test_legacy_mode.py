@@ -1,8 +1,7 @@
-import unittest
-import os
-from bs4 import BeautifulSoup
-import helpers as h
 import re
+import unittest
+
+import helpers as h
 
 
 class LegacyModeTest(unittest.TestCase):

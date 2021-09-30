@@ -1,14 +1,14 @@
 import os
 import shutil
-from pathlib import Path
 import subprocess
-from bs4 import BeautifulSoup
 import time
+from pathlib import Path
+
+from bs4 import BeautifulSoup
 
 WORKING_DIR = Path(__file__).resolve().parent
 
 INPUT_DIR = str(WORKING_DIR.joinpath('test_input'))
-OUTPUT_DIR = None
 
 EXEC = None
 
