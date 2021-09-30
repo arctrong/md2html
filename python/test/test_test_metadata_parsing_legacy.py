@@ -1,12 +1,13 @@
-import unittest
 import sys
+import unittest
 from pathlib import Path
+
+from .utils_for_tests import find_single_instance_of_type
 
 sys.path.append(Path(__file__).resolve().parent.parent)
 from page_metadata_utils import *
 from argument_file_utils import *
 from plugins.page_variables_plugin import PageVariablesPlugin
-from .utils_for_tests import find_single_instance_of_type
 
 
 class PageMetadataUtilsTest(unittest.TestCase):

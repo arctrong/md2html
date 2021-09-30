@@ -2,10 +2,11 @@ import sys
 import unittest
 from pathlib import Path
 
+from .utils_for_tests import *
+
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
 from plugins.relative_paths_plugin import *
-from .utils_for_tests import *
 
 
 class RelativePathsPluginTest(unittest.TestCase):

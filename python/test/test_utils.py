@@ -1,5 +1,5 @@
-import unittest
 import sys
+import unittest
 from pathlib import Path
 
 sys.path.append(Path(__file__).resolve().parent.parent)
