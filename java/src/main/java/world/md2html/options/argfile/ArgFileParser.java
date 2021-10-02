@@ -1,17 +1,26 @@
 package world.md2html.options.argfile;
 
-import com.eclipsesource.json.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.options.cli.ClilOptions;
 import world.md2html.options.model.Document;
+import world.md2html.utils.JsonUtils;
 import world.md2html.utils.OptionsModelUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static world.md2html.utils.Utils.*;
+import static world.md2html.utils.Utils.firstNotNull;
 
 public class ArgFileParser {
 
@@ -27,76 +36,75 @@ public class ArgFileParser {
 
         List<Document> documentList = new ArrayList<>();
 
-        JsonObject jsonObject;
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNodeFactory nodeFactory = mapper.getNodeFactory();
+
+        ObjectNode argFileNode;
         try {
-            jsonObject = Json.parse(argumentFileContent).asObject();
-
-//            System.out.println(jsonObject.toString());
-
-        } catch (ParseException | UnsupportedOperationException e) {
+            argFileNode = (ObjectNode) mapper.readTree(argumentFileContent);
+        } catch (JsonProcessingException e) {
             throw new ArgFileParseException("Argument file content cannot be parsed: "
-                    + e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
-        if (jsonObject == null) {
-            throw new ArgFileParseException("Argument file content is a null object");
+                    + e.getClass().getSimpleName() + ": " +
+                    JsonUtils.formatJsonProcessingException(e));
         }
 
-        JsonObject defaults = getNotNullJsonObject(jsonObject, "default");
-
-        if (jsonObject.get("documents") == null) {
-            throw new ArgFileParseException("'documents' section is absent.");
+        try {
+            JsonUtils.validateJsonAgainstSchemaFromResource(argFileNode, "args_file_schema.json");
+        } catch (JsonUtils.JsonValidationException e) {
+            throw new ArgFileParseException(e.getMessage());
         }
 
-        if (jsonObjectContains(defaults, "no-css") &&
-                jsonObjectContainsAny(defaults, DEFAULT_ALL_CSS_OPTIONS)) {
+
+
+//        JsonObject jsonObject;
+//        try {
+//            jsonObject = Json.parse(argumentFileContent).asObject();
+//        } catch (ParseException | UnsupportedOperationException e) {
+//            throw new ArgFileParseException("Argument file content cannot be parsed: "
+//                    + e.getClass().getSimpleName() + ": " + e.getMessage());
+//        }
+//        if (jsonObject == null) {
+//            throw new ArgFileParseException("Argument file content is a null object");
+//        }
+
+        ObjectNode defaultNode = Optional.ofNullable((ObjectNode) argFileNode.get("default"))
+                .orElse(new ObjectNode(nodeFactory));
+
+        BooleanNode defaultNoCssNode = (BooleanNode) defaultNode.get("no-css");
+        ArrayNode defaultIncludeCssNode = (ArrayNode) defaultNode.get("include-css");
+        ArrayNode defaultLinkCssNode = (ArrayNode) defaultNode.get("link-css");
+
+        if (defaultNoCssNode != null && (defaultIncludeCssNode != null ||
+                defaultLinkCssNode != null)) {
             throw new ArgFileParseException("'no-css' parameter incompatible with one of " +
                     "the [" + String.join(", ", DEFAULT_ALL_CSS_OPTIONS) +
                     "] in the 'default' section.");
         }
 
-        if (cliOptions == null) {
-            cliOptions = createEmptyMd2HtmlOptions();
-        }
+        ArrayNode documentsNode = (ArrayNode) argFileNode.get("documents");
 
-        JsonArray documents = getNotNullJsonArray(jsonObject, "documents");
-
-        for (JsonValue documentValue : documents) {
-
-            JsonObject document;
-            try {
-                document = documentValue.asObject();
-            } catch (UnsupportedOperationException e) {
-                throw new ArgFileParseException("'documents' item JSON object cannot " +
-                        "be taken: " + e.getMessage());
-            }
+        for (Iterator<JsonNode> it = documentsNode.elements(); it.hasNext(); ) {
+            ObjectNode documentNode = (ObjectNode) it.next();
 
             String inputFile = firstNotNull(cliOptions.getInputFile(),
-                    getJsonObjectStringMember(document, "input"),
-                    getJsonObjectStringMember(defaults, "input"));
+                    jsonObjectStringField(documentNode, "input"),
+                    jsonObjectStringField(defaultNode, "input"));
             if (inputFile == null) {
                 throw new ArgFileParseException("Undefined input file for the document: '" +
-                        document + "'.");
+                        documentNode + "'.");
             }
 
             String outputFile = firstNotNull(cliOptions.getOutputFile(),
-                    getJsonObjectStringMember(document, "output"),
-                    getJsonObjectStringMember(defaults, "output"));
+                    jsonObjectStringField(documentNode, "output"),
+                    jsonObjectStringField(defaultNode, "output"));
 
-            String title = cliOptions.getTitle();
-            if (title == null) {
-                title = firstNotNull(getJsonObjectStringMember(document, "title"),
-                        getJsonObjectStringMember(defaults, "title"));
-            }
+            String title = firstNotNull(cliOptions.getTitle(),
+                    jsonObjectStringField(documentNode, "title"),
+                    jsonObjectStringField(defaultNode, "title"));
 
-            Path templateFile = cliOptions.getTemplate();
-            if (templateFile == null) {
-                String templateFileString = firstNotNull(
-                        getJsonObjectStringMember(document, "template"),
-                        getJsonObjectStringMember(defaults, "template"));
-                if (templateFileString != null) {
-                    templateFile = Paths.get(templateFileString);
-                }
-            }
+            Path templateFile = firstNotNull(cliOptions.getTemplate(),
+                    jsonObjectPathField(documentNode, "template"),
+                    jsonObjectPathField(defaultNode, "template"));
 
             List<String> linkCss = firstNotNull(cliOptions.getLinkCss(), new ArrayList<>());
             List<Path> includeCss = firstNotNull(cliOptions.getIncludeCss(), new ArrayList<>());
@@ -105,51 +113,57 @@ public class ArgFileParser {
             assert includeCss != null;
             if (!noCss && linkCss.isEmpty() && includeCss.isEmpty()) {
 
-                if (jsonObjectContains(document, "no-css") &&
-                        jsonObjectContainsAny(document, DOCUMENT_ALL_CSS_OPTIONS)) {
+                BooleanNode documentNoCssNode = (BooleanNode) documentNode.get("no-css");
+                ArrayNode documentIncludeCssNode = (ArrayNode) documentNode.get("include-css");
+                ArrayNode documentLinkCssNode = (ArrayNode) documentNode.get("link-css");
+                ArrayNode documentAddLinkCssNode = (ArrayNode) documentNode.get("add-link-css");
+                ArrayNode documentAddIncludeCssNode =
+                        (ArrayNode) documentNode.get("add-include-css");
+
+                if (documentNoCssNode != null && firstNotNull(documentIncludeCssNode,
+                        documentLinkCssNode, documentAddLinkCssNode,
+                        documentAddIncludeCssNode) != null) {
                     throw new ArgFileParseException("'no-css' parameter incompatible with " +
                             "one of the [" + String.join(", ", DOCUMENT_ALL_CSS_OPTIONS) +
-                            "] in the document: " + document);
+                            "] in the document: " + documentNode);
                 }
-                //noinspection ConstantConditions
-                noCss = firstNotNull(getJsonObjectBooleanMember(document, "no-css"),
-                        getJsonObjectBooleanMember(defaults, "no-css"), false);
 
-                JsonValue cssList = firstNotNull(document.get("link-css"),
-                        defaults.get("link-css"), new JsonArray());
-                assert cssList != null;
-                linkCss.addAll(jsonArrayToStringList(toJsonArray(cssList)));
+                noCss = Optional.ofNullable(firstNotNull(
+                        jsonObjectBooleanField(documentNode, "no-css"),
+                        jsonObjectBooleanField(defaultNode, "no-css"))).orElse(false);
 
-                cssList = getNotNullJsonArray(document, "add-link-css");
-                assert cssList != null;
-                linkCss.addAll(jsonArrayToStringList(toJsonArray(cssList)));
+                ArrayNode cssList = Optional.ofNullable(firstNotNull(documentLinkCssNode,
+                        defaultLinkCssNode)).orElse(new ArrayNode(nodeFactory));
+                linkCss.addAll(jsonArrayToStringList(cssList));
+                Optional.ofNullable(documentAddLinkCssNode)
+                        .ifPresent(list -> linkCss.addAll(jsonArrayToStringList(list)));
 
-                cssList = firstNotNull(document.get("include-css"),
-                        defaults.get("include-css"), new JsonArray());
-                assert cssList != null;
-                includeCss.addAll(jsonArrayToStringList(toJsonArray(cssList)).stream()
+                cssList = Optional.ofNullable(firstNotNull(documentIncludeCssNode,
+                        defaultIncludeCssNode)).orElse(new ArrayNode(nodeFactory));
+                includeCss.addAll(jsonArrayToStringList(cssList).stream()
                         .map(Paths::get).collect(Collectors.toList()));
-
-                cssList = getNotNullJsonArray(document, "add-include-css");
-                assert cssList != null;
-                includeCss.addAll(jsonArrayToStringList(toJsonArray(cssList)).stream()
-                        .map(Paths::get).collect(Collectors.toList()));
+                Optional.ofNullable(documentAddIncludeCssNode)
+                        .ifPresent(list -> includeCss.addAll(jsonArrayToStringList(list).stream()
+                                .map(Paths::get).collect(Collectors.toList())));
 
                 if (!linkCss.isEmpty() || !includeCss.isEmpty()) {
                     noCss = false;
                 }
             }
 
-            boolean force = cliOptions.isForce() || firstNotNull(document.get("force"),
-                    defaults.get("force"), Json.value(false)).asBoolean();
-            boolean verbose = cliOptions.isVerbose() || firstNotNull(document.get("verbose"),
-                    defaults.get("verbose"), Json.value(false)).asBoolean();
-            boolean report = cliOptions.isReport() || firstNotNull(document.get("report"),
-                    defaults.get("report"), Json.value(false)).asBoolean();
+            boolean force = cliOptions.isForce() || Optional.ofNullable(
+                    firstNotNull(documentNode.get("force"), defaultNode.get("force")))
+                        .map(JsonNode::asBoolean).orElse(false);
+            boolean verbose = cliOptions.isVerbose() || Optional.ofNullable(
+                    firstNotNull(documentNode.get("verbose"), defaultNode.get("verbose")))
+                    .map(JsonNode::asBoolean).orElse(false);
+            boolean report = cliOptions.isReport() || Optional.ofNullable(
+                    firstNotNull(documentNode.get("report"), defaultNode.get("report")))
+                    .map(JsonNode::asBoolean).orElse(false);
 
             if (report && verbose) {
                 throw new ArgFileParseException("Incompatible 'report' and 'verbose' " +
-                        "parameters for 'documents' item: " + document);
+                        "parameters for 'documents' item: " + documentNode);
             }
 
             documentList.add(OptionsModelUtils.enrichDocumentMd2HtmlOptions(
@@ -160,84 +174,73 @@ public class ArgFileParser {
         return new ArgFileOptions(null, documentList, null);
     }
 
-    private static ClilOptions createEmptyMd2HtmlOptions() {
-        return new ClilOptions(null, null, null, null, null, null, null, false, false,
-                false, false);
+//    private static ClilOptions createEmptyMd2HtmlOptions() {
+//        return new ClilOptions(null, null, null, null, null, null, null, false, false,
+//                false, false);
+//    }
+
+//    private static JsonArray toJsonArray(JsonValue jsonValue) throws ArgFileParseException {
+//        try {
+//            return jsonValue.asArray();
+//        }  catch (UnsupportedOperationException e) {
+//            throw new ArgFileParseException("Cannot convert '" + jsonValue + "' to " +
+//                    "JSON array: " + e.getMessage());
+//        }
+//    }
+
+    private static String jsonObjectStringField(ObjectNode objectNode, String fieldName) {
+        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asText).orElse(null);
     }
 
-    private static JsonArray toJsonArray(JsonValue jsonValue) throws ArgFileParseException {
-        try {
-            return jsonValue.asArray();
-        }  catch (UnsupportedOperationException e) {
-            throw new ArgFileParseException("Cannot convert '" + jsonValue + "' to " +
-                    "JSON array: " + e.getMessage());
-        }
+    private static Path jsonObjectPathField(ObjectNode objectNode, String fieldName) {
+        return Optional.ofNullable(objectNode.get(fieldName))
+                .map(JsonNode::asText).map(Paths::get).orElse(null);
     }
 
-    private static String getJsonObjectStringMember(JsonObject parent, String memberName) {
-        JsonValue jsonValue = parent.get(memberName);
-        if (jsonValue == null) {
-            return null;
-        } else {
-            return jsonValue.asString();
-        }
+    private static Boolean jsonObjectBooleanField(ObjectNode objectNode, String fieldName) {
+        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asBoolean).orElse(null);
     }
 
-    private static Boolean getJsonObjectBooleanMember(JsonObject parent, String memberName) {
-        JsonValue jsonValue = parent.get(memberName);
-        if (jsonValue == null) {
-            return null;
-        } else {
-            return jsonValue.asBoolean();
-        }
-    }
-
-    private static List<String> jsonArrayToStringList(JsonArray array)
-            throws ArgFileParseException {
+    private static List<String> jsonArrayToStringList(ArrayNode array) {
         List<String> result = new ArrayList<>();
-        for (JsonValue jv : array) {
-            try {
-                result.add(jv.asString());
-            }  catch (UnsupportedOperationException e) {
-                throw new ArgFileParseException("Cannot convert '" + jv + "' to string: " +
-                        e.getMessage());
-            }
+        for (Iterator<JsonNode> it = array.elements(); it.hasNext(); ) {
+            result.add(it.next().asText());
         }
         return result;
     }
 
-    private static JsonObject getNotNullJsonObject(JsonObject parent, String memberName)
-            throws ArgFileParseException {
-        JsonObject result;
-        JsonValue defaultSectionValue = parent.get(memberName);
-        if (defaultSectionValue != null) {
-            try {
-                result = defaultSectionValue.asObject();
-            } catch (UnsupportedOperationException e) {
-                throw new ArgFileParseException("'" + memberName + "' JSON object cannot " +
-                        "be taken: " + e.getMessage());
-            }
-        } else {
-            result = new JsonObject();
-        }
-        return result;
-    }
+//    private static JsonObject getNotNullJsonObject(JsonObject parent, String memberName)
+//            throws ArgFileParseException {
+//        JsonObject result;
+//        JsonValue defaultSectionValue = parent.get(memberName);
+//        if (defaultSectionValue != null) {
+//            try {
+//                result = defaultSectionValue.asObject();
+//            } catch (UnsupportedOperationException e) {
+//                throw new ArgFileParseException("'" + memberName + "' JSON object cannot " +
+//                        "be taken: " + e.getMessage());
+//            }
+//        } else {
+//            result = new JsonObject();
+//        }
+//        return result;
+//    }
 
-    private static JsonArray getNotNullJsonArray(JsonObject parent, String memberName)
-            throws ArgFileParseException {
-        JsonArray result;
-        JsonValue defaultSectionValue = parent.get(memberName);
-        if (defaultSectionValue != null) {
-            try {
-                result = defaultSectionValue.asArray();
-            } catch (UnsupportedOperationException e) {
-                throw new ArgFileParseException("'" + memberName + "' JSON array cannot " +
-                        "be taken: " + e.getMessage());
-            }
-        } else {
-            result = new JsonArray();
-        }
-        return result;
-    }
+//    private static JsonArray getNotNullJsonArray(JsonObject parent, String memberName)
+//            throws ArgFileParseException {
+//        JsonArray result;
+//        JsonValue defaultSectionValue = parent.get(memberName);
+//        if (defaultSectionValue != null) {
+//            try {
+//                result = defaultSectionValue.asArray();
+//            } catch (UnsupportedOperationException e) {
+//                throw new ArgFileParseException("'" + memberName + "' JSON array cannot " +
+//                        "be taken: " + e.getMessage());
+//            }
+//        } else {
+//            result = new JsonArray();
+//        }
+//        return result;
+//    }
 
 }

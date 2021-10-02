@@ -49,9 +49,6 @@ public class Md2HtmlRunner {
             argFileOptions = ArgFileParser.parse("{\"documents\": [{}]}", clilOptions);
         }
 
-//        argFileOptions =
-//                OptionsModelUtils.enrichDocumentMd2HtmlOptionsList(argFileOptions);
-
         for (Document doc : argFileOptions.getDocuments()) {
             Md2Html.execute(doc);
         }

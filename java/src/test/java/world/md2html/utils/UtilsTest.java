@@ -53,4 +53,16 @@ class UtilsTest {
                 ((((90L * 24 * 3600) + (8 * 3600) + (5 * 60) + 4) * 1000) + 9) * m + 358));
     }
 
+    @Test
+    void blankCommentLine() {
+        assertEquals("        ", Utils.blankCommentLine("#comment", "#"));
+        assertEquals("        \n", Utils.blankCommentLine("#comment\n", "#"));
+        assertEquals("        \r\n", Utils.blankCommentLine("#comment\r\n", "#"));
+        assertEquals("         ", Utils.blankCommentLine(" #comment", "#"));
+        assertEquals("not comment", Utils.blankCommentLine("not comment", "#"));
+        assertEquals("not # comment", Utils.blankCommentLine("not # comment", "#"));
+        assertEquals(" ", Utils.blankCommentLine("#", "#"));
+        assertEquals(" \n", Utils.blankCommentLine("#\n", "#"));
+    }
+
 }

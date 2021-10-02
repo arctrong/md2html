@@ -1,6 +1,5 @@
 package world.md2html.utils;
 
-import com.eclipsesource.json.JsonObject;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
@@ -11,16 +10,20 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
 
-    private static final Map<Path, String> CACHED_FILES = new HashMap<>();
+//    private static final Map<Path, String> CACHED_FILES = new HashMap<>();
+    
     private static final Map<Path, Mustache> CACHED_MUSTACHE_RENDERERS = new HashMap<>();
     private static final MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
+
+    private static final Pattern JSON_COMMENT_BLANKING_PATTERN = Pattern.compile("[^\\s]");
 
     private Utils() {
     }
@@ -40,41 +43,55 @@ public class Utils {
     }
 
     public static String readStringFromFile(Path filePath, Charset charset) throws IOException {
-        StringBuilder result = new StringBuilder();
         try (BufferedReader reader = Files.newBufferedReader(filePath, charset)) {
-            char[] buffer = new char[8192];
-            int readCount;
-            while ((readCount = reader.read(buffer)) > -1) {
-                result.append(buffer, 0, readCount);
-            }
+            return readStringFromReader(reader);
+        }
+    }
+
+    private static String readStringFromReader(Reader reader) throws IOException {
+        StringBuilder result = new StringBuilder();
+        char[] buffer = new char[8192];
+        int readCount;
+        while ((readCount = reader.read(buffer)) > -1) {
+            result.append(buffer, 0, readCount);
         }
         return result.toString();
     }
 
-    public static String readStringFromCachedUtf8File(Path filePath) {
-        return CACHED_FILES.computeIfAbsent(filePath, path -> {
-            try {
-                return readStringFromUtf8File(path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+//    public static String readStringFromCachedUtf8File(Path filePath) {
+//        return CACHED_FILES.computeIfAbsent(filePath, path -> {
+//            try {
+//                return readStringFromUtf8File(path);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//    }
+
+    public static String blankCommentLine(String line, String commentChar) {
+        if (line.trim().startsWith(commentChar)) {
+            Matcher matcher = JSON_COMMENT_BLANKING_PATTERN.matcher(line);
+            return matcher.replaceAll(" ");
+        } else {
+            return  line;
+        }
     }
 
+    /**
+     * When reading replaces with spaces the content of those lines whose first non-blank
+     * symbol is `commentChar`. Then, when a parser points at an error, this error will be
+     * found at the pointed line and at the pointed position in the initial (commented) file.
+     * <br />
+     * NOTE. JSON syntax does not allow comments. In this application, this function was added
+     * for convenience.
+     */
     public static String readStringFromCommentedFile(Path filePath, String commentChar,
             Charset charset) throws IOException {
         StringBuilder result = new StringBuilder();
         try (BufferedReader reader = Files.newBufferedReader(filePath, charset)) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.trim().startsWith(commentChar)) {
-                    // When ignoring a line, leaving an empty line instead. Then, when a
-                    // parser points at an error, this error will be found at the pointed
-                    // line in the initial (commented) file.
-                    result.append("\n");
-                } else {
-                    result.append(line).append("\n");
-                }
+                result.append(blankCommentLine(line, commentChar)).append("\n");
             }
         }
         return result.toString();
@@ -84,18 +101,18 @@ public class Utils {
         return collection == null || collection.isEmpty();
     }
 
-    public static boolean jsonObjectContains(JsonObject jsonObject, String memberName) {
-        return jsonObject.get(memberName) != null;
-    }
-
-    public static boolean jsonObjectContainsAny(JsonObject jsonObject, String... memberNames) {
-        for (String mn : memberNames) {
-            if (jsonObject.get(mn) != null) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public static boolean jsonObjectContains(JsonObject jsonObject, String memberName) {
+//        return jsonObject.get(memberName) != null;
+//    }
+//
+//    public static boolean jsonObjectContainsAny(JsonObject jsonObject, String... memberNames) {
+//        for (String mn : memberNames) {
+//            if (jsonObject.get(mn) != null) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     @SafeVarargs
     public static <T> T firstNotNull(T... values) {
@@ -136,6 +153,14 @@ public class Utils {
         quotient = quotient / 24;
         result = String.format("%d", quotient) + result;
         return result;
+    }
+
+    public static String readStringFromResource(String resourceLocation) throws IOException {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                classLoader.getResourceAsStream(resourceLocation), StandardCharsets.UTF_8))) {
+            return readStringFromReader(reader);
+        }
     }
 
 }
