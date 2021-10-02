@@ -1,4 +1,4 @@
-package world.md2html.options;
+package world.md2html.options.cli;
 
 public class CliArgumentsException extends Exception {
 

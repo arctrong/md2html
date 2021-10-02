@@ -1,6 +1,9 @@
-package world.md2html.options;
+package world.md2html.options.argfile;
 
 import com.eclipsesource.json.*;
+import world.md2html.options.cli.ClilOptions;
+import world.md2html.options.model.Document;
+import world.md2html.utils.OptionsModelUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,40 +13,43 @@ import java.util.stream.Collectors;
 
 import static world.md2html.utils.Utils.*;
 
-public class ArgumentFileParser {
+public class ArgFileParser {
 
     private static final String[] DEFAULT_ALL_CSS_OPTIONS = {"link-css", "include-css"};
     private static final String[] DOCUMENT_ALL_CSS_OPTIONS =
             {"link-css", "include-css", "add-link-css", "add-include-css"};
 
-    private ArgumentFileParser() {
+    private ArgFileParser() {
     }
 
-    public static List<Md2HtmlOptions> parse(String argumentFileContent, Md2HtmlOptions cliOptions)
-            throws ArgumentFileParseException {
+    public static ArgFileOptions parse(String argumentFileContent, ClilOptions cliOptions)
+            throws ArgFileParseException {
 
-        List<Md2HtmlOptions> documentList = new ArrayList<>();
+        List<Document> documentList = new ArrayList<>();
 
         JsonObject jsonObject;
         try {
             jsonObject = Json.parse(argumentFileContent).asObject();
+
+//            System.out.println(jsonObject.toString());
+
         } catch (ParseException | UnsupportedOperationException e) {
-            throw new ArgumentFileParseException("Argument file content cannot be parsed: "
+            throw new ArgFileParseException("Argument file content cannot be parsed: "
                     + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
         if (jsonObject == null) {
-            throw new ArgumentFileParseException("Argument file content is a null object");
+            throw new ArgFileParseException("Argument file content is a null object");
         }
 
         JsonObject defaults = getNotNullJsonObject(jsonObject, "default");
 
         if (jsonObject.get("documents") == null) {
-            throw new ArgumentFileParseException("'documents' section is absent.");
+            throw new ArgFileParseException("'documents' section is absent.");
         }
 
         if (jsonObjectContains(defaults, "no-css") &&
                 jsonObjectContainsAny(defaults, DEFAULT_ALL_CSS_OPTIONS)) {
-            throw new ArgumentFileParseException("'no-css' parameter incompatible with one of " +
+            throw new ArgFileParseException("'no-css' parameter incompatible with one of " +
                     "the [" + String.join(", ", DEFAULT_ALL_CSS_OPTIONS) +
                     "] in the 'default' section.");
         }
@@ -60,30 +66,21 @@ public class ArgumentFileParser {
             try {
                 document = documentValue.asObject();
             } catch (UnsupportedOperationException e) {
-                throw new ArgumentFileParseException("'documents' item JSON object cannot " +
+                throw new ArgFileParseException("'documents' item JSON object cannot " +
                         "be taken: " + e.getMessage());
             }
 
-            Path inputFile = cliOptions.getInputFile();
+            String inputFile = firstNotNull(cliOptions.getInputFile(),
+                    getJsonObjectStringMember(document, "input"),
+                    getJsonObjectStringMember(defaults, "input"));
             if (inputFile == null) {
-                String inputFileString = firstNotNull(getJsonObjectStringMember(document, "input"),
-                        getJsonObjectStringMember(defaults, "input"));
-                if (inputFileString != null) {
-                    inputFile = Paths.get(inputFileString);
-                } else {
-                    throw new ArgumentFileParseException("Undefined input file for the " +
-                            "document: '" + document + "'.");
-                }
+                throw new ArgFileParseException("Undefined input file for the document: '" +
+                        document + "'.");
             }
 
-            Path outputFile = cliOptions.getOutputFile();
-            if (outputFile == null) {
-                String outputFileString = firstNotNull(getJsonObjectStringMember(document, "output"),
-                        getJsonObjectStringMember(defaults, "output"));
-                if (outputFileString != null) {
-                    outputFile = Paths.get(outputFileString);
-                }
-            }
+            String outputFile = firstNotNull(cliOptions.getOutputFile(),
+                    getJsonObjectStringMember(document, "output"),
+                    getJsonObjectStringMember(defaults, "output"));
 
             String title = cliOptions.getTitle();
             if (title == null) {
@@ -110,7 +107,7 @@ public class ArgumentFileParser {
 
                 if (jsonObjectContains(document, "no-css") &&
                         jsonObjectContainsAny(document, DOCUMENT_ALL_CSS_OPTIONS)) {
-                    throw new ArgumentFileParseException("'no-css' parameter incompatible with " +
+                    throw new ArgFileParseException("'no-css' parameter incompatible with " +
                             "one of the [" + String.join(", ", DOCUMENT_ALL_CSS_OPTIONS) +
                             "] in the document: " + document);
                 }
@@ -151,27 +148,28 @@ public class ArgumentFileParser {
                     defaults.get("report"), Json.value(false)).asBoolean();
 
             if (report && verbose) {
-                throw new ArgumentFileParseException("Incompatible 'report' and 'verbose' " +
+                throw new ArgFileParseException("Incompatible 'report' and 'verbose' " +
                         "parameters for 'documents' item: " + document);
             }
 
-            documentList.add(new Md2HtmlOptions(null, inputFile, outputFile, title,
-                    templateFile, includeCss, linkCss, noCss, force, verbose, report));
+            documentList.add(OptionsModelUtils.enrichDocumentMd2HtmlOptions(
+                    new Document(inputFile, outputFile, title, templateFile, includeCss,
+                            linkCss, noCss, force, verbose, report)));
         }
 
-        return documentList;
+        return new ArgFileOptions(null, documentList, null);
     }
 
-    private static Md2HtmlOptions createEmptyMd2HtmlOptions() {
-        return new Md2HtmlOptions(null, null, null, null, null, null, null, false, false,
+    private static ClilOptions createEmptyMd2HtmlOptions() {
+        return new ClilOptions(null, null, null, null, null, null, null, false, false,
                 false, false);
     }
 
-    private static JsonArray toJsonArray(JsonValue jsonValue) throws ArgumentFileParseException {
+    private static JsonArray toJsonArray(JsonValue jsonValue) throws ArgFileParseException {
         try {
             return jsonValue.asArray();
         }  catch (UnsupportedOperationException e) {
-            throw new ArgumentFileParseException("Cannot convert '" + jsonValue + "' to " +
+            throw new ArgFileParseException("Cannot convert '" + jsonValue + "' to " +
                     "JSON array: " + e.getMessage());
         }
     }
@@ -195,13 +193,13 @@ public class ArgumentFileParser {
     }
 
     private static List<String> jsonArrayToStringList(JsonArray array)
-            throws ArgumentFileParseException {
+            throws ArgFileParseException {
         List<String> result = new ArrayList<>();
         for (JsonValue jv : array) {
             try {
                 result.add(jv.asString());
             }  catch (UnsupportedOperationException e) {
-                throw new ArgumentFileParseException("Cannot convert '" + jv + "' to string: " +
+                throw new ArgFileParseException("Cannot convert '" + jv + "' to string: " +
                         e.getMessage());
             }
         }
@@ -209,14 +207,14 @@ public class ArgumentFileParser {
     }
 
     private static JsonObject getNotNullJsonObject(JsonObject parent, String memberName)
-            throws ArgumentFileParseException {
+            throws ArgFileParseException {
         JsonObject result;
         JsonValue defaultSectionValue = parent.get(memberName);
         if (defaultSectionValue != null) {
             try {
                 result = defaultSectionValue.asObject();
             } catch (UnsupportedOperationException e) {
-                throw new ArgumentFileParseException("'" + memberName + "' JSON object cannot " +
+                throw new ArgFileParseException("'" + memberName + "' JSON object cannot " +
                         "be taken: " + e.getMessage());
             }
         } else {
@@ -226,14 +224,14 @@ public class ArgumentFileParser {
     }
 
     private static JsonArray getNotNullJsonArray(JsonObject parent, String memberName)
-            throws ArgumentFileParseException {
+            throws ArgFileParseException {
         JsonArray result;
         JsonValue defaultSectionValue = parent.get(memberName);
         if (defaultSectionValue != null) {
             try {
                 result = defaultSectionValue.asArray();
             } catch (UnsupportedOperationException e) {
-                throw new ArgumentFileParseException("'" + memberName + "' JSON array cannot " +
+                throw new ArgFileParseException("'" + memberName + "' JSON array cannot " +
                         "be taken: " + e.getMessage());
             }
         } else {

@@ -1,13 +1,17 @@
 package world.md2html.utils;
 
 import com.eclipsesource.json.JsonObject;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
+import world.md2html.UserError;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +19,8 @@ import java.util.Map;
 public class Utils {
 
     private static final Map<Path, String> CACHED_FILES = new HashMap<>();
+    private static final Map<Path, Mustache> CACHED_MUSTACHE_RENDERERS = new HashMap<>();
+    private static final MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
 
     private Utils() {
     }
@@ -99,6 +105,37 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static Mustache createCachedMustacheRenderer(Path templateFile) {
+        return CACHED_MUSTACHE_RENDERERS.computeIfAbsent(templateFile, path -> {
+            try (Reader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(path.toFile()), StandardCharsets.UTF_8));
+            ) {
+                return MUSTACHE_FACTORY.compile(reader, templateFile.toString());
+            } catch (IOException e) {
+                throw new UserError(String.format("Error reading template file '\\s': \\s",
+                        templateFile.toString(), e.getMessage()), e);
+            }
+        });
+    }
+
+    public static String formatNanoSeconds(long duration) {
+        long quotient = duration / 1_000_000;
+        long remainder = quotient % 1_000;
+        String result = String.format(".%03d", remainder);
+        quotient = quotient / 1_000;
+        remainder = quotient % 60;
+        result = String.format(":%02d", remainder) + result;
+        quotient = quotient / 60;
+        remainder = quotient % 60;
+        result = String.format(":%02d", remainder) + result;
+        quotient = quotient / 60;
+        remainder = quotient % 24;
+        result = String.format(" %02d", remainder) + result;
+        quotient = quotient / 24;
+        result = String.format("%d", quotient) + result;
+        return result;
     }
 
 }

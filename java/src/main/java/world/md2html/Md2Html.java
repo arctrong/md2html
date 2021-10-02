@@ -1,5 +1,8 @@
 package world.md2html;
 
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
@@ -7,15 +10,16 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import org.apache.commons.text.StringSubstitutor;
 import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
-import world.md2html.options.Md2HtmlOptions;
+import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.*;
 import world.md2html.utils.Utils;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,21 +39,24 @@ public class Md2Html {
     private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
 
-    public static void execute(Md2HtmlOptions options) throws Exception {
+    public static void execute(Document options) throws Exception {
 
-        if (!options.isForce() && Files.exists(options.getOutputFile())) {
-            FileTime inputFileTime = Files.getLastModifiedTime(options.getInputFile());
-            FileTime outputFileTime = Files.getLastModifiedTime(options.getOutputFile());
+        Path outputFile = Paths.get(options.getOutputLocation());
+        Path inputFile = Paths.get(options.getInputLocation());
+
+        if (!options.isForce() && Files.exists(outputFile)) {
+            FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
+            FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
             if (outputFileTime.compareTo(inputFileTime) > 0) {
                 if (options.isVerbose()) {
                     System.out.println("The output file is up-to-date. Skipping: "
-                            + options.getOutputFile());
+                            + options.getOutputLocation());
                 }
                 return;
             }
         }
 
-        String mdText = Utils.readStringFromUtf8File(options.getInputFile());
+        String mdText = Utils.readStringFromUtf8File(inputFile);
 
         Map<String, String> substitutions = new HashMap<>();
         String title = options.getTitle();
@@ -118,20 +125,31 @@ public class Md2Html {
         substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
         substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
 
-        StringSubstitutor stringSubstitutor = new StringSubstitutor(substitutions);
-        stringSubstitutor.setEnableUndefinedVariableException(false);
-        stringSubstitutor.setDisableSubstitutionInValues(true);
+//        StringSubstitutor stringSubstitutor = new StringSubstitutor(substitutions);
+//        stringSubstitutor.setEnableUndefinedVariableException(false);
+//        stringSubstitutor.setDisableSubstitutionInValues(true);
+//
+//        String template = Utils.readStringFromCachedUtf8File(options.getTemplate());
+//        try (Writer out = Files.newBufferedWriter(outputFile)) {
+//            out.write(stringSubstitutor.replace(template));
+//        }
 
-        String template = Utils.readStringFromCachedUtf8File(options.getTemplate());
-        try (Writer out = Files.newBufferedWriter(options.getOutputFile())) {
-            out.write(stringSubstitutor.replace(template));
+        try (Reader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(options.getTemplate().toFile()),
+                StandardCharsets.UTF_8));
+             Writer writer = new FileWriter(outputFile.toFile())
+        ) {
+            Mustache mustache = Utils.createCachedMustacheRenderer(options.getTemplate());
+            mustache.execute(writer, substitutions);
+            writer.flush();
         }
+
 
         if (options.isVerbose()) {
-            System.out.println("Output file generated: " + options.getOutputFile());
+            System.out.println("Output file generated: " + options.getOutputLocation());
         }
         if (options.isReport()) {
-            System.out.println(options.getOutputFile().toString());
+            System.out.println(options.getOutputLocation());
         }
     }
 

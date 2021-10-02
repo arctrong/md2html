@@ -1,4 +1,4 @@
-package world.md2html.options;
+package world.md2html.options.cli;
 
 import org.apache.commons.cli.*;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CliParserHelper {
+public class CliParser {
 
     private static final String HELP_OPTION_NAME = "h";
     private static final String INPUT_FILE_OPTION_NAME = "i";
@@ -29,93 +29,8 @@ public class CliParserHelper {
 
     private final String usage;
 
-    public CliParserHelper(String usage) {
+    public CliParser(String usage) {
         this.usage = usage;
-    }
-
-    public Md2HtmlOptions parse(String[] args) throws CliArgumentsException {
-        Options cliOptions = getCliOptions();
-        try {
-            return parse1(cliOptions, args);
-        } catch (ParseException e) {
-            throw errorAsException(cliOptions, e.getMessage());
-        }
-    }
-
-    private Md2HtmlOptions parse1(Options cliOptions, String[] args)
-            throws ParseException, CliArgumentsException {
-
-        CommandLineParser parser = new DefaultParser();
-        CommandLine commandLine = parser.parse(cliOptions, args);
-
-        if (commandLine.hasOption(HELP_OPTION_NAME) || args.length < 1) {
-            throw helpAsException(cliOptions);
-        }
-
-        String[] restArgs = commandLine.getArgs();
-        if (restArgs.length > 0) {
-            throw errorAsException(cliOptions, "Positional arguments are not accepted: "
-                    + Arrays.toString(restArgs));
-        }
-
-        Path argumentFile = null;
-        if (commandLine.hasOption(ARGUMENT_FILE_OPTION_NAME)) {
-            argumentFile = Paths.get(commandLine.getOptionValue(ARGUMENT_FILE_OPTION_NAME));
-        }
-
-        Path inputFile = null;
-        if (commandLine.hasOption(INPUT_FILE_OPTION_NAME)) {
-            inputFile = Paths.get(commandLine.getOptionValue(INPUT_FILE_OPTION_NAME));
-        } else if (!commandLine.hasOption(ARGUMENT_FILE_OPTION_NAME)) {
-            throw errorAsException(cliOptions, "Input file is not specified");
-        }
-
-        Path outputFile = null;
-        if (commandLine.hasOption(OUTPUT_FILE_OPTION_NAME)) {
-            outputFile = Paths.get(commandLine.getOptionValue(OUTPUT_FILE_OPTION_NAME));
-        }
-
-        String title = null;
-        if (commandLine.hasOption(TITLE_OPTION_NAME)) {
-            title = commandLine.getOptionValue(TITLE_OPTION_NAME);
-        }
-
-        Path templateFile = null;
-        if (commandLine.hasOption(TEMPLATES_DIR_OPTION_NAME)) {
-            templateFile = Paths.get(commandLine.getOptionValue(TEMPLATES_DIR_OPTION_NAME));
-        }
-
-        List<String> linkCss = null;
-        List<Path> includeCss = null;
-        boolean noCss = commandLine.hasOption(NO_CSS_OPTION_NAME);
-        if (noCss) {
-            if (commandLine.hasOption(LINK_CSS_OPTION_NAME) ||
-                    commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
-                throw errorAsException(cliOptions, "Option '" + NO_CSS_OPTION_NAME +
-                        "' is not compatible with options '" + LINK_CSS_OPTION_NAME + "' and '"
-                        + " '" + INCLUDE_CSS_OPTION_NAME + "'");
-            }
-        } else {
-            if (commandLine.hasOption(LINK_CSS_OPTION_NAME)) {
-                linkCss = Arrays.asList(commandLine.getOptionValues(LINK_CSS_OPTION_NAME));
-            }
-            if (commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
-                includeCss = Arrays.stream(commandLine.getOptionValues(INCLUDE_CSS_OPTION_NAME))
-                        .map(Paths::get).collect(Collectors.toList());
-            }
-        }
-
-        boolean force = commandLine.hasOption(FORCE_OPTION_NAME);
-        boolean verbose = commandLine.hasOption(VERBOSE_OPTION_NAME);
-        boolean report = commandLine.hasOption(REPORT_OPTION_NAME);
-
-        if (report && verbose) {
-            throw errorAsException(cliOptions,
-                    "--report and --verbose arguments are not compatible");
-        }
-
-        return new Md2HtmlOptions(argumentFile, inputFile, outputFile, title, templateFile,
-                includeCss, linkCss, noCss, force, verbose, report);
     }
 
     private Options getCliOptions() {
@@ -169,30 +84,109 @@ public class CliParserHelper {
         return cliOptions;
     }
 
+    public ClilOptions parse(String[] args) throws CliArgumentsException {
+
+        Options cliOptions = getCliOptions();
+        CommandLineParser parser = new DefaultParser();
+        CommandLine commandLine;
+        try {
+            commandLine = parser.parse(cliOptions, args);
+        } catch (ParseException e) {
+            throw errorAsException(cliOptions, e.getMessage());
+        }
+
+        if (commandLine.hasOption(HELP_OPTION_NAME) || args.length < 1) {
+            throw helpAsException(cliOptions);
+        }
+
+        String[] restArgs = commandLine.getArgs();
+        if (restArgs.length > 0) {
+            throw errorAsException(cliOptions, "Positional arguments are not accepted: "
+                    + Arrays.toString(restArgs));
+        }
+
+        Path argumentFile = null;
+        if (commandLine.hasOption(ARGUMENT_FILE_OPTION_NAME)) {
+            argumentFile = Paths.get(commandLine.getOptionValue(ARGUMENT_FILE_OPTION_NAME));
+        }
+
+        String inputFile = commandLine.getOptionValue(INPUT_FILE_OPTION_NAME);
+//        if (commandLine.hasOption(INPUT_FILE_OPTION_NAME)) {
+//            inputFile = Paths.get();
+//        } else if (!commandLine.hasOption(ARGUMENT_FILE_OPTION_NAME)) {
+//            throw errorAsException(cliOptions, "Input file is not specified");
+//        }
+
+        String outputFile = commandLine.getOptionValue(OUTPUT_FILE_OPTION_NAME);
+
+        String title = null;
+        if (commandLine.hasOption(TITLE_OPTION_NAME)) {
+            title = commandLine.getOptionValue(TITLE_OPTION_NAME);
+        }
+
+        Path templateFile = null;
+        if (commandLine.hasOption(TEMPLATES_DIR_OPTION_NAME)) {
+            templateFile = Paths.get(commandLine.getOptionValue(TEMPLATES_DIR_OPTION_NAME));
+        }
+
+        List<String> linkCss = null;
+        List<Path> includeCss = null;
+        boolean noCss = commandLine.hasOption(NO_CSS_OPTION_NAME);
+        if (noCss) {
+            if (commandLine.hasOption(LINK_CSS_OPTION_NAME) ||
+                    commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
+                throw errorAsException(cliOptions, "Option '" + NO_CSS_OPTION_NAME +
+                        "' is not compatible with options '" + LINK_CSS_OPTION_NAME + "' and '"
+                        + " '" + INCLUDE_CSS_OPTION_NAME + "'");
+            }
+        } else {
+            if (commandLine.hasOption(LINK_CSS_OPTION_NAME)) {
+                linkCss = Arrays.asList(commandLine.getOptionValues(LINK_CSS_OPTION_NAME));
+            }
+            if (commandLine.hasOption(INCLUDE_CSS_OPTION_NAME)) {
+                includeCss = Arrays.stream(commandLine.getOptionValues(INCLUDE_CSS_OPTION_NAME))
+                        .map(Paths::get).collect(Collectors.toList());
+            }
+        }
+
+        boolean force = commandLine.hasOption(FORCE_OPTION_NAME);
+        boolean verbose = commandLine.hasOption(VERBOSE_OPTION_NAME);
+        boolean report = commandLine.hasOption(REPORT_OPTION_NAME);
+
+        if (report && verbose) {
+            throw errorAsException(cliOptions,
+                    "--report and --verbose arguments are not compatible");
+        }
+
+        return new ClilOptions(argumentFile, inputFile, outputFile, title, templateFile,
+                includeCss, linkCss, noCss, force, verbose, report);
+    }
+
     private CliArgumentsException helpAsException(Options cliOptions) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        HelpFormatter hf = createHelpFormatter();
-        pw.println();
-        printUsage(pw, hf, cliOptions);
-        pw.println();
-        hf.printOptions(pw, hf.getWidth(), cliOptions, hf.getLeftPadding(), hf.getDescPadding());
-        pw.close();
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        HelpFormatter formatter = createHelpFormatter();
+        printWriter.println();
+        printUsage(printWriter, formatter, cliOptions);
+        printWriter.println();
+        formatter.printOptions(printWriter, formatter.getWidth(), cliOptions,
+                formatter.getLeftPadding(), formatter.getDescPadding());
+        printWriter.close();
         return new CliArgumentsException(null, CliArgumentsException.CliParsingExceptionType.HELP,
-                sw.toString());
+                stringWriter.toString());
     }
 
     private CliArgumentsException errorAsException(Options cliOptions, String errorMessage) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        pw.println();
-        pw.println("ERROR: " + errorMessage);
-        pw.println();
-        HelpFormatter hf = createHelpFormatter();
-        printUsage(pw, hf, cliOptions);
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        printWriter.println();
+        printWriter.println("ERROR: " + errorMessage);
+        printWriter.println();
+        HelpFormatter formatter = createHelpFormatter();
+        printUsage(printWriter, formatter, cliOptions);
         return new CliArgumentsException(errorMessage,
                 CliArgumentsException.CliParsingExceptionType.ERROR,
-                sw.toString());
+                stringWriter.toString());
     }
 
     private HelpFormatter createHelpFormatter() {

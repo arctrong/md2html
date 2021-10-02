@@ -1,53 +1,66 @@
 package world.md2html;
 
-import world.md2html.options.*;
+import world.md2html.options.argfile.ArgFileOptions;
+import world.md2html.options.argfile.ArgFileParseException;
+import world.md2html.options.argfile.ArgFileParser;
+import world.md2html.options.cli.CliArgumentsException;
+import world.md2html.options.cli.CliParser;
+import world.md2html.options.cli.ClilOptions;
+import world.md2html.options.model.Document;
 import world.md2html.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
+import java.time.Duration;
 
 public class Md2HtmlRunner {
 
     public static void main(String[] args) throws Exception {
+
+        long start = System.nanoTime();
+
         String usage = "java " + Md2Html.class.getSimpleName();
-        CliParserHelper cliParserHelper = new CliParserHelper(usage);
-        Md2HtmlOptions md2HtmlOptions = null;
+        ClilOptions clilOptions = null;
         try {
-            md2HtmlOptions = cliParserHelper.parse(args);
+            clilOptions = new CliParser(usage).parse(args);
         } catch (CliArgumentsException e) {
             System.out.println(e.getPrintText());
             System.exit(1);
         }
 
-        List<Md2HtmlOptions> md2HtmlOptionsList = null;
-        Path argumentFile = md2HtmlOptions.getArgumentFile();
+        ArgFileOptions argFileOptions = null;
+        Path argumentFile = clilOptions.getArgumentFile();
         if (argumentFile != null) {
             try {
                 String argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
                         StandardCharsets.UTF_8);
-                md2HtmlOptionsList = ArgumentFileParser.parse(argumentFileString, md2HtmlOptions);
+                argFileOptions = ArgFileParser.parse(argumentFileString, clilOptions);
             } catch (IOException e) {
                 System.out.println("Error parsing argument file '" + argumentFile +
                         "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
                 System.exit(1);
-            } catch (ArgumentFileParseException e) {
+            } catch (ArgFileParseException e) {
                 System.out.println("Error parsing argument file '" + argumentFile + "': " +
                         e.getMessage());
                 System.exit(1);
             }
         } else {
-            md2HtmlOptionsList = Collections.singletonList(md2HtmlOptions);
+            argFileOptions = ArgFileParser.parse("{\"documents\": [{}]}", clilOptions);
         }
 
-        md2HtmlOptionsList =
-                Md2HtmlOptionUtils.enrichDocumentMd2HtmlOptionsList(md2HtmlOptionsList);
+//        argFileOptions =
+//                OptionsModelUtils.enrichDocumentMd2HtmlOptionsList(argFileOptions);
 
-        for (Md2HtmlOptions opt : md2HtmlOptionsList) {
-            Md2Html.execute(opt);
+        for (Document doc : argFileOptions.getDocuments()) {
+            Md2Html.execute(doc);
         }
+
+        long end = System.nanoTime();
+        System.out.println("Finished in: " + Utils.formatNanoSeconds(end - start));
+
+
+
     }
 
 }

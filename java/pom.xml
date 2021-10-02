@@ -14,7 +14,11 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <flexmark.version>0.62.2</flexmark.version>
-        <jackson-2-version>2.12.3</jackson-2-version>
+<!--        <jackson-2-version>2.12.3</jackson-2-version>-->
+
+        <maven.test.skip>true</maven.test.skip>
+        <skipTests>true</skipTests>
+
     </properties>
 
     <dependencies>
@@ -73,11 +77,11 @@
             <version>0.9.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.9</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-text</artifactId>-->
+<!--            <version>1.9</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>commons-cli</groupId>
@@ -91,6 +95,37 @@
             <version>5.7.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.18</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.spullara.mustache.java</groupId>
+            <artifactId>compiler</artifactId>
+            <version>0.9.10</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.vertx</groupId>-->
+<!--            <artifactId>vertx-json-schema</artifactId>-->
+<!--            <version>4.1.4</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.leadpony.justify</groupId>-->
+<!--            <artifactId>justify</artifactId>-->
+<!--            <version>3.1.0</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.networknt</groupId>-->
+<!--            <artifactId>json-schema-validator</artifactId>-->
+<!--            <version>1.0.60</version>-->
+<!--        </dependency>-->
 
     </dependencies>
 
@@ -132,4 +167,5 @@
 
         </plugins>
     </build>
+
 </project>

@@ -30,6 +30,27 @@ class UtilsTest {
         assertNull(Utils.firstNotNull());
         Object o = new String[0];
         assertEquals(o, Utils.firstNotNull(o, new String[] {"1", "2"}));
+    void formatNanoSeconds() {
+        long m = 1_000_000;
+        assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(0));
+        assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(1));
+        assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(999_999));
+        assertEquals("0 00:00:00.001", Utils.formatNanoSeconds(1_000_000));
+        assertEquals("0 00:00:00.999", Utils.formatNanoSeconds(999 * m));
+        assertEquals("0 00:00:01.000", Utils.formatNanoSeconds(1000 * m));
+        assertEquals("0 00:00:59.000", Utils.formatNanoSeconds(59_000 * m));
+        assertEquals("0 00:01:00.000", Utils.formatNanoSeconds(60_000 * m));
+        assertEquals("0 00:01:01.000", Utils.formatNanoSeconds(61_000 * m));
+        assertEquals("0 00:59:00.000", Utils.formatNanoSeconds(59 * 60_000 * m));
+        assertEquals("0 01:00:00.000", Utils.formatNanoSeconds(60 * 60_000 * m));
+        assertEquals("0 01:01:00.000", Utils.formatNanoSeconds(61 * 60_000 * m));
+        assertEquals("0 23:00:00.000", Utils.formatNanoSeconds(23 * 60 * 60_000 * m));
+        assertEquals("1 00:00:00.000", Utils.formatNanoSeconds(24 * 60 * 60_000 * m));
+        assertEquals("1 01:00:00.000", Utils.formatNanoSeconds(25 * 60 * 60_000 * m));
+        assertEquals("125 17:28:58.819", Utils.formatNanoSeconds(
+                ((((125L * 24 * 3600) + (17 * 3600) + (28 * 60) + 58) * 1000) + 819) * m + 1));
+        assertEquals("90 08:05:04.009", Utils.formatNanoSeconds(
+                ((((90L * 24 * 3600) + (8 * 3600) + (5 * 60) + 4) * 1000) + 9) * m + 358));
     }
 
 }
