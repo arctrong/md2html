@@ -3,14 +3,13 @@ package world.md2html.plugins;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import world.md2html.UserError;
 import world.md2html.options.model.Document;
+import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Utils;
 
 import java.util.*;
 
-import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.ResourceLocationException;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 
@@ -19,8 +18,13 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
     private Map<String, List<Map<String, Object>>> data = null;
 
     @Override
-    public boolean acceptData(JsonNode data) throws JsonValidationException {
-        PluginUtils.validateData(data, "plugins/page_flows_schema.json");
+    public boolean acceptData(JsonNode data) {
+        try {
+            JsonUtils.validateJsonAgainstSchemaFromResource(data, "plugins/page_flows_schema.json");
+        } catch (JsonUtils.JsonValidationException e) {
+            throw new PluginDataUserError("Plugin '" + this.getClass().getSimpleName() +
+                    "' data error: " + e.getMessage());
+        }
         Map<String, List<Map<String, Object>>> pluginData = new HashMap<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> pageFlowEntry = it.next();
@@ -28,9 +32,8 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
             for (Iterator<JsonNode> it1 = pageFlowEntry.getValue().elements(); it1.hasNext(); ) {
                 ObjectNode pageNode = (ObjectNode) it1.next();
                 Map<String, Object> page = new HashMap<>();
-                pageNode.fields().forEachRemaining((fieldEntry) -> {
-                    page.put(fieldEntry.getKey(), Utils.deJson(fieldEntry.getValue()));
-                });
+                pageNode.fields().forEachRemaining(fieldEntry -> page.put(fieldEntry.getKey(),
+                        Utils.deJson(fieldEntry.getValue())));
                 Map<String, Object> enrichedPage = enrichPage(page);
                 pages.add(enrichedPage);
             }
@@ -42,16 +45,15 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
 
     public Map<String, Object> variables(Document document) {
         Map<String, Object> pageVariables = new HashMap<>();
-        for (Map.Entry<String, List<Map<String, Object>>> entry : this.data.entrySet()) {
+        this.data.forEach((k, v) -> {
             try {
-                pageVariables.put(entry.getKey(), processPageFlows(entry.getValue(),
-                        document.getOutputLocation()));
+                pageVariables.put(k, processPageFlows(v, document.getOutputLocation()));
             } catch (ResourceLocationException e) {
-                throw new UserError("Error recalculating relative links of page flow '" +
-                        entry.getKey() + "' for page '" + document.getOutputLocation() + "': " +
-                        e.getMessage());
+                throw new UserError("Error recalculating relative links '" + v +
+                        "' of page flow '" + k + "' for page '" + document.getOutputLocation() +
+                        "': " + e.getMessage());
             }
-        }
+        });
         return pageVariables;
     }
 

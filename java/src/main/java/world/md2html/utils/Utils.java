@@ -213,11 +213,11 @@ public class Utils {
      */
     public static String relativizeRelativeResource(String resource, String page)
             throws ResourceLocationException {
-        page = page.replace("\\", "/");
+        page = page.replace('\\', '/');
         if (page.isEmpty() || page.endsWith("/")) {
             throw new ResourceLocationException("Incorrect page location: " + page);
         }
-        resource = resource.replace("\\", "/");
+        resource = resource.replace('\\', '/');
         if (resource.isEmpty() || resource.endsWith("/")) {
             throw new ResourceLocationException("Incorrect relatively located resource: " +
                     resource);
@@ -227,6 +227,43 @@ public class Utils {
             return resource;
         } else {
             return basePath.relativize(Paths.get(resource)).toString().replace('\\', '/');
+        }
+    }
+
+    /**
+     * The `page` argument is an HTML page, so it cannot be empty or end with a '/'.
+     * The `path` argument is a relative path to a place where HTML page resources (like other
+     * pages, pictures, CSS files etc.) can be allocated. So the `path` argument must end with
+     * '/' or be empty so that it can be used in substitutions like `path + "styles.css"`.
+     *
+     * The method considers the both arguments being relative to the same location. It returns the
+     * path that being applied from the HTML page `page` will lead to `path`. The result will match
+     * the same requirements as the `path` argument matches, i.e. it will be empty or end with '/'.
+     *
+     * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
+     */
+    public static String relativizeRelativePath(String path, String page)
+            throws ResourceLocationException {
+        page = page.replace('\\', '/');
+        if (page.isEmpty() || page.endsWith("/")) {
+            throw new ResourceLocationException("Incorrect page location: " + page);
+        }
+        path = path.replace('\\', '/');
+        if (!path.isEmpty() && !path.endsWith("/") || path.equals("/")) {
+            throw new ResourceLocationException("Incorrect relative path: " + path);
+        }
+        Path basePath = Paths.get(page).getParent();
+        if (basePath == null) {
+            return path;
+        } else {
+            String relativePath = basePath.relativize(Paths.get(path)).toString().replace('\\', '/');
+            if (relativePath.isEmpty() || relativePath.equals("./") || relativePath.equals(".")) {
+                return "";
+            } else if (relativePath.endsWith("/")) {
+                return relativePath;
+            } else {
+                return relativePath + "/";
+            }
         }
     }
 

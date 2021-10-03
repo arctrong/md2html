@@ -2,6 +2,7 @@ package world.md2html;
 
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageFlowsPlugin;
+import world.md2html.plugins.RelativePathsPlugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,9 +21,9 @@ public class Constants {
 
     static {
         PLUGINS.put("page-flows", new PageFlowsPlugin());
+        PLUGINS.put("relative-paths", new RelativePathsPlugin());
 
-//        {'relative-paths': RelativePathsPlugin(),
-//                'page-variables': PageVariablesPlugin(), "variables": VariablesPlugin()}
+//        { 'page-variables': PageVariablesPlugin(), "variables": VariablesPlugin()}
 
 
     }
