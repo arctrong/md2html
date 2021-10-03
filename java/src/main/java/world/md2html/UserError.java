@@ -6,23 +6,9 @@ package world.md2html;
  * without a stack trace.
  */
 public class UserError extends RuntimeException {
-    public UserError() {
-    }
 
     public UserError(String message) {
         super(message);
     }
 
-    public UserError(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public UserError(Throwable cause) {
-        super(cause);
-    }
-
-    public UserError(String message, Throwable cause, boolean enableSuppression,
-            boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

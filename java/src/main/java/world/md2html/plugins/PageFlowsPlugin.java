@@ -1,50 +1,136 @@
 package world.md2html.plugins;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import world.md2html.UserError;
+import world.md2html.options.model.Document;
+import world.md2html.utils.Utils;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static world.md2html.utils.JsonUtils.*;
+import static world.md2html.utils.Utils.ResourceLocationException;
+import static world.md2html.utils.Utils.relativizeRelativeResource;
 
 public class PageFlowsPlugin implements Md2HtmlPlugin {
 
-    private Map<String, List<Page>> data;
+    private Map<String, List<Map<String, Object>>> data = null;
 
     @Override
-    public boolean acceptData() {
-        return false;
+    public boolean acceptData(JsonNode data) throws JsonValidationException {
+        PluginUtils.validateData(data, "plugins/page_flows_schema.json");
+        Map<String, List<Map<String, Object>>> pluginData = new HashMap<>();
+        for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
+            Map.Entry<String, JsonNode> pageFlowEntry = it.next();
+            List<Map<String, Object>> pages = new ArrayList<>();
+            for (Iterator<JsonNode> it1 = pageFlowEntry.getValue().elements(); it1.hasNext(); ) {
+                ObjectNode pageNode = (ObjectNode) it1.next();
+                Map<String, Object> page = new HashMap<>();
+                pageNode.fields().forEachRemaining((fieldEntry) -> {
+                    page.put(fieldEntry.getKey(), Utils.deJson(fieldEntry.getValue()));
+                });
+                Map<String, Object> enrichedPage = enrichPage(page);
+                pages.add(enrichedPage);
+            }
+            pluginData.put(pageFlowEntry.getKey(), pages);
+        }
+        this.data = pluginData;
+        return !this.data.isEmpty();
     }
 
-    @Getter
-    private static class Page {
-        private final String link;
-        private final String title;
-        private final boolean current;
-
-        public Page(String link, String title, boolean current) {
-            this.link = link;
-            this.title = title;
-            this.current = current;
+    public Map<String, Object> variables(Document document) {
+        Map<String, Object> pageVariables = new HashMap<>();
+        for (Map.Entry<String, List<Map<String, Object>>> entry : this.data.entrySet()) {
+            try {
+                pageVariables.put(entry.getKey(), processPageFlows(entry.getValue(),
+                        document.getOutputLocation()));
+            } catch (ResourceLocationException e) {
+                throw new UserError("Error recalculating relative links of page flow '" +
+                        entry.getKey() + "' for page '" + document.getOutputLocation() + "': " +
+                        e.getMessage());
+            }
         }
-
-        public Page(String link, String title) {
-            this.link = link;
-            this.title = title;
-            this.current = false;
-        }
+        return pageVariables;
     }
 
-    private static class PageFlow implements Iterable<Page> {
+    private static PageFlow processPageFlows(List<Map<String, Object>> pages, String outputFile)
+            throws ResourceLocationException {
 
-        @Getter private final List<Page> pages;
-        @Getter private final Page previous;
-        @Getter private final Page current;
-        @Getter private final Page next;
+        List<Map<String, Object>> result = new ArrayList<>();
+        Map<String, Object> previous = null;
+        Map<String, Object> current = null;
+        Map<String, Object> next = null;
+
+        for (Map<String, Object> page : pages) {
+            Map<String, Object> newPage = enrichPage(page);
+            if (Utils.isNullOrFalse(page.get("external"))) {
+                result.add(newPage);
+            } else {
+                String link = (String) page.get("link");
+                boolean isCurrent = link.equals(outputFile);
+                newPage.put("link", relativizeRelativeResource(link, outputFile));
+                newPage.put("current", isCurrent);
+                result.add(newPage);
+                if (current == null) {
+                    if (isCurrent) {
+                        current = newPage;
+                    } else {
+                        previous = newPage;
+                    }
+                } else if (next == null) {
+                    next = newPage;
+                }
+            }
+        }
+        if (current == null) {
+            previous = null;
+        }
+        return new PageFlow(result, previous, current, next);
+    }
+
+    private static Map<String, Object> enrichPage(Map<String, Object> page) {
+        HashMap<String, Object> newPage = new HashMap<>(page);
+        newPage.putIfAbsent("external", false);
+        newPage.putIfAbsent("current", false);
+        return newPage;
+    }
+
+//    @Getter
+//    private static class Page {
+//        private final String link;
+//        private final String title;
+//        private final boolean external;
+//        private final boolean current;
+//
+//        public Page(String link, String title, Boolean external) {
+//            this.link = link;
+//            this.title = title;
+//            this.current = false;
+//            this.external = external != null && external;
+//        }
+//
+//        public Page(String link, String title, boolean external, boolean current) {
+//            this.link = link;
+//            this.title = title;
+//            this.current = current;
+//            this.external = external;
+//        }
+//    }
+
+    private static class PageFlow implements Iterable<Map<String, Object>> {
+
+        @Getter private final List<Map<String, Object>> pages;
+        @Getter private final Map<String, Object> previous;
+        @Getter private final Map<String, Object> current;
+        @Getter private final Map<String, Object> next;
         // For a logic-less template like Mustache the following calculated fields will help a lot.
         @Getter private final boolean has_navigation;
         @Getter private final boolean not_empty;
 
-        private PageFlow(List<Page> pages, Page previous, Page current, Page next) {
+        private PageFlow(List<Map<String, Object>> pages, Map<String, Object> previous,
+                Map<String, Object> current, Map<String, Object> next) {
             this.pages = pages;
             this.previous = previous;
             this.current = current;
@@ -54,7 +140,7 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
         }
 
         @Override
-        public Iterator<Page> iterator() {
+        public Iterator<Map<String, Object>> iterator() {
             return pages.iterator();
         }
     }

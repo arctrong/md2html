@@ -13,6 +13,7 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
 import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.*;
+import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.Utils;
 
 import java.io.*;
@@ -26,6 +27,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -39,18 +41,19 @@ public class Md2Html {
     private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
 
-    public static void execute(Document options) throws Exception {
+    public static void execute(Document document,
+            List<Md2HtmlPlugin> plugins) throws IOException, UserError {
 
-        Path outputFile = Paths.get(options.getOutputLocation());
-        Path inputFile = Paths.get(options.getInputLocation());
+        Path outputFile = Paths.get(document.getOutputLocation());
+        Path inputFile = Paths.get(document.getInputLocation());
 
-        if (!options.isForce() && Files.exists(outputFile)) {
+        if (!document.isForce() && Files.exists(outputFile)) {
             FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
             FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
             if (outputFileTime.compareTo(inputFileTime) > 0) {
-                if (options.isVerbose()) {
+                if (document.isVerbose()) {
                     System.out.println("The output file is up-to-date. Skipping: "
-                            + options.getOutputLocation());
+                            + document.getOutputLocation());
                 }
                 return;
             }
@@ -58,8 +61,8 @@ public class Md2Html {
 
         String mdText = Utils.readStringFromUtf8File(inputFile);
 
-        Map<String, String> substitutions = new HashMap<>();
-        String title = options.getTitle();
+        Map<String, Object> substitutions = new HashMap<>();
+        String title = document.getTitle();
 
         PageMetadataExtractionResult extractionResult =
                 Md2HtmlPageMetadataExtractor.extract(mdText);
@@ -68,7 +71,7 @@ public class Md2Html {
                     mdText.substring(extractionResult.getEnd());
             PageMetadataParsingResult parsingResult =
                     Md2HtmlPageMetadataParser.parse(extractionResult.getMetadata());
-            if (options.isVerbose()) {
+            if (document.isVerbose()) {
                 parsingResult.getErrors().forEach(e -> System.out.println("WARNING: " + e));
             }
             if (parsingResult.isSuccess()) {
@@ -100,12 +103,12 @@ public class Md2Html {
             firstStyle[0] = false;
         };
 
-        if (options.getLinkCss() != null) {
-            options.getLinkCss().forEach(item -> styleAppender
+        if (document.getLinkCss() != null) {
+            document.getLinkCss().forEach(item -> styleAppender
                     .accept("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + item + "\">"));
         }
-        if (options.getIncludeCss() != null) {
-            options.getIncludeCss().forEach(item -> {
+        if (document.getIncludeCss() != null) {
+            document.getIncludeCss().forEach(item -> {
                 try {
                     styleAppender.accept("<style>\n" + Utils.readStringFromUtf8File(item)
                             + "\n</style>");
@@ -125,31 +128,35 @@ public class Md2Html {
         substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
         substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
 
-//        StringSubstitutor stringSubstitutor = new StringSubstitutor(substitutions);
-//        stringSubstitutor.setEnableUndefinedVariableException(false);
-//        stringSubstitutor.setDisableSubstitutionInValues(true);
-//
-//        String template = Utils.readStringFromCachedUtf8File(options.getTemplate());
-//        try (Writer out = Files.newBufferedWriter(outputFile)) {
-//            out.write(stringSubstitutor.replace(template));
-//        }
 
-        try (Reader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(options.getTemplate().toFile()),
-                StandardCharsets.UTF_8));
-             Writer writer = new FileWriter(outputFile.toFile())
-        ) {
-            Mustache mustache = Utils.createCachedMustacheRenderer(options.getTemplate());
+
+
+        for (Md2HtmlPlugin plugin : plugins) {
+            substitutions.putAll(plugin.variables(document));
+        }
+
+
+
+
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputFile.toFile()),
+                StandardCharsets.UTF_8)) {
+            Mustache mustache;
+            try {
+                mustache = Utils.createCachedMustacheRenderer(document.getTemplate());
+            } catch (FileNotFoundException e) {
+                throw new UserError(String.format("Error reading template file '%s': %s: %s",
+                        document.getTemplate().toString(), e.getClass().getSimpleName(),
+                        e.getMessage()));
+            }
             mustache.execute(writer, substitutions);
             writer.flush();
         }
 
-
-        if (options.isVerbose()) {
-            System.out.println("Output file generated: " + options.getOutputLocation());
+        if (document.isVerbose()) {
+            System.out.println("Output file generated: " + document.getOutputLocation());
         }
-        if (options.isReport()) {
-            System.out.println(options.getOutputLocation());
+        if (document.isReport()) {
+            System.out.println(document.getOutputLocation());
         }
     }
 

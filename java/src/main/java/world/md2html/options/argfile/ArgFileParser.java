@@ -7,19 +7,18 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import world.md2html.Constants;
 import world.md2html.options.cli.ClilOptions;
 import world.md2html.options.model.Document;
-import world.md2html.utils.JsonUtils;
+import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.OptionsModelUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.firstNotNull;
 
 public class ArgFileParser {
@@ -45,12 +44,12 @@ public class ArgFileParser {
         } catch (JsonProcessingException e) {
             throw new ArgFileParseException("Argument file content cannot be parsed: "
                     + e.getClass().getSimpleName() + ": " +
-                    JsonUtils.formatJsonProcessingException(e));
+                    formatJsonProcessingException(e));
         }
 
         try {
-            JsonUtils.validateJsonAgainstSchemaFromResource(argFileNode, "args_file_schema.json");
-        } catch (JsonUtils.JsonValidationException e) {
+            validateJsonAgainstSchemaFromResource(argFileNode, "args_file_schema.json");
+        } catch (JsonValidationException e) {
             throw new ArgFileParseException(e.getMessage());
         }
 
@@ -171,7 +170,27 @@ public class ArgFileParser {
                             linkCss, noCss, force, verbose, report)));
         }
 
-        return new ArgFileOptions(null, documentList, null);
+        ObjectNode pluginsNode = (ObjectNode) argFileNode.get("plugins");
+        List<Md2HtmlPlugin> plugins = new ArrayList<>();
+        for (Iterator<Map.Entry<String, JsonNode>> it = pluginsNode.fields(); it.hasNext(); ) {
+            Map.Entry<String, JsonNode> pluginEntry = it.next();
+            Md2HtmlPlugin plugin = Constants.PLUGINS.get(pluginEntry.getKey());
+            if (plugin != null) {
+                try {
+                    if (plugin.acceptData(pluginEntry.getValue())) {
+                        plugins.add(plugin);
+                    }
+                } catch (Exception e) {
+                    throw new ArgFileParseException("Error initializing plugin '" +
+                            pluginEntry.getKey() + "': " + e.getClass().getSimpleName() +
+                            ": " + e.getMessage());
+                }
+            }
+        }
+
+
+
+        return new ArgFileOptions(null, documentList, plugins);
     }
 
 //    private static ClilOptions createEmptyMd2HtmlOptions() {
@@ -188,28 +207,7 @@ public class ArgFileParser {
 //        }
 //    }
 
-    private static String jsonObjectStringField(ObjectNode objectNode, String fieldName) {
-        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asText).orElse(null);
-    }
-
-    private static Path jsonObjectPathField(ObjectNode objectNode, String fieldName) {
-        return Optional.ofNullable(objectNode.get(fieldName))
-                .map(JsonNode::asText).map(Paths::get).orElse(null);
-    }
-
-    private static Boolean jsonObjectBooleanField(ObjectNode objectNode, String fieldName) {
-        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asBoolean).orElse(null);
-    }
-
-    private static List<String> jsonArrayToStringList(ArrayNode array) {
-        List<String> result = new ArrayList<>();
-        for (Iterator<JsonNode> it = array.elements(); it.hasNext(); ) {
-            result.add(it.next().asText());
-        }
-        return result;
-    }
-
-//    private static JsonObject getNotNullJsonObject(JsonObject parent, String memberName)
+    //    private static JsonObject getNotNullJsonObject(JsonObject parent, String memberName)
 //            throws ArgFileParseException {
 //        JsonObject result;
 //        JsonValue defaultSectionValue = parent.get(memberName);

@@ -50,7 +50,7 @@ public class Md2HtmlRunner {
         }
 
         for (Document doc : argFileOptions.getDocuments()) {
-            Md2Html.execute(doc);
+            Md2Html.execute(doc, argFileOptions.getPlugins());
         }
 
         long end = System.nanoTime();

@@ -13,6 +13,6 @@ public class ArgFileOptions {
 
     private final SessionOptions sessionOptions;
     private final List<Document> documents;
-    private final List<Md2HtmlPlugin> md2HtmlPlugins;
+    private final List<Md2HtmlPlugin> plugins;
 
 }

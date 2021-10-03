@@ -1,25 +1,64 @@
 package world.md2html.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import world.md2html.UserError;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
 
+    public static boolean isNullOrFalse(Object object) {
+        return object instanceof Boolean && (Boolean) object;
+    }
+
+    public static Object deJson(JsonNode value) {
+        switch (value.getNodeType()) {
+            case ARRAY:
+                List<Object> list = new ArrayList<>();
+                value.forEach(item -> list.add(deJson(item)));
+                return list;
+            case NULL:
+            case BINARY:
+            case MISSING:
+            case POJO:
+                return null;
+            case BOOLEAN:
+                return value.asBoolean();
+            case NUMBER:
+                if (value.canConvertToExactIntegral()) {
+                    return value.asInt();
+                } else {
+                    return value.asDouble();
+                }
+            case OBJECT:
+                Map<String, Object> map = new HashMap<>();
+                value.fields().forEachRemaining(entry -> map.put(entry.getKey(),
+                        deJson(entry.getValue())));
+                return map;
+            case STRING:
+                return value.asText();
+        }
+        return null;
+    }
+
+    public static class ResourceLocationException extends Exception {
+        public ResourceLocationException(String message) {
+            super(message);
+        }
+    }
+
 //    private static final Map<Path, String> CACHED_FILES = new HashMap<>();
-    
+
     private static final Map<Path, Mustache> CACHED_MUSTACHE_RENDERERS = new HashMap<>();
     private static final MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
 
@@ -124,17 +163,16 @@ public class Utils {
         return null;
     }
 
-    public static Mustache createCachedMustacheRenderer(Path templateFile) {
-        return CACHED_MUSTACHE_RENDERERS.computeIfAbsent(templateFile, path -> {
+    public static Mustache createCachedMustacheRenderer(Path templateFile) throws IOException {
+        Mustache result = CACHED_MUSTACHE_RENDERERS.get(templateFile);
+        if (result == null) {
             try (Reader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(path.toFile()), StandardCharsets.UTF_8));
-            ) {
-                return MUSTACHE_FACTORY.compile(reader, templateFile.toString());
-            } catch (IOException e) {
-                throw new UserError(String.format("Error reading template file '\\s': \\s",
-                        templateFile.toString(), e.getMessage()), e);
+                    new FileInputStream(templateFile.toFile()), StandardCharsets.UTF_8))) {
+                result = MUSTACHE_FACTORY.compile(reader, templateFile.toString());
+                CACHED_MUSTACHE_RENDERERS.put(templateFile, result);
             }
-        });
+        }
+        return result;
     }
 
     public static String formatNanoSeconds(long duration) {
@@ -160,6 +198,35 @@ public class Utils {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 classLoader.getResourceAsStream(resourceLocation), StandardCharsets.UTF_8))) {
             return readStringFromReader(reader);
+        }
+    }
+
+    /**
+     * The `page` argument is an HTML page.
+     * The `resource` argument is a relative location of an HTML page resource (like another page,
+     * a picture, a CSS file etc.). So the both arguments cannot be empty or end with a '/'.
+     * <br />
+     * The method considers the both arguments being relative to the same location. It returns
+     * the relative location that being applied on the HTML page `page` will resolve to `path`.
+     * <br />
+     * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
+     */
+    public static String relativizeRelativeResource(String resource, String page)
+            throws ResourceLocationException {
+        page = page.replace("\\", "/");
+        if (page.isEmpty() || page.endsWith("/")) {
+            throw new ResourceLocationException("Incorrect page location: " + page);
+        }
+        resource = resource.replace("\\", "/");
+        if (resource.isEmpty() || resource.endsWith("/")) {
+            throw new ResourceLocationException("Incorrect relatively located resource: " +
+                    resource);
+        }
+        Path basePath = Paths.get(page).getParent();
+        if (basePath == null) {
+            return resource;
+        } else {
+            return basePath.relativize(Paths.get(resource)).toString().replace('\\', '/');
         }
     }
 
