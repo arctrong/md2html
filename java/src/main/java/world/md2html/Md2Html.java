@@ -41,8 +41,8 @@ public class Md2Html {
     private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
 
-    public static void execute(Document document,
-            List<Md2HtmlPlugin> plugins) throws IOException, UserError {
+    public static void execute(Document document, List<Md2HtmlPlugin> plugins,
+            PageMetadataHandlersWrapper metadataHandlersWrapper) throws IOException, UserError {
 
         Path outputFile = Paths.get(document.getOutputLocation());
         Path inputFile = Paths.get(document.getInputLocation());
@@ -61,27 +61,30 @@ public class Md2Html {
 
         String mdText = Utils.readStringFromUtf8File(inputFile);
 
+        plugins.forEach(Md2HtmlPlugin::newPage);
+        mdText = metadataHandlersWrapper.applyMetadataHandlers(mdText, document);
+
         Map<String, Object> substitutions = new HashMap<>();
         String title = document.getTitle();
 
-        PageMetadataExtractionResult extractionResult =
-                Md2HtmlPageMetadataExtractor.extract(mdText);
-        if (extractionResult.isSuccess()) {
-            mdText = mdText.substring(0, extractionResult.getStart()) +
-                    mdText.substring(extractionResult.getEnd());
-            PageMetadataParsingResult parsingResult =
-                    Md2HtmlPageMetadataParser.parse(extractionResult.getMetadata());
-            if (document.isVerbose()) {
-                parsingResult.getErrors().forEach(e -> System.out.println("WARNING: " + e));
-            }
-            if (parsingResult.isSuccess()) {
-                PageMetadata metadata = parsingResult.getPageMetadata();
-                if (title == null) {
-                    title = metadata.getTitle();
-                }
-                substitutions.putAll(metadata.getCustomTemplatePlaceholders());
-            }
-        }
+//        PageMetadataExtractionResult extractionResult =
+//                Md2HtmlPageMetadataExtractor.extract(mdText);
+//        if (extractionResult.isSuccess()) {
+//            mdText = mdText.substring(0, extractionResult.getStart()) +
+//                    mdText.substring(extractionResult.getEnd());
+//            PageMetadataParsingResult parsingResult =
+//                    Md2HtmlPageMetadataParser.parse(extractionResult.getMetadata());
+//            if (document.isVerbose()) {
+//                parsingResult.getErrors().forEach(e -> System.out.println("WARNING: " + e));
+//            }
+//            if (parsingResult.isSuccess()) {
+//                PageMetadata metadata = parsingResult.getPageMetadata();
+//                if (title == null) {
+//                    title = metadata.getTitle();
+//                }
+//                substitutions.putAll(metadata.getCustomTemplatePlaceholders());
+//            }
+//        }
 
         if (title == null) {
             title = "";

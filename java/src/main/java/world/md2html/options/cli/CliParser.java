@@ -24,6 +24,7 @@ public class CliParser {
     private static final String FORCE_OPTION_NAME = "f";
     private static final String VERBOSE_OPTION_NAME = "v";
     private static final String REPORT_OPTION_NAME = "r";
+    private static final String LEGACY_MODE_OPTION_NAME = "legacy-mode";
 
     private static final int HELP_WIDTH = 80;
 
@@ -80,6 +81,11 @@ public class CliParser {
         cliOptions.addOption(Option.builder(REPORT_OPTION_NAME).longOpt("report").hasArg(false)
                 .desc("if HTML file is generated, outputs the path of this file, incompatible " +
                         "with -v").build());
+
+        cliOptions.addOption(Option.builder(null).longOpt(LEGACY_MODE_OPTION_NAME).hasArg(false)
+                .desc("Allows processing documentation projects prepared for version of " +
+                        "the program prior to 1.0.0. Still it's recommended to migrate the " +
+                        "projects to the newer version").build());
 
         return cliOptions;
     }
@@ -158,8 +164,10 @@ public class CliParser {
                     "--report and --verbose arguments are not compatible");
         }
 
+        boolean legacy_mode = commandLine.hasOption(LEGACY_MODE_OPTION_NAME);
+
         return new ClilOptions(argumentFile, inputFile, outputFile, title, templateFile,
-                includeCss, linkCss, noCss, force, verbose, report);
+                includeCss, linkCss, noCss, force, verbose, report, legacy_mode);
     }
 
     private CliArgumentsException helpAsException(Options cliOptions) {

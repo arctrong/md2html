@@ -7,12 +7,13 @@ import world.md2html.options.cli.CliArgumentsException;
 import world.md2html.options.cli.CliParser;
 import world.md2html.options.cli.ClilOptions;
 import world.md2html.options.model.Document;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.plugins.PageMetadataHandler;
 import world.md2html.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.time.Duration;
 
 public class Md2HtmlRunner {
 
@@ -46,18 +47,32 @@ public class Md2HtmlRunner {
                 System.exit(1);
             }
         } else {
-            argFileOptions = ArgFileParser.parse("{\"documents\": [{}]}", clilOptions);
+            // When run without argument file, need implicitly added
+            // plugin for page title extraction from the source text.
+            String fakeArgFile = "{\"documents\": [{}], \"plugins\": {\"page-variables\": " +
+                    "{\"VARIABLES\": {\"only-at-page-start\": true}";
+            if (clilOptions.isLegacyMode()) {
+                fakeArgFile += ", \"METADATA\": {\"only-at-page-start\": true}";
+            }
+            fakeArgFile += "}}}}";
+            argFileOptions = ArgFileParser.parse(fakeArgFile, clilOptions);
         }
 
+        PageMetadataHandlersWrapper metadataHandlersWrapper =
+                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+
         for (Document doc : argFileOptions.getDocuments()) {
-            Md2Html.execute(doc, argFileOptions.getPlugins());
+            try {
+                Md2Html.execute(doc, argFileOptions.getPlugins(), metadataHandlersWrapper);
+            } catch(UserError e) {
+                System.out.println("Error processing input file '" + doc.getInputLocation() +
+                        "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                System.exit(1);
+            }
         }
 
         long end = System.nanoTime();
         System.out.println("Finished in: " + Utils.formatNanoSeconds(end - start));
-
-
-
     }
 
 }

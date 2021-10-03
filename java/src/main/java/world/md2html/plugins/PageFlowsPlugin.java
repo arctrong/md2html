@@ -6,12 +6,12 @@ import lombok.Getter;
 import world.md2html.UserError;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Utils;
 
 import java.util.*;
 
-import static world.md2html.utils.Utils.ResourceLocationException;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 
 public class PageFlowsPlugin implements Md2HtmlPlugin {
@@ -49,7 +49,7 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
         this.data.forEach((k, v) -> {
             try {
                 pageVariables.put(k, processPageFlows(v, document.getOutputLocation()));
-            } catch (ResourceLocationException e) {
+            } catch (CheckedIllegalArgumentException e) {
                 throw new UserError("Error recalculating relative links '" + v +
                         "' of page flow '" + k + "' for page '" + document.getOutputLocation() +
                         "': " + e.getMessage());
@@ -59,7 +59,7 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
     }
 
     private static PageFlow processPageFlows(List<Map<String, Object>> pages, String outputFile)
-            throws ResourceLocationException {
+            throws CheckedIllegalArgumentException {
 
         List<Map<String, Object>> result = new ArrayList<>();
         Map<String, Object> previous = null;

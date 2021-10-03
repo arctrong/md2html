@@ -2,10 +2,8 @@ package world.md2html.options.argfile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.Constants;
 import world.md2html.options.cli.ClilOptions;
@@ -18,6 +16,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static world.md2html.Constants.MAPPER;
+import static world.md2html.Constants.NODE_FACTORY;
 import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.firstNotNull;
 import static world.md2html.utils.Utils.firstNotNullOptional;
@@ -34,12 +34,9 @@ public class ArgFileParser {
     public static ArgFileOptions parse(String argumentFileContent, ClilOptions cliOptions)
             throws ArgFileParseException {
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNodeFactory nodeFactory = mapper.getNodeFactory();
-
         ObjectNode argFileNode;
         try {
-            argFileNode = (ObjectNode) mapper.readTree(argumentFileContent);
+            argFileNode = (ObjectNode) MAPPER.readTree(argumentFileContent);
         } catch (JsonProcessingException e) {
             throw new ArgFileParseException("Argument file content cannot be parsed: "
                     + e.getClass().getSimpleName() + ": " +
@@ -53,12 +50,12 @@ public class ArgFileParser {
         }
 
         ObjectNode pluginsNode = (ObjectNode) Optional.ofNullable(argFileNode.get("plugins"))
-                .orElse(new ObjectNode(nodeFactory));
+                .orElse(new ObjectNode(NODE_FACTORY));
         ObjectNode pageFlowsPluginNode = (ObjectNode) pluginsNode.get("page-flows");
-        ObjectNode documentsPageFlowsNode = new ObjectNode(nodeFactory);
+        ObjectNode documentsPageFlowsNode = new ObjectNode(NODE_FACTORY);
 
         ObjectNode defaultNode = Optional.ofNullable((ObjectNode) argFileNode.get("default"))
-                .orElse(new ObjectNode(nodeFactory));
+                .orElse(new ObjectNode(NODE_FACTORY));
 
         BooleanNode defaultNoCssNode = (BooleanNode) defaultNode.get("no-css");
         ArrayNode defaultIncludeCssNode = (ArrayNode) defaultNode.get("include-css");
@@ -123,13 +120,13 @@ public class ArgFileParser {
                         jsonObjectBooleanField(defaultNode, "no-css")).orElse(false);
 
                 ArrayNode cssList = firstNotNullOptional(documentLinkCssNode,
-                        defaultLinkCssNode).orElse(new ArrayNode(nodeFactory));
+                        defaultLinkCssNode).orElse(new ArrayNode(NODE_FACTORY));
                 linkCss.addAll(jsonArrayToStringList(cssList));
                 Optional.ofNullable(documentAddLinkCssNode)
                         .ifPresent(list -> linkCss.addAll(jsonArrayToStringList(list)));
 
                 cssList = firstNotNullOptional(documentIncludeCssNode,
-                        defaultIncludeCssNode).orElse(new ArrayNode(nodeFactory));
+                        defaultIncludeCssNode).orElse(new ArrayNode(NODE_FACTORY));
                 includeCss.addAll(jsonArrayToStringList(cssList).stream()
                         .map(Paths::get).collect(Collectors.toList()));
                 Optional.ofNullable(documentAddIncludeCssNode)
@@ -176,18 +173,18 @@ public class ArgFileParser {
 
                 documentPageFlowsNode = firstNotNullOptional(documentPageFlowsNode,
                         (ArrayNode) defaultNode.get("page-flows"))
-                        .orElse(new ArrayNode(nodeFactory));
+                        .orElse(new ArrayNode(NODE_FACTORY));
                 if (documentAddPageFlowsNode != null) {
                     documentPageFlowsNode.addAll(documentAddPageFlowsNode);
                 }
                 documentPageFlowsNode.forEach(pageFlowNameNode -> {
                     ArrayNode pageFlowItemsNode = (ArrayNode) documentsPageFlowsNode
-                            .putIfAbsent(pageFlowNameNode.asText(), new ArrayNode(nodeFactory));
+                            .putIfAbsent(pageFlowNameNode.asText(), new ArrayNode(NODE_FACTORY));
                     if (pageFlowItemsNode == null) {
                         pageFlowItemsNode = (ArrayNode) documentsPageFlowsNode
                                 .get(pageFlowNameNode.asText());
                     }
-                    ObjectNode pageFlowNode = new ObjectNode(nodeFactory);
+                    ObjectNode pageFlowNode = new ObjectNode(NODE_FACTORY);
                     pageFlowNode.put("link", document.getOutputLocation());
                     pageFlowNode.put("title", document.getTitle());
                     pageFlowItemsNode.add(pageFlowNode);
@@ -198,7 +195,7 @@ public class ArgFileParser {
         if (!documentsPageFlowsNode.isEmpty() && pageFlowsPluginNode != null) {
             documentsPageFlowsNode.fields().forEachRemaining(entry -> {
                 ArrayNode pageFlowItemsNode = (ArrayNode) pageFlowsPluginNode
-                        .putIfAbsent(entry.getKey(), new ArrayNode(nodeFactory));
+                        .putIfAbsent(entry.getKey(), new ArrayNode(NODE_FACTORY));
                 if (pageFlowItemsNode == null) {
                     pageFlowItemsNode = (ArrayNode) pageFlowsPluginNode.get(entry.getKey());
                 }

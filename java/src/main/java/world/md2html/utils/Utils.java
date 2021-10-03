@@ -27,6 +27,9 @@ public class Utils {
      * program. May be not suitable in other contexts.
      */
     public static Object deJson(JsonNode value) {
+        if (value == null) {
+            return null;
+        }
         switch (value.getNodeType()) {
             case ARRAY:
                 List<Object> list = new ArrayList<>();
@@ -56,11 +59,11 @@ public class Utils {
         return null;
     }
 
-    public static class ResourceLocationException extends Exception {
-        public ResourceLocationException(String message) {
-            super(message);
-        }
-    }
+//    public static class ResourceLocationException extends Exception {
+//        public ResourceLocationException(String message) {
+//            super(message);
+//        }
+//    }
 
 //    private static final Map<Path, String> CACHED_FILES = new HashMap<>();
 
@@ -227,14 +230,14 @@ public class Utils {
      * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
      */
     public static String relativizeRelativeResource(String resource, String page)
-            throws ResourceLocationException {
+            throws CheckedIllegalArgumentException {
         page = page.replace('\\', '/');
         if (page.isEmpty() || page.endsWith("/")) {
-            throw new ResourceLocationException("Incorrect page location: " + page);
+            throw new CheckedIllegalArgumentException("Incorrect page location: " + page);
         }
         resource = resource.replace('\\', '/');
         if (resource.isEmpty() || resource.endsWith("/")) {
-            throw new ResourceLocationException("Incorrect relatively located resource: " +
+            throw new CheckedIllegalArgumentException("Incorrect relatively located resource: " +
                     resource);
         }
         Path basePath = Paths.get(page).getParent();
@@ -258,14 +261,14 @@ public class Utils {
      * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
      */
     public static String relativizeRelativePath(String path, String page)
-            throws ResourceLocationException {
+            throws CheckedIllegalArgumentException {
         page = page.replace('\\', '/');
         if (page.isEmpty() || page.endsWith("/")) {
-            throw new ResourceLocationException("Incorrect page location: " + page);
+            throw new CheckedIllegalArgumentException("Incorrect page location: " + page);
         }
         path = path.replace('\\', '/');
         if (!path.isEmpty() && !path.endsWith("/") || path.equals("/")) {
-            throw new ResourceLocationException("Incorrect relative path: " + path);
+            throw new CheckedIllegalArgumentException("Incorrect relative path: " + path);
         }
         Path basePath = Paths.get(page).getParent();
         if (basePath == null) {

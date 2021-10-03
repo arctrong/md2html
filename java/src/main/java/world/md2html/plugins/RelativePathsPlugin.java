@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.UserError;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Utils;
 
@@ -37,7 +38,7 @@ public class RelativePathsPlugin implements Md2HtmlPlugin {
         this.data.forEach((k, v) -> {
             try {
                 variables.put(k, relativizeRelativePath(v, document.getOutputLocation()));
-            } catch (Utils.ResourceLocationException e) {
+            } catch (CheckedIllegalArgumentException e) {
                 throw new UserError("Error recalculating relative path '" + k + "'='" + v +
                         "' for page '" + document.getOutputLocation() + "': " + e.getMessage());
             }

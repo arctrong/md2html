@@ -1,0 +1,11 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "patternProperties": {
+        "^[\\w_][\\w\\d_]*$": {
+            "type": "object",
+            "properties": { "only-at-page-start": { "type": "boolean" } }
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,7 +1,10 @@
 package world.md2html;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageFlowsPlugin;
+import world.md2html.plugins.PageVariablesPlugin;
 import world.md2html.plugins.RelativePathsPlugin;
 
 import java.nio.file.Path;
@@ -22,11 +25,15 @@ public class Constants {
     static {
         PLUGINS.put("page-flows", new PageFlowsPlugin());
         PLUGINS.put("relative-paths", new RelativePathsPlugin());
+        PLUGINS.put("page-variables", new PageVariablesPlugin());
 
-//        { 'page-variables': PageVariablesPlugin(), "variables": VariablesPlugin()}
+//        {"variables": VariablesPlugin()}
 
 
     }
+
+    public static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final JsonNodeFactory NODE_FACTORY = MAPPER.getNodeFactory();
 
     static {
         String workingDirStr = System.getenv(Constants.WORKING_DIR_ENV_VARIABLE_NAME);

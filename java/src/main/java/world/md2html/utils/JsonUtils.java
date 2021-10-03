@@ -55,7 +55,20 @@ public class JsonUtils {
 
     public static void validateJsonAgainstSchemaFromResource(JsonNode node,
             String schemaResourceLocation) throws JsonValidationException {
+        JsonSchema schema = loadJsonSchemaFromResource(schemaResourceLocation);
+        validateJson(node, schema);
+    }
 
+    public static void validateJson(JsonNode node, JsonSchema schema)
+            throws JsonValidationException {
+        Set<ValidationMessage> errors = schema.validate(node);
+        if (!errors.isEmpty()) {
+            throw new JsonValidationException("JSON document validation errors:" +
+                    errors.stream().map(e -> "\n" + e.getMessage()).collect(Collectors.joining()));
+        }
+    }
+
+    public static JsonSchema loadJsonSchemaFromResource(String schemaResourceLocation) {
         String argumentFileSchema;
         try {
             argumentFileSchema = Utils.readStringFromResource(schemaResourceLocation);
@@ -63,12 +76,7 @@ public class JsonUtils {
             throw new RuntimeException(e);
         }
         JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
-        JsonSchema schema = factory.getSchema(argumentFileSchema);
-
-        Set<ValidationMessage> errors = schema.validate(node);
-        if (!errors.isEmpty()) {
-            throw new JsonValidationException("JSON document validation errors:" +
-                    errors.stream().map(e -> "\n" + e.getMessage()).collect(Collectors.joining()));
-        }
+        return factory.getSchema(argumentFileSchema);
     }
+
 }

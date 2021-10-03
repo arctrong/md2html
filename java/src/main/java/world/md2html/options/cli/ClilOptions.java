@@ -21,5 +21,6 @@ public class ClilOptions {
     private final boolean force;
     private final boolean verbose;
     private final boolean report;
+    private final boolean legacyMode;
 
 }
