@@ -2,6 +2,7 @@ package world.md2html.plugins;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.UserError;
+import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Utils;
@@ -16,11 +17,11 @@ public class RelativePathsPlugin implements Md2HtmlPlugin {
     private Map<String, String> data = null;
 
     @Override
-    public boolean acceptData(JsonNode data) {
+    public boolean acceptData(JsonNode data) throws ArgFileParseException {
         try {
             JsonUtils.validateJsonAgainstSchemaFromResource(data, "plugins/relative_paths_schema.json");
         } catch (JsonUtils.JsonValidationException e) {
-            throw new PluginDataUserError("Plugin '" + this.getClass().getSimpleName() +
+            throw new ArgFileParseException("Plugin '" + this.getClass().getSimpleName() +
                     "' data error: " + e.getMessage());
         }
         Map<String, String> pluginData = new HashMap<>();

@@ -21,6 +21,11 @@ public class Utils {
         return object instanceof Boolean && (Boolean) object;
     }
 
+    /**
+     * This function converts the given `JsonNode` into native Java representation. To reflect
+     * JSON types and structures it uses certain Java types that are suitable in context of this
+     * program. May be not suitable in other contexts.
+     */
     public static Object deJson(JsonNode value) {
         switch (value.getNodeType()) {
             case ARRAY:
@@ -161,6 +166,16 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    @SafeVarargs
+    public static <T> Optional<T> firstNotNullOptional(T... values) {
+        for (T value : values) {
+            if (value != null) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.empty();
     }
 
     public static Mustache createCachedMustacheRenderer(Path templateFile) throws IOException {

@@ -2,6 +2,7 @@ package world.md2html.plugins;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.UserError;
+import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ public interface Md2HtmlPlugin {
      * Returns the plugin activated state. After accepting the given data, the plugin may declare
      * itself as not activated and return `False`. In this case it should not be used.
      */
-    boolean acceptData(JsonNode data);
+    boolean acceptData(JsonNode data) throws ArgFileParseException;
 
     Map<String, Object> variables(Document document);
 
@@ -47,10 +48,10 @@ public interface Md2HtmlPlugin {
 //        """
 //    pass
 
-    class PluginDataUserError extends UserError {
-        public PluginDataUserError(String message) {
-            super(message);
-        }
-    }
+//    class PluginDataUserError extends UserError {
+//        public PluginDataUserError(String message) {
+//            super(message);
+//        }
+//    }
 
 }

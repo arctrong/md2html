@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.firstNotNull;
+import static world.md2html.utils.Utils.firstNotNullOptional;
 
 public class ArgFileParser {
 
@@ -32,8 +33,6 @@ public class ArgFileParser {
 
     public static ArgFileOptions parse(String argumentFileContent, ClilOptions cliOptions)
             throws ArgFileParseException {
-
-        List<Document> documentList = new ArrayList<>();
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNodeFactory nodeFactory = mapper.getNodeFactory();
@@ -53,18 +52,10 @@ public class ArgFileParser {
             throw new ArgFileParseException(e.getMessage());
         }
 
-
-
-//        JsonObject jsonObject;
-//        try {
-//            jsonObject = Json.parse(argumentFileContent).asObject();
-//        } catch (ParseException | UnsupportedOperationException e) {
-//            throw new ArgFileParseException("Argument file content cannot be parsed: "
-//                    + e.getClass().getSimpleName() + ": " + e.getMessage());
-//        }
-//        if (jsonObject == null) {
-//            throw new ArgFileParseException("Argument file content is a null object");
-//        }
+        ObjectNode pluginsNode = (ObjectNode) Optional.ofNullable(argFileNode.get("plugins"))
+                .orElse(new ObjectNode(nodeFactory));
+        ObjectNode pageFlowsPluginNode = (ObjectNode) pluginsNode.get("page-flows");
+        ObjectNode documentsPageFlowsNode = new ObjectNode(nodeFactory);
 
         ObjectNode defaultNode = Optional.ofNullable((ObjectNode) argFileNode.get("default"))
                 .orElse(new ObjectNode(nodeFactory));
@@ -81,7 +72,7 @@ public class ArgFileParser {
         }
 
         ArrayNode documentsNode = (ArrayNode) argFileNode.get("documents");
-
+        List<Document> documentList = new ArrayList<>();
         for (Iterator<JsonNode> it = documentsNode.elements(); it.hasNext(); ) {
             ObjectNode documentNode = (ObjectNode) it.next();
 
@@ -127,18 +118,18 @@ public class ArgFileParser {
                             "] in the document: " + documentNode);
                 }
 
-                noCss = Optional.ofNullable(firstNotNull(
+                noCss = firstNotNullOptional(
                         jsonObjectBooleanField(documentNode, "no-css"),
-                        jsonObjectBooleanField(defaultNode, "no-css"))).orElse(false);
+                        jsonObjectBooleanField(defaultNode, "no-css")).orElse(false);
 
-                ArrayNode cssList = Optional.ofNullable(firstNotNull(documentLinkCssNode,
-                        defaultLinkCssNode)).orElse(new ArrayNode(nodeFactory));
+                ArrayNode cssList = firstNotNullOptional(documentLinkCssNode,
+                        defaultLinkCssNode).orElse(new ArrayNode(nodeFactory));
                 linkCss.addAll(jsonArrayToStringList(cssList));
                 Optional.ofNullable(documentAddLinkCssNode)
                         .ifPresent(list -> linkCss.addAll(jsonArrayToStringList(list)));
 
-                cssList = Optional.ofNullable(firstNotNull(documentIncludeCssNode,
-                        defaultIncludeCssNode)).orElse(new ArrayNode(nodeFactory));
+                cssList = firstNotNullOptional(documentIncludeCssNode,
+                        defaultIncludeCssNode).orElse(new ArrayNode(nodeFactory));
                 includeCss.addAll(jsonArrayToStringList(cssList).stream()
                         .map(Paths::get).collect(Collectors.toList()));
                 Optional.ofNullable(documentAddIncludeCssNode)
@@ -150,14 +141,14 @@ public class ArgFileParser {
                 }
             }
 
-            boolean force = cliOptions.isForce() || Optional.ofNullable(
-                    firstNotNull(documentNode.get("force"), defaultNode.get("force")))
+            boolean force = cliOptions.isForce() || firstNotNullOptional(
+                    documentNode.get("force"), defaultNode.get("force"))
                         .map(JsonNode::asBoolean).orElse(false);
-            boolean verbose = cliOptions.isVerbose() || Optional.ofNullable(
-                    firstNotNull(documentNode.get("verbose"), defaultNode.get("verbose")))
+            boolean verbose = cliOptions.isVerbose() || firstNotNullOptional(
+                    documentNode.get("verbose"), defaultNode.get("verbose"))
                     .map(JsonNode::asBoolean).orElse(false);
-            boolean report = cliOptions.isReport() || Optional.ofNullable(
-                    firstNotNull(documentNode.get("report"), defaultNode.get("report")))
+            boolean report = cliOptions.isReport() || firstNotNullOptional(
+                    documentNode.get("report"), defaultNode.get("report"))
                     .map(JsonNode::asBoolean).orElse(false);
 
             if (report && verbose) {
@@ -165,12 +156,58 @@ public class ArgFileParser {
                         "parameters for 'documents' item: " + documentNode);
             }
 
-            documentList.add(OptionsModelUtils.enrichDocumentMd2HtmlOptions(
+            Document document = OptionsModelUtils.enrichDocumentMd2HtmlOptions(
                     new Document(inputFile, outputFile, title, templateFile, includeCss,
-                            linkCss, noCss, force, verbose, report)));
+                            linkCss, noCss, force, verbose, report));
+            documentList.add(document);
+
+            // Even if all page flows are defined in the 'documents' section, at least empty
+            // 'page-flows' plugin must be defined in order to activate page flows processing.
+            if (pageFlowsPluginNode != null) {
+
+                ArrayNode documentPageFlowsNode = (ArrayNode) documentNode.get("page-flows");
+                ArrayNode documentAddPageFlowsNode = (ArrayNode) documentNode.get("add-page-flows");
+
+                if (documentPageFlowsNode != null && documentAddPageFlowsNode != null) {
+                    throw new ArgFileParseException("Incompatible 'page-flows' " +
+                            "and 'add-page-flows' parameters for 'documents' item: "
+                            + documentNode);
+                }
+
+                documentPageFlowsNode = firstNotNullOptional(documentPageFlowsNode,
+                        (ArrayNode) defaultNode.get("page-flows"))
+                        .orElse(new ArrayNode(nodeFactory));
+                if (documentAddPageFlowsNode != null) {
+                    documentPageFlowsNode.addAll(documentAddPageFlowsNode);
+                }
+                documentPageFlowsNode.forEach(pageFlowNameNode -> {
+                    ArrayNode pageFlowItemsNode = (ArrayNode) documentsPageFlowsNode
+                            .putIfAbsent(pageFlowNameNode.asText(), new ArrayNode(nodeFactory));
+                    if (pageFlowItemsNode == null) {
+                        pageFlowItemsNode = (ArrayNode) documentsPageFlowsNode
+                                .get(pageFlowNameNode.asText());
+                    }
+                    ObjectNode pageFlowNode = new ObjectNode(nodeFactory);
+                    pageFlowNode.put("link", document.getOutputLocation());
+                    pageFlowNode.put("title", document.getTitle());
+                    pageFlowItemsNode.add(pageFlowNode);
+                });
+            }
         }
 
-        ObjectNode pluginsNode = (ObjectNode) argFileNode.get("plugins");
+        if (!documentsPageFlowsNode.isEmpty() && pageFlowsPluginNode != null) {
+            documentsPageFlowsNode.fields().forEachRemaining(entry -> {
+                ArrayNode pageFlowItemsNode = (ArrayNode) pageFlowsPluginNode
+                        .putIfAbsent(entry.getKey(), new ArrayNode(nodeFactory));
+                if (pageFlowItemsNode == null) {
+                    pageFlowItemsNode = (ArrayNode) pageFlowsPluginNode.get(entry.getKey());
+                }
+                ArrayNode newItemsNode = entry.getValue().deepCopy();
+                newItemsNode.addAll(pageFlowItemsNode);
+                pageFlowsPluginNode.replace(entry.getKey(), newItemsNode);
+            });
+        }
+
         List<Md2HtmlPlugin> plugins = new ArrayList<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = pluginsNode.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> pluginEntry = it.next();
@@ -188,57 +225,7 @@ public class ArgFileParser {
             }
         }
 
-
-
         return new ArgFileOptions(null, documentList, plugins);
     }
-
-//    private static ClilOptions createEmptyMd2HtmlOptions() {
-//        return new ClilOptions(null, null, null, null, null, null, null, false, false,
-//                false, false);
-//    }
-
-//    private static JsonArray toJsonArray(JsonValue jsonValue) throws ArgFileParseException {
-//        try {
-//            return jsonValue.asArray();
-//        }  catch (UnsupportedOperationException e) {
-//            throw new ArgFileParseException("Cannot convert '" + jsonValue + "' to " +
-//                    "JSON array: " + e.getMessage());
-//        }
-//    }
-
-    //    private static JsonObject getNotNullJsonObject(JsonObject parent, String memberName)
-//            throws ArgFileParseException {
-//        JsonObject result;
-//        JsonValue defaultSectionValue = parent.get(memberName);
-//        if (defaultSectionValue != null) {
-//            try {
-//                result = defaultSectionValue.asObject();
-//            } catch (UnsupportedOperationException e) {
-//                throw new ArgFileParseException("'" + memberName + "' JSON object cannot " +
-//                        "be taken: " + e.getMessage());
-//            }
-//        } else {
-//            result = new JsonObject();
-//        }
-//        return result;
-//    }
-
-//    private static JsonArray getNotNullJsonArray(JsonObject parent, String memberName)
-//            throws ArgFileParseException {
-//        JsonArray result;
-//        JsonValue defaultSectionValue = parent.get(memberName);
-//        if (defaultSectionValue != null) {
-//            try {
-//                result = defaultSectionValue.asArray();
-//            } catch (UnsupportedOperationException e) {
-//                throw new ArgFileParseException("'" + memberName + "' JSON array cannot " +
-//                        "be taken: " + e.getMessage());
-//            }
-//        } else {
-//            result = new JsonArray();
-//        }
-//        return result;
-//    }
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import world.md2html.UserError;
+import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Utils;
@@ -18,11 +19,11 @@ public class PageFlowsPlugin implements Md2HtmlPlugin {
     private Map<String, List<Map<String, Object>>> data = null;
 
     @Override
-    public boolean acceptData(JsonNode data) {
+    public boolean acceptData(JsonNode data) throws ArgFileParseException {
         try {
             JsonUtils.validateJsonAgainstSchemaFromResource(data, "plugins/page_flows_schema.json");
         } catch (JsonUtils.JsonValidationException e) {
-            throw new PluginDataUserError("Plugin '" + this.getClass().getSimpleName() +
+            throw new ArgFileParseException("Plugin '" + this.getClass().getSimpleName() +
                     "' data error: " + e.getMessage());
         }
         Map<String, List<Map<String, Object>>> pluginData = new HashMap<>();
