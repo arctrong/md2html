@@ -4,11 +4,10 @@ import world.md2html.options.argfile.ArgFileOptions;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.argfile.ArgFileParser;
 import world.md2html.options.cli.CliArgumentsException;
+import world.md2html.options.cli.CliOptions;
 import world.md2html.options.cli.CliParser;
-import world.md2html.options.cli.ClilOptions;
 import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
-import world.md2html.plugins.PageMetadataHandler;
 import world.md2html.utils.Utils;
 
 import java.io.IOException;
@@ -22,21 +21,21 @@ public class Md2HtmlRunner {
         long start = System.nanoTime();
 
         String usage = "java " + Md2Html.class.getSimpleName();
-        ClilOptions clilOptions = null;
+        CliOptions cliOptions = null;
         try {
-            clilOptions = new CliParser(usage).parse(args);
+            cliOptions = new CliParser(usage).parse(args);
         } catch (CliArgumentsException e) {
             System.out.println(e.getPrintText());
             System.exit(1);
         }
 
         ArgFileOptions argFileOptions = null;
-        Path argumentFile = clilOptions.getArgumentFile();
+        Path argumentFile = cliOptions.getArgumentFile();
         if (argumentFile != null) {
             try {
                 String argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
                         StandardCharsets.UTF_8);
-                argFileOptions = ArgFileParser.parse(argumentFileString, clilOptions);
+                argFileOptions = ArgFileParser.parse(argumentFileString, cliOptions);
             } catch (IOException e) {
                 System.out.println("Error parsing argument file '" + argumentFile +
                         "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
@@ -51,11 +50,11 @@ public class Md2HtmlRunner {
             // plugin for page title extraction from the source text.
             String fakeArgFile = "{\"documents\": [{}], \"plugins\": {\"page-variables\": " +
                     "{\"VARIABLES\": {\"only-at-page-start\": true}";
-            if (clilOptions.isLegacyMode()) {
+            if (cliOptions.isLegacyMode()) {
                 fakeArgFile += ", \"METADATA\": {\"only-at-page-start\": true}";
             }
             fakeArgFile += "}}}}";
-            argFileOptions = ArgFileParser.parse(fakeArgFile, clilOptions);
+            argFileOptions = ArgFileParser.parse(fakeArgFile, cliOptions);
         }
 
         PageMetadataHandlersWrapper metadataHandlersWrapper =

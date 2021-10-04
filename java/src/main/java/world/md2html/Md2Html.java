@@ -1,8 +1,6 @@
 package world.md2html;
 
-import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
-import com.github.mustachejava.MustacheFactory;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
@@ -13,7 +11,7 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
 import world.md2html.options.argfile.SessionOptions;
 import world.md2html.options.model.Document;
-import world.md2html.pagemetadata.*;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.Utils;
 

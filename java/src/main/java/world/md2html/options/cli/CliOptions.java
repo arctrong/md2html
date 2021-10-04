@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class ClilOptions {
+public class CliOptions {
 
     private final Path argumentFile;
     private final String inputFile;

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.Constants;
-import world.md2html.options.cli.ClilOptions;
+import world.md2html.options.cli.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.OptionsModelUtils;
@@ -31,16 +31,28 @@ public class ArgFileParser {
     private ArgFileParser() {
     }
 
-    public static ArgFileOptions parse(String argumentFileContent, ClilOptions cliOptions)
+    public static ArgFileOptions parse(String argumentFileContent, CliOptions cliOptions)
             throws ArgFileParseException {
 
-        ObjectNode argFileNode;
+        if (cliOptions == null) {
+            cliOptions = new CliOptions(null, null, null, null, null, null, null, false,
+                    false, false, false, false);
+        }
+
+        JsonNode argFileJsonNode;
         try {
-            argFileNode = (ObjectNode) MAPPER.readTree(argumentFileContent);
+            argFileJsonNode = MAPPER.readTree(argumentFileContent);
         } catch (JsonProcessingException e) {
             throw new ArgFileParseException("Argument file content cannot be parsed: "
                     + e.getClass().getSimpleName() + ": " +
                     formatJsonProcessingException(e));
+        }
+        ObjectNode argFileNode;
+        try {
+            argFileNode = (ObjectNode) argFileJsonNode;
+        } catch (ClassCastException e) {
+            throw new ArgFileParseException("Argument file content is not a JSON object: " +
+                    argFileJsonNode);
         }
 
         try {
@@ -166,7 +178,7 @@ public class ArgFileParser {
                         "parameters for 'documents' item: " + documentNode);
             }
 
-            Document document = OptionsModelUtils.enrichDocumentMd2HtmlOptions(
+            Document document = OptionsModelUtils.enrichDocument(
                     new Document(inputFile, outputFile, title, templateFile, includeCss,
                             linkCss, noCss, force, verbose, report));
             documentList.add(document);

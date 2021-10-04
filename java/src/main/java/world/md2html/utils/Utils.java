@@ -184,21 +184,22 @@ public class Utils {
     }
 
     public static String formatNanoSeconds(long duration) {
+        StringBuilder sb = new StringBuilder(20);
         long quotient = duration / 1_000_000;
         long remainder = quotient % 1_000;
-        String result = String.format(".%03d", remainder);
+        sb.insert(0, String.format(".%03d", remainder));
         quotient = quotient / 1_000;
         remainder = quotient % 60;
-        result = String.format(":%02d", remainder) + result;
+        sb.insert(0, String.format(":%02d", remainder));
         quotient = quotient / 60;
         remainder = quotient % 60;
-        result = String.format(":%02d", remainder) + result;
+        sb.insert(0, String.format(":%02d", remainder));
         quotient = quotient / 60;
         remainder = quotient % 24;
-        result = String.format(" %02d", remainder) + result;
+        sb.insert(0, String.format(" %02d", remainder));
         quotient = quotient / 24;
-        result = String.format("%d", quotient) + result;
-        return result;
+        sb.insert(0, String.format("%d", quotient));
+        return sb.toString();
     }
 
     public static String readStringFromResource(String resourceLocation) throws IOException {

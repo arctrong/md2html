@@ -7,7 +7,6 @@ import world.md2html.UserError;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.utils.CheckedIllegalArgumentException;
-import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Utils;
 
 import java.util.*;

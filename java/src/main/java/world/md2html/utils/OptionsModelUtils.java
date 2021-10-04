@@ -1,13 +1,9 @@
 package world.md2html.utils;
 
 import world.md2html.Constants;
-import world.md2html.options.cli.ClilOptions;
 import world.md2html.options.model.Document;
 
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static world.md2html.utils.Utils.isNullOrEmpty;
 
@@ -19,7 +15,7 @@ public class OptionsModelUtils {
     private OptionsModelUtils() {
     }
 
-    public static Document enrichDocumentMd2HtmlOptions(Document document) {
+    public static Document enrichDocument(Document document) {
         return new Document(document.getInputLocation(),
                 document.getOutputLocation() == null ?
                         Utils.stripExtension(document.getInputLocation()) + ".html" :

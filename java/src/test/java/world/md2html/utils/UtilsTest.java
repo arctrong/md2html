@@ -30,6 +30,9 @@ class UtilsTest {
         assertNull(Utils.firstNotNull());
         Object o = new String[0];
         assertEquals(o, Utils.firstNotNull(o, new String[] {"1", "2"}));
+    }
+
+    @Test
     void formatNanoSeconds() {
         long m = 1_000_000;
         assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(0));

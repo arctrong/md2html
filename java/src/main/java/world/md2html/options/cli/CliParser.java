@@ -90,7 +90,7 @@ public class CliParser {
         return cliOptions;
     }
 
-    public ClilOptions parse(String[] args) throws CliArgumentsException {
+    public CliOptions parse(String[] args) throws CliArgumentsException {
 
         Options cliOptions = getCliOptions();
         CommandLineParser parser = new DefaultParser();
@@ -166,7 +166,7 @@ public class CliParser {
 
         boolean legacy_mode = commandLine.hasOption(LEGACY_MODE_OPTION_NAME);
 
-        return new ClilOptions(argumentFile, inputFile, outputFile, title, templateFile,
+        return new CliOptions(argumentFile, inputFile, outputFile, title, templateFile,
                 includeCss, linkCss, noCss, force, verbose, report, legacy_mode);
     }
 

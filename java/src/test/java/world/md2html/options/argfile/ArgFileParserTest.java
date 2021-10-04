@@ -1,0 +1,211 @@
+package world.md2html.options.argfile;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import world.md2html.options.cli.CliOptions;
+import world.md2html.options.model.Document;
+
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ArgFileParserTest {
+
+    @Test
+    public void emptyFile_NegativeScenario() {
+        assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("", null));
+    }
+
+    @Test
+    public void rootElementIsNotObject_NegativeScenario() {
+        assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("[1, 2]", null));
+    }
+
+    @Test
+    public void defaultElementIsNotObject_NegativeScenario() {
+        assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"default\": []}", null));
+    }
+
+    @Test
+    public void noDefaultElement_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse("{\"documents\": []}", null);
+        assertEquals(0, options.getDocuments().size());
+    }
+
+    @Test
+    public void allDefaultParameters_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
+        Document doc = options.getDocuments().get(0);
+        assertEquals("index.txt", doc.getInputLocation());
+        assertEquals("index.html", doc.getOutputLocation());
+        assertNull(doc.getTitle());
+        // Template path depends on the environment and is not checked here.
+        assertFalse(doc.isNoCss());
+        assertEquals(0, doc.getLinkCss().size());
+        assertEquals(1, doc.getIncludeCss().size());
+        assertFalse(doc.isForce());
+        assertFalse(doc.isVerbose());
+    }
+
+    @Test
+    public void allParametersFromDefaultSection_PositiveScenario()
+            throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse(
+                "{\"default\": {\"input\": \"index.txt\", \"output\": \"index.html\", " +
+                        "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
+                        "\"link-css\": [\"link1.css\", \"link2.css\"], \"include-css\": [\"include.css\"], " +
+                        "\"force\": true, \"verbose\": true}, \"documents\": [{}]}", null);
+        Document doc = options.getDocuments().get(0);
+        assertEquals("index.txt", doc.getInputLocation());
+        assertEquals("index.html", doc.getOutputLocation());
+        assertEquals("some title", doc.getTitle());
+        assertEquals(Paths.get("path/templates/custom.html"), doc.getTemplate());
+        assertFalse(doc.isNoCss());
+        assertIterableEquals(Arrays.asList("link1.css", "link2.css"), doc.getLinkCss());
+        assertIterableEquals(Arrays.asList("link1.css", "link2.css"), doc.getLinkCss());
+        assertIterableEquals(Collections.singletonList(Paths.get("include.css")),
+                doc.getIncludeCss());
+        assertTrue(doc.isForce());
+        assertTrue(doc.isVerbose());
+    }
+
+    @Test
+    public void noDocumentsElement_NegativeScenario() {
+        ArgFileParseException e = assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"default\": {}}", null));
+        assertTrue(e.getMessage().contains("documents"));
+    }
+
+    @Test
+    public void documentsElementIsNotList_NegativeScenario() {
+        assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"documents\": \"not a list\"}", null));
+    }
+
+    @Test
+    public void emptyDocumentsElement_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse("{\"documents\": []}", null);
+        assertEquals(0, options.getDocuments().size());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"link-css", "include-css"})
+    public void defaultElementNoCssWithCssDefinitions_NegativeScenario(String cssType) {
+        ArgFileParseException e = assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"default\": {\"no-css\": true, \"" + cssType +
+                        "\": [\"some.css\"]}, \"documents\": []}", null));
+        assertTrue(e.getMessage().contains("no-css"));
+        assertTrue(e.getMessage().contains(cssType));
+    }
+
+    @Test
+    public void minimalDocument_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
+        Document doc = options.getDocuments().get(0);
+        assertEquals("index.txt", doc.getInputLocation());
+        assertTrue(doc.getOutputLocation().contains("index"));
+    }
+
+    @Test
+    public void severalDocuments_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\"}, {\"input\": \"about.txt\"}], " +
+                        "\"default\": {\"template\": \"common_template.html\"}}", null);
+        Document doc = options.getDocuments().get(0);
+        assertEquals("index.txt", doc.getInputLocation());
+        assertEquals(Paths.get("common_template.html"), doc.getTemplate());
+        assertTrue(doc.getOutputLocation().contains("index"));
+        doc = options.getDocuments().get(1);
+        assertEquals("about.txt", doc.getInputLocation());
+        assertEquals(Paths.get("common_template.html"), doc.getTemplate());
+        assertTrue(doc.getOutputLocation().contains("about"));
+    }
+
+    @Test
+    public void fullDocument_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
+                        "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
+                        "\"link-css\": [\"link1.css\", \"link2.css\"], " +
+                        "\"add-link-css\": [\"add_link.css\"], " +
+                        "\"include-css\": [\"include.css\"], " +
+                        "\"add-include-css\": [\"add_include1.css\", \"add_include1.css\"], " +
+                        "\"force\": true, \"verbose\": true}]}", null);
+        Document doc = options.getDocuments().get(0);
+        assertEquals("index.txt", doc.getInputLocation());
+        assertEquals("index.html", doc.getOutputLocation());
+        assertEquals("some title", doc.getTitle());
+        assertEquals(Paths.get("path/templates/custom.html"), doc.getTemplate());
+        assertFalse(doc.isNoCss());
+        assertEquals("some title", doc.getTitle());
+        assertIterableEquals(Arrays.asList("link1.css", "link2.css", "add_link.css"),
+                doc.getLinkCss());
+        assertIterableEquals(Arrays.asList(Paths.get("include.css"), Paths.get("add_include1.css"),
+                Paths.get("add_include1.css")),
+                doc.getIncludeCss());
+        assertTrue(doc.isForce());
+        assertTrue(doc.isVerbose());
+    }
+
+    @Test
+    public void documentsElementNoInputFile_NegativeScenario() {
+        ArgFileParseException e = assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"documents\": [{\"output\": \"index.html\"}]}", null));
+        assertTrue(e.getMessage().toUpperCase().contains("INPUT"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"link-css", "include-css", "add-link-css", "add-include-css"})
+    public void documentNoCssWithCssDefinitions_NegativeScenario(String cssType) {
+        ArgFileParseException e = assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"documents\": [{\"no-css\": true, \"" +
+                        cssType + "\": [\"some.css\"]}]}", null));
+        assertTrue(e.getMessage().contains("no-css"));
+        assertTrue(e.getMessage().contains(cssType));
+    }
+
+    @Test
+    public void documentVerboseAndReportFlags_NegativeScenario() {
+        ArgFileParseException e = assertThrows(ArgFileParseException.class,
+                () -> ArgFileParser.parse("{\"documents\": [{\"output\": \"index.html\", " +
+                        "\"verbose\": true, \"report\": true}]}", null));
+        assertTrue(e.getMessage().contains("verbose"));
+        assertTrue(e.getMessage().contains("report"));
+    }
+
+    @Test
+    public void overridingWithCliArgs_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions options = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
+                        "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
+                        "\"link-css\": [\"link1.css\", \"link2.css\"], " +
+                        "\"add-link-css\": [\"add_link.css\"], " +
+                        "\"include-css\": [\"include.css\"], " +
+                        "\"add-include-css\": [\"add_include1.css\", \"add_include1.css\"], " +
+                        "\"force\": false, \"verbose\": false}]}",
+                new CliOptions(null, "cli_index.txt", "cli_index.html",
+                        "cli_title", Paths.get("cli/custom.html"),
+                        Arrays.asList(Paths.get("cli_include1.css"), Paths.get("cli_include2.css")),
+                        Arrays.asList("cli_link1.css", "cli_link2.css"), false, true, true, false, false));
+        Document doc = options.getDocuments().get(0);
+        assertEquals("cli_index.txt", doc.getInputLocation());
+        assertEquals("cli_index.html", doc.getOutputLocation());
+        assertEquals("cli_title", doc.getTitle());
+        assertEquals(Paths.get("cli/custom.html"), doc.getTemplate());
+        assertFalse(doc.isNoCss());
+        assertIterableEquals(Arrays.asList("cli_link1.css", "cli_link2.css"), doc.getLinkCss());
+        assertIterableEquals(Arrays.asList(Paths.get("cli_include1.css"),
+                Paths.get("cli_include2.css")), doc.getIncludeCss());
+        assertTrue(doc.isForce());
+        assertTrue(doc.isVerbose());
+    }
+
+}

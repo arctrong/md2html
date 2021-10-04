@@ -1,6 +1,5 @@
 package world.md2html.pagemetadata.legacy;
 
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

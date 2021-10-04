@@ -7,7 +7,10 @@ import com.networknt.schema.JsonSchema;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static world.md2html.Constants.MAPPER;
 import static world.md2html.utils.JsonUtils.*;
