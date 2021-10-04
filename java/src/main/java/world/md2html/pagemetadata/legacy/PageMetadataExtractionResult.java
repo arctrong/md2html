@@ -1,4 +1,4 @@
-package world.md2html.pagemetadata;
+package world.md2html.pagemetadata.legacy;
 
 public class PageMetadataExtractionResult {
 
