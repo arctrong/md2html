@@ -1,4 +1,4 @@
-package world.md2html.options.cli;
+package world.md2html.options.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

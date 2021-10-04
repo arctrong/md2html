@@ -1,6 +1,6 @@
 package world.md2html.plugins;
 
-import world.md2html.UserError;
+import world.md2html.utils.UserError;
 import world.md2html.options.model.Document;
 
 public interface PageMetadataHandler {

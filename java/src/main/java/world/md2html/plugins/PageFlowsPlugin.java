@@ -3,7 +3,8 @@ package world.md2html.plugins;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
-import world.md2html.UserError;
+import world.md2html.utils.JsonUtils;
+import world.md2html.utils.UserError;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.utils.CheckedIllegalArgumentException;
@@ -28,7 +29,7 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
                 ObjectNode pageNode = (ObjectNode) it1.next();
                 Map<String, Object> page = new HashMap<>();
                 pageNode.fields().forEachRemaining(fieldEntry -> page.put(fieldEntry.getKey(),
-                        Utils.deJson(fieldEntry.getValue())));
+                        JsonUtils.deJson(fieldEntry.getValue())));
                 Map<String, Object> enrichedPage = enrichPage(page);
                 pages.add(enrichedPage);
             }

@@ -2,20 +2,54 @@ package world.md2html.options.cli;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.*;
+import world.md2html.options.cli.CliArgumentsException.CliParsingExceptionType;
+import world.md2html.options.model.CliOptions;
 
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CliParserTest {
 
-    @Test
-    public void helpRequested() {
-        testHelp();
-        testHelp("-h");
-        testHelp("--help");
-        testHelp("-t \"no_matter_what\"", "--help");
+    private void assertMd2HtmlOptionsEquals(CliOptions o1, CliOptions o2) {
+        assertEquals(o1.getInputFile(), o2.getInputFile());
+        assertEquals(o1.getOutputFile(), o2.getOutputFile());
+        assertEquals(o1.getTitle(), o2.getTitle());
+        assertEquals(o1.getTemplate(), o2.getTemplate());
+        assertEquals(o1.getIncludeCss(), o2.getIncludeCss());
+        assertEquals(o1.getLinkCss(), o2.getLinkCss());
+        assertEquals(o1.isForce(), o2.isForce());
+        assertEquals(o1.isVerbose(), o2.isVerbose());
+        assertEquals(o1.isReport(), o2.isReport());
+    }
+
+    private CliOptions getParsingResult(String... args) throws CliArgumentsException {
+        CliParser CliParser = new CliParser("whatever");
+        return CliParser.parse(args);
+    }
+
+    private static Stream<Arguments> helpRequested() {
+        return Stream.of(
+                Arguments.of((Object) new String[] {"-h"}),
+                Arguments.of((Object) new String[] {"--help"}),
+                Arguments.of((Object) new String[] {"-t", "\"whatever\"", "--help"})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void helpRequested(String... args) {
+        CliArgumentsException e = assertThrows(CliArgumentsException.class,
+                () -> getParsingResult(args));
+        assertEquals(CliParsingExceptionType.HELP, e.getExceptionType());
+//
+//
+//        testHelp();
+//        testHelp("-h");
+//        testHelp("--help");
+//        testHelp("-t \"whatever\"", "--help");
     }
 
     @Test
@@ -28,6 +62,7 @@ class CliParserTest {
         assertFalse(options.isForce());
         assertFalse(options.isVerbose());
         assertFalse(options.isReport());
+        assertFalse(options.isLegacyMode());
     }
 
     @Test
@@ -137,33 +172,10 @@ class CliParserTest {
                 "--no-css", cssOption, "styles.css"));
     }
 
-    private void assertMd2HtmlOptionsEquals(CliOptions o1, CliOptions o2) {
-        assertEquals(o1.getInputFile(), o2.getInputFile());
-        assertEquals(o1.getOutputFile(), o2.getOutputFile());
-        assertEquals(o1.getTitle(), o2.getTitle());
-        assertEquals(o1.getTemplate(), o2.getTemplate());
-        assertEquals(o1.getIncludeCss(), o2.getIncludeCss());
-        assertEquals(o1.getLinkCss(), o2.getLinkCss());
-        assertEquals(o1.isForce(), o2.isForce());
-        assertEquals(o1.isVerbose(), o2.isVerbose());
-        assertEquals(o1.isReport(), o2.isReport());
-    }
-
-    private CliOptions getParsingResult(String... args) throws CliArgumentsException {
-        CliParser CliParser = new CliParser("whatever");
-        return CliParser.parse(args);
-    }
-
-    private void testHelp(String... args) {
-        String exceptionClass = CliArgumentsException.class.getName();
-        try {
-            getParsingResult(args);
-            fail(exceptionClass + " was expected but nothing was thrown");
-        } catch (CliArgumentsException e) {
-            assertEquals(CliArgumentsException.CliParsingExceptionType.HELP, e.getExceptionType());
-        } catch (Exception e) {
-            fail(exceptionClass + " was expected but " + e.getClass().getName() + " was thrown");
-        }
-    }
+//    private void testHelp(String... args) {
+//        CliArgumentsException e = assertThrows(CliArgumentsException.class,
+//                () -> getParsingResult(args));
+//        assertEquals(CliParsingExceptionType.HELP, e.getExceptionType());
+//    }
 
 }

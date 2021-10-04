@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static world.md2html.Constants.MAPPER;
+import static world.md2html.utils.JsonUtils.MAPPER;
 import static world.md2html.utils.JsonUtils.*;
-import static world.md2html.utils.Utils.deJson;
+import static world.md2html.utils.JsonUtils.deJson;
 
 public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 

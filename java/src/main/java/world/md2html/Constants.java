@@ -1,7 +1,5 @@
 package world.md2html;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import world.md2html.plugins.*;
 
 import java.nio.file.Path;
@@ -28,9 +26,6 @@ public final class Constants {
         PLUGINS.put("page-variables", new PageVariablesPlugin());
         PLUGINS.put("variables", new VariablesPlugin());
     }
-
-    public static final ObjectMapper MAPPER = new ObjectMapper();
-    public static final JsonNodeFactory NODE_FACTORY = MAPPER.getNodeFactory();
 
     static {
         String workingDirStr = System.getenv(Constants.WORKING_DIR_ENV_VARIABLE_NAME);

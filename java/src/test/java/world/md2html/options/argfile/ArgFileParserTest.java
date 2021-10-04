@@ -3,12 +3,16 @@ package world.md2html.options.argfile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import world.md2html.options.cli.CliOptions;
+import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
+import world.md2html.plugins.Md2HtmlPlugin;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,15 +38,15 @@ public class ArgFileParserTest {
 
     @Test
     public void noDefaultElement_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse("{\"documents\": []}", null);
-        assertEquals(0, options.getDocuments().size());
+        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": []}", null);
+        assertEquals(0, argFileOptions.getDocuments().size());
     }
 
     @Test
     public void allDefaultParameters_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
-        Document doc = options.getDocuments().get(0);
+        Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
         assertEquals("index.html", doc.getOutputLocation());
         assertNull(doc.getTitle());
@@ -57,12 +61,12 @@ public class ArgFileParserTest {
     @Test
     public void allParametersFromDefaultSection_PositiveScenario()
             throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"default\": {\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], \"include-css\": [\"include.css\"], " +
                         "\"force\": true, \"verbose\": true}, \"documents\": [{}]}", null);
-        Document doc = options.getDocuments().get(0);
+        Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
         assertEquals("index.html", doc.getOutputLocation());
         assertEquals("some title", doc.getTitle());
@@ -91,8 +95,8 @@ public class ArgFileParserTest {
 
     @Test
     public void emptyDocumentsElement_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse("{\"documents\": []}", null);
-        assertEquals(0, options.getDocuments().size());
+        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": []}", null);
+        assertEquals(0, argFileOptions.getDocuments().size());
     }
 
     @ParameterizedTest
@@ -107,23 +111,23 @@ public class ArgFileParserTest {
 
     @Test
     public void minimalDocument_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
-        Document doc = options.getDocuments().get(0);
+        Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
         assertTrue(doc.getOutputLocation().contains("index"));
     }
 
     @Test
     public void severalDocuments_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"documents\": [{\"input\": \"index.txt\"}, {\"input\": \"about.txt\"}], " +
                         "\"default\": {\"template\": \"common_template.html\"}}", null);
-        Document doc = options.getDocuments().get(0);
+        Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
         assertEquals(Paths.get("common_template.html"), doc.getTemplate());
         assertTrue(doc.getOutputLocation().contains("index"));
-        doc = options.getDocuments().get(1);
+        doc = argFileOptions.getDocuments().get(1);
         assertEquals("about.txt", doc.getInputLocation());
         assertEquals(Paths.get("common_template.html"), doc.getTemplate());
         assertTrue(doc.getOutputLocation().contains("about"));
@@ -131,7 +135,7 @@ public class ArgFileParserTest {
 
     @Test
     public void fullDocument_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], " +
@@ -139,7 +143,7 @@ public class ArgFileParserTest {
                         "\"include-css\": [\"include.css\"], " +
                         "\"add-include-css\": [\"add_include1.css\", \"add_include1.css\"], " +
                         "\"force\": true, \"verbose\": true}]}", null);
-        Document doc = options.getDocuments().get(0);
+        Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
         assertEquals("index.html", doc.getOutputLocation());
         assertEquals("some title", doc.getTitle());
@@ -183,7 +187,7 @@ public class ArgFileParserTest {
 
     @Test
     public void overridingWithCliArgs_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions options = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], " +
@@ -194,8 +198,9 @@ public class ArgFileParserTest {
                 new CliOptions(null, "cli_index.txt", "cli_index.html",
                         "cli_title", Paths.get("cli/custom.html"),
                         Arrays.asList(Paths.get("cli_include1.css"), Paths.get("cli_include2.css")),
-                        Arrays.asList("cli_link1.css", "cli_link2.css"), false, true, true, false, false));
-        Document doc = options.getDocuments().get(0);
+                        Arrays.asList("cli_link1.css", "cli_link2.css"), false, true, true,
+                        false, true));
+        Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("cli_index.txt", doc.getInputLocation());
         assertEquals("cli_index.html", doc.getOutputLocation());
         assertEquals("cli_title", doc.getTitle());
@@ -206,6 +211,51 @@ public class ArgFileParserTest {
                 Paths.get("cli_include2.css")), doc.getIncludeCss());
         assertTrue(doc.isForce());
         assertTrue(doc.isVerbose());
+        SessionOptions options = argFileOptions.getOptions();
+        assertTrue(options.isLegacyMode());
+        assertTrue(options.isVerbose());
+    }
+
+    @Test
+    public void defaultOptions_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
+        SessionOptions options = argFileOptions.getOptions();
+        assertFalse(options.isLegacyMode());
+        assertFalse(options.isVerbose());
+    }
+
+    @Test
+    public void fullOptions_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
+                "{\"options\": {\"verbose\": true, \"legacy-mode\": true}, " +
+                        "\"documents\": [{\"input\": \"index.txt\"}]}", null);
+        SessionOptions options = argFileOptions.getOptions();
+        assertTrue(options.isLegacyMode());
+        assertTrue(options.isVerbose());
+    }
+
+    @Test
+    public void noPlugins_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
+        List<Md2HtmlPlugin> plugins = argFileOptions.getPlugins();
+        assertTrue(plugins.isEmpty());
+    }
+
+    @Test
+    public void allPlugins_PositiveScenario() throws ArgFileParseException {
+        // Adding minimum plugin data to make the plugins declare themselves activated.
+        // The specific plugins behavior is going to be tested in separate tests.
+        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": " +
+                "[{\"input\": \"index.txt\"}], \"plugins\": " +
+                "{\"relative-paths\": {\"rel_path\": \"/doc\"}, " +
+                "\"page-flows\": {\"sections\": [{\"link\": \"doc/about.html\", " +
+                "\"title\": \"About\"}]}, " +
+                "\"page-variables\":{\"v\": {}}, " +
+                "\"variables\": {\"logo\": \"THE GREATEST SITE EVER!\"}}}", null);
+        List<Md2HtmlPlugin> plugins = argFileOptions.getPlugins();
+        assertEquals(4, plugins.size());
     }
 
 }

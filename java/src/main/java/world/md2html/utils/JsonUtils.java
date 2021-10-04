@@ -3,7 +3,9 @@ package world.md2html.utils;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
@@ -17,6 +19,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class JsonUtils {
+
+    public static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final JsonNodeFactory NODE_FACTORY = MAPPER.getNodeFactory();
 
     public static String jsonObjectStringField(ObjectNode objectNode, String fieldName) {
         return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asText).orElse(null);
@@ -37,6 +42,44 @@ public class JsonUtils {
             result.add(it.next().asText());
         }
         return result;
+    }
+
+    /**
+     * This function converts the given `JsonNode` into native Java representation. To reflect
+     * JSON types and structures it uses certain Java types that are suitable in context of this
+     * program. May be not suitable in other contexts.
+     */
+    public static Object deJson(JsonNode value) {
+        if (value == null) {
+            return null;
+        }
+        switch (value.getNodeType()) {
+            case ARRAY:
+                List<Object> list = new ArrayList<>();
+                value.forEach(item -> list.add(deJson(item)));
+                return list;
+            case NULL:
+            case BINARY:
+            case MISSING:
+            case POJO:
+                return null;
+            case BOOLEAN:
+                return value.asBoolean();
+            case NUMBER:
+                if (value.canConvertToExactIntegral()) {
+                    return value.asInt();
+                } else {
+                    return value.asDouble();
+                }
+            case OBJECT:
+                Map<String, Object> map = new HashMap<>();
+                value.fields().forEachRemaining(entry -> map.put(entry.getKey(),
+                        deJson(entry.getValue())));
+                return map;
+            case STRING:
+                return value.asText();
+        }
+        return null;
     }
 
     public static class JsonValidationException extends Exception {

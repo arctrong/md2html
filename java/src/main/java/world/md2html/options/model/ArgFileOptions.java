@@ -1,8 +1,9 @@
-package world.md2html.options.argfile;
+package world.md2html.options.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
 import world.md2html.plugins.Md2HtmlPlugin;
 
 import java.util.List;

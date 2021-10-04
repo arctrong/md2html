@@ -6,18 +6,20 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.Constants;
-import world.md2html.options.cli.CliOptions;
+import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
 import world.md2html.plugins.Md2HtmlPlugin;
-import world.md2html.utils.OptionsModelUtils;
+import world.md2html.options.model.OptionsModelUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static world.md2html.Constants.MAPPER;
-import static world.md2html.Constants.NODE_FACTORY;
+import static world.md2html.utils.JsonUtils.MAPPER;
+import static world.md2html.utils.JsonUtils.NODE_FACTORY;
 import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.firstNotNull;
 import static world.md2html.utils.Utils.firstNotNullOptional;
@@ -82,7 +84,7 @@ public class ArgFileParser {
 
         ObjectNode optionsNode = (ObjectNode) Optional.ofNullable(argFileNode.get("options"))
                 .orElse(new ObjectNode(NODE_FACTORY));
-        boolean optionsVerbose = Optional.ofNullable(optionsNode.get("options"))
+        boolean optionsVerbose = Optional.ofNullable(optionsNode.get("verbose"))
                 .map(JsonNode::asBoolean).orElse(false);
         if (optionsVerbose && cliOptions.isReport()) {
             throw new ArgFileParseException("'verbose' parameter in 'options' section is " +

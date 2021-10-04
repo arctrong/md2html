@@ -1,4 +1,4 @@
-package world.md2html;
+package world.md2html.utils;
 
 /**
  * Error that was caused by correct processing of incorrect user input or actions.

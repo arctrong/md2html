@@ -1,6 +1,7 @@
 package world.md2html.options.cli;
 
 import org.apache.commons.cli.*;
+import world.md2html.options.model.CliOptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

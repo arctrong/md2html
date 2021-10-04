@@ -9,10 +9,12 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
-import world.md2html.options.argfile.SessionOptions;
+import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
+import world.md2html.utils.MustacheUtils;
+import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
 import java.io.*;
@@ -158,9 +160,9 @@ public class Md2Html {
             Mustache mustache;
             try {
                 if (options.isLegacyMode()) {
-                    mustache = Utils.createCachedMustacheRendererLegacy(document.getTemplate());
+                    mustache = MustacheUtils.createCachedMustacheRendererLegacy(document.getTemplate());
                 } else {
-                    mustache = Utils.createCachedMustacheRenderer(document.getTemplate());
+                    mustache = MustacheUtils.createCachedMustacheRenderer(document.getTemplate());
                 }
             } catch (FileNotFoundException e) {
                 throw new UserError(String.format("Error reading template file '%s': %s: %s",

@@ -6,7 +6,7 @@ import world.md2html.options.model.Document;
 
 import java.util.Map;
 
-import static world.md2html.utils.Utils.deJson;
+import static world.md2html.utils.JsonUtils.deJson;
 
 public class VariablesPlugin extends AbstractMd2HtmlPlugin {
 

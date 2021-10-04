@@ -17,55 +17,9 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    private static final Pattern LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN =
-            Pattern.compile("(^|[^$])\\$\\{([^}]+)\\}");
-    private static final Pattern LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN =
-            Pattern.compile("(^|[^$])\\$\\{(styles|content)\\}");
-
     public static boolean isNullOrFalse(Object object) {
         return object instanceof Boolean && (Boolean) object;
     }
-
-    /**
-     * This function converts the given `JsonNode` into native Java representation. To reflect
-     * JSON types and structures it uses certain Java types that are suitable in context of this
-     * program. May be not suitable in other contexts.
-     */
-    public static Object deJson(JsonNode value) {
-        if (value == null) {
-            return null;
-        }
-        switch (value.getNodeType()) {
-            case ARRAY:
-                List<Object> list = new ArrayList<>();
-                value.forEach(item -> list.add(deJson(item)));
-                return list;
-            case NULL:
-            case BINARY:
-            case MISSING:
-            case POJO:
-                return null;
-            case BOOLEAN:
-                return value.asBoolean();
-            case NUMBER:
-                if (value.canConvertToExactIntegral()) {
-                    return value.asInt();
-                } else {
-                    return value.asDouble();
-                }
-            case OBJECT:
-                Map<String, Object> map = new HashMap<>();
-                value.fields().forEachRemaining(entry -> map.put(entry.getKey(),
-                        deJson(entry.getValue())));
-                return map;
-            case STRING:
-                return value.asText();
-        }
-        return null;
-    }
-
-    private static final Map<Path, Mustache> CACHED_MUSTACHE_RENDERERS = new HashMap<>();
-    private static final MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
 
     private static final Pattern JSON_COMMENT_BLANKING_PATTERN = Pattern.compile("[^\\s]");
 
@@ -153,34 +107,6 @@ public class Utils {
             }
         }
         return Optional.empty();
-    }
-
-    public static Mustache createCachedMustacheRenderer(Path templateFile) throws IOException {
-        Mustache result = CACHED_MUSTACHE_RENDERERS.get(templateFile);
-        if (result == null) {
-            try (Reader reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(templateFile.toFile()), StandardCharsets.UTF_8))) {
-                result = MUSTACHE_FACTORY.compile(reader, templateFile.toString());
-                CACHED_MUSTACHE_RENDERERS.put(templateFile, result);
-            }
-        }
-        return result;
-    }
-
-    public static Mustache createCachedMustacheRendererLegacy(Path templateFile)
-            throws IOException {
-        Mustache result = CACHED_MUSTACHE_RENDERERS.get(templateFile);
-        if (result == null) {
-            String template = readStringFromUtf8File(templateFile);
-            Matcher matcher = LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN.matcher(template);
-            template = matcher.replaceAll("$1{{{$2}}}");
-            matcher = LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN.matcher(template);
-            template = matcher.replaceAll("$1{{$2}}");
-            Reader reader = new StringReader(template);
-            result = MUSTACHE_FACTORY.compile(reader, templateFile.toString());
-            CACHED_MUSTACHE_RENDERERS.put(templateFile, result);
-        }
-        return result;
     }
 
     public static String formatNanoSeconds(long duration) {

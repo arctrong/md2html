@@ -1,7 +1,8 @@
-package world.md2html.utils;
+package world.md2html.options.model;
 
 import world.md2html.Constants;
 import world.md2html.options.model.Document;
+import world.md2html.utils.Utils;
 
 import java.util.Collections;
 
@@ -30,14 +31,5 @@ public class OptionsModelUtils {
                 document.getLinkCss(), document.isNoCss(), document.isForce(), document.isVerbose(),
                 document.isReport());
     }
-
-//    public static List<ClilOptions> enrichDocumentMd2HtmlOptionsList(
-//            List<ClilOptions> optionsList) {
-//        List<ClilOptions> result = new ArrayList<>();
-//        for (ClilOptions opt : optionsList) {
-//            result.add(OptionsModelUtils.enrichDocumentMd2HtmlOptions(opt));
-//        }
-//        return result;
-//    }
 
 }
