@@ -15,9 +15,6 @@ import static world.md2html.utils.Utils.deJson;
 
 public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
-    /**
-     * Will be instantiated with an ordered Map.
-     */
     private List<PageMetadataHandlerInfo> handlers;
     private Map<String, Object> pageVariables = new HashMap<>();
 

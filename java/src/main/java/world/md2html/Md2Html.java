@@ -11,6 +11,7 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
+import world.md2html.options.argfile.SessionOptions;
 import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.*;
 import world.md2html.plugins.Md2HtmlPlugin;
@@ -41,8 +42,9 @@ public class Md2Html {
     private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
 
-    public static void execute(Document document, List<Md2HtmlPlugin> plugins,
-            PageMetadataHandlersWrapper metadataHandlersWrapper) throws IOException, UserError {
+    public static void execute(SessionOptions options, Document document,
+            List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper)
+            throws IOException, UserError {
 
         Path outputFile = Paths.get(document.getOutputLocation());
         Path inputFile = Paths.get(document.getInputLocation());
@@ -139,13 +141,29 @@ public class Md2Html {
         }
 
 
+        if (options.isLegacyMode()) {
+            Map<String, Object> placeholders = null;
+            try {
+                //noinspection unchecked
+                placeholders = (Map<String, Object>) substitutions.get("placeholders");
+            } catch (Exception e) {
+                // Deliberate ignore.
+            }
+            if (placeholders != null) {
+                substitutions.remove("placeholders");
+                substitutions.putAll(placeholders);
+            }
+        }
 
-
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputFile.toFile()),
-                StandardCharsets.UTF_8)) {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(outputFile.toFile()), StandardCharsets.UTF_8))) {
             Mustache mustache;
             try {
-                mustache = Utils.createCachedMustacheRenderer(document.getTemplate());
+                if (options.isLegacyMode()) {
+                    mustache = Utils.createCachedMustacheRendererLegacy(document.getTemplate());
+                } else {
+                    mustache = Utils.createCachedMustacheRenderer(document.getTemplate());
+                }
             } catch (FileNotFoundException e) {
                 throw new UserError(String.format("Error reading template file '%s': %s: %s",
                         document.getTemplate().toString(), e.getClass().getSimpleName(),

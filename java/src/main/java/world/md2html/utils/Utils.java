@@ -17,6 +17,11 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
+    private static final Pattern LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN =
+            Pattern.compile("(^|[^$])\\$\\{([^}]+)\\}");
+    private static final Pattern LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN =
+            Pattern.compile("(^|[^$])\\$\\{(styles|content)\\}");
+
     public static boolean isNullOrFalse(Object object) {
         return object instanceof Boolean && (Boolean) object;
     }
@@ -59,14 +64,6 @@ public class Utils {
         return null;
     }
 
-//    public static class ResourceLocationException extends Exception {
-//        public ResourceLocationException(String message) {
-//            super(message);
-//        }
-//    }
-
-//    private static final Map<Path, String> CACHED_FILES = new HashMap<>();
-
     private static final Map<Path, Mustache> CACHED_MUSTACHE_RENDERERS = new HashMap<>();
     private static final MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
 
@@ -105,16 +102,6 @@ public class Utils {
         return result.toString();
     }
 
-//    public static String readStringFromCachedUtf8File(Path filePath) {
-//        return CACHED_FILES.computeIfAbsent(filePath, path -> {
-//            try {
-//                return readStringFromUtf8File(path);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
-
     public static String blankCommentLine(String line, String commentChar) {
         if (line.trim().startsWith(commentChar)) {
             Matcher matcher = JSON_COMMENT_BLANKING_PATTERN.matcher(line);
@@ -129,7 +116,7 @@ public class Utils {
      * symbol is `commentChar`. Then, when a parser points at an error, this error will be
      * found at the pointed line and at the pointed position in the initial (commented) file.
      * <br />
-     * NOTE. JSON syntax does not allow comments. In this application, this function was added
+     * NOTE. JSON syntax does not allow comments. In this application comments are supported
      * for convenience.
      */
     public static String readStringFromCommentedFile(Path filePath, String commentChar,
@@ -147,19 +134,6 @@ public class Utils {
     public static <T> boolean isNullOrEmpty(Collection<T> collection) {
         return collection == null || collection.isEmpty();
     }
-
-//    public static boolean jsonObjectContains(JsonObject jsonObject, String memberName) {
-//        return jsonObject.get(memberName) != null;
-//    }
-//
-//    public static boolean jsonObjectContainsAny(JsonObject jsonObject, String... memberNames) {
-//        for (String mn : memberNames) {
-//            if (jsonObject.get(mn) != null) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     @SafeVarargs
     public static <T> T firstNotNull(T... values) {
@@ -189,6 +163,22 @@ public class Utils {
                 result = MUSTACHE_FACTORY.compile(reader, templateFile.toString());
                 CACHED_MUSTACHE_RENDERERS.put(templateFile, result);
             }
+        }
+        return result;
+    }
+
+    public static Mustache createCachedMustacheRendererLegacy(Path templateFile)
+            throws IOException {
+        Mustache result = CACHED_MUSTACHE_RENDERERS.get(templateFile);
+        if (result == null) {
+            String template = readStringFromUtf8File(templateFile);
+            Matcher matcher = LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN.matcher(template);
+            template = matcher.replaceAll("$1{{{$2}}}");
+            matcher = LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN.matcher(template);
+            template = matcher.replaceAll("$1{{$2}}");
+            Reader reader = new StringReader(template);
+            result = MUSTACHE_FACTORY.compile(reader, templateFile.toString());
+            CACHED_MUSTACHE_RENDERERS.put(templateFile, result);
         }
         return result;
     }

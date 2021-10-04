@@ -46,7 +46,7 @@ public class ArgFileParser {
         try {
             validateJsonAgainstSchemaFromResource(argFileNode, "args_file_schema.json");
         } catch (JsonValidationException e) {
-            throw new ArgFileParseException(e.getMessage());
+            throw new ArgFileParseException("Argument file validation error: " + e.getMessage());
         }
 
         ObjectNode pluginsNode = (ObjectNode) Optional.ofNullable(argFileNode.get("plugins"))
@@ -67,6 +67,19 @@ public class ArgFileParser {
                     "the [" + String.join(", ", DEFAULT_ALL_CSS_OPTIONS) +
                     "] in the 'default' section.");
         }
+
+        ObjectNode optionsNode = (ObjectNode) Optional.ofNullable(argFileNode.get("options"))
+                .orElse(new ObjectNode(NODE_FACTORY));
+        boolean optionsVerbose = Optional.ofNullable(optionsNode.get("options"))
+                .map(JsonNode::asBoolean).orElse(false);
+        if (optionsVerbose && cliOptions.isReport()) {
+            throw new ArgFileParseException("'verbose' parameter in 'options' section is " +
+                    "incompatible with '--report' command line argument.");
+        }
+        boolean optionsLegacyMode = Optional.ofNullable(optionsNode.get("legacy-mode"))
+                .map(JsonNode::asBoolean).orElse(false);
+        SessionOptions options = new SessionOptions(cliOptions.isVerbose() || optionsVerbose,
+                cliOptions.isLegacyMode() || optionsLegacyMode);
 
         ArrayNode documentsNode = (ArrayNode) argFileNode.get("documents");
         List<Document> documentList = new ArrayList<>();
@@ -222,7 +235,7 @@ public class ArgFileParser {
             }
         }
 
-        return new ArgFileOptions(null, documentList, plugins);
+        return new ArgFileOptions(options, documentList, plugins);
     }
 
 }

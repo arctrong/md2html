@@ -14,18 +14,13 @@ import java.util.*;
 
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 
-public class PageFlowsPlugin implements Md2HtmlPlugin {
+public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
 
     private Map<String, List<Map<String, Object>>> data = null;
 
     @Override
     public boolean acceptData(JsonNode data) throws ArgFileParseException {
-        try {
-            JsonUtils.validateJsonAgainstSchemaFromResource(data, "plugins/page_flows_schema.json");
-        } catch (JsonUtils.JsonValidationException e) {
-            throw new ArgFileParseException("Plugin '" + this.getClass().getSimpleName() +
-                    "' data error: " + e.getMessage());
-        }
+        doStandardJsonInputDataValidation(data, "plugins/page_flows_schema.json");
         Map<String, List<Map<String, Object>>> pluginData = new HashMap<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> pageFlowEntry = it.next();

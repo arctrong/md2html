@@ -6,25 +6,19 @@ import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.JsonUtils;
-import world.md2html.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static world.md2html.utils.Utils.relativizeRelativePath;
 
-public class RelativePathsPlugin implements Md2HtmlPlugin {
+public class RelativePathsPlugin extends AbstractMd2HtmlPlugin {
 
     private Map<String, String> data = null;
 
     @Override
     public boolean acceptData(JsonNode data) throws ArgFileParseException {
-        try {
-            JsonUtils.validateJsonAgainstSchemaFromResource(data, "plugins/relative_paths_schema.json");
-        } catch (JsonUtils.JsonValidationException e) {
-            throw new ArgFileParseException("Plugin '" + this.getClass().getSimpleName() +
-                    "' data error: " + e.getMessage());
-        }
+        doStandardJsonInputDataValidation(data, "plugins/relative_paths_schema.json");
         Map<String, String> pluginData = new HashMap<>();
         data.fields().forEachRemaining(entry -> pluginData.put(entry.getKey(),
                 entry.getValue().asText()));

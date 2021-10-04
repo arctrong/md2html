@@ -63,7 +63,8 @@ public class Md2HtmlRunner {
 
         for (Document doc : argFileOptions.getDocuments()) {
             try {
-                Md2Html.execute(doc, argFileOptions.getPlugins(), metadataHandlersWrapper);
+                Md2Html.execute(argFileOptions.getOptions(), doc, argFileOptions.getPlugins(),
+                        metadataHandlersWrapper);
             } catch(UserError e) {
                 System.out.println("Error processing input file '" + doc.getInputLocation() +
                         "': " + e.getClass().getSimpleName() + ": " + e.getMessage());

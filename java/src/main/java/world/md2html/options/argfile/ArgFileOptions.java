@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 public class ArgFileOptions {
 
-    private final SessionOptions sessionOptions;
+    private final SessionOptions options;
     private final List<Document> documents;
     private final List<Md2HtmlPlugin> plugins;
 
