@@ -95,6 +95,15 @@ public class ArgFileParser {
         SessionOptions options = new SessionOptions(cliOptions.isVerbose() || optionsVerbose,
                 cliOptions.isLegacyMode() || optionsLegacyMode);
 
+        if (options.isLegacyMode()) {
+            ObjectNode pageVariablesNode = (ObjectNode) pluginsNode.get("page-variables");
+            if (pageVariablesNode == null) {
+                pageVariablesNode = new ObjectNode(NODE_FACTORY);
+                pluginsNode.set("page-variables", pageVariablesNode);
+            }
+            pageVariablesNode.set("METADATA", new ObjectNode(NODE_FACTORY));
+        }
+
         ArrayNode documentsNode = (ArrayNode) argFileNode.get("documents");
         List<Document> documentList = new ArrayList<>();
         for (Iterator<JsonNode> it = documentsNode.elements(); it.hasNext(); ) {

@@ -9,6 +9,7 @@ import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.argfile.ArgFileParser;
 import world.md2html.options.model.ArgFileOptions;
 import world.md2html.options.model.Document;
+import world.md2html.testutils.PluginTestUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static world.md2html.plugins.PluginTestUtils.documentWithOutputLocation;
+import static world.md2html.testutils.PluginTestUtils.documentWithOutputLocation;
 
 class PageFlowsPluginTest {
 

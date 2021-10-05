@@ -1,12 +1,13 @@
-package world.md2html.plugins;
+package world.md2html.testutils;
 
 import world.md2html.options.model.Document;
+import world.md2html.plugins.Md2HtmlPlugin;
 
 import java.util.List;
 
 public final class PluginTestUtils {
 
-    static final Document ANY_DOCUMENT = documentWithOutputLocation("whatever.html");
+    public static final Document ANY_DOCUMENT = documentWithOutputLocation("whatever.html");
 
     private PluginTestUtils() {}
 

@@ -46,12 +46,6 @@ class CliParserTest {
         CliArgumentsException e = assertThrows(CliArgumentsException.class,
                 () -> getParsingResult(args));
         assertEquals(CliParsingExceptionType.HELP, e.getExceptionType());
-//
-//
-//        testHelp();
-//        testHelp("-h");
-//        testHelp("--help");
-//        testHelp("-t \"whatever\"", "--help");
     }
 
     @Test
@@ -174,10 +168,10 @@ class CliParserTest {
                 "--no-css", cssOption, "styles.css"));
     }
 
-//    private void testHelp(String... args) {
-//        CliArgumentsException e = assertThrows(CliArgumentsException.class,
-//                () -> getParsingResult(args));
-//        assertEquals(CliParsingExceptionType.HELP, e.getExceptionType());
-//    }
+    @Test
+    public void legacyMode() throws CliArgumentsException {
+        CliOptions options = getParsingResult("-i", "input.md", "--legacy-mode");
+        assertTrue(options.isLegacyMode());
+    }
 
 }

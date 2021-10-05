@@ -30,32 +30,35 @@ public class Md2HtmlRunner {
             System.exit(1);
         }
 
-        ArgFileOptions argFileOptions = null;
         Path argumentFile = cliOptions.getArgumentFile();
+        String argumentFileString = null;
         if (argumentFile != null) {
             try {
-                String argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
+                argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
                         StandardCharsets.UTF_8);
-                argFileOptions = ArgFileParser.parse(argumentFileString, cliOptions);
             } catch (IOException e) {
                 System.out.println("Error parsing argument file '" + argumentFile +
                         "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                System.exit(1);
-            } catch (ArgFileParseException e) {
-                System.out.println("Error parsing argument file '" + argumentFile + "': " +
-                        e.getMessage());
                 System.exit(1);
             }
         } else {
             // When run without argument file, need implicitly added
             // plugin for page title extraction from the source text.
-            String fakeArgFile = "{\"documents\": [{}], \"plugins\": {\"page-variables\": " +
+            argumentFileString = "{\"documents\": [{}], \"plugins\": {\"page-variables\": " +
                     "{\"VARIABLES\": {\"only-at-page-start\": true}";
             if (cliOptions.isLegacyMode()) {
-                fakeArgFile += ", \"METADATA\": {\"only-at-page-start\": true}";
+                argumentFileString += ", \"METADATA\": {\"only-at-page-start\": true}";
             }
-            fakeArgFile += "}}}}";
-            argFileOptions = ArgFileParser.parse(fakeArgFile, cliOptions);
+            argumentFileString += "}}}}";
+        }
+
+        ArgFileOptions argFileOptions = null;
+        try {
+            argFileOptions = ArgFileParser.parse(argumentFileString, cliOptions);
+        } catch (ArgFileParseException e) {
+            System.out.println("Error parsing argument file '" + argumentFile + "': " +
+                    e.getMessage());
+            System.exit(1);
         }
 
         PageMetadataHandlersWrapper metadataHandlersWrapper =
@@ -72,8 +75,10 @@ public class Md2HtmlRunner {
             }
         }
 
-        long end = System.nanoTime();
-        System.out.println("Finished in: " + Utils.formatNanoSeconds(end - start));
+        if (argFileOptions.getOptions().isVerbose()) {
+            long end = System.nanoTime();
+            System.out.println("Finished in: " + Utils.formatNanoSeconds(end - start));
+        }
     }
 
 }

@@ -69,25 +69,6 @@ public class Md2Html {
         Map<String, Object> substitutions = new HashMap<>();
         String title = document.getTitle();
 
-//        PageMetadataExtractionResult extractionResult =
-//                Md2HtmlPageMetadataExtractor.extract(mdText);
-//        if (extractionResult.isSuccess()) {
-//            mdText = mdText.substring(0, extractionResult.getStart()) +
-//                    mdText.substring(extractionResult.getEnd());
-//            PageMetadataParsingResult parsingResult =
-//                    Md2HtmlPageMetadataParser.parse(extractionResult.getMetadata());
-//            if (document.isVerbose()) {
-//                parsingResult.getErrors().forEach(e -> System.out.println("WARNING: " + e));
-//            }
-//            if (parsingResult.isSuccess()) {
-//                PageMetadata metadata = parsingResult.getPageMetadata();
-//                if (title == null) {
-//                    title = metadata.getTitle();
-//                }
-//                substitutions.putAll(metadata.getCustomTemplatePlaceholders());
-//            }
-//        }
-
         if (title == null) {
             title = "";
         }
@@ -133,13 +114,9 @@ public class Md2Html {
         substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
         substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
 
-
-
-
         for (Md2HtmlPlugin plugin : plugins) {
             substitutions.putAll(plugin.variables(document));
         }
-
 
         if (options.isLegacyMode()) {
             Map<String, Object> placeholders = null;

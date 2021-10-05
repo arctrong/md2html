@@ -9,7 +9,7 @@ class LegacyModeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.CLASS_NAME = cls.__name__
-        cls.OUTPUT_DIR = h.prepare_output_directory(cls.__name__)
+        cls.OUTPUT_DIR = h.prepare_output_directory(cls.CLASS_NAME)
 
     def test_legacy_mode(self):
         without_arg_file = h.execute_simple(f'{h.INPUT_DIR}/{self.CLASS_NAME}/legacy_source_text.txt', 

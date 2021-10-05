@@ -1,17 +1,16 @@
 package world.md2html.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
-import com.github.mustachejava.MustacheFactory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,11 +157,13 @@ public class Utils {
                     resource);
         }
         Path basePath = Paths.get(page).getParent();
+        Path result;
         if (basePath == null) {
-            return resource;
+            result = Paths.get(resource);
         } else {
-            return basePath.relativize(Paths.get(resource)).toString().replace('\\', '/');
+            result = basePath.relativize(Paths.get(resource));
         }
+        return result.normalize().toString().replace('\\', '/');
     }
 
     /**
@@ -188,17 +189,19 @@ public class Utils {
             throw new CheckedIllegalArgumentException("Incorrect relative path: " + path);
         }
         Path basePath = Paths.get(page).getParent();
+        Path resultPath;
         if (basePath == null) {
-            return path;
+            resultPath = Paths.get(path);
         } else {
-            String relativePath = basePath.relativize(Paths.get(path)).toString().replace('\\', '/');
-            if (relativePath.isEmpty() || relativePath.equals("./") || relativePath.equals(".")) {
-                return "";
-            } else if (relativePath.endsWith("/")) {
-                return relativePath;
-            } else {
-                return relativePath + "/";
-            }
+            resultPath = basePath.relativize(Paths.get(path));
+        }
+        String result = resultPath.normalize().toString().replace('\\', '/');
+        if (result.isEmpty() || result.equals("./") || result.equals(".")) {
+            return "";
+        } else if (result.endsWith("/")) {
+            return result;
+        } else {
+            return result + "/";
         }
     }
 

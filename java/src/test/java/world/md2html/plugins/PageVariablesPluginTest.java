@@ -5,12 +5,13 @@ import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.argfile.ArgFileParser;
 import world.md2html.options.model.ArgFileOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.testutils.PluginTestUtils;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static world.md2html.plugins.PluginTestUtils.*;
+import static world.md2html.testutils.PluginTestUtils.*;
 
 class PageVariablesPluginTest {
 
