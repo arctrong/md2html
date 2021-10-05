@@ -2,7 +2,9 @@ package world.md2html.options.cli;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import world.md2html.options.cli.CliArgumentsException.CliParsingExceptionType;
 import world.md2html.options.model.CliOptions;
 

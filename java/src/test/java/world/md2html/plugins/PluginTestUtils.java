@@ -1,11 +1,12 @@
 package world.md2html.plugins;
 
-import com.vladsch.flexmark.util.sequence.PrefixedSubSequence;
 import world.md2html.options.model.Document;
 
 import java.util.List;
 
 public final class PluginTestUtils {
+
+    static final Document ANY_DOCUMENT = documentWithOutputLocation("whatever.html");
 
     private PluginTestUtils() {}
 

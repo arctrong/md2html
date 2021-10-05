@@ -4,18 +4,15 @@ import org.junit.jupiter.api.Test;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.argfile.ArgFileParser;
 import world.md2html.options.model.ArgFileOptions;
-import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static world.md2html.plugins.PluginTestUtils.documentWithOutputLocation;
+import static world.md2html.plugins.PluginTestUtils.*;
 
 class PageVariablesPluginTest {
-
-    private static final Document ANY_DOCUMENT = documentWithOutputLocation("whatever.html");
 
     private PageVariablesPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
         return (PageVariablesPlugin) PluginTestUtils.findSinglePlugin(plugins,
