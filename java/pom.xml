@@ -17,11 +17,6 @@
         <jackson.version>2.13.0</jackson.version>
         <slf4j.version>1.7.32</slf4j.version>
         <common-lang3.version>3.12.0</common-lang3.version>
-
-
-        <maven.test.skip>true</maven.test.skip>
-        <skipTests>true</skipTests>
-
     </properties>
 
     <dependencyManagement>
