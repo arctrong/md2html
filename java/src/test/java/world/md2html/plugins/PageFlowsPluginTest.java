@@ -86,7 +86,8 @@ class PageFlowsPluginTest {
     @Test
     public void notActivated() throws ArgFileParseException {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
-                "{\"documents\": [{\"input\": \"index.txt\"}], \"plugins\": {}}", null);
+                "{\"documents\": [{\"input\": \"index.txt\"}], " +
+                        "\"plugins\": {\"page-flows\": {}}}", null);
         PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
         assertNull(plugin);
     }
