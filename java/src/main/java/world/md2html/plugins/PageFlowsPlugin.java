@@ -25,14 +25,22 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> pageFlowEntry = it.next();
             List<Map<String, Object>> pages = new ArrayList<>();
+            Map<String, Object> page = new HashMap<>();
+            boolean isFirst = true;
             for (Iterator<JsonNode> it1 = pageFlowEntry.getValue().elements(); it1.hasNext(); ) {
                 ObjectNode pageNode = (ObjectNode) it1.next();
-                Map<String, Object> page = new HashMap<>();
-                pageNode.fields().forEachRemaining(fieldEntry -> page.put(fieldEntry.getKey(),
-                        JsonUtils.deJson(fieldEntry.getValue())));
-                Map<String, Object> enrichedPage = enrichPage(page);
-                pages.add(enrichedPage);
+                page = new HashMap<>();
+                for (Iterator<Map.Entry<String, JsonNode>> it2 = pageNode.fields(); it2.hasNext(); ) {
+                    Map.Entry<String, JsonNode> fieldEntry = it2.next();
+                    page.put(fieldEntry.getKey(), JsonUtils.deJson(fieldEntry.getValue()));
+                }
+                enrichPage(page);
+                page.put("first", isFirst);
+                page.put("last", false);
+                isFirst = false;
+                pages.add(page);
             }
+            page.put("last", true);
             pluginData.put(pageFlowEntry.getKey(), pages);
         }
         this.data = pluginData;
@@ -62,7 +70,7 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         Map<String, Object> next = null;
 
         for (Map<String, Object> page : pages) {
-            Map<String, Object> newPage = enrichPage(page);
+            Map<String, Object> newPage = new HashMap<>(page);
             if (Utils.isNullOrFalse(page.get("external"))) {
                 result.add(newPage);
             } else {
@@ -88,34 +96,10 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         return new PageFlow(result, previous, current, next);
     }
 
-    private static Map<String, Object> enrichPage(Map<String, Object> page) {
-        HashMap<String, Object> newPage = new HashMap<>(page);
-        newPage.putIfAbsent("external", false);
-        newPage.putIfAbsent("current", false);
-        return newPage;
+    private static void enrichPage(Map<String, Object> page) {
+        page.putIfAbsent("external", false);
+        page.putIfAbsent("current", false);
     }
-
-//    @Getter
-//    private static class Page {
-//        private final String link;
-//        private final String title;
-//        private final boolean external;
-//        private final boolean current;
-//
-//        public Page(String link, String title, Boolean external) {
-//            this.link = link;
-//            this.title = title;
-//            this.current = false;
-//            this.external = external != null && external;
-//        }
-//
-//        public Page(String link, String title, boolean external, boolean current) {
-//            this.link = link;
-//            this.title = title;
-//            this.current = current;
-//            this.external = external;
-//        }
-//    }
 
     private static class PageFlow implements Iterable<Map<String, Object>> {
 

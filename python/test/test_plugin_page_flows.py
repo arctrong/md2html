@@ -35,11 +35,11 @@ class PageFlowsPluginTest(unittest.TestCase):
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "Home", "current": False, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "about.html", "title": "About", "current": True, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": False}, pages[1])
         self.assertDictEqual({"link": "other.html", "title": "Other", "current": False, 
-            "external": False}, pages[2])
+            "external": False, "first": False, "last": True}, pages[2])
 
     def test_pageSequence_inDocumentsSection(self):
         argument_file_dict = load_json_argument_file('{"documents": ['
@@ -55,18 +55,18 @@ class PageFlowsPluginTest(unittest.TestCase):
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "Home", "current": True, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": True}, pages[1])
 
         doc = {'output_file': "no-page-flow.html"}
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "Home", "current": False, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": True}, pages[1])
 
     def test_pageSequence_inBothDocumentsAndPluginsSections(self):
         argument_file_dict = load_json_argument_file('{"documents": ['
@@ -84,11 +84,11 @@ class PageFlowsPluginTest(unittest.TestCase):
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "Home", "current": False, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": False}, pages[1])
         self.assertDictEqual({"link": "other.html", "title": "OtherLink", "current": True, 
-            "external": False}, pages[2])
+            "external": False, "first": False, "last": True}, pages[2])
 
     def test_notActivated_withoutEmptyPluginDeclaration(self):
         argument_file_dict = load_json_argument_file(
@@ -119,20 +119,20 @@ class PageFlowsPluginTest(unittest.TestCase):
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "Home", "current": False, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": False}, pages[1])
         self.assertDictEqual({"link": "narration.html", "title": "Narration", "current": True, 
-            "external": False}, pages[2])
+            "external": False, "first": False, "last": True}, pages[2])
 
         doc = {'output_file': "other1.html"}
         page_flow = plugin.variables(doc)["other_links"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
         self.assertDictEqual({"link": "other1.html", "title": "OtherLink1", "current": True, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "other2.html", "title": "OtherLink2", "current": False, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": True}, pages[1])
         
     def test_sameDocumentInSeveralPageFlows(self):
         argument_file_dict = load_json_argument_file('{"documents": ['
@@ -152,20 +152,20 @@ class PageFlowsPluginTest(unittest.TestCase):
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "Home", "current": False, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": False}, pages[1])
         self.assertDictEqual({"link": "other.html", "title": "OtherLink", "current": True, 
-            "external": False}, pages[2])
+            "external": False, "first": False, "last": True}, pages[2])
         page_flow = plugin.variables(doc)["other_links"]
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False, 
-            "external": False}, pages[0])
+            "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "other.html", "title": "Other", "current": True, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": False}, pages[1])
         self.assertDictEqual({"link": "index.html", "title": "HomeLink", "current": False, 
-            "external": False}, pages[2])
+            "external": False, "first": False, "last": True}, pages[2])
         
     def test_externalLinks(self):
         argument_file_dict = load_json_argument_file('{"documents": ['
@@ -182,9 +182,9 @@ class PageFlowsPluginTest(unittest.TestCase):
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
         self.assertDictEqual({"link": "index.html", "title": "HomeLinkExternal", "current": False, 
-            "external": True}, pages[0])
+            "external": True, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "index.html", "title": "HomeLink", "current": True, 
-            "external": False}, pages[1])
+            "external": False, "first": False, "last": True}, pages[1])
 
     def test_navigations(self):
         with_plugins_section = load_json_argument_file('\n{"documents": [ \n'
@@ -202,6 +202,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"input": "page3.txt", "output": "page3.html", "title": "Title3", "page-flows": ["sections"]}  \n'
             '], "plugins": {"page-flows": {}}}')
             
+        projection = ["link", "title", "current", "external"]
+        
         for argument_file_dict, test_name in [(with_plugins_section, "with_plugins_section"), 
                                               (with_documents_section, "with_documents_section")]:
             with self.subTest(test_name=test_name):
@@ -214,29 +216,29 @@ class PageFlowsPluginTest(unittest.TestCase):
                 self.assertTrue(page_flow.not_empty)
                 self.assertIsNone(page_flow.previous)
                 self.assertDictEqual({"link": "page1.html", "title": "Title1", "current": True, 
-                    "external": False}, page_flow.current)
+                    "external": False}, {k: page_flow.current[k] for k in projection})
                 self.assertDictEqual({"link": "page2.html", "title": "Title2", "current": False, 
-                    "external": False}, page_flow.next)
+                    "external": False}, {k: page_flow.next[k] for k in projection})
                 
                 doc = {'output_file': "page2.html"}
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
                 self.assertTrue(page_flow.not_empty)
                 self.assertDictEqual({"link": "page1.html", "title": "Title1", "current": False, 
-                    "external": False}, page_flow.previous)
+                    "external": False}, {k: page_flow.previous[k] for k in projection})
                 self.assertDictEqual({"link": "page2.html", "title": "Title2", "current": True, 
-                    "external": False}, page_flow.current)
+                    "external": False}, {k: page_flow.current[k] for k in projection})
                 self.assertDictEqual({"link": "page3.html", "title": "Title3", "current": False, 
-                    "external": False}, page_flow.next)
+                    "external": False}, {k: page_flow.next[k] for k in projection})
      
                 doc = {'output_file': "page3.html"}
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
                 self.assertTrue(page_flow.not_empty)
                 self.assertDictEqual({"link": "page2.html", "title": "Title2", "current": False, 
-                    "external": False}, page_flow.previous)
+                    "external": False}, {k: page_flow.previous[k] for k in projection})
                 self.assertDictEqual({"link": "page3.html", "title": "Title3", "current": True, 
-                    "external": False}, page_flow.current)
+                    "external": False}, {k: page_flow.current[k] for k in projection})
                 self.assertIsNone(page_flow.next)
 
     def _generate_arg_file_with_plugins_section(self, page_count):
@@ -265,6 +267,9 @@ class PageFlowsPluginTest(unittest.TestCase):
         return arg_file_str
 
     def test_navigations_generalized(self):
+    
+        projection = ["link", "title", "current", "external"]
+    
         for page_count in range(1, 5):
         
             arg_file_str = self._generate_arg_file_with_plugins_section(page_count)
@@ -289,15 +294,15 @@ class PageFlowsPluginTest(unittest.TestCase):
                         else:
                             self.assertDictEqual({f"link": f"page{i - 1}.html", 
                                 "title": f"Title{i - 1}", "current": False, "external": False}, 
-                                page_flow.previous)
+                                {k: page_flow.previous[k] for k in projection})
                         self.assertDictEqual({"link": f"page{i}.html", "title": f"Title{i}", 
-                            "current": True, "external": False}, page_flow.current)
+                            "current": True, "external": False}, {k: page_flow.current[k] for k in projection})
                         if i > page_count - 1:
                             self.assertIsNone(page_flow.next)
                         else:
                             self.assertDictEqual({"link": f"page{i + 1}.html", 
                                 "title": f"Title{i + 1}", "current": False, "external": False}, 
-                                page_flow.next)
+                                {k: page_flow.next[k] for k in projection})
 
     def test_relativisation(self):
         argument_file_dict = load_json_argument_file('{"documents": ['

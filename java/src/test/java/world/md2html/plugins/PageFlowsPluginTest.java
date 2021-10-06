@@ -59,6 +59,10 @@ class PageFlowsPluginTest {
         }
     }
 
+    private enum PagePosition {
+        FIRST, LAST, BETWEEN
+    }
+
     /**
      * The pages will be accessed via the page flow's `Iterable` interface implementation.
      * This method reproduces such behaviour.
@@ -84,6 +88,16 @@ class PageFlowsPluginTest {
         assertEquals(external, page.get("external"));
     }
 
+    private void assertPageEquals(String link, String title, boolean current, boolean external,
+            PagePosition pagePosition, Map<String, Object> page) {
+        assertEquals(link, page.get("link"));
+        assertEquals(title, page.get("title"));
+        assertEquals(current, page.get("current"));
+        assertEquals(external, page.get("external"));
+        assertEquals(pagePosition == PagePosition.FIRST, page.get("first"));
+        assertEquals(pagePosition == PagePosition.LAST, page.get("last"));
+    }
+
     @Test
     public void notActivated() throws ArgFileParseException {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
@@ -106,9 +120,9 @@ class PageFlowsPluginTest {
         Document doc = documentWithOutputLocation("about.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(3, pages.size());
-        assertPageEquals("index.html", "Home", false, false, pages.get(0));
-        assertPageEquals("about.html", "About", true, false, pages.get(1));
-        assertPageEquals("other.html", "Other", false, false, pages.get(2));
+        assertPageEquals("index.html", "Home", false, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("about.html", "About", true, false, PagePosition.BETWEEN, pages.get(1));
+        assertPageEquals("other.html", "Other", false, false, PagePosition.LAST, pages.get(2));
     }
 
     @Test
@@ -123,14 +137,14 @@ class PageFlowsPluginTest {
         Document doc = documentWithOutputLocation("index.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(2, pages.size());
-        assertPageEquals("index.html", "Home", true, false, pages.get(0));
-        assertPageEquals("about.html", "About", false, false, pages.get(1));
+        assertPageEquals("index.html", "Home", true, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("about.html", "About", false, false, PagePosition.LAST, pages.get(1));
 
         doc = documentWithOutputLocation("no-page-flow.html");
         pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(2, pages.size());
-        assertPageEquals("index.html", "Home", false, false, pages.get(0));
-        assertPageEquals("about.html", "About", false, false, pages.get(1));
+        assertPageEquals("index.html", "Home", false, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("about.html", "About", false, false, PagePosition.LAST, pages.get(1));
     }
 
     @Test
@@ -147,9 +161,9 @@ class PageFlowsPluginTest {
         Document doc = documentWithOutputLocation("other.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(3, pages.size());
-        assertPageEquals("index.html", "Home", false, false, pages.get(0));
-        assertPageEquals("about.html", "About", false, false, pages.get(1));
-        assertPageEquals("other.html", "OtherLink", true, false, pages.get(2));
+        assertPageEquals("index.html", "Home", false, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("about.html", "About", false, false, PagePosition.BETWEEN, pages.get(1));
+        assertPageEquals("other.html", "OtherLink", true, false, PagePosition.LAST, pages.get(2));
     }
 
     @Test
@@ -181,15 +195,15 @@ class PageFlowsPluginTest {
         Document doc = documentWithOutputLocation("narration.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(3, pages.size());
-        assertPageEquals("index.html", "Home", false, false, pages.get(0));
-        assertPageEquals("about.html", "About", false, false, pages.get(1));
-        assertPageEquals("narration.html", "Narration", true, false, pages.get(2));
+        assertPageEquals("index.html", "Home", false, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("about.html", "About", false, false, PagePosition.BETWEEN, pages.get(1));
+        assertPageEquals("narration.html", "Narration", true, false, PagePosition.LAST, pages.get(2));
 
         doc = documentWithOutputLocation("other1.html");
         pages = extractPages(plugin.variables(doc).get("other_links"));
         assertEquals(2, pages.size());
-        assertPageEquals("other1.html", "OtherLink1", true, false, pages.get(0));
-        assertPageEquals("other2.html", "OtherLink2", false, false, pages.get(1));
+        assertPageEquals("other1.html", "OtherLink1", true, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("other2.html", "OtherLink2", false, false, PagePosition.LAST, pages.get(1));
     }
 
     @Test
@@ -208,15 +222,15 @@ class PageFlowsPluginTest {
         Document doc = documentWithOutputLocation("other.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(3, pages.size());
-        assertPageEquals("index.html", "Home", false, false, pages.get(0));
-        assertPageEquals("about.html", "About", false, false, pages.get(1));
-        assertPageEquals("other.html", "OtherLink", true, false, pages.get(2));
+        assertPageEquals("index.html", "Home", false, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("about.html", "About", false, false, PagePosition.BETWEEN, pages.get(1));
+        assertPageEquals("other.html", "OtherLink", true, false, PagePosition.LAST, pages.get(2));
 
         pages = extractPages(plugin.variables(doc).get("other_links"));
         assertEquals(3, pages.size());
-        assertPageEquals("about.html", "About", false, false, pages.get(0));
-        assertPageEquals("other.html", "Other", true, false, pages.get(1));
-        assertPageEquals("index.html", "HomeLink", false, false, pages.get(2));
+        assertPageEquals("about.html", "About", false, false, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("other.html", "Other", true, false, PagePosition.BETWEEN, pages.get(1));
+        assertPageEquals("index.html", "HomeLink", false, false, PagePosition.LAST, pages.get(2));
     }
 
     @Test
@@ -232,8 +246,8 @@ class PageFlowsPluginTest {
         Document doc = documentWithOutputLocation("index.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(2, pages.size());
-        assertPageEquals("index.html", "HomeLinkExternal", false, true, pages.get(0));
-        assertPageEquals("index.html", "HomeLink", true, false, pages.get(1));
+        assertPageEquals("index.html", "HomeLinkExternal", false, true, PagePosition.FIRST, pages.get(0));
+        assertPageEquals("index.html", "HomeLink", true, false, PagePosition.LAST, pages.get(1));
     }
 
     private static Stream<Arguments> navigation() {

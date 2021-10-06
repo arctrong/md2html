@@ -93,12 +93,10 @@ def md2html(document, plugins, metadata_handlers, options):
     if substitutions['title'] is None:
         substitutions['title'] = ''
 
-    # Methods `markdown.markdownFromFile()` and `Markdown.convertFile()` raise errors from
-    # their inside implementation. So we are going to use methods `markdown.markdown()` and
-    # `Markdown.convert()` instead. And anyway the first two methods read the md-file
-    # completely before conversion, so they give no memory save.
-
-    result = chevron.render(template, substitutions)
+    try:
+        result = chevron.render(template, substitutions)
+    except chevron.ChevronError as e:
+        raise UserError(f"Error processing template: {type(e).__name__}: {e}")
 
     with open(output_file, 'w') as result_file:
         result_file.write(result)

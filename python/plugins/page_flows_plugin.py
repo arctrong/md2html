@@ -32,14 +32,14 @@ def process_page_flow(page_flow, output_file):
     next_page = None
 
     for page in page_flow:
+        new_page = dict(page)
         if page["external"]:
-            new_page = dict(page)
             new_page["current"] = False
             pages.append(new_page)
         else:
             is_current = page["link"] == output_file
-            new_page = {"link": relativize_relative_resource(page["link"], output_file),
-                        "title": page["title"], "current": is_current, "external": page["external"]}
+            new_page["link"] = relativize_relative_resource(page["link"], output_file)
+            new_page["current"] = is_current
             pages.append(new_page)
             if current_page is None:
                 if is_current:
@@ -64,14 +64,19 @@ class PageFlowsPlugin(Md2HtmlPlugin):
         result = {}
         for k, v in data.items():
             page_flow_items = []
+            new_page = {}
+            is_first = True
             for item in v:
 
                 # TODO Consider letting other arbitrary fields. Then they might be used in
-                #  the template. Though this may be a problem in the Java version... but
-                #  probably not because we are going to use a Map.
+                #  the template. This is already done in Java version.
 
-                page_flow_items.append({"link": item["link"], "title": item["title"],
-                                        "external": first_not_none(item.get("external"), False)})
+                new_page = {"link": item["link"], "title": item["title"], 
+                            "external": first_not_none(item.get("external"), False), 
+                            "first": is_first, "last": False}
+                page_flow_items.append(new_page)
+                is_first = False
+            new_page["last"] = True
             result[k] = page_flow_items
         self.data = result
         return bool(self.data)
