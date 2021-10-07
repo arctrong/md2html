@@ -18,7 +18,7 @@ public class CliParser {
     private static final String ARGUMENT_FILE_OPTION_NAME = "argument-file";
     private static final String OUTPUT_FILE_OPTION_NAME = "o";
     private static final String TITLE_OPTION_NAME = "t";
-    private static final String TEMPLATES_DIR_OPTION_NAME = "template";
+    private static final String TEMPLATE_OPTION_NAME = "template";
     private static final String LINK_CSS_OPTION_NAME = "link-css";
     private static final String INCLUDE_CSS_OPTION_NAME = "include-css";
     private static final String NO_CSS_OPTION_NAME = "no-css";
@@ -42,10 +42,14 @@ public class CliParser {
         cliOptions.addOption(HELP_OPTION_NAME, "help", false, "show this help message and exit");
 
         cliOptions.addOption(Option.builder(INPUT_FILE_OPTION_NAME).longOpt("input").hasArg()
-                .numberOfArgs(1).desc("input Markdown file name (mandatory)").build());
+                .numberOfArgs(1).desc("input Markdown file name (mandatory if argument file is " +
+                        "not used)").build());
 
         cliOptions.addOption(Option.builder(null).longOpt(ARGUMENT_FILE_OPTION_NAME)
-                .hasArg().numberOfArgs(1).desc("argument file").build());
+                .hasArg().numberOfArgs(1).desc("argument file. Allows processing " +
+                        "multiple documents with a single run. Also provides different " +
+                        "adjustment possibilities and automations. If omitted, the single " +
+                        "file will be processed").build());
 
         cliOptions.addOption(Option.builder(OUTPUT_FILE_OPTION_NAME).longOpt("output").hasArg()
                 .numberOfArgs(1)
@@ -54,10 +58,11 @@ public class CliParser {
 
         cliOptions.addOption(Option.builder(TITLE_OPTION_NAME).longOpt("title").hasArg()
                 .numberOfArgs(1)
-                .desc("the HTML page title, if omitted there will be an empty title").build());
+                .desc("the HTML page title").build());
 
-        cliOptions.addOption(Option.builder(null).longOpt(TEMPLATES_DIR_OPTION_NAME).hasArg()
-                .numberOfArgs(1).desc("custom template directory").build());
+        cliOptions.addOption(Option.builder(null).longOpt(TEMPLATE_OPTION_NAME).hasArg()
+                .numberOfArgs(1).desc("template that will be used for HTML documents generation")
+                .build());
 
         cliOptions.addOption(Option.builder(null).longOpt(LINK_CSS_OPTION_NAME).hasArg()
                 .numberOfArgs(1)
@@ -80,8 +85,9 @@ public class CliParser {
                 .desc("outputs human readable information messages").build());
 
         cliOptions.addOption(Option.builder(REPORT_OPTION_NAME).longOpt("report").hasArg(false)
-                .desc("if HTML file is generated, outputs the path of this file, incompatible " +
-                        "with -v").build());
+                .desc("defines formalized output that may be further automatically processed. " +
+                        "Only if HTML file is generated, the path of this file, will be output. " +
+                        "Incompatible with -v").build());
 
         cliOptions.addOption(Option.builder(null).longOpt(LEGACY_MODE_OPTION_NAME).hasArg(false)
                 .desc("Allows processing documentation projects prepared for version of " +
@@ -132,8 +138,8 @@ public class CliParser {
         }
 
         Path templateFile = null;
-        if (commandLine.hasOption(TEMPLATES_DIR_OPTION_NAME)) {
-            templateFile = Paths.get(commandLine.getOptionValue(TEMPLATES_DIR_OPTION_NAME));
+        if (commandLine.hasOption(TEMPLATE_OPTION_NAME)) {
+            templateFile = Paths.get(commandLine.getOptionValue(TEMPLATE_OPTION_NAME));
         }
 
         List<String> linkCss = null;

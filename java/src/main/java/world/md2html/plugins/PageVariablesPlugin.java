@@ -7,10 +7,7 @@ import com.networknt.schema.JsonSchema;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static world.md2html.utils.JsonUtils.MAPPER;
 import static world.md2html.utils.JsonUtils.*;
@@ -18,12 +15,16 @@ import static world.md2html.utils.JsonUtils.deJson;
 
 public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
-    private List<PageMetadataHandlerInfo> handlers;
-    private Map<String, Object> pageVariables = new HashMap<>();
+    private List<PageMetadataHandlerInfo> handlers = new ArrayList<>();
+    private Map<String, Object> pageVariables;
 
     // We are going to validate multiple metadata blocks, so preloading the schema.
     private final JsonSchema metadataSchema =
             loadJsonSchemaFromResource("plugins/page_variables_metadata_schema.json");
+
+    public PageVariablesPlugin() {
+        resetPageVariable();
+    }
 
     @Override
     public boolean acceptData(JsonNode data) throws ArgFileParseException {
@@ -31,10 +32,13 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
         List<PageMetadataHandlerInfo> handlers = new ArrayList<>();
         data.fields().forEachRemaining(entry -> {
             JsonNode valueNode = entry.getValue().get("only-at-page-start");
-            handlers.add(new PageMetadataHandlerInfo(this, entry.getKey(),
+            handlers.add(new PageMetadataHandlerInfo(this, entry.getKey().toUpperCase(),
                     valueNode != null && valueNode.asBoolean()));
         });
         this.handlers = handlers;
+        if (handlers.isEmpty()) {
+            this.handlers.add(new PageMetadataHandlerInfo(this, "VARIABLES", true));
+        }
         return !this.handlers.isEmpty();
     }
 
@@ -72,6 +76,10 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
 
     @Override
     public void newPage() {
+        resetPageVariable();
+    }
+
+    private void resetPageVariable() {
         this.pageVariables = new HashMap<>();
     }
 

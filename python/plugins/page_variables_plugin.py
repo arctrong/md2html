@@ -12,14 +12,17 @@ MODULE_DIR = Path(__file__).resolve().parent
 
 class PageVariablesPlugin(Md2HtmlPlugin):
     def __init__(self):
-        self.data = None
+        self.data = {}
         self.page_variables = {}
         with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r') as schema_file:
             self.metadata_schema = json.load(schema_file)
 
     def accept_data(self, data):
         validate_data(data, MODULE_DIR.joinpath('page_variables_schema.json'))
-        self.data = data
+        if data:
+            self.data.update({k.upper(): v for k, v in data.items()})
+        else:
+            self.data = {"VARIABLES": {"only-at-page-start": True}}
         return bool(self.data)
 
     def page_metadata_handlers(self):

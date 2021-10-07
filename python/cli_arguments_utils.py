@@ -25,19 +25,20 @@ def parse_cli_arguments(*args) -> dict:
         return argparse.HelpFormatter(prog, width=80)
 
     # noinspection PyTypeChecker
-    parser = argparse.ArgumentParser(description='Converts Markdown document into HTML document.',
-                                     formatter_class=formatter_creator, add_help=False)
+    parser = argparse.ArgumentParser(description='Creates HTML documentation out of Markdown '
+                                     'texts.', formatter_class=formatter_creator, add_help=False)
     parser.add_argument("-h", "--help", help="shows this help message and exits",
                         action='store_true')
-    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory)", type=str)
+    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory if argument "
+                                              "file is not used)", type=str)
     parser.add_argument("--argument-file",
                         help="argument file. Allows processing multiple documents with a single "
-                             "run. Also provides different adjustment possibilities", type=str)
+                             "run. Also provides different adjustment possibilities and "
+                             "automations. If omitted, the single file will be processed", type=str)
     parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name"
                                                " with '.html' extension", type=str)
-    parser.add_argument("-t", "--title", help="the HTML page title, if omitted there will be an "
-                                              "empty title", type=str)
-    parser.add_argument("--template", help="template that will be used for HTML document "
+    parser.add_argument("-t", "--title", help="the HTML page title", type=str)
+    parser.add_argument("--template", help="template that will be used for HTML documents "
                                            "generation", type=str)
     parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str,
                         action='append')
@@ -51,12 +52,13 @@ def parse_cli_arguments(*args) -> dict:
     parser.add_argument("-v", "--verbose", help="outputs human readable information messages",
                         action='store_true')
     parser.add_argument("-r", "--report",
-                        help="if HTML file is generated, outputs the path of this file, "
-                             "incompatible with -v", action='store_true')
+                        help="defines formalized output that may be further automatically "
+                             "processed. Only if HTML file is generated, the path of this file, "
+                             "will be output. Incompatible with -v", action='store_true')
     parser.add_argument("--legacy-mode",
                         help="Allows processing documentation projects prepared for version of "
                              "the program prior to 1.0.0. Still it's recommended to migrate the "
-                             "projects to the newer version", action='store_true')
+                             "documentation projects to the newer version", action='store_true')
 
     args = parser.parse_args(*args)
 

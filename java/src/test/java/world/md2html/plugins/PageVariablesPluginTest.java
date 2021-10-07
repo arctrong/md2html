@@ -29,9 +29,18 @@ class PageVariablesPluginTest {
     public void notActivated() throws ArgFileParseException {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
-                        "\"plugins\": {\"page-variables\": {}}}", null);
+                        "\"plugins\": {\"variables\": {}}}", null);
         PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
         assertNull(plugin);
+    }
+
+    @Test
+    public void activated_withDefaultMarker() throws ArgFileParseException {
+        ArgFileOptions argFileOptions = ArgFileParser.parse(
+                "{\"documents\": [{\"input\": \"about.md\"}], " +
+                        "\"plugins\": {\"page-variables\": {}}}", null);
+        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        assertNotNull(plugin);
     }
 
     @Test

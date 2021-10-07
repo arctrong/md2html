@@ -24,12 +24,20 @@ class PageVariablesPluginTest(unittest.TestCase):
         
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
+            '"plugins": {}}')
+        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        metadata_handlers = register_page_metadata_handlers(plugins)
+        plugin = self._find_single_plugin(plugins)
+        self.assertIsNone(plugin)
+
+    def test_notActivated_withDefaultMarker(self):
+        argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": {}'
             '}}')
         plugins = parse_argument_file_content(argument_file_dict, {}).plugins
         metadata_handlers = register_page_metadata_handlers(plugins)
         plugin = self._find_single_plugin(plugins)
-        self.assertIsNone(plugin)
+        self.assertIsNotNone(plugin)
         
     def test_singleBlock_complexTest(self):
         plugin, metadata_handlers = self._parse_plugin_data(
