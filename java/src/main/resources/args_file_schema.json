@@ -28,19 +28,18 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "template": { "type": "string" },
-                    "verbose": { "type": "boolean" },
                     "input": { "type": "string" },
                     "output": { "type": "string" },
                     "title": { "type": "string" },
-                    "no-css": { "type": "boolean" },
+                    "template": { "type": "string" },
                     "link-css": { "type": "array", "items": { "type": "string" } },
                     "include-css": { "type": "array", "items": { "type": "string" } },
+                    "no-css": { "type": "boolean" },
                     "add-link-css": { "type": "array", "items": { "type": "string" } },
                     "add-include-css": { "type": "array", "items": { "type": "string" } },
                     "page-flows": { "type": "array", "items": { "type": "string" } },
                     "add-page-flows": { "type": "array", "items": { "type": "string" } },
-                    "no-page-flows": { "type": "boolean" }
+                    "verbose": { "type": "boolean" }
                 }
             }
         },
