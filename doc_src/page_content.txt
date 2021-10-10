@@ -1,0 +1,391 @@
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About this section
+
+This section describes documentation source text writing and covers such topics as Markdown
+syntax, formatting examples and tricks. The templates and styling question as well as the 
+documentation structuring are discussed in the other sections.
+
+----------------------------------------------------------------------------------------------------
+# Introduction
+
+This documentation is written solely using the **M<sub>2</sub>H** program and itself demonstrates
+the possible result that may be obtained. The source Markdown text files have the same names as
+the corresponding output HTML files, so to see the page source code make the following
+replacements in the browser address line:
+
+- replace `doc` with `doc_src` (if it's present);
+- replace `.html` extension with `.txt`.
+
+So if `https://domain/md2html/doc/page_content.html` is the URL of an HTML page then 
+`https://domain/md2html/doc_src/page_content.txt` is the URL of its source text.
+
+----------------------------------------------------------------------------------------------------
+# Text effects
+
+<div class="tableGridded"></div>
+
+Text effect | Markdown/HTML syntax
+---|---
+**bold** | `__bold__` or `**bold**`
+*italic* | `_italic_` or `*italic*`
+`in-line code fragment` | `` `in-line code fragment` ``
+<del>deleted</del> | `<del>deleted</del>`
+<ins>inserted</ins> | `<ins>inserted</ins>`
+Normal text<sub>subscript</sub> | `Normal text<sub>subscript</sub>`
+Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>`
+--- (em-dash, `&mdash;`) | `---`
+
+!!! note "Notes"
+    1. Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
+        text is not implemented in this program. First, these effects must not be required very
+        often. Second, such markup may cause problems if we write text like "C++", or `++i`.
+        The used direct HTML markup lets achieve these effects safely.
+    1. Subscript and superscript are not in the Markdown syntax. Here direct HTML markup
+        is used as a possible workaround.
+    
+----------------------------------------------------------------------------------------------------
+# Paragraphs and line breaks
+
+A paragraph (`<p>`) is inserted by an empty line.    
+A line break (`<br />`) may be inserted by leaving more than two spaces at the end of line
+(as it's done in the previous line).
+
+----------------------------------------------------------------------------------------------------
+# Headers
+
+Headers are inserted using one to six pound symbols (`#`) at the beginning of line. This
+makes headers from `<h1>` to `<h6>` respectively. Other ways are described
+[here](https://daringfireball.net/projects/markdown/syntax#header).
+
+Dashes and equal signs may be interpreted as header marks of the previous line, so to avoid this
+markup it's better, and sometimes required, to leave an empty line before these sequences.
+
+----------------------------------------------------------------------------------------------------
+# Table of contents
+
+`[TOC]` element in the Markdown document will resolve into the document's table of contents in
+the generated HTML. The example can be seen at the top of this and other pages. The ToC is
+composed of the headers found on the page.
+
+!!! Note
+    Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
+    that would contain only the sub-headers of this header.
+
+----------------------------------------------------------------------------------------------------
+# Links
+
+The link syntax is:
+
+````
+[link text](path/to/doc.html "title")
+````
+
+where `"title"` is not required. If `link text` is omitted the link will be not visible.
+There's the other syntax:
+
+````
+<path/to/doc.html>
+````
+
+that will make the link text equal the link location.
+
+<a name="anchor_demo"></a>
+
+The header tags have their automatically generated `id`s so they can be referenced by the links. 
+But these `id`s are uncontrolled and will change if the the header changes. Anchors may be added
+at the arbitrary places on the page with the syntax:
+
+````
+<a name="anchor_name"></a>
+````
+
+`id` attribute instead of `name` attribute will also work. Then this anchor may be referenced as:
+
+````
+[link text](#anchor_name)
+````
+
+from the same page, or:
+
+````
+[link text](this_page.html#anchor_name)
+````
+
+from the same or the other page.
+
+----------------------------------------------------------------------------------------------------
+# Images
+
+<p><img src="pict/penrose.png" alt="Penrose" title="Penrose" style="float: right; margin: 0 0 25px 25px;" /></p>
+
+The standard Markdown image syntax is `![ALT](path/to/image.png "title")`, where `ALT` and
+`"title"` are not required.
+
+In this section, nonetheless, the example demonstrates the other method that allows placing images
+on the page side with the text floating around, that may be very useful with small images. 
+This method uses direct HTML inclusions:
+
+<p style="clear: both;"></p>
+
+````
+<p><img src="pict/target.png" style="float: right; margin: 0 0 25px 25px;" /></p>
+````
+
+!!! important
+    The image tag is enclosed by a paragraph that is required for the currently used styles.
+    The Python version does this enclosing itself, but the Java version does not. Though the
+    Python version does not do extra enclosing if it's already done. So it's better to always
+    add the paragraph.
+
+To stop the text float the following empty paragraph may be used:
+
+````
+<p style="clear: both;"></p>
+````
+
+An image may be used as a link text like this:
+
+````
+[![](pict/target.png)](page.html)
+````
+
+Then we will get a clickable image that works as a link.
+
+----------------------------------------------------------------------------------------------------
+# Lists
+
+The following markup:
+
+````
+1. This is a __first-level__ _ordered_ list item.
+    
+    Another paragraph may be added by adding one empty line above and indenting by 4 spaces.
+    
+    > Other elements may be included into a list item as well.
+    
+    - This is a __second-level__ _unordered_ list sub-item. The long lines may be wrapped
+        with extra 4 space indent without an empty line above.
+        3. This is a __third-level__ _ordered_ list sub-item. Any numbers may be used as
+            _ordered_ list item markers.
+        3. This is another __third-level__ _ordered_ list sub-item.
+    - This is another __second-level__ _ordered_ list sub-item.
+
+1. This is another __first-level__ _unordered_ list item. Though `1.` is used as the
+    item number this item marker will be "2.".
+````
+
+Gives the following output:
+
+1. This is a __first-level__ _ordered_ list item.
+    
+    Another paragraph may be added by adding one empty line above and indenting by 4 spaces.
+    
+    > Other elements may be included into a list item as well.
+    
+    - This is a __second-level__ _unordered_ list sub-item. The long lines may be wrapped
+        with extra 4 space indent without an empty line above.
+        3. This is a __third-level__ _ordered_ list sub-item. Any numbers may be used as
+            _ordered_ list item markers.
+        3. This is another __third-level__ _ordered_ list sub-item.
+    - This is another __second-level__ _ordered_ list sub-item.
+
+1. This is another __first-level__ _unordered_ list item. Though `1.` is used as the
+    item number this item marker will be "2.".
+
+----------------------------------------------------------------------------------------------------
+# Blockquotes
+
+Blockquotes are inserted by starting each line with `> `.
+
+> Links, images and some other Markdown elements may be used inside `blockquote`s:
+> 
+> - Here's a link with a clickable image:    
+>   [![TARGET](pict/target-smaller.png)](#anchor_demo "How to add an anchor.")
+> - Also a list inside this `blockquote` is used for demonstration.
+
+----------------------------------------------------------------------------------------------------
+# Tables
+
+Table are added with the syntax like this:
+
+````
+Item No | Name  | Description   | Price
+:------:|-------|---------------|------:
+1       | Chair | Kitchen chair |  87.50
+2       | Table | Kitchen table | 450.00
+3       | Lamp  | Standard lamp | 120.75
+````
+
+Currently used styles define the following default table appearance:
+
+Item No | Name  | Description   | Price
+:------:|-------|---------------|------:
+1       | Chair | Kitchen chair |  87.50
+2       | Table | Kitchen table | 450.00
+3       | Lamp  | Standard lamp | 120.75
+
+Markdown doesn't have syntax for different table styles, but some trick may be used to achieve 
+this. We can add an invisible element (an empty `<div>` in this case) right before the
+table and then define the appearance using some simple CSS magic. So the following invisible
+element:
+
+````
+<div class="tableLight"></div>
+````
+
+Will give the following table stile:
+
+<div class="tableLight"></div>
+
+|Item No | Name | Description | Price|
+|:------:|:-----|:------------|-----:|
+|1       | Chair | Kitchen chair |  87.50|
+|2       | Table | Kitchen table | 450.00|
+|3       | Lamp  | Standard lamp | 120.75|
+
+If we want to just align text we can use a table without a header:
+
+````
+<div class="tableLight"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+````
+
+This will give:
+
+<div class="tableLight"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+
+> __Note.__ Small extra gap appears above header-less tables that is not avoidable as for now.
+
+----------------------------------------------------------------------------------------------------
+# Fenced code blocks
+
+Fenced code blocks may be set up by four-space indent, or by four backticks (` ```` `), i.e.
+the following markup:
+
+    ````
+    Example of
+        preformatted 
+        text
+    ````
+
+will look like:
+
+    Example of
+        preformatted 
+        text
+
+This type of block visually correlates with `inline` code fragments. 
+
+Style may be specified the following way:
+
+    ````text
+    This is a light code block example.
+        It is also preformatted
+        but has no background.
+    ````
+
+The result will be:
+
+````text
+This is a light code block example.
+    It is also preformatted
+    but has no background.
+````
+
+There are also shell code block (marked as `shell`):
+
+````shell
+$ echo "This block demonstrates operations in a shell"
+This block demonstrates operations in a shell
+````
+
+and program language code block (marked as `code`):
+
+````code
+System.out.println("This block demonstrates " + 
+    "a source code in a program language.");
+````
+
+!!! note
+    Program language source code syntax highlighting is not implemented yet.
+
+> Fenced blocks may be inserted inside other blocks like `blockquote`s:
+> 
+> ````shell
+> $ echo Fenced blocks inside a blockquote
+> Fenced blocks inside a blockquote
+> ```` 
+> 
+> Also, for instance, lists inside `blockquote`s may contain fenced code blocks:
+> 
+> - Item 1:
+>     ````
+>     Fenced block, line 1
+>     Fenced block, line 2
+>     ````
+> - Item 2
+
+----------------------------------------------------------------------------------------------------
+# Admonitions
+
+!!! info
+    Admonitions are specially formatted blocks whose purpose is drawing attention to some pieces
+    of information. To add such a block the following syntax is used:
+ 
+    ````
+    !!! qualifier "Optional title"
+        block content
+        with 4 space indent on each line
+    ````
+ 
+!!! note
+    There are defined the following qualifiers:
+    
+    - `note`;
+    - tips: `tip`, `hint`, `important`;
+    - danger: `danger`, `error`;
+    - warning: `warning`, `attention`, `caution`.
+ 
+!!! important
+    Other qualifiers may be used (like `info` qualifier above). CSS need to be edited to
+    add special formatting for this admonitions, otherwise the default formatting is used.
+ 
+!!! warning "Don't overuse!"
+    This highlighting method should not be overused. When there are a lot of such blocks
+    important information may be easily missed by the reader.
+ 
+    BTW, in this block a custom title is used.
+ 
+!!! hint ""
+    To place an admonition without a header empty quotes may be set as the title:
+ 
+    ````
+    !!! hint ""
+        This admonition will not have a title.
+    ````
+!!! danger
+    Admonitions are not supported in GitHub and StackOverflow.
+ 
+    !!! note
+        When a default title is used its first character is capitalized.
+
+
+
+
+
+
+
+

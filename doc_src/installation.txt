@@ -1,0 +1,110 @@
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+<a id="installation_all"></a>
+# Common steps
+
+This program doesn't have any installer and is installed according to the principle 
+unpack-and-run:
+
+- Put (or clone from the VCS) the unpacked directory `md2html` to the directory by choice.
+- Define the `MD2HTML_HOME` environment variable as the absolute path of the directory `md2html`.
+- Follow further specific steps for:
+    - [Python version](#installation_python) and
+    - [Java version](#installation_java)
+
+----------------------------------------------------------------------------------------------------
+<a id="installation_python"></a>
+# Python version
+
+## Prerequisites
+
+This program requires [Python 3](https://www.python.org/). The following command may be used to
+check whether Python is installed.
+
+````shell
+>python --version
+Python 3.8.6
+````
+
+In Linux the `python` is probably used for running Python 2 that does not suffice for this program.
+Python 3 may need to be installed separately and called with command `python3`.
+
+The following Python packages must be installed:
+
+````shell
+>python -m pip install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2 jsonschema==3.2.0 chevron-0.14.0
+````
+
+!!! note "Notes"
+    The packages are specified with their versions for stability reason. Future versions of the
+    packages may have changes that noticeably affect the program work.
+
+
+## Installation
+
+Here's how the Python version may be installed:
+
+- Fulfill the [common steps](#installation_all).
+- That's it, provided that the prerequisites are matched.
+
+----------------------------------------------------------------------------------------------------
+<a id="installation_java"></a>
+# Java version
+
+## Prerequisites
+
+Java runtime (JRE) 8 or higher. The following command may be used to check whether Java is 
+installed.
+
+````shell
+>java -version
+java version "1.8.0_05"
+.  .  .
+````
+
+## Installation
+
+Here's how the Java version may be installed:
+
+- Fulfill the [common steps](#installation_all).
+- Take or build the executable artifact (see below).
+
+Unlike the Python version, the Java version in this distribution doesn't contain the executable
+artifacts. They must be built or taken separately.
+
+### Using the release build
+
+The latest built release must be available along with the source code. A release is a file named
+`md2html-bin.jar`. Download this file and put it inside the directory 
+`%MD2HTML_HOME%\java\target\` (create this directory if it does not exist). That's it.
+
+
+### Building the project
+
+This needs Java Development Kit (JDK, not JRE) 8 or higher and [Maven](https://maven.apache.org/).
+
+In a command line terminal execute:
+
+````shell
+>cd %MD2HTML_HOME%\java
+
+>release.bat
+````
+
+The following must be output as the process ends:
+
+````shell
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+````
+
+File `md2html-<version>-bin.jar` must appear in the directory `%MD2HTML_HOME%\java\target\`.
+
+!!! note
+    __Note.__ The tests and the whole build will fail if the variable 
+    [`MD2HTML_HOME`](#installation_all) is not set.
+
+
+
