@@ -1,0 +1,264 @@
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About plugins
+
+Plugins automate and simplify typical tasks and make the documentation more structural and easy
+to use.
+
+The main approach used by this program is no interference in the Markdown syntax. So the
+documentation content must be readable in plain text even without processing by this program.
+
+Plugins provide extra possibilities for the templates processing and visualization.
+
+See [this section](usage.html#using_argument_file) for some plugins definition example.
+
+----------------------------------------------------------------------------------------------------
+# "relative-paths" plugin
+
+## Motivation
+
+The program generates static HTML pages that reference other pages and resources like CSS and
+pictures. The generated HTML pages may be located in different places of the project structure, 
+so the same resources may be referenced differently from different pages.
+
+In the following example:
+
+````shell
+$ tree -L 2 --charset=ascii --dirsfirst
+.
+|-- doc
+|   |-- about.html
+|   `-- styles.css
+`-- readme.html
+````
+
+The reference to `styles.css` is `doc/styles.css` from the `readme.html` page, and `styles.css`
+from the `about.html` page.
+
+The plugin automatically recalculates relative paths for certain pages depending on their location
+and avoids manual defining these paths for every page individually.
+
+
+## Definition
+
+Here's an example of the plugin definition:
+
+````
+{
+    "documents": [
+        { "input": "readme.txt", "output": "readme.html", "title": "Home" },
+        { "input": "doc_src/about.txt", "output": "doc/about.html", "title": "About" }
+    ],
+    "plugins": {
+        "relative-paths": { "resource_path": "doc/" }
+    }
+}
+````
+
+The plugin considers the `"resource_path"` and the current page location being relative to the
+same location, that is the program invocation current directory in this case. When it
+calculates the path then:
+
+- for the page `readme.html` it'll return `doc/`;
+- for the page `doc/about.html` it'll return `""` (empty path, as they are located in the same
+    directory).
+
+
+## Usage
+
+Include the following _tag_ to the template:
+
+````
+<link rel="stylesheet" type="text/css" href="{{resource_path}}styles.css"/>
+````
+
+That's it. When a document using this template is generated, this tag will be replaced with
+the corresponding path.
+
+----------------------------------------------------------------------------------------------------
+# "page-flows" plugin
+
+## Motivation
+
+Sidebar provides quick access to different project pages. It's often very helpful to put a
+sequence of pages that are intended to be read in order. Doing it manually is pretty
+cumbersome and error prone.
+
+This plugin defines such pages sequences and and provides them for easy manipulation in templates.
+
+## Definition
+
+In the `"plugins"` sections:
+
+````
+{
+    "documents": [
+        { "input": "page1.txt", "output": "page1.html", "title": "Page 1" },
+        { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2" },
+        { "input": "page3.txt", "output": "doc/page3.html", "title": "Page 3" }
+    ],
+    "plugins": {
+        "page-flows": {
+            "sidebar": [
+                { "link": "page1.html", "title": "Page 1" },
+                { "link": "doc/page2.html", "title": "Page 2" },
+                { "link": "doc/page3.html", "title": "Page 3" },
+                { "link": "www.google.com", "title": "Page 3", "external": true }
+            ]
+        }
+    }
+}
+````
+
+In the `"documents"` sections:
+
+````
+{
+    "documents": [
+        { "input": "page1.txt", "output": "page1.html", "title": "Page 1", "page-flows": ["sidebar"] },
+        { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2", "page-flows": ["sidebar"] },
+        { "input": "page3.txt", "output": "doc/page3.html", "title": "Page 3", "page-flows": ["sidebar"] }
+    ]
+}
+````
+
+The `"page-flows"` document definition may be carried out to the `"default"` section (not
+demonstrated here). Several page flows may be defined and a single page may be a part of several
+page flows.
+
+## Usage
+
+In a template each page flow is accessible by its name (`sidebar` in the above example) and
+provides the following structured data:
+
+Field | Description
+----- | -----
+`{{_name_}}` | Iterable, returns [pages](#page_flow_page_structure)
+`{{_name_.pages}}` | The same
+`{{_name_.previous}}` | Previous [page](#page_flow_page_structure) if exists
+`{{_name_.current}}` | Current [page](#page_flow_page_structure) if exists
+`{{_name_.next}}` | Next [page](#page_flow_page_structure) if exists
+`{{_name_.has_navigation}}` | Boolean, `true` if ether previous or next page exist
+`{{_name_.not_empty}}` | Boolean, `true` if contains at least one page
+
+<a name="page_flow_page_structure"></a>
+The page has the following structure:
+
+Field | Description
+----- | -----
+`{{link}}` | The link that references the page
+`{{title}}` | The title of the page
+`{{external}}` | Boolean, external pages can never be current
+`{{first}}` | Boolean, the first page in the sequence
+`{{last}}` | Boolean, the last page in the sequence
+
+This data is calculated for every page that uses this template. So for the current page we can 
+know the previous and next page and render the navigations accordingly. Also for the current
+page we have the whole page sequence of the page flow and can render this list in the sidebar.
+As we know which page or pages are current, we can highlight this link.
+
+A usage example can be too large so it's not provided here. This documentation demonstrates
+the result of this plugin's work. Also see the template `doc_src/templates/custom.html` and
+the _argument file_ `md2html_args.json` to find out the correspondence between the plugin
+definition and usage.
+
+----------------------------------------------------------------------------------------------------
+# "" plugin
+
+## Motivation
+
+
+## Definition
+
+
+## Usage
+
+
+----------------------------------------------------------------------------------------------------
+# "" plugin
+
+## Motivation
+
+
+## Definition
+
+
+## Usage
+
+
+----------------------------------------------------------------------------------------------------
+# "" plugin
+
+## Motivation
+
+
+## Definition
+
+
+## Usage
+
+
+
+
+
+
+
+
+
+
+
+
+## Page metadata
+
+Along with its target content a source Markdown text may contain page _metadata_ that is not a
+part of the Markdown syntax. The format of the page metadata is:
+
+````
+<!--METADATA {
+"title": "My title",
+"placeholders": {"key1": "value1", "key2": "value2"}
+}-->
+````
+
+> __NOTE.__ __1.__ The page metadata may affect the HTML generation process and the final HTML 
+> document in the end. But it is ignored as a part of the source document, so it will not 
+> literally appear in the generated HTML code (though it anyway would not be visible as it's,
+> in fact, an HTML/XML comment).
+> 
+> __2.__ The page metadata processing will not fail the page generation. If there are incorrect 
+> fragments in metadata, reasonable attempts will be done to recognize the correct elements, 
+> all the other parts will be ignored. If verbose mode is on then a warning messages will be
+> output to the console.
+
+The page metadata section must be the first non-space text in the source document, otherwise it
+will be ignored (and literally left as the the source text). The `METADATA` keyword is
+case-insensitive and must follow directly after the opening marker `<!--` without
+any space. The metadata content must be a valid _JSON_ text, that means that the keys are
+case-sensitive and must be enclosed in double quotes. Also the root element must be an object
+(i.e. in curly braces).
+
+> __NOTE!__ Opening `<!--` and closing markers `-->` must not be used inside  the metadata
+> section. Also consecutive hyphens `--` inside HTML comments probably may be a problem in some
+> browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
+> `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
+> page content and the context, opening and closing markers, even when escaped in JSON, may 
+> cause unexpected result. Check it first if you really need to use these symbols.
+
+<a name="page_metadata_parameters"></a>
+
+The following metadata parameters are supported:
+
+- `title` of type string (i.e. it must always be in double quotes), defines the default page
+    title. The title defined by the command line arguments (if any) will override the default
+    page title.
+- `placeholders` of type object, defines values that will replace custom 
+    placeholders when the template is resolved. The values type must be string only.
+
+> __NOTE.__ The placeholders are substituted without checks and modifications that makes it
+> possible to inject any code (like JavaScript) into the generated HTML documents
+> via the source texts. This must not be a problem for personal use but probably may be a
+> security issue when converting and publishing source texts from untrusted third-parties.
+> Still such inclusions may be also done with direct HTML code in the source texts (see 
+> [here](#html_code_inclision) for more more description and example).
+> 
