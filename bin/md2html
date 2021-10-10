@@ -1,0 +1,13 @@
+#!/bin/bash
+
+exec() {
+    prog=$1
+    shift
+    echo $* | xargs $prog
+}
+
+script_dir=`dirname "$0"`
+EXEC=`"${script_dir}/_set_executable" $*`
+
+exec $EXEC --argument-file=md2html_args.json || exit 1
+
