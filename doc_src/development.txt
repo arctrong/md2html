@@ -80,7 +80,7 @@ additional Python package must be installed:
 $ python3 -m pip install beautifulsoup4
 ````
 
-All tested artifacts must be built (if required). All unit tests must be passed.
+All tested artifacts must be built (if required). All unit tests must pass.
 
 
 ## Execution

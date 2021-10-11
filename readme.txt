@@ -40,8 +40,8 @@ this:
 
 # Markdown
 
-[Markdown](https://daringfireball.net/projects/markdown/) is a formatting syntax whose main design
-goal is making texts that are as readable as possible in plain text.
+[Markdown](https://daringfireball.net/projects/markdown/) is a formatting syntax whose main goal
+is making texts that are as readable as possible in plain text.
 
 This syntax is very simple and allows writing very fast. It has enough features for writing
 a variety of document kinds. Though because of its simplicity it's quite restricted and contains

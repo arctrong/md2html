@@ -69,16 +69,25 @@ div.sidebar_item {
 }
 
 div.sidebar_item.selected {
-    background-color: #f4f9f9; 
+    /* background-color: #f4f9f9;  */
     border-right: solid 5px cadetblue; 
     padding-right: 15px;
     font-weight: bold;
+}
+
+div.sidebar h3 {
+    color: darkslategray;
 }
 
 .header>a:link, .header>a:visited, .header>a:hover, .header>a:active {
     text-decoration: none;
     /* color: unset; */
     /* font-weight: bold; */
+}
+
+div.sidebar a:link, div.sidebar a:visited, div.sidebar a:hover, div.sidebar a:active {
+    text-decoration: none;
+    color: teal;
 }
 
 .header_item {
