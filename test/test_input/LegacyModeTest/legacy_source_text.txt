@@ -1,0 +1,5 @@
+  
+	<!--METADATA {"title": "test title from metadata",
+"placeholders": {"custom_key": "test custom value"}} 
+-->  
+Legacy content.

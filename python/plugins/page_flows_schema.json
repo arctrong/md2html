@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "patternProperties": {
+        "^[\\w\\d_]+$": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "link": { "type": "string" },
+                    "title": { "type": "string" },
+                    "external": { "type": "boolean" }
+                },
+                "required": [ "link", "title" ]
+            }
+        }
+    },
+    "additionalProperties": false
+}

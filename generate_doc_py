@@ -1,0 +1,4 @@
+#!/bin/bash
+
+python3 $MD2HTML_HOME/python/md2html.py --argument-file md2html_args.json $* || read -p "Errors occurred, press enter to exit..."
+

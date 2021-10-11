@@ -1,7 +1,7 @@
 @echo off
 
 set PYTHON_EXEC=python "%MD2HTML_HOME%\python\md2html.py"
-set JAVA_EXEC=java -jar "%MD2HTML_HOME%\java\target\md2html-0.1.3-bin.jar"
+set JAVA_EXEC=java -jar "%MD2HTML_HOME%\java\target\md2html-bin.jar"
 set DEFAULT_EXEC=%PYTHON_EXEC%
 
 set EXEC_WAS_SET=

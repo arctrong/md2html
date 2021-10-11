@@ -1,0 +1,266 @@
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About plugins
+
+Plugins automate and simplify typical tasks and make the documentation more structural and easy
+to use.
+
+The main approach used by this program is no interference in the Markdown syntax. So the
+documentation content must be readable in plain text even without processing by this program.
+
+Plugins provide extra possibilities for the templates processing and visualization.
+
+See [this section](usage.html#using_argument_file) for some plugins definition example.
+
+----------------------------------------------------------------------------------------------------
+# "relative-paths" plugin
+
+## Motivation
+
+The program generates static HTML pages that reference other pages and resources like CSS and
+pictures. The generated HTML pages may be located in different places of the project structure, 
+so the same resources may be referenced differently from different pages.
+
+In the following example:
+
+````shell
+$ tree -L 2 --charset=ascii --dirsfirst
+.
+|-- doc
+|   |-- about.html
+|   `-- styles.css
+`-- readme.html
+````
+
+The reference to `styles.css` is `doc/styles.css` from the `readme.html` page, and `styles.css`
+from the `about.html` page.
+
+The plugin automatically recalculates relative paths for certain pages depending on their location
+and avoids manual defining these paths for every page individually.
+
+
+## Definition
+
+Here's an example of the plugin definition:
+
+````
+{
+    "documents": [
+        { "input": "readme.txt", "output": "readme.html", "title": "Home" },
+        { "input": "doc_src/about.txt", "output": "doc/about.html", "title": "About" }
+    ],
+    "plugins": {
+        "relative-paths": { "resource_path": "doc/" }
+    }
+}
+````
+
+The plugin considers the `"resource_path"` and the current page location being relative to the
+same location, that is the program invocation current directory in this case. When it
+calculates the path then:
+
+- for the page `readme.html` it'll return `doc/`;
+- for the page `doc/about.html` it'll return `""` (empty path, as they are located in the same
+    directory).
+
+
+## Usage
+
+Include the following _tag_ to the template:
+
+````
+<link rel="stylesheet" type="text/css" href="{{resource_path}}styles.css"/>
+````
+
+That's it. When a document using this template is generated, this tag will be replaced with
+the corresponding path.
+
+----------------------------------------------------------------------------------------------------
+# "page-flows" plugin
+
+## Motivation
+
+Sidebar provides quick access to different project pages. It's often very helpful to put a
+sequence of pages that are intended to be read in order. Doing it manually is pretty
+cumbersome and error prone.
+
+This plugin defines such pages sequences and and provides them for easy manipulation in templates.
+
+## Definition
+
+In the `"plugins"` sections:
+
+````
+{
+    "documents": [
+        { "input": "page1.txt", "output": "page1.html", "title": "Page 1" },
+        { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2" },
+        { "input": "page3.txt", "output": "doc/page3.html", "title": "Page 3" }
+    ],
+    "plugins": {
+        "page-flows": {
+            "sidebar": [
+                { "link": "page1.html", "title": "Page 1" },
+                { "link": "doc/page2.html", "title": "Page 2" },
+                { "link": "doc/page3.html", "title": "Page 3" },
+                { "link": "www.google.com", "title": "Page 3", "external": true }
+            ]
+        }
+    }
+}
+````
+
+In the above example the three pages are defined twice. To avoid such repetition the page flows 
+may be defined directly in the `"documents"` section:
+
+````
+{
+    "documents": [
+        { "input": "page1.txt", "output": "page1.html", "title": "Page 1", "page-flows": ["sidebar"] },
+        { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2", "page-flows": ["sidebar"] },
+        { "input": "page3.txt", "output": "doc/page3.html", "title": "Page 3", "page-flows": ["sidebar"] }
+    ],
+    "plugins": {
+        "page-flows": {}
+    }
+}
+````
+
+But the plugin itself must be activated to make it work. So even if all page flows are defined
+in the `"documents"` section the plugin empty definition must be added to the `"plugins"`
+section.
+
+The `"page-flows"` document definition may be carried out to the `"default"` section (not
+demonstrated here). Several page flows may be defined and a single page may be a part of several
+page flows.
+
+## Usage
+
+In a template each page flow is accessible by its name (`sidebar` in the above example) and
+provides the following structured data:
+
+Field | Description
+----- | -----
+`{{_name_}}` | Iterable, returns [pages](#page_flow_page_structure)
+`{{_name_.previous}}` | Previous [page](#page_flow_page_structure) if exists
+`{{_name_.current}}` | Current [page](#page_flow_page_structure) if exists
+`{{_name_.next}}` | Next [page](#page_flow_page_structure) if exists
+`{{_name_.has_navigation}}` | Boolean, `true` if ether previous or next page exist
+`{{_name_.not_empty}}` | Boolean, `true` if contains at least one page
+
+<a name="page_flow_page_structure"></a>
+The page has the following structure:
+
+Field | Description
+----- | -----
+`{{link}}` | The link that references the page. Recalculated for the current page
+`{{title}}` | The title of the page
+`{{external}}` | Boolean, external pages can never be current
+`{{first}}` | Boolean, `true` if this is the first page in the sequence
+`{{last}}` | Boolean, `true` if this is the last page in the sequence
+
+This data is calculated for every page that uses this template. So for the current page we can 
+know the previous and the next pages and render the navigations. Here's a simple example:
+
+````
+{{#sidebar.previous}}<a href="{{link}}">[PREVIOUS]</a>{{/sidebar.previous}}
+{{#sidebar.next}}<a href="{{link}}">[NEXT]</a>{{/sidebar.next}}
+````
+
+!!! tip
+    `{{#sidebar.previous}}...{{/sidebar.previous}}` means that if `sidebar.previous` value 
+    exists then the enclosed content is rendered. `sidebar.previous` value is a page and has
+    attribute `link` that is used in the rendered block.
+
+Also for the current page we have the whole page sequence of the page flow and can render this
+list in the sidebar. As we know which page or pages are current, we can highlight this links.
+Here's a simplified example of how the sidebar items may be rendered:
+
+````
+<ul>{{#sidebar}}
+<li><a class="sidebarItem{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a></li>
+{{/sidebar}}</ul>
+````
+
+!!! tip
+    `{{#sidebar}}...{{/sidebar}}` means that for each item in the `sidebar` value (that is 
+    iterable) render the enclosed content. The items are pages and their attributes `link`,
+    `title` and `current` are used in the rendered block.
+
+This documentation demonstrates pretty typical usage of this plugin. Also see the template
+`doc_src/templates/custom.html` and the _argument file_ `md2html_args.json` for more
+understanding of correspondence between the plugin's definition and usage.
+
+----------------------------------------------------------------------------------------------------
+# "page-variables" plugin
+
+## Motivation
+
+This plugin extracts variables from documents source text and provides these variables to be
+used in the template.
+
+## Definition
+
+````
+    "plugins": {
+        "page-variables": {"variables": {"only-at-page-start": true} }
+    }
+````
+
+This means that variables will be extracted from the _page metadata_ blocks with marker
+`variables` and only from those blocks that are the first non-blank text on the page.
+This is the definition of the default marker so it may be simplified to `"page-variables": {}`,
+and this is the recommended form.
+
+## Usage
+
+For the above plugin definition the metadata blocks may look like:
+
+````
+<!--variables {"title": "My page", "noPageTitle": true}-->
+````
+
+The marker is `variables` and it is case insensitive. The variables are `title` and `noPageTitle`
+and the tags `{{title}}` and `{{noPageTitle}}` will be replaced with the defined values when
+this page is processed.
+
+The _page metadata_ blocks will be removed from the source text if they are recognized and
+processed by the defined markers.
+
+The metadata content must be a valid [JSON](https://json.org/).
+
+!!! Note
+    Opening `<!--` and closing markers `-->` must not be used inside the metadata
+    section. Also consecutive hyphens `--` inside HTML comments may probably be a problem in some
+    browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
+    `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
+    page content and the context, opening and closing markers, even when escaped in JSON, may 
+    cause unexpected result. Check it first if you really need to use these symbols.
+
+----------------------------------------------------------------------------------------------------
+# "variables" plugin
+
+## Motivation
+
+This plugin defines variables that are not bound to certain pages. Actually such values may be
+included directly into the template with no need of using this plugin. But when the same template
+is used by several projects it may be convenient to define some template variable parts that
+different projects may substitute using their _argument files_.
+
+## Definition
+
+````
+"variables": {"logo": "<img src=\"logo.png\" />" }
+````
+
+## Usage
+
+Tag (or tags) `{{{logo}}}` in the template will be substituted in the template. (Note that in
+this case three pairs of curly braces are used to avoid HTML-escaping on substitution.)
+
+
+
+
+
+

@@ -2,8 +2,7 @@ package world.md2html.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UtilsTest {
 
@@ -32,4 +31,100 @@ class UtilsTest {
         assertEquals(o, Utils.firstNotNull(o, new String[] {"1", "2"}));
     }
 
+    @Test
+    void formatNanoSeconds() {
+        long m = 1_000_000;
+        assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(0));
+        assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(1));
+        assertEquals("0 00:00:00.000", Utils.formatNanoSeconds(999_999));
+        assertEquals("0 00:00:00.001", Utils.formatNanoSeconds(1_000_000));
+        assertEquals("0 00:00:00.999", Utils.formatNanoSeconds(999 * m));
+        assertEquals("0 00:00:01.000", Utils.formatNanoSeconds(1000 * m));
+        assertEquals("0 00:00:59.000", Utils.formatNanoSeconds(59_000 * m));
+        assertEquals("0 00:01:00.000", Utils.formatNanoSeconds(60_000 * m));
+        assertEquals("0 00:01:01.000", Utils.formatNanoSeconds(61_000 * m));
+        assertEquals("0 00:59:00.000", Utils.formatNanoSeconds(59 * 60_000 * m));
+        assertEquals("0 01:00:00.000", Utils.formatNanoSeconds(60 * 60_000 * m));
+        assertEquals("0 01:01:00.000", Utils.formatNanoSeconds(61 * 60_000 * m));
+        assertEquals("0 23:00:00.000", Utils.formatNanoSeconds(23 * 60 * 60_000 * m));
+        assertEquals("1 00:00:00.000", Utils.formatNanoSeconds(24 * 60 * 60_000 * m));
+        assertEquals("1 01:00:00.000", Utils.formatNanoSeconds(25 * 60 * 60_000 * m));
+        assertEquals("125 17:28:58.819", Utils.formatNanoSeconds(
+                ((((125L * 24 * 3600) + (17 * 3600) + (28 * 60) + 58) * 1000) + 819) * m + 1));
+        assertEquals("90 08:05:04.009", Utils.formatNanoSeconds(
+                ((((90L * 24 * 3600) + (8 * 3600) + (5 * 60) + 4) * 1000) + 9) * m + 358));
+    }
+
+    @Test
+    void blankCommentLine() {
+        assertEquals("        ", Utils.blankCommentLine("#comment", "#"));
+        assertEquals("        \n", Utils.blankCommentLine("#comment\n", "#"));
+        assertEquals("        \r\n", Utils.blankCommentLine("#comment\r\n", "#"));
+        assertEquals("         ", Utils.blankCommentLine(" #comment", "#"));
+        assertEquals("not comment", Utils.blankCommentLine("not comment", "#"));
+        assertEquals("not # comment", Utils.blankCommentLine("not # comment", "#"));
+        assertEquals(" ", Utils.blankCommentLine("#", "#"));
+        assertEquals(" \n", Utils.blankCommentLine("#\n", "#"));
+    }
+
+    @Test
+    void relativizeRelativeResource() throws CheckedIllegalArgumentException {
+        
+        assertThrows(CheckedIllegalArgumentException.class,
+                () -> Utils.relativizeRelativeResource("styles.css", ""));
+        assertThrows(CheckedIllegalArgumentException.class,
+                () -> Utils.relativizeRelativeResource("styles.css", "doc/"));
+        assertThrows(CheckedIllegalArgumentException.class,
+                () -> Utils.relativizeRelativeResource("", "index.html"));
+        assertThrows(CheckedIllegalArgumentException.class,
+                () -> Utils.relativizeRelativeResource("doc/", "index.html"));
+
+        assertEquals("styles.css", Utils.relativizeRelativeResource("styles.css", "index.html"));
+        assertEquals("doc/styles.css", Utils.relativizeRelativeResource("doc/styles.css", "index.html"));
+        assertEquals("doc/pict/logo.png", Utils.relativizeRelativeResource("doc/pict/logo.png", "index.html"));
+
+        assertEquals("../../logo.png", Utils.relativizeRelativeResource("../logo.png", "doc/index.html"));
+        assertEquals("../logo.png", Utils.relativizeRelativeResource("logo.png", "doc/index.html"));
+        assertEquals("logo.png", Utils.relativizeRelativeResource("doc/logo.png", "doc/index.html"));
+        assertEquals("pict/logo.png", Utils.relativizeRelativeResource("doc/pict/logo.png", "doc/index.html"));
+
+        assertEquals("../pict/logo.png", Utils.relativizeRelativeResource("pict/logo.png", "doc/index.html"));
+        assertEquals("../pict/doc/logo.png", Utils.relativizeRelativeResource("pict/doc/logo.png", "doc/index.html"));
+        assertEquals("../../pict/logo.png", Utils.relativizeRelativeResource("pict/logo.png", "doc/chapter01/index.html"));
+        assertEquals("../../pict/doc/logo.png", Utils.relativizeRelativeResource("pict/doc/logo.png", "doc/chapter01/index.html"));
+
+        assertEquals("logo.png", Utils.relativizeRelativeResource("./logo.png", "index.html"));
+        assertEquals("../logo.png", Utils.relativizeRelativeResource("./logo.png", "doc/index.html"));
+    }
+
+    @Test
+    void relativizeRelativePath() throws CheckedIllegalArgumentException {
+
+        assertThrows(CheckedIllegalArgumentException.class,
+            () -> Utils.relativizeRelativePath("doc/", ""));
+        assertThrows(CheckedIllegalArgumentException.class,
+            () -> Utils.relativizeRelativePath("doc/", "path/"));
+        assertThrows(CheckedIllegalArgumentException.class,
+            () -> Utils.relativizeRelativePath("doc", "index.html"));
+        assertThrows(CheckedIllegalArgumentException.class,
+            () -> Utils.relativizeRelativePath("/", "index.html"));
+
+        assertEquals("../", Utils.relativizeRelativePath("../", "index.html"));
+        assertEquals("", Utils.relativizeRelativePath("", "index.html"));
+        assertEquals("doc/", Utils.relativizeRelativePath("doc/", "index.html"));
+        assertEquals("doc/pict/", Utils.relativizeRelativePath("doc/pict/", "index.html"));
+
+        assertEquals("../../", Utils.relativizeRelativePath("../", "doc/index.html"));
+        assertEquals("../", Utils.relativizeRelativePath("", "doc/index.html"));
+        assertEquals("", Utils.relativizeRelativePath("doc/", "doc/index.html"));
+        assertEquals("pict/", Utils.relativizeRelativePath("doc/pict/", "doc/index.html"));
+
+        assertEquals("../pict/", Utils.relativizeRelativePath("pict/", "doc/index.html"));
+        assertEquals("../pict/doc/", Utils.relativizeRelativePath("pict/doc/", "doc/index.html"));
+        assertEquals("../../pict/", Utils.relativizeRelativePath("pict/", "doc/chapter01/index.html"));
+        assertEquals("../../pict/doc/", Utils.relativizeRelativePath("pict/doc/", "doc/chapter01/index.html"));
+
+        assertEquals("", Utils.relativizeRelativePath("./", "index.html"));
+        assertEquals("../", Utils.relativizeRelativePath("./", "doc/index.html"));
+    }
 }

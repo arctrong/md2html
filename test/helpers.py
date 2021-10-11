@@ -1,14 +1,14 @@
 import os
 import shutil
-from pathlib import Path
 import subprocess
-from bs4 import BeautifulSoup
 import time
+from pathlib import Path
+
+from bs4 import BeautifulSoup
 
 WORKING_DIR = Path(__file__).resolve().parent
 
 INPUT_DIR = str(WORKING_DIR.joinpath('test_input'))
-OUTPUT_DIR = None
 
 EXEC = None
 
@@ -35,9 +35,11 @@ def execute(params, output_file):
     return root
 
 
-def execute_simple(input_file, output_file, template):
-    return execute(['-f', '-i', input_file, '-o', output_file, '--template', template], 
-                   output_file)
+def execute_simple(input_file, output_file, template, *args):
+    cli_args = ['-f', '-i', input_file, '-o', output_file, '--template', template]
+    for arg in args:
+        cli_args.append(arg)
+    return execute(cli_args, output_file)
 
 
 IMPLEMENTATION = os.environ['IMPLEMENTATION']
@@ -45,7 +47,7 @@ if IMPLEMENTATION == 'py':
     EXEC = ['python' if os.name == 'nt' else 'python3', 
             os.environ['MD2HTML_HOME'] + '/python/md2html.py']
 elif IMPLEMENTATION == 'java':
-    EXEC = ['java', '-jar', os.environ['MD2HTML_HOME'] + '/java/target/md2html-0.1.2-bin.jar']
+    EXEC = ['java', '-jar', os.environ['MD2HTML_HOME'] + '/java/target/md2html-bin.jar']
 else:
     raise Exception('Unknown implementation')
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PYTHON_EXEC="python3 \"$MD2HTML_HOME/python/md2html.py\""
-JAVA_EXEC="java -jar \"$MD2HTML_HOME/java/target/md2html-0.1.2-bin.jar\""
+JAVA_EXEC="java -jar \"$MD2HTML_HOME/java/target/md2html-bin.jar\""
 EXEC=$PYTHON_EXEC
 
 REMAINED_ARGS=

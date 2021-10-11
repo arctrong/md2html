@@ -1,0 +1,4 @@
+#!/bin/bash
+
+"${MD2HTML_HOME}bin/md2html" $* || read -p "Errors occurred, press enter to exit..."
+

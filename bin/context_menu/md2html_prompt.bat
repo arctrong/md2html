@@ -4,7 +4,7 @@ echo.
 
 set INPUT_FILE=
 set STATE=
-for %%a in (%*) do call :FIND_INPUT_FILE %%a
+for %%a in ('%~dp0_find_input_file.bat %*') do set INPUT_FILE="%%a"
 
 set TITLE=
 set FORCE=
@@ -20,6 +20,7 @@ set IMPL=
 
 echo Converting the following file to HTML: %INPUT_FILE%
 echo.
+
 echo Options:
 echo.
 echo y - Generate with default title (if not defined then empty)
@@ -71,10 +72,11 @@ goto again
 
 :custom_title
 echo.
-echo Please avoid quotes and other special characters,
+echo Please don't use quotes and other special characters,
 echo they may cause problems.
 set /p TITLE="Enter your title: "
 if not ["%TITLE%"]==[] set TITLE=-t "%TITLE%"
+
 goto continue
 
 :set_python_impl
@@ -99,16 +101,6 @@ if [%FORCE%] == [-f] (
 )
 set CHOICE=
 goto again
-
-:FIND_INPUT_FILE
-if [%STATE%]==[END] exit /b
-if [%STATE%]==[-i] (
-    set INPUT_FILE=%~1
-    set STATE=END
-    exit /b
-)
-if [%~1]==[-i] set STATE=-i
-exit /b
 
 :continue
 for /f "delims=" %%a in ( '%~dp0..\_set_executable.bat %IMPL% %*' ) do set EXEC=%%a

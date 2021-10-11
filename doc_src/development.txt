@@ -1,0 +1,118 @@
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# Python version
+
+## Libraries
+
+This implementation uses the following libraries for Markdown texts processing:
+
+- __Python-Markdown__ project:
+    - [Official documentation](https://python-markdown.github.io/)
+    - [PIP Python-Markdown project page](https://pypi.org/project/Markdown/)
+- `pymdown-extensions`
+    ([the project's documentation](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/))
+    that improves some features of the __Python-Markdown__ module.
+
+
+## Packaging
+
+No special packaging actions required.
+
+
+## Testing
+
+To run unit tests execute:
+
+````shell
+> cd %MD2HTML_HOME%\python
+
+>run_tests.bat
+````
+
+The output must be something like this:
+
+````shell
+......................................................................................
+----------------------------------------------------------------------
+Ran 86 tests in 0.307s
+
+OK
+````
+
+Arguments may be used like this `run_tests.bat -v` (that will give a verbose output). Run 
+`python -m unittest discover --help` for all possible parameters.
+
+
+----------------------------------------------------------------------------------------------------
+# Java version
+
+This implementation uses module [vsch/flexmark-java](https://github.com/vsch/flexmark-java) 
+for converting Markdown text to HTML.
+
+
+## Packaging
+
+The packaging and the tests are defined in the source code and run automatically when the
+project is built. See the [installation instructions](installation.html#installation_java) for
+more details.
+
+----------------------------------------------------------------------------------------------------
+# Integral tests
+
+The integral tests test the built and ready-to-use program's artifacts. These tests are the same
+for the Python and the Java versions.
+
+
+## Implementation
+
+The test framework Python [`unittest`](https://docs.python.org/3.8/library/unittest.html) is used.
+[Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-the-tree)
+library is used for HTML parsing.
+
+
+## Prerequisites
+
+To run the integral tests [Python 3](https://www.python.org/) is required. The following
+additional Python package must be installed:
+
+````shell
+$ python3 -m pip install beautifulsoup4
+````
+
+All tested artifacts must be built (if required). All unit tests must pass.
+
+
+## Execution
+
+````shell
+>cd %MD2HTML_HOME%\test
+
+>run_tests.bat
+````
+
+or 
+
+````shell
+$ cd $MD2HTML_HOME/test
+
+$ ./run_tests
+````
+
+The result must look like this:
+
+````shell
+===== py implementation integral tests =====
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 8.743s
+
+OK
+
+===== java implementation integral tests =====
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 23.038s
+
+OK
+````

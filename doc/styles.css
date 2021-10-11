@@ -202,3 +202,7 @@ div.admonition.note>p.admonition-title {
     background-color: #edf4ff;
 }
 
+div.admonition li {
+    width: 838px;
+}
+

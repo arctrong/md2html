@@ -1,52 +1,83 @@
 package world.md2html;
 
-import world.md2html.options.*;
+import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.argfile.ArgFileParseException;
+import world.md2html.options.argfile.ArgFileParser;
+import world.md2html.options.cli.CliArgumentsException;
+import world.md2html.options.model.CliOptions;
+import world.md2html.options.cli.CliParser;
+import world.md2html.options.model.Document;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 
 public class Md2HtmlRunner {
 
     public static void main(String[] args) throws Exception {
+
+        long start = System.nanoTime();
+
         String usage = "java " + Md2Html.class.getSimpleName();
-        CliParserHelper cliParserHelper = new CliParserHelper(usage);
-        Md2HtmlOptions md2HtmlOptions = null;
+        CliOptions cliOptions = null;
         try {
-            md2HtmlOptions = cliParserHelper.parse(args);
+            cliOptions = new CliParser(usage).parse(args);
         } catch (CliArgumentsException e) {
             System.out.println(e.getPrintText());
             System.exit(1);
         }
 
-        List<Md2HtmlOptions> md2HtmlOptionsList = null;
-        Path argumentFile = md2HtmlOptions.getArgumentFile();
+        Path argumentFile = cliOptions.getArgumentFile();
+        String argumentFileString = null;
         if (argumentFile != null) {
             try {
-                String argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
+                argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
                         StandardCharsets.UTF_8);
-                md2HtmlOptionsList = ArgumentFileParser.parse(argumentFileString, md2HtmlOptions);
             } catch (IOException e) {
                 System.out.println("Error parsing argument file '" + argumentFile +
                         "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
                 System.exit(1);
-            } catch (ArgumentFileParseException e) {
-                System.out.println("Error parsing argument file '" + argumentFile + "': " +
-                        e.getMessage());
-                System.exit(1);
             }
         } else {
-            md2HtmlOptionsList = Collections.singletonList(md2HtmlOptions);
+            // When run without argument file, need implicitly added
+            // plugin for page title extraction from the source text.
+            argumentFileString = "{\"documents\": [{}], \"plugins\": {\"page-variables\": " +
+                    "{\"VARIABLES\": {\"only-at-page-start\": true}";
+            if (cliOptions.isLegacyMode()) {
+                argumentFileString += ", \"METADATA\": {\"only-at-page-start\": true}";
+            }
+            argumentFileString += "}}}}";
         }
 
-        md2HtmlOptionsList =
-                Md2HtmlOptionUtils.enrichDocumentMd2HtmlOptionsList(md2HtmlOptionsList);
+        ArgFileOptions argFileOptions = null;
+        try {
+            argFileOptions = ArgFileParser.parse(argumentFileString, cliOptions);
+        } catch (ArgFileParseException e) {
+            System.out.println("Error parsing argument file '" + argumentFile + "': " +
+                    e.getMessage());
+            System.exit(1);
+        }
 
-        for (Md2HtmlOptions opt : md2HtmlOptionsList) {
-            Md2Html.execute(opt);
+        PageMetadataHandlersWrapper metadataHandlersWrapper =
+                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+
+        for (Document doc : argFileOptions.getDocuments()) {
+            try {
+                Md2Html.execute(argFileOptions.getOptions(), doc, argFileOptions.getPlugins(),
+                        metadataHandlersWrapper);
+            } catch(UserError e) {
+                System.out.println("Error processing input file '" + doc.getInputLocation() +
+                        "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                System.exit(1);
+            }
+        }
+
+        if (argFileOptions.getOptions().isVerbose()) {
+            long end = System.nanoTime();
+            System.out.println("Finished in: " + Utils.formatNanoSeconds(end - start));
         }
     }
 

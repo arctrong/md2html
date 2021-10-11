@@ -1,17 +1,37 @@
 {
+    "options": {
+        "verbose": true
+    },
     "default": {
-        # This is the default options for all documents
         "template": "doc_src/templates/custom.html",
         "no-css": true,
         "verbose": true
     },
     "documents": [
-        { "input": "readme.txt" },
-        { "input": "doc_src/readme_py.txt", "output": "doc/readme_py.html", "title": "md2html: Python version" },
-        { "input": "doc_src/readme_java.txt", "output": "doc/readme_java.html", "title": "md2html: Java version" },
-        { "input": "doc_src/default_template.txt", "output": "doc/default_template.html", "title": "md2html: Default template", "template": "doc_src/templates/default.html", "no-css": false },
-        { "input": "doc_src/template_placeholders.txt", "output": "doc/template_placeholders.html", "title": "md2html: Template placeholders", "template": "doc_src/templates/placeholders_demo.html" },
-        { "input": "doc_src/text_masking.txt", "output": "doc/text_masking.html", "link-css": ["styles.css", "masking.css"], "template": "doc_src/templates/default.html" },
-        { "input": "doc_src/integral_tests.txt", "output": "doc/integral_tests.html" }
-    ]
+        { "input": "readme.txt", "title": "Home", "page-flows": ["sections"] },
+        { "input": "doc_src/installation.txt", "output": "doc/installation.html", "title": "Installation", "page-flows": ["sections"] },
+        { "input": "doc_src/usage.txt", "output": "doc/usage.html", "title": "Usage", "page-flows": ["sections"] },
+        { "input": "doc_src/page_content.txt", "output": "doc/page_content.html", "title": "Page content", "page-flows": ["sections"] },
+        { "input": "doc_src/templates.txt", "output": "doc/templates.html", "title": "Templates", "page-flows": ["sections"] },
+        { "input": "doc_src/plugins.txt", "output": "doc/plugins.html", "title": "Plugins", "page-flows": ["sections"] },
+        { "input": "doc_src/development.txt", "output": "doc/development.html", "title": "Development", "page-flows": ["sections"] }
+    ],
+    "plugins": {
+        "relative-paths": { "resource_path": "doc/" },
+        "page-flows": {
+            "header": [
+                { "link": "readme.html", "title": "Home" },
+                { "link": "doc/installation.html", "title": "Installation" },
+                { "link": "doc/usage.html", "title": "Usage" },
+                { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
+            ],
+            "useful_links": [
+                { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },
+                { "link": "https://mustache.github.io/", "title": "Mustache", "external": true },
+                { "link": "https://json.org/", "title": "JSON", "external": true }
+            ]
+        },
+        "variables": {"logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:dimgray;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>" },
+        "page-variables": {}
+    }
 }
