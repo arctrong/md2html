@@ -143,7 +143,6 @@ provides the following structured data:
 Field | Description
 ----- | -----
 `{{_name_}}` | Iterable, returns [pages](#page_flow_page_structure)
-`{{_name_.pages}}` | The same
 `{{_name_.previous}}` | Previous [page](#page_flow_page_structure) if exists
 `{{_name_.current}}` | Current [page](#page_flow_page_structure) if exists
 `{{_name_.next}}` | Next [page](#page_flow_page_structure) if exists
@@ -169,6 +168,11 @@ know the previous and the next pages and render the navigations. Here's a simple
 {{#sidebar.next}}<a href="{{link}}">[NEXT]</a>{{/sidebar.next}}
 ````
 
+!!! tip
+    `{{#sidebar.previous}}...{{/sidebar.previous}}` means that if `sidebar.previous` value 
+    exists then the enclosed content is rendered. `sidebar.previous` value is a page and has
+    attribute `link` that is used in the rendered block.
+
 Also for the current page we have the whole page sequence of the page flow and can render this
 list in the sidebar. As we know which page or pages are current, we can highlight this links.
 Here's a simplified example of how the sidebar items may be rendered:
@@ -178,6 +182,11 @@ Here's a simplified example of how the sidebar items may be rendered:
 <li><a class="sidebarItem{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a></li>
 {{/sidebar}}</ul>
 ````
+
+!!! tip
+    `{{#sidebar}}...{{/sidebar}}` means that for each item in the `sidebar` value (that is 
+    iterable) render the enclosed content. The items are pages and their attributes `link`,
+    `title` and `current` are used in the rendered block.
 
 This documentation demonstrates pretty typical usage of this plugin. Also see the template
 `doc_src/templates/custom.html` and the _argument file_ `md2html_args.json` for more
@@ -234,10 +243,10 @@ The metadata content must be a valid [JSON](https://json.org/).
 
 ## Motivation
 
-This plugin defines variables that are not bound to certain pages. Such values may be directly
-included into the template with no need of using this plugin. But when the same template is used
-by several projects it may be convenient to define some variable parts that different projects
-may substitute using their _argument files_.
+This plugin defines variables that are not bound to certain pages. Actually such values may be
+included directly into the template with no need of using this plugin. But when the same template
+is used by several projects it may be convenient to define some template variable parts that
+different projects may substitute using their _argument files_.
 
 ## Definition
 
@@ -247,8 +256,8 @@ may substitute using their _argument files_.
 
 ## Usage
 
-Tag `{{{logo}}}` will be substituted in the template. Note that three pair of curly braces are
-used to fulfill the substitution without HTML escaping.
+Tag (or tags) `{{{logo}}}` in the template will be substituted in the template. (Note that in
+this case three pairs of curly braces are used to avoid HTML-escaping on substitution.)
 
 
 

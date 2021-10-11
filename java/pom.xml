@@ -93,11 +93,11 @@
             <version>${flexmark.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.eclipsesource.minimal-json</groupId>
-            <artifactId>minimal-json</artifactId>
-            <version>0.9.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.eclipsesource.minimal-json</groupId>-->
+<!--            <artifactId>minimal-json</artifactId>-->
+<!--            <version>0.9.5</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -147,8 +147,17 @@
     </dependencies>
 
     <build>
-        <plugins>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <targetPath>META-INF/licenses</targetPath>
+                <directory>../licenses</directory>
+            </resource>
+        </resources>
 
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

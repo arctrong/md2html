@@ -27,7 +27,8 @@
             ],
             "useful_links": [
                 { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },
-                { "link": "https://mustache.github.io/", "title": "Mustache", "external": true }
+                { "link": "https://mustache.github.io/", "title": "Mustache", "external": true },
+                { "link": "https://json.org/", "title": "JSON", "external": true }
             ]
         },
         "variables": {"logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:dimgray;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>" },
