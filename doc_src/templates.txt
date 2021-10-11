@@ -40,7 +40,8 @@ Tag key | Description
 `{{generation_date}}` | The generation date (YYYY-MM-DD)
 `{{generation_time}}` | The generation time (hh:mm:ss)
 
-The other tags may be provided by _plugins_ that are described in the other sections.
+The other tags may be provided by _plugins_ that are described in the
+[other section](plugins.html).
 
 !!! note
     The two or three pairs of curly braces must be used for the certain tags as it's presented

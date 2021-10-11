@@ -128,7 +128,7 @@ may be defined directly in the `"documents"` section:
 ````
 
 But the plugin itself must be activated to make it work. So even if all page flows are defined
-in the `"documents"` section an empty the plugin definition must be added to the `"plugins"`
+in the `"documents"` section the plugin empty definition must be added to the `"plugins"`
 section.
 
 The `"page-flows"` document definition may be carried out to the `"default"` section (not

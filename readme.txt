@@ -15,7 +15,7 @@ tool.
 
 # How it works?
 
-You create a text document like this:
+You write a text like this:
 
 ````
 !!! note
@@ -45,8 +45,8 @@ goal is making texts that are as readable as possible in plain text.
 
 This syntax is very simple and allows writing very fast. It has enough features for writing
 a variety of document kinds. Though because of its simplicity it's quite restricted and contains
-just a very small subset of HTML features. But it allows direct inclusions of HTML code that
-helps obtain more complex result when it's required.
+just a very small subset of HTML features, it allows direct inclusions of HTML code that
+helps achieve more complex results when it's required.
 
 
 # Features
@@ -63,7 +63,7 @@ make the documentation look more professionally.
 
 **M<sub>2</sub>H** doesn't lay much restrictions on the documentation project organization and
 lets the user make their own configuration. There are recommendations on the project organization
-described in this documentation and used for its production.
+described in this documentation and used for its creation.
 
 
 # Implementation
