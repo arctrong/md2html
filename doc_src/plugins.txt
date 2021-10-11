@@ -111,7 +111,8 @@ In the `"plugins"` sections:
 }
 ````
 
-In the `"documents"` sections:
+In the above example the three pages are defined twice. To avoid such repetition the page flows 
+may be defined directly in the `"documents"` section:
 
 ````
 {
@@ -119,9 +120,16 @@ In the `"documents"` sections:
         { "input": "page1.txt", "output": "page1.html", "title": "Page 1", "page-flows": ["sidebar"] },
         { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2", "page-flows": ["sidebar"] },
         { "input": "page3.txt", "output": "doc/page3.html", "title": "Page 3", "page-flows": ["sidebar"] }
-    ]
+    ],
+    "plugins": {
+        "page-flows": {}
+    }
 }
 ````
+
+But the plugin itself must be activated to make it work. So even if all page flows are defined
+in the `"documents"` section an empty the plugin definition must be added to the `"plugins"`
+section.
 
 The `"page-flows"` document definition may be carried out to the `"default"` section (not
 demonstrated here). Several page flows may be defined and a single page may be a part of several
@@ -147,118 +155,103 @@ The page has the following structure:
 
 Field | Description
 ----- | -----
-`{{link}}` | The link that references the page
+`{{link}}` | The link that references the page. Recalculated for the current page
 `{{title}}` | The title of the page
 `{{external}}` | Boolean, external pages can never be current
-`{{first}}` | Boolean, the first page in the sequence
-`{{last}}` | Boolean, the last page in the sequence
+`{{first}}` | Boolean, `true` if this is the first page in the sequence
+`{{last}}` | Boolean, `true` if this is the last page in the sequence
 
 This data is calculated for every page that uses this template. So for the current page we can 
-know the previous and next page and render the navigations accordingly. Also for the current
-page we have the whole page sequence of the page flow and can render this list in the sidebar.
-As we know which page or pages are current, we can highlight this link.
-
-A usage example can be too large so it's not provided here. This documentation demonstrates
-the result of this plugin's work. Also see the template `doc_src/templates/custom.html` and
-the _argument file_ `md2html_args.json` to find out the correspondence between the plugin
-definition and usage.
-
-----------------------------------------------------------------------------------------------------
-# "" plugin
-
-## Motivation
-
-
-## Definition
-
-
-## Usage
-
-
-----------------------------------------------------------------------------------------------------
-# "" plugin
-
-## Motivation
-
-
-## Definition
-
-
-## Usage
-
-
-----------------------------------------------------------------------------------------------------
-# "" plugin
-
-## Motivation
-
-
-## Definition
-
-
-## Usage
-
-
-
-
-
-
-
-
-
-
-
-
-## Page metadata
-
-Along with its target content a source Markdown text may contain page _metadata_ that is not a
-part of the Markdown syntax. The format of the page metadata is:
+know the previous and the next pages and render the navigations. Here's a simple example:
 
 ````
-<!--METADATA {
-"title": "My title",
-"placeholders": {"key1": "value1", "key2": "value2"}
-}-->
+{{#sidebar.previous}}<a href="{{link}}">[PREVIOUS]</a>{{/sidebar.previous}}
+{{#sidebar.next}}<a href="{{link}}">[NEXT]</a>{{/sidebar.next}}
 ````
 
-> __NOTE.__ __1.__ The page metadata may affect the HTML generation process and the final HTML 
-> document in the end. But it is ignored as a part of the source document, so it will not 
-> literally appear in the generated HTML code (though it anyway would not be visible as it's,
-> in fact, an HTML/XML comment).
-> 
-> __2.__ The page metadata processing will not fail the page generation. If there are incorrect 
-> fragments in metadata, reasonable attempts will be done to recognize the correct elements, 
-> all the other parts will be ignored. If verbose mode is on then a warning messages will be
-> output to the console.
+Also for the current page we have the whole page sequence of the page flow and can render this
+list in the sidebar. As we know which page or pages are current, we can highlight this links.
+Here's a simplified example of how the sidebar items may be rendered:
 
-The page metadata section must be the first non-space text in the source document, otherwise it
-will be ignored (and literally left as the the source text). The `METADATA` keyword is
-case-insensitive and must follow directly after the opening marker `<!--` without
-any space. The metadata content must be a valid _JSON_ text, that means that the keys are
-case-sensitive and must be enclosed in double quotes. Also the root element must be an object
-(i.e. in curly braces).
+````
+<ul>{{#sidebar}}
+<li><a class="sidebarItem{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a></li>
+{{/sidebar}}</ul>
+````
 
-> __NOTE!__ Opening `<!--` and closing markers `-->` must not be used inside  the metadata
-> section. Also consecutive hyphens `--` inside HTML comments probably may be a problem in some
-> browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
-> `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
-> page content and the context, opening and closing markers, even when escaped in JSON, may 
-> cause unexpected result. Check it first if you really need to use these symbols.
+This documentation demonstrates pretty typical usage of this plugin. Also see the template
+`doc_src/templates/custom.html` and the _argument file_ `md2html_args.json` for more
+understanding of correspondence between the plugin's definition and usage.
 
-<a name="page_metadata_parameters"></a>
+----------------------------------------------------------------------------------------------------
+# "page-variables" plugin
 
-The following metadata parameters are supported:
+## Motivation
 
-- `title` of type string (i.e. it must always be in double quotes), defines the default page
-    title. The title defined by the command line arguments (if any) will override the default
-    page title.
-- `placeholders` of type object, defines values that will replace custom 
-    placeholders when the template is resolved. The values type must be string only.
+This plugin extracts variables from documents source text and provides these variables to be
+used in the template.
 
-> __NOTE.__ The placeholders are substituted without checks and modifications that makes it
-> possible to inject any code (like JavaScript) into the generated HTML documents
-> via the source texts. This must not be a problem for personal use but probably may be a
-> security issue when converting and publishing source texts from untrusted third-parties.
-> Still such inclusions may be also done with direct HTML code in the source texts (see 
-> [here](#html_code_inclision) for more more description and example).
-> 
+## Definition
+
+````
+    "plugins": {
+        "page-variables": {"variables": {"only-at-page-start": true} }
+    }
+````
+
+This means that variables will be extracted from the _page metadata_ blocks with marker
+`variables` and only from those blocks that are the first non-blank text on the page.
+This is the definition of the default marker so it may be simplified to `"page-variables": {}`,
+and this is the recommended form.
+
+## Usage
+
+For the above plugin definition the metadata blocks may look like:
+
+````
+<!--variables {"title": "My page", "noPageTitle": true}-->
+````
+
+The marker is `variables` and it is case insensitive. The variables are `title` and `noPageTitle`
+and the tags `{{title}}` and `{{noPageTitle}}` will be replaced with the defined values when
+this page is processed.
+
+The _page metadata_ blocks will be removed from the source text if they are recognized and
+processed by the defined markers.
+
+The metadata content must be a valid [JSON](https://json.org/).
+
+!!! Note
+    Opening `<!--` and closing markers `-->` must not be used inside the metadata
+    section. Also consecutive hyphens `--` inside HTML comments may probably be a problem in some
+    browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
+    `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
+    page content and the context, opening and closing markers, even when escaped in JSON, may 
+    cause unexpected result. Check it first if you really need to use these symbols.
+
+----------------------------------------------------------------------------------------------------
+# "variables" plugin
+
+## Motivation
+
+This plugin defines variables that are not bound to certain pages. Such values may be directly
+included into the template with no need of using this plugin. But when the same template is used
+by several projects it may be convenient to define some variable parts that different projects
+may substitute using their _argument files_.
+
+## Definition
+
+````
+"variables": {"logo": "<img src=\"logo.png\" />" }
+````
+
+## Usage
+
+Tag `{{{logo}}}` will be substituted in the template. Note that three pair of curly braces are
+used to fulfill the substitution without HTML escaping.
+
+
+
+
+
+

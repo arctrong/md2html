@@ -69,9 +69,15 @@ markup it's better, and sometimes required, to leave an empty line before these 
 the generated HTML. The example can be seen at the top of this and other pages. The ToC is
 composed of the headers found on the page.
 
-!!! Note
+!!! note
     Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
     that would contain only the sub-headers of this header.
+    
+!!! note
+    The Python and the Java versions give slightly different ToC appearance. The Java version
+    preserves the header text formatting while the Python version removes this formatting. So
+    if a header contains e.g. an `inline code block` the Python version will reflect this
+    code block as unformatted text in the corresponding ToC item.
 
 ----------------------------------------------------------------------------------------------------
 # Links
