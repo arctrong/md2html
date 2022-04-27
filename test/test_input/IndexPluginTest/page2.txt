@@ -1,0 +1,6 @@
+
+<!--index term5 -->
+Description of term 5.
+
+<!--index term 2 ] -->
+Another description of term 2.

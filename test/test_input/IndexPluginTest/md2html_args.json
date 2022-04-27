@@ -1,0 +1,20 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/IndexPluginTest/template.html",
+        "verbose": false,
+        "link-css": "../doc/styles.css"
+    },
+    "documents": [
+        { "input": "test_input/IndexPluginTest/page1.txt", "title": "Page 1", "output": "test_output/Md2htmlIndexPluginIntegralTest/page1.html" },
+        { "input": "test_input/IndexPluginTest/page2.txt", "title": "Page 2", "output": "test_output/Md2htmlIndexPluginIntegralTest/page2.html" },
+        { "input": "test_input/IndexPluginTest/page3.txt", "title": "Page 3", "output": "test_output/Md2htmlIndexPluginIntegralTest/page3.html" }
+    ],
+    "plugins": {
+       "variables": {"custom_variable_1": "custom value 1" },
+        "index": {"output": "test_output/Md2htmlIndexPluginIntegralTest/index_page.html", "title": "Index",
+            "index-cache": "test_output/Md2htmlIndexPluginIntegralTest/index_cache.json" }
+    }
+}

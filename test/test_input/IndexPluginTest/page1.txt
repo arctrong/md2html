@@ -1,0 +1,12 @@
+
+<!--index term1 -->
+Description of term 1.
+
+<!--index ["term 2", "term 3"] -->
+Description of term 2 and term 3.
+
+<!--index multiword term 4 -->
+Description of multiword term 4.
+
+<!--index term 2 ] -->
+Another description of term 2.
