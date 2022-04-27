@@ -23,6 +23,7 @@
                 { "link": "readme.html", "title": "Home" },
                 { "link": "doc/installation.html", "title": "Installation" },
                 { "link": "doc/usage.html", "title": "Usage" },
+                { "link": "doc/index_page.html", "title": "Index" },
                 { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
             ],
             "useful_links": [
@@ -32,6 +33,7 @@
             ]
         },
         "variables": {"logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:dimgray;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>" },
-        "page-variables": {}
+        "page-variables": {},
+        "index": {"output": "doc/index_page.html", "title": "Index", "index-cache": "doc/index_cache.json" }
     }
 }

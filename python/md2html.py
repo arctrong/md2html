@@ -145,6 +145,25 @@ def main():
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
 
+        for plugin in arguments.plugins:
+            additional_documents = plugin.get_additional_documents()
+            if additional_documents:
+                argument_file_dict["documents"] = additional_documents
+                additional_arguments = parse_argument_file_content(argument_file_dict, cli_args, False)
+                plugin.set_additional_documents_processed(additional_arguments.documents,
+                                                          arguments.plugins,
+                                                          metadata_handlers,
+                                                          additional_arguments.options)
+
+        after_all_page_processed_actions = []
+        for plugin in arguments.plugins:
+            after_all_page_processed_actions.extend(plugin.after_all_page_processed_actions())
+        for action in after_all_page_processed_actions:
+            try:
+                action.execute_after_all_page_processed()
+            except UserError as e:
+                raise UserError(f"Error in after-all-pages-processed action: {type(e).__name__}: {e}")
+
         if arguments.options["verbose"]:
             end_moment = time.monotonic()
             print('Finished in: ' + str(timedelta(seconds=end_moment - start_moment)))

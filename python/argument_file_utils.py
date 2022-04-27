@@ -4,7 +4,8 @@ from pathlib import Path
 
 from jsonschema import validate, ValidationError
 
-from constants import DEFAULT_TEMPLATE_PATH, DEFAULT_CSS_FILE_PATH, PLUGINS
+from constants import DEFAULT_TEMPLATE_PATH, DEFAULT_CSS_FILE_PATH
+from plugin_constants import PLUGINS
 from utils import UserError, read_lines_from_commented_json_file, \
     reduce_json_validation_error_message, first_not_none, strip_extension
 
@@ -48,10 +49,15 @@ def add_documents_page_flows_data(plugins_page_flow_item, documents_page_flows):
         plugins_page_flow_item[k] = new_items
 
 
-def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arguments:
+def parse_argument_file_content(argument_file_dict: dict, cli_args: dict,
+                                process_plugins: bool = True) -> Arguments:
+    """
+    If `process_plugins` parameter is set to `False` then plugins will not be processed and the result
+    will contain empty `plugins` field. This method cannot be easily split because the `plugins` section
+    processing is connected with the `documents` section processing.
+    """
 
     documents = []
-    plugins = []
     options = argument_file_dict.setdefault('options', {})
     plugins_item = argument_file_dict.setdefault('plugins', {})
 
@@ -65,8 +71,6 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arg
     options[attr] = first_not_none(options.get(attr), cli_args.get(attr), False)
     options['legacy_mode'] = first_not_none(cli_args.get('legacy_mode'),
                                             options.get('legacy-mode'), False)
-
-    # plugins_item = argument_file_dict.setdefault('plugins', {})
 
     if options['legacy_mode']:
         page_variables = plugins_item.setdefault("page-variables", {})
@@ -177,14 +181,16 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arg
 
     add_documents_page_flows_data(page_flows_plugin_item, documents_page_flows)
 
-    for k, v in plugins_item.items():
-        plugin = PLUGINS.get(k)
-        if plugin:
-            try:
-                if plugin.accept_data(v):
-                    plugins.append(plugin)
-            except UserError as e:
-                raise UserError(f"Error initializing plugin '{k}': {type(e).__name__}: {e}")
+    plugins = []
+    if process_plugins:
+        for k, v in plugins_item.items():
+            plugin = PLUGINS.get(k)
+            if plugin:
+                try:
+                    if plugin.accept_data(v):
+                        plugins.append(plugin)
+                except UserError as e:
+                    raise UserError(f"Error initializing plugin '{k}': {type(e).__name__}: {e}")
 
     return Arguments(options, documents, plugins)
 

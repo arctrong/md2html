@@ -3,6 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 # What is template?
 
+<!--index template -->
 In this program [Mustache](https://mustache.github.io/) template engine is used for the HTML
 templates processing. A simple template file may look like this:
 

@@ -59,3 +59,27 @@ class Md2HtmlPlugin(ABC):
         state) when a new page comes to be processed.
         """
         pass
+
+    def get_additional_documents(self) -> list:
+        """
+        A plugin may generate additional documents, like an index file. This method returns  a list of
+        such additional document definitions to be processed using the command line arguments and
+        the argument file.
+        """
+        return []
+
+    def set_additional_documents_processed(self, documents, plugins, metadata_handlers, options):
+        """
+        Accepts additional documents processed using the command line arguments and
+        the argument file. Also accepts the contextual information.
+        """
+        pass
+
+    def after_all_page_processed_actions(self):
+        """
+        Returns a list of handlers that must have the method `execute_after_all_page_processed`.
+        """
+        return []
+
+    def execute_after_all_page_processed(self):
+        pass

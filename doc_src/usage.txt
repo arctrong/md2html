@@ -118,7 +118,7 @@ This method accepts all required parameters in the command line and allows proce
 per one run. It's selected if the `--argument-file` argument is not specified.
 
 ----------------------------------------------------------------------------------------------------
-<a name="using_argument_file"></a>
+<a name="using_argument_file"></a><!--index argument file -->
 # Using argument file
 
 The `--argument-file ARGUMENT_FILE` argument defines the __argument file__ that will be used for
@@ -283,7 +283,7 @@ _plugin name_ | _defined by plugin_ | No | Plugin data
 The plugins data and the plugins themselves are described in [separate sections](plugins.html).
 
 ----------------------------------------------------------------------------------------------------
-<a name="command_scripts"></a>
+<a name="command_scripts"></a><!--index command scripts -->
 # Command scripts
 
 The following convenience command scripts provided:
@@ -469,7 +469,7 @@ This process consists of several steps.
     by choice, the other script from the section ["Command scripts"](#command_scripts).
 
 
-<a name="legacy_mode"></a>
+<a name="legacy_mode"></a><!--index legacy mode -->
 ## Legacy mode
 
 The `--legacy-mode` command line argument or the `"legacy-mode: true` property in the

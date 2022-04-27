@@ -40,6 +40,8 @@ this:
 
 # Markdown
 
+<!--index Markdown -->
+
 [Markdown](https://daringfireball.net/projects/markdown/) is a formatting syntax whose main goal
 is making texts that are as readable as possible in plain text.
 

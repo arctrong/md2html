@@ -24,6 +24,8 @@ So if `https://domain/md2html/doc/page_content.html` is the URL of an HTML page 
 ----------------------------------------------------------------------------------------------------
 # Text effects
 
+<!--index ["superscript", "subscript"] -->
+
 <div class="tableGridded"></div>
 
 Text effect | Markdown/HTML syntax
@@ -41,7 +43,7 @@ Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>`
     1. Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
         text is not implemented in this program. First, these effects must not be required very
         often. Second, such markup may cause problems if we write text like "C++", or `++i`.
-        The used direct HTML markup lets achieve these effects safely.
+        The used direct HTML markup lets achieve these effects safely.<!--index superscript --><!--index subscript -->
     1. Subscript and superscript are not in the Markdown syntax. Here direct HTML markup
         is used as a possible workaround.
     
@@ -276,6 +278,7 @@ This will give:
 > __Note.__ Small extra gap appears above header-less tables that is not avoidable as for now.
 
 ----------------------------------------------------------------------------------------------------
+<!--index fenced code blocks -->
 # Fenced code blocks
 
 Fenced code blocks may be set up by four-space indent, or by four backticks (` ```` `), i.e.
@@ -345,6 +348,7 @@ System.out.println("This block demonstrates " +
 > - Item 2
 
 ----------------------------------------------------------------------------------------------------
+<!--index admonitions -->
 # Admonitions
 
 !!! info

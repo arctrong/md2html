@@ -3,6 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 # About plugins
 
+<!--index plugins -->
 Plugins automate and simplify typical tasks and make the documentation more structural and easy
 to use.
 
@@ -77,6 +78,7 @@ That's it. When a document using this template is generated, this tag will be re
 the corresponding path.
 
 ----------------------------------------------------------------------------------------------------
+<!--index page flows -->    
 # "page-flows" plugin
 
 ## Motivation
