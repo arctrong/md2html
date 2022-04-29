@@ -1,9 +1,9 @@
 package world.md2html.options.model;
 
 import world.md2html.Constants;
-import world.md2html.options.model.Document;
 import world.md2html.utils.Utils;
 
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import static world.md2html.utils.Utils.isNullOrEmpty;
@@ -16,11 +16,20 @@ public class OptionsModelUtils {
     private OptionsModelUtils() {
     }
 
-    public static Document enrichDocument(Document document) {
-        return new Document(document.getInputLocation(),
-                document.getOutputLocation() == null ?
-                        Utils.stripExtension(document.getInputLocation()) + ".html" :
-                        document.getOutputLocation(),
+    public static Document enrichDocument(Document document, String inputRoot, String outputRoot) {
+        String outputLocation = document.getOutputLocation() == null ?
+                Utils.stripExtension(document.getInputLocation()) + ".html" :
+                document.getOutputLocation();
+        String inputLocation = inputRoot == null ? document.getInputLocation() :
+            Paths.get(inputRoot).resolve(document.getInputLocation()).toString()
+                    .replace('\\', '/');
+        if (outputRoot != null) {
+            outputLocation = Paths.get(outputRoot).resolve(outputLocation).toString()
+                    .replace('\\', '/');
+        }
+
+        return new Document(inputLocation,
+                outputLocation,
                 document.getTitle(),
                 document.getTemplate() == null ? Constants.WORKING_DIR.resolve(
                         DEFAULT_TEMPLATE_FILE) : document.getTemplate(),

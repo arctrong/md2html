@@ -81,33 +81,37 @@ def parse_argument_file_content(argument_file_dict: dict, cli_args: dict,
     if defaults_item is None:
         defaults_item = {}
 
-    documents_item = argument_file_dict['documents']
-
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
         raise UserError(f"'no-css' parameter incompatible with one of the ['link-css', "
                         f"'include-css'] in the 'default' section.")
 
-    for document_item in documents_item:
+    for document_item in argument_file_dict['documents']:
         document = {}
 
-        v = first_not_none(cli_args.get('input_file'), document_item.get("input"),
-                           defaults_item.get("input"))
-        if v is not None:
-            document['input_file'] = v
-        else:
+        input_file = first_not_none(cli_args.get('input_file'), document_item.get("input"),
+                                    defaults_item.get("input"))
+        if input_file is None:
             raise UserError(f"Undefined input file for 'documents' item: {document_item}.")
+        document['input_file'] = input_file
 
-        v = first_not_none(cli_args.get('output_file'), document_item.get("output"),
-                           defaults_item.get("output"))
-        document['output_file'] = v
+        document['output_file'] = first_not_none(cli_args.get('output_file'),
+                                                 document_item.get("output"),
+                                                 defaults_item.get("output"))
 
-        attr = 'title'
-        document[attr] = first_not_none(cli_args.get(attr), document_item.get(attr),
-                                        defaults_item.get(attr), '')
-        attr = 'template'
-        v = first_not_none(cli_args.get(attr), document_item.get(attr), defaults_item.get(attr))
-        document[attr] = Path(v) if v is not None else None
+        document['input_root'] = first_not_none(cli_args.get('input_root'),
+                                                document_item.get("input-root"),
+                                                defaults_item.get('input-root'))
+        document['output_root'] = first_not_none(cli_args.get('output_root'),
+                                                 document_item.get("output-root"),
+                                                 defaults_item.get('output-root'))
+
+        document['title'] = first_not_none(cli_args.get('title'), document_item.get('title'),
+                                           defaults_item.get('title'), '')
+
+        template = first_not_none(cli_args.get('template'), document_item.get('template'),
+                                  defaults_item.get('template'))
+        document['template'] = Path(template) if template is not None else None
 
         link_css = []
         include_css = []
@@ -201,5 +205,15 @@ def enrich_document(document):
     if not document['output_file']:
         document['output_file'] = str(Path(strip_extension(document['input_file']) + '.html')
                                       ).replace('\\', '/')
+
+    input_root = document['input_root']
+    if input_root:
+        document['input_file'] = str(Path(input_root).joinpath(document['input_file'])
+                                     ).replace('\\', '/')
+    output_root = document['output_root']
+    if output_root:
+        document['output_file'] = str(Path(output_root).joinpath(document['output_file'])
+                                      ).replace('\\', '/')
+
     if not document['no_css'] and not document['link_css'] and not document['include_css']:
         document['include_css'] = [MODULE_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]

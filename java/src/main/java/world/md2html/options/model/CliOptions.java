@@ -11,6 +11,8 @@ import java.util.List;
 public class CliOptions {
 
     private final Path argumentFile;
+    private final String inputRoot;
+    private final String outputRoot;
     private final String inputFile;
     private final String outputFile;
     private final String title;

@@ -3,18 +3,20 @@
         "verbose": true
     },
     "default": {
+        "input-root": "doc_src",
+        "output-root": "doc",
         "template": "doc_src/templates/custom.html",
         "no-css": true,
         "verbose": true
     },
     "documents": [
-        { "input": "readme.txt", "title": "Home", "page-flows": ["sections"] },
-        { "input": "doc_src/installation.txt", "output": "doc/installation.html", "title": "Installation", "page-flows": ["sections"] },
-        { "input": "doc_src/usage.txt", "output": "doc/usage.html", "title": "Usage", "page-flows": ["sections"] },
-        { "input": "doc_src/page_content.txt", "output": "doc/page_content.html", "title": "Page content", "page-flows": ["sections"] },
-        { "input": "doc_src/templates.txt", "output": "doc/templates.html", "title": "Templates", "page-flows": ["sections"] },
-        { "input": "doc_src/plugins.txt", "output": "doc/plugins.html", "title": "Plugins", "page-flows": ["sections"] },
-        { "input": "doc_src/development.txt", "output": "doc/development.html", "title": "Development", "page-flows": ["sections"] }
+        { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", "page-flows": ["sections"] },
+        { "input": "installation.txt", "title": "Installation", "page-flows": ["sections"] },
+        { "input": "usage.txt", "title": "Usage", "page-flows": ["sections"] },
+        { "input": "page_content.txt", "title": "Page content", "page-flows": ["sections"] },
+        { "input": "templates.txt", "title": "Templates", "page-flows": ["sections"] },
+        { "input": "plugins.txt", "title": "Plugins", "page-flows": ["sections"] },
+        { "input": "development.txt", "title": "Development", "page-flows": ["sections"] }
     ],
     "plugins": {
         "relative-paths": { "resource_path": "doc/" },
