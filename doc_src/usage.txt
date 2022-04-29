@@ -133,8 +133,7 @@ per one run. It's selected if the `--argument-file` argument is not specified.
 
 The `--argument-file ARGUMENT_FILE` argument defines the __argument file__ that will be used for
 processing. This may be a single parameter of the call or other command line parameters may be
-specified as well. In the latter case the specified command line parameters will **override**
-corresponding parameters in the _argument file_.
+specified as well. 
 
 The _argument file_ allows to define:
 
@@ -142,6 +141,11 @@ The _argument file_ allows to define:
 - the same parameters that can be specified in the command line;
 - some additional parameters;
 - extended processing using plugins.
+
+!!! note
+    The command line and the _argument file_ may specify different values for the parameters with
+    the same meaning (sometimes they have different name). In this case the command line
+    parameters will **override** the corresponding parameters in the _argument file_.
 
 Here is the simplest example of an _argument file_:
 

@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CliParserTest {
 
     private void assertMd2HtmlOptionsEquals(CliOptions o1, CliOptions o2) {
+        assertEquals(o1.getInputRoot(), o2.getInputRoot());
+        assertEquals(o1.getOutputRoot(), o2.getOutputRoot());
         assertEquals(o1.getInputFile(), o2.getInputFile());
         assertEquals(o1.getOutputFile(), o2.getOutputFile());
         assertEquals(o1.getTitle(), o2.getTitle());
@@ -76,7 +78,9 @@ class CliParserTest {
     public void maxArguments() throws Exception {
 
         // Short form
-        CliOptions options = getParsingResult("-i", "input.md", "-o", "doc/output.htm",
+        CliOptions options = getParsingResult(
+                "--input-root", "input/root", "--output-root", "output/root",
+                "-i", "input.md", "-o", "doc/output.htm",
                 "-t", "someTitle", "--template", "../templateDir", "--link-css=someStyles.css",
                 "-fv");
         assertEquals("input.md", options.getInputFile());
@@ -91,7 +95,9 @@ class CliParserTest {
         assertFalse(options.isReport());
 
         // Long form
-        CliOptions options1 = getParsingResult("--input", "input.md", "--output=doc/output.htm",
+        CliOptions options1 = getParsingResult(
+                "--input-root", "input/root", "--output-root", "output/root",
+                "--input", "input.md", "--output=doc/output.htm",
                 "--title", "someTitle", "--template", "../templateDir",
                 "--link-css", "someStyles.css", "--force", "--verbose");
         assertMd2HtmlOptionsEquals(options, options1);

@@ -37,8 +37,8 @@ public class ArgFileParser {
             throws ArgFileParseException {
 
         if (cliOptions == null) {
-            cliOptions = new CliOptions(null, null, null, null, null, null, null, false,
-                    false, false, false, false);
+            cliOptions = new CliOptions(null, null, null, null, null, null, null, null, null,
+                    false, false, false, false, false);
         }
 
         JsonNode argFileJsonNode;
@@ -121,6 +121,13 @@ public class ArgFileParser {
                     jsonObjectStringField(documentNode, "output"),
                     jsonObjectStringField(defaultNode, "output"));
 
+            String inputRoot = firstNotNull(cliOptions.getInputRoot(),
+                    jsonObjectStringField(documentNode, "input-root"),
+                    jsonObjectStringField(defaultNode, "input-root"));
+            String outputRoot = firstNotNull(cliOptions.getOutputRoot(),
+                    jsonObjectStringField(documentNode, "output-root"),
+                    jsonObjectStringField(defaultNode, "output-root"));
+
             String title = firstNotNull(cliOptions.getTitle(),
                     jsonObjectStringField(documentNode, "title"),
                     jsonObjectStringField(defaultNode, "title"));
@@ -191,7 +198,7 @@ public class ArgFileParser {
 
             Document document = OptionsModelUtils.enrichDocument(
                     new Document(inputFile, outputFile, title, templateFile, includeCss,
-                            linkCss, noCss, force, verbose, report));
+                            linkCss, noCss, force, verbose, report), inputRoot, outputRoot);
             documentList.add(document);
 
             // Even if all page flows are defined in the 'documents' section, at least empty

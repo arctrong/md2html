@@ -10,7 +10,6 @@ import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageVariablesPlugin;
-import world.md2html.testutils.PluginTestUtils;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -19,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static world.md2html.testutils.PluginTestUtils.*;
 import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
+import static world.md2html.testutils.PluginTestUtils.findSinglePlugin;
 
 public class ArgFileParserTest {
 
@@ -68,13 +67,14 @@ public class ArgFileParserTest {
     public void allParametersFromDefaultSection_PositiveScenario()
             throws ArgFileParseException {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
-                "{\"default\": {\"input\": \"index.txt\", \"output\": \"index.html\", " +
+                "{\"default\": {\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
+                        "\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], \"include-css\": [\"include.css\"], " +
                         "\"force\": true, \"verbose\": true}, \"documents\": [{}]}", null);
         Document doc = argFileOptions.getDocuments().get(0);
-        assertEquals("index.txt", doc.getInputLocation());
-        assertEquals("index.html", doc.getOutputLocation());
+        assertEquals("doc_src/index.txt", doc.getInputLocation());
+        assertEquals("doc/index.html", doc.getOutputLocation());
         assertEquals("some title", doc.getTitle());
         assertEquals(Paths.get("path/templates/custom.html"), doc.getTemplate());
         assertFalse(doc.isNoCss());
@@ -142,7 +142,8 @@ public class ArgFileParserTest {
     @Test
     public void fullDocument_PositiveScenario() throws ArgFileParseException {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
-                "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
+                "{\"documents\": [{\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
+                        "\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], " +
                         "\"add-link-css\": [\"add_link.css\"], " +
@@ -150,8 +151,8 @@ public class ArgFileParserTest {
                         "\"add-include-css\": [\"add_include1.css\", \"add_include1.css\"], " +
                         "\"force\": true, \"verbose\": true}]}", null);
         Document doc = argFileOptions.getDocuments().get(0);
-        assertEquals("index.txt", doc.getInputLocation());
-        assertEquals("index.html", doc.getOutputLocation());
+        assertEquals("doc_src/index.txt", doc.getInputLocation());
+        assertEquals("doc/index.html", doc.getOutputLocation());
         assertEquals("some title", doc.getTitle());
         assertEquals(Paths.get("path/templates/custom.html"), doc.getTemplate());
         assertFalse(doc.isNoCss());
@@ -194,21 +195,22 @@ public class ArgFileParserTest {
     @Test
     public void overridingWithCliArgs_PositiveScenario() throws ArgFileParseException {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
-                "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
+                "{\"documents\": [{\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
+                        "\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], " +
                         "\"add-link-css\": [\"add_link.css\"], " +
                         "\"include-css\": [\"include.css\"], " +
                         "\"add-include-css\": [\"add_include1.css\", \"add_include1.css\"], " +
                         "\"force\": false, \"verbose\": false}]}",
-                new CliOptions(null, "cli_index.txt", "cli_index.html",
+                new CliOptions(null, "cli_doc_src", "cli_doc", "cli_index.txt", "cli_index.html",
                         "cli_title", Paths.get("cli/custom.html"),
                         Arrays.asList(Paths.get("cli_include1.css"), Paths.get("cli_include2.css")),
                         Arrays.asList("cli_link1.css", "cli_link2.css"), false, true, true,
                         false, true));
         Document doc = argFileOptions.getDocuments().get(0);
-        assertEquals("cli_index.txt", doc.getInputLocation());
-        assertEquals("cli_index.html", doc.getOutputLocation());
+        assertEquals("cli_doc_src/cli_index.txt", doc.getInputLocation());
+        assertEquals("cli_doc/cli_index.html", doc.getOutputLocation());
         assertEquals("cli_title", doc.getTitle());
         assertEquals(Paths.get("cli/custom.html"), doc.getTemplate());
         assertFalse(doc.isNoCss());
@@ -246,7 +248,8 @@ public class ArgFileParserTest {
         ArgFileOptions argFileOptions = ArgFileParser.parse(
                 "{\"options\": {\"verbose\": true}, " +
                         "\"documents\": [{\"input\": \"index.txt\"}]}",
-                new CliOptions(Paths.get("unknown_arg_file.json"), "input.txt", "output.html",
+                new CliOptions(Paths.get("unknown_arg_file.json"), null, null,
+                        "input.txt", "output.html",
                         "title", Paths.get("unknown_template.html"), Collections.emptyList(),
                         Collections.emptyList(), true, false, false, false, true));
         assertTrue(argFileOptions.getOptions().isLegacyMode());
@@ -281,6 +284,25 @@ public class ArgFileParserTest {
                 "\"variables\": {\"logo\": \"THE GREATEST SITE EVER!\"}}}", null);
         List<Md2HtmlPlugin> plugins = argFileOptions.getPlugins();
         assertEquals(4, plugins.size());
+    }
+
+    @Test
+    public void auto_output_file_with_root_dirs_PositiveScenario() throws ArgFileParseException {
+        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+                "{\"input-root\": \"doc_src/txt\", \"output-root\": \"doc/html\", " +
+                "\"input\": \"index.txt\"}, " +
+                "{\"output-root\": \"doc/html\", \"input\": \"index.txt\"}, " +
+                "{\"input-root\": \"doc_src/txt\", \"input\": \"index.txt\"}" +
+                "]}}}", null);
+        Document doc = argFileOptions.getDocuments().get(0);
+        assertEquals("doc_src/txt/index.txt", doc.getInputLocation());
+        assertEquals("doc/html/index.html", doc.getOutputLocation());
+        doc = argFileOptions.getDocuments().get(1);
+        assertEquals("index.txt", doc.getInputLocation());
+        assertEquals("doc/html/index.html", doc.getOutputLocation());
+        doc = argFileOptions.getDocuments().get(2);
+        assertEquals("doc_src/txt/index.txt", doc.getInputLocation());
+        assertEquals("index.html", doc.getOutputLocation());
     }
 
 }
