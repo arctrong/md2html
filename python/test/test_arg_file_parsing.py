@@ -26,14 +26,15 @@ class ArgFileParseTest(unittest.TestCase):
 
     def test_fullDefaultElement_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
-            '{"default": {"input": "index.txt", "output": "index.html", '
+            '{"default": {"input-root": "doc_src", "output-root": "doc", '
+            '"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "include-css": ["include.css"], '
             '"force": true, "verbose": true}, "documents": [{}]}')
         arguments = parse_argument_file_content(argument_file_dict, {})
         doc = arguments.documents[0]
-        self.assertEqual('index.txt', doc["input_file"])
-        self.assertEqual('index.html', doc["output_file"])
+        self.assertEqual('doc_src/index.txt', doc["input_file"])
+        self.assertEqual('doc/index.html', doc["output_file"])
         self.assertEqual('some title', doc["title"])
         self.assertEqual(Path('path/templates/custom.html'), doc["template"])
         self.assertFalse(doc["no_css"])
@@ -89,15 +90,16 @@ class ArgFileParseTest(unittest.TestCase):
 
     def test_fullDocument_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
-        '{"documents": [{"input": "index.txt", "output": "index.html", '
+        '{"documents": [{"input-root": "doc_src", "output-root": "doc", '
+            '"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
             '"include-css": ["include.css"], "add-include-css": ["add_include1.css", "add_include1.css"], '
             '"force": true, "verbose": true}]}')
         arguments = parse_argument_file_content(argument_file_dict, {})
         doc = arguments.documents[0]
-        self.assertEqual('index.txt', doc["input_file"])
-        self.assertEqual('index.html', doc["output_file"])
+        self.assertEqual('doc_src/index.txt', doc["input_file"])
+        self.assertEqual('doc/index.html', doc["output_file"])
         self.assertEqual('some title', doc["title"])
         self.assertEqual(Path('path/templates/custom.html'), doc["template"])
         self.assertFalse(doc["no_css"])
@@ -134,21 +136,23 @@ class ArgFileParseTest(unittest.TestCase):
 
     def test_overridingWithCliArgs_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
-            '{"documents": [{"input": "index.txt", "output": "index.html", '
+            '{"documents": [{"input-root": "doc_src", "output-root": "doc", '
+            '"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
             '"include-css": ["include.css"], "add-include-css": ["add_include1.css", "add_include1.css"], '
             '"force": false, "verbose": false}]}')
         arguments = parse_argument_file_content(argument_file_dict, 
-            {"input_file": "cli_index.txt", "output_file": "cli_index.html", "title": "cli_title", 
+            {"input_root": "cli_doc_src", "output_root": "cli_doc", 
+             "input_file": "cli_index.txt", "output_file": "cli_index.html", "title": "cli_title", 
              "template": "cli/custom.html", 
              "link_css": ["cli_link1.css", "cli_link2.css"],
              "include_css": ["cli_include1.css", "cli_include2.css"], 
              "force": True, "verbose": True
             })
         doc = arguments.documents[0]
-        self.assertEqual('cli_index.txt', doc["input_file"])
-        self.assertEqual('cli_index.html', doc["output_file"])
+        self.assertEqual('cli_doc_src/cli_index.txt', doc["input_file"])
+        self.assertEqual('cli_doc/cli_index.html', doc["output_file"])
         self.assertEqual('cli_title', doc["title"])
         self.assertEqual(Path('cli/custom.html'), doc["template"])
         self.assertFalse(doc["no_css"])
@@ -185,6 +189,23 @@ class ArgFileParseTest(unittest.TestCase):
             '"variables": {"logo": "THE GREATEST SITE EVER!"}}}')
         plugins = parse_argument_file_content(argument_file_dict, {}).plugins
         self.assertEqual(4, len(plugins))
+        
+    def test_auto_output_file_with_root_dirs_PositiveScenario(self):
+        argument_file_dict = load_json_argument_file('{"documents": ['
+            '{"input-root": "doc_src/txt", "output-root": "doc/html", "input": "index.txt"}, '
+            '{"output-root": "doc/html", "input": "index.txt"}, '
+            '{"input-root": "doc_src/txt", "input": "index.txt"}'
+            ']}')
+        arguments = parse_argument_file_content(argument_file_dict, {})
+        doc = arguments.documents[0]
+        self.assertEqual('doc_src/txt/index.txt', doc["input_file"])
+        self.assertTrue('doc/html/index.html' in doc["output_file"])
+        doc = arguments.documents[1]
+        self.assertEqual('index.txt', doc["input_file"])
+        self.assertTrue('doc/html/index.html' in doc["output_file"])
+        doc = arguments.documents[2]
+        self.assertEqual('doc_src/txt/index.txt', doc["input_file"])
+        self.assertTrue('index.html' in doc["output_file"])
 
 
 if __name__ == '__main__':

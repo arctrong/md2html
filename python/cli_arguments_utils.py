@@ -19,8 +19,6 @@ def parse_cli_arguments(*args) -> dict:
     This lets the caller to, for example, define the program's exit code.
     """
 
-    md2html_args = {}
-
     def formatter_creator(prog):
         return argparse.HelpFormatter(prog, width=80)
 
@@ -29,14 +27,25 @@ def parse_cli_arguments(*args) -> dict:
                                      'texts.', formatter_class=formatter_creator, add_help=False)
     parser.add_argument("-h", "--help", help="shows this help message and exits",
                         action='store_true')
-    parser.add_argument("-i", "--input", help="input Markdown file name (mandatory if argument "
-                                              "file is not used)", type=str)
-    parser.add_argument("--argument-file",
-                        help="argument file. Allows processing multiple documents with a single "
-                             "run. Also provides different adjustment possibilities and "
-                             "automations. If omitted, the single file will be processed", type=str)
-    parser.add_argument("-o", "--output", help="output HTML file name, defaults to input file name"
-                                               " with '.html' extension", type=str)
+
+    parser.add_argument("--input-root", help="root directory for input Markdown files. "
+                                             "Defaults to current directory", type=str)
+    parser.add_argument("-i", "--input", help="input Markdown file name: absolute or relative "
+                                              "to '--input-root' argument value. Mandatory "
+                                              "if argument file is not used", type=str)
+
+    parser.add_argument("--output-root", help="root directory for output HTML files. Defaults "
+                                              "to current directory", type=str)
+    parser.add_argument("-o", "--output", help="output HTML file name: absolute or relative "
+                                               "to '--output-root' argument value. Defaults to "
+                                               "input file name with '.html' extension", type=str)
+
+    parser.add_argument("--argument-file", help="argument file. Allows processing multiple "
+                                                "documents with a single run. Also provides "
+                                                "different adjustment possibilities and "
+                                                "automations. If omitted, the single file "
+                                                "will be processed", type=str)
+
     parser.add_argument("-t", "--title", help="the HTML page title", type=str)
     parser.add_argument("--template", help="template that will be used for HTML documents "
                                            "generation", type=str)
@@ -53,7 +62,7 @@ def parse_cli_arguments(*args) -> dict:
                         action='store_true')
     parser.add_argument("-r", "--report",
                         help="defines formalized output that may be further automatically "
-                             "processed. Only if HTML file is generated, the path of this file, "
+                             "processed. Only if HTML file is generated, the path of this file "
                              "will be output. Incompatible with -v", action='store_true')
     parser.add_argument("--legacy-mode",
                         help="Allows processing documentation projects prepared for version of "
@@ -66,8 +75,13 @@ def parse_cli_arguments(*args) -> dict:
         parser.print_help()
         raise CliError(True)
 
+    md2html_args = {}
+
     if args.argument_file:
         md2html_args['argument_file'] = Path(args.argument_file)
+
+    md2html_args['input_root'] = args.input_root
+    md2html_args['output_root'] = args.output_root
 
     if args.input:
         md2html_args['input_file'] = args.input

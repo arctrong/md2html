@@ -15,14 +15,15 @@ class RelativePathsPluginTest(unittest.TestCase):
         return find_single_instance_of_type(plugins, RelativePathsPlugin)
 
     def test_notActivated(self):
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "whatever.md"}], '
-            '"plugins": {}}')
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.md"}], "plugins": {}}')
         plugins = parse_argument_file_content(argument_file_dict, {}).plugins
         plugin = self._find_single_plugin(plugins)
         self.assertIsNone(plugin)
         
     def test_relativisation(self):
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "whatever.md"}], '
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.md"}], '
             '"plugins": {"relative-paths": { "down1": "down1/", "down11": "down1/down11/", '
             '"down2": "down2/", "down22": "down2/down22/", "root": "", '
             '"up1": "../", "up2": "../../" }}}')

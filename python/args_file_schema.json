@@ -14,7 +14,9 @@
             "properties": {
                 "template": { "type": "string" },
                 "verbose": { "type": "boolean" },
+                "input-root": { "type": "string" },
                 "input": { "type": "string" },
+                "output-root": { "type": "string" },
                 "output": { "type": "string" },
                 "title": { "type": "string" },
                 "no-css": { "type": "boolean" },
@@ -28,7 +30,9 @@
             "items": {
                 "type": "object",
                 "properties": {
+                    "input-root": { "type": "string" },
                     "input": { "type": "string" },
+                    "output-root": { "type": "string" },
                     "output": { "type": "string" },
                     "title": { "type": "string" },
                     "template": { "type": "string" },
