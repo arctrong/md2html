@@ -39,8 +39,10 @@ similar output):
 
 ````shell
 >python %MD2HTML_HOME%/python/md2html.py -h
-usage: md2html.py [-h] [-i INPUT] [--argument-file ARGUMENT_FILE] [-o OUTPUT]
-                  [-t TITLE] [--template TEMPLATE] [--link-css LINK_CSS]
+usage: md2html.py [-h] [--input-root INPUT_ROOT] [-i INPUT]
+                  [--output-root OUTPUT_ROOT] [-o OUTPUT]
+                  [--argument-file ARGUMENT_FILE] [-t TITLE]
+                  [--template TEMPLATE] [--link-css LINK_CSS]
                   [--include-css INCLUDE_CSS] [--no-css] [-f] [-v] [-r]
                   [--legacy-mode]
 
@@ -48,17 +50,25 @@ Creates HTML documentation out of Markdown texts.
 
 optional arguments:
   -h, --help            shows this help message and exits
+  --input-root INPUT_ROOT
+                        root directory for input Markdown files. Defaults to
+                        current directory
   -i INPUT, --input INPUT
-                        input Markdown file name (mandatory if argument file is
-                        not used)
+                        input Markdown file name: absolute or relative to '--
+                        input-root' argument value. Mandatory if argument file
+                        is not used
+  --output-root OUTPUT_ROOT
+                        root directory for output HTML files. Defaults to
+                        current directory
+  -o OUTPUT, --output OUTPUT
+                        output HTML file name: absolute or relative to '--
+                        output-root' argument value. Defaults to input file name
+                        with '.html' extension
   --argument-file ARGUMENT_FILE
                         argument file. Allows processing multiple documents with
                         a single run. Also provides different adjustment
                         possibilities and automations. If omitted, the single
                         file will be processed
-  -o OUTPUT, --output OUTPUT
-                        output HTML file name, defaults to input file name with
-                        '.html' extension
   -t TITLE, --title TITLE
                         the HTML page title
   --template TEMPLATE   template that will be used for HTML documents generation
@@ -73,7 +83,7 @@ optional arguments:
   -v, --verbose         outputs human readable information messages
   -r, --report          defines formalized output that may be further
                         automatically processed. Only if HTML file is generated,
-                        the path of this file, will be output. Incompatible with
+                        the path of this file will be output. Incompatible with
                         -v
   --legacy-mode         Allows processing documentation projects prepared for
                         version of the program prior to 1.0.0. Still it's
@@ -123,8 +133,7 @@ per one run. It's selected if the `--argument-file` argument is not specified.
 
 The `--argument-file ARGUMENT_FILE` argument defines the __argument file__ that will be used for
 processing. This may be a single parameter of the call or other command line parameters may be
-specified as well. In the latter case the specified command line parameters will **override**
-corresponding parameters in the _argument file_.
+specified as well. 
 
 The _argument file_ allows to define:
 
@@ -132,6 +141,11 @@ The _argument file_ allows to define:
 - the same parameters that can be specified in the command line;
 - some additional parameters;
 - extended processing using plugins.
+
+!!! note
+    The command line and the _argument file_ may specify different values for the parameters with
+    the same meaning (sometimes they have different name). In this case the command line
+    parameters will **override** the corresponding parameters in the _argument file_.
 
 Here is the simplest example of an _argument file_:
 
@@ -156,15 +170,18 @@ Here is a more complex example:
     },
     "default": {
         # This is the default options for all documents.
+        "input-root": "doc_src",
+        "output-root": "doc",
         "template": "doc_src/templates/custom.html",
         "no-css": true,
         "page-flows": ["sections"]
     },
     "documents": [
-        { "input": "index.txt", "title": "Home" },
-        { "input": "doc_src/about.txt", "output": "doc/about.html", "title": "About" },
-        { "input": "tech_src/debug.txt", "output": "tech/debug.html", "title": "Debug", 
-            "page-flows": [] }
+        { "input-root": "", "output-root": "", "input": "index.txt", "title": "Home" },
+        { "input": "about.txt", "title": "About" },
+        { "input-root": "tech_src", "output-root": "tech", 
+            "input": "debug.txt", "output": "debugging.html", 
+            "title": "Debug", "page-flows": [] }
     ],
     "plugins": {
         "relative-paths": { "resource_path": "doc/" },
@@ -237,6 +254,8 @@ Properties:
 
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
+input-root | string | No | 
+output-root | string | No | 
 template | string | No | 
 verbose | boolean | No | 
 link-css | array of string | No | 
@@ -254,8 +273,10 @@ Array of objects with properties:
 
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
-input | string | No | Input Markdown file
-output | string | No | Output HTML file
+input-root | string | No | Root directory for input Markdown files
+output-root | string | No | Root directory for output HTML files
+input | string | No | Input Markdown file: absolute or relative to the `input-root` property value
+output | string | No | Output HTML file: absolute or relative to the `output-root` property value
 title | string | No | Page title
 template | string | No | Template that will wrap the generated HTML content
 link-css | array of string | No | List of CSS resources that will be linked to the page

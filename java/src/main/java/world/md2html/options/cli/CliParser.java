@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 public class CliParser {
 
     private static final String HELP_OPTION_NAME = "h";
+    private static final String INPUT_ROOT_OPTION_NAME = "input-root";
+    private static final String OUTPUT_ROOT_OPTION_NAME = "output-root";
     private static final String INPUT_FILE_OPTION_NAME = "i";
     private static final String ARGUMENT_FILE_OPTION_NAME = "argument-file";
     private static final String OUTPUT_FILE_OPTION_NAME = "o";
@@ -41,9 +43,17 @@ public class CliParser {
 
         cliOptions.addOption(HELP_OPTION_NAME, "help", false, "show this help message and exit");
 
+        cliOptions.addOption(Option.builder(null).longOpt(INPUT_ROOT_OPTION_NAME)
+                .hasArg().numberOfArgs(1).desc("root directory for input Markdown files. " +
+                        "Defaults to current directory").build());
+        cliOptions.addOption(Option.builder(null).longOpt(OUTPUT_ROOT_OPTION_NAME)
+                .hasArg().numberOfArgs(1).desc("root directory for output HTML files. " +
+                        "Defaults to current directory").build());
+
         cliOptions.addOption(Option.builder(INPUT_FILE_OPTION_NAME).longOpt("input").hasArg()
-                .numberOfArgs(1).desc("input Markdown file name (mandatory if argument file is " +
-                        "not used)").build());
+                .numberOfArgs(1).desc("input Markdown file name: absolute or relative to " +
+                        "'--input-root' argument value. Mandatory if argument file is not " +
+                        "used").build());
 
         cliOptions.addOption(Option.builder(null).longOpt(ARGUMENT_FILE_OPTION_NAME)
                 .hasArg().numberOfArgs(1).desc("argument file. Allows processing " +
@@ -52,9 +62,9 @@ public class CliParser {
                         "file will be processed").build());
 
         cliOptions.addOption(Option.builder(OUTPUT_FILE_OPTION_NAME).longOpt("output").hasArg()
-                .numberOfArgs(1)
-                .desc("output HTML file name, defaults to input file name with '.html' extension")
-                .build());
+                .numberOfArgs(1).desc("output HTML file name: absolute or relative to " +
+                        "'--output-root' argument value. Defaults to input file name with " +
+                        "'.html' extension").build());
 
         cliOptions.addOption(Option.builder(TITLE_OPTION_NAME).longOpt("title").hasArg()
                 .numberOfArgs(1)
@@ -86,7 +96,7 @@ public class CliParser {
 
         cliOptions.addOption(Option.builder(REPORT_OPTION_NAME).longOpt("report").hasArg(false)
                 .desc("defines formalized output that may be further automatically processed. " +
-                        "Only if HTML file is generated, the path of this file, will be output. " +
+                        "Only if HTML file is generated, the path of this file will be output. " +
                         "Incompatible with -v").build());
 
         cliOptions.addOption(Option.builder(null).longOpt(LEGACY_MODE_OPTION_NAME).hasArg(false)
@@ -123,13 +133,10 @@ public class CliParser {
             argumentFile = Paths.get(commandLine.getOptionValue(ARGUMENT_FILE_OPTION_NAME));
         }
 
-        String inputFile = commandLine.getOptionValue(INPUT_FILE_OPTION_NAME);
-//        if (commandLine.hasOption(INPUT_FILE_OPTION_NAME)) {
-//            inputFile = Paths.get();
-//        } else if (!commandLine.hasOption(ARGUMENT_FILE_OPTION_NAME)) {
-//            throw errorAsException(cliOptions, "Input file is not specified");
-//        }
+        String inputRoot = commandLine.getOptionValue(INPUT_ROOT_OPTION_NAME);
+        String outputRoot = commandLine.getOptionValue(OUTPUT_ROOT_OPTION_NAME);
 
+        String inputFile = commandLine.getOptionValue(INPUT_FILE_OPTION_NAME);
         String outputFile = commandLine.getOptionValue(OUTPUT_FILE_OPTION_NAME);
 
         String title = null;
@@ -173,8 +180,8 @@ public class CliParser {
 
         boolean legacy_mode = commandLine.hasOption(LEGACY_MODE_OPTION_NAME);
 
-        return new CliOptions(argumentFile, inputFile, outputFile, title, templateFile,
-                includeCss, linkCss, noCss, force, verbose, report, legacy_mode);
+        return new CliOptions(argumentFile, inputRoot, outputRoot, inputFile, outputFile, title,
+                templateFile, includeCss, linkCss, noCss, force, verbose, report, legacy_mode);
     }
 
     private CliArgumentsException helpAsException(Options cliOptions) {
