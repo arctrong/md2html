@@ -49,10 +49,10 @@ class IndexPlugin(Md2HtmlPlugin):
     INDEX_ENTRY_ANCHOR_PREFIX = 'index_entry_'
 
     def __init__(self):
-        self.data = {}
         with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r') as schema_file:
             self.metadata_schema = json.load(schema_file)
 
+        self.index_cache_file = None
         self.document = None
         self.plugins = None
 
@@ -65,9 +65,10 @@ class IndexPlugin(Md2HtmlPlugin):
 
     def accept_data(self, data):
         validate_data(data, MODULE_DIR.joinpath('index_schema.json'))
-        self.data = data
+        self.document = {k: v for k, v in data.items()}
+        self.index_cache_file = data["index-cache"]
 
-        index_cache_file = Path(self.data["index-cache"])
+        index_cache_file = Path(self.index_cache_file)
         if index_cache_file.exists():
             with open(index_cache_file, 'r') as file:
                 self.index_cache = json.load(file)
@@ -95,43 +96,35 @@ class IndexPlugin(Md2HtmlPlugin):
         else:
             metadata = [metadata_str]
 
-        if output_file in self.cached_page_resets:
-            anchors = self.index_cache[output_file]
-        else:
-            anchors = []
-            if anchors is not self.index_cache.setdefault(output_file, anchors):
-                self.index_cache[output_file] = anchors
-            self.cached_page_resets.add(output_file)
-
+        anchors = self.index_cache[output_file]
         anchor_text = StringIO()
         for entry in metadata:
             normalized_entry = entry.strip()
-            (link_page, anchor_number) = self._get_next_link(output_file)
+            self.current_anchor_number += 1
             anchors.append({"entry": normalized_entry,
-                            "link": f'{link_page}#{self.INDEX_ENTRY_ANCHOR_PREFIX}{anchor_number}',
-                            "title": doc.get('title')})
-            anchor_text.write(f'<a name="{self.INDEX_ENTRY_ANCHOR_PREFIX}{anchor_number}"></a>')
+                            "link": f'{self.current_link_page}#{self.INDEX_ENTRY_ANCHOR_PREFIX}'
+                                    f'{self.current_anchor_number}', "title": doc.get('title')})
+            anchor_text.write(f'<a name="{self.INDEX_ENTRY_ANCHOR_PREFIX}'
+                              f'{self.current_anchor_number}"></a>')
 
         return anchor_text.getvalue()
 
-    def new_page(self):
-        pass
-
-    def _get_next_link(self, output_file):
-        if self.current_page != output_file:
-            self.current_page = output_file
-            self.current_link_page = relativize_relative_resource(self.current_page, self.data['output'])
-            self.current_anchor_number = 0
-        self.current_anchor_number += 1
-        return self.current_link_page, self.current_anchor_number
+    def new_page(self, doc: dict):
+        output_file = doc["output_file"]
+        self.index_cache[output_file] = []
+        self.cached_page_resets.add(output_file)
+        self.current_page = output_file
+        self.current_link_page = relativize_relative_resource(self.current_page,
+                                                              self.document['output_file'])
+        self.current_anchor_number = 0
 
     def get_additional_documents(self) -> list:
-        document = {k: v for k, v in self.data.items()}
-        document["input"] = "fictional.txt"
-        return [document]
+        self.document["input"] = "fictional.txt"
+        return [self.document]
 
     def set_additional_documents_processed(self, documents, plugins, metadata_handlers, options):
         self.document = documents[0]
+        del self.document["input_file"]
         self.plugins = plugins
 
     def after_all_page_processed_actions(self):
@@ -166,7 +159,7 @@ class IndexPlugin(Md2HtmlPlugin):
         substitutions['styles'] = '\n'.join(styles) if styles else ''
 
         for plugin in self.plugins:
-            plugin.new_page()
+            plugin.new_page(self.document)
             substitutions.update(plugin.variables(self.document))
 
         substitutions['content'] = _generate_content(self.index_cache)
@@ -184,7 +177,7 @@ class IndexPlugin(Md2HtmlPlugin):
         with open(self.document["output_file"], 'w') as result_file:
             result_file.write(result)
 
-        with open(self.data["index-cache"], 'w') as cache_file:
+        with open(self.index_cache_file, 'w') as cache_file:
             json.dump(self.index_cache, cache_file, indent=2)
 
         if self.document['verbose']:

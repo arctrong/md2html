@@ -135,6 +135,11 @@ The `--argument-file ARGUMENT_FILE` argument defines the __argument file__ that 
 processing. This may be a single parameter of the call or other command line parameters may be
 specified as well. 
 
+!!! note
+    The command line and the _argument file_ may specify different values for the parameters that
+    mean the same (sometimes they have different name). In this case the command line
+    arguments will **override** the corresponding parameters in the _argument file_.
+
 The _argument file_ allows to define:
 
 - multiple files to be processed;
@@ -142,12 +147,7 @@ The _argument file_ allows to define:
 - some additional parameters;
 - extended processing using plugins.
 
-!!! note
-    The command line and the _argument file_ may specify different values for the parameters with
-    the same meaning (sometimes they have different name). In this case the command line
-    parameters will **override** the corresponding parameters in the _argument file_.
-
-Here is the simplest example of an _argument file_:
+Here is a simplest example of an _argument file_:
 
 ````
 {

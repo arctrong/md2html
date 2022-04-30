@@ -44,14 +44,14 @@ class PageVariablesPluginTest(unittest.TestCase):
             '{"METADATA": { }}')  # "only-at-page-start": true by default
         
         page_content = '<!--METADATA {"title": "About"}-->other content'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({'title': 'About'}, variables)
         self.assertEqual("other content", result)
         
         page_content = '  \r\n \t \n   <!--METADATA{"title":"About1" } -->'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({'title': 'About1'}, variables)
@@ -62,7 +62,7 @@ class PageVariablesPluginTest(unittest.TestCase):
         variables = plugin.variables({})
         self.assertDictEqual({'title': 'About1'}, variables) # that's because the plugin was not reset
         self.assertEqual("  \r\n \t \n  no metadata blocks  ", result)
-        plugin.new_page() # reset
+        plugin.new_page({}) # reset
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({}, variables)
@@ -72,7 +72,7 @@ class PageVariablesPluginTest(unittest.TestCase):
         plugin, metadata_handlers = self._parse_plugin_data('{"VariaBLEs": {}}')
             
         page_content = '<!--variables{ "key":"value" }-->other content'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({"key": "value"}, variables)
@@ -83,7 +83,7 @@ class PageVariablesPluginTest(unittest.TestCase):
             '{"metadata": {"only-at-page-start": false}}')
             
         page_content = 'start text <!--metadata{ "logo":"COOL!" }-->other content'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({"logo": "COOL!"}, variables)
@@ -94,7 +94,7 @@ class PageVariablesPluginTest(unittest.TestCase):
             '{"variables": {"only-at-page-start": false}}')
             
         page_content = 'start text <!--variables\n{"key": "value"}\r\n-->\n other content'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({"key": "value"}, variables)
@@ -105,7 +105,7 @@ class PageVariablesPluginTest(unittest.TestCase):
             '{"variables": {"only-at-page-start": false}}')
             
         page_content = 'start text<!--metadata{"key":"value"}-->'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({}, variables)
@@ -117,7 +117,7 @@ class PageVariablesPluginTest(unittest.TestCase):
             
         page_content = '    <!--metadata1{"key": "value"}--> other ' + \
             'text <!--variables1{"question": "answer"} --> some more text'
-        plugin.new_page()
+        plugin.new_page({})
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({"key": "value", "question": "answer"}, variables)

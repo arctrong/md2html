@@ -1,4 +1,4 @@
-<!--VARIABLES {"noPageTitle": true}-->
+<!--VARIABLES {"noPageTitle": true}--> 
 
 <p><img src="doc/pict/logo.png" title="md2html" style="float: right; margin: 0 0 25px 25px;" /></p>
 

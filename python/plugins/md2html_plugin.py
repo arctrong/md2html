@@ -53,10 +53,10 @@ class Md2HtmlPlugin(ABC):
     def variables(self, doc: dict) -> dict:
         return {}
 
-    def new_page(self):
+    def new_page(self, doc: dict):
         """
         Reacts on a new page. May be used to reset the plugins state (or a part of the plugin
-        state) when a new page comes to be processed.
+        state) when a new page comes into processing.
         """
         pass
 

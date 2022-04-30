@@ -36,6 +36,6 @@
         },
         "variables": {"logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:dimgray;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>" },
         "page-variables": {},
-        "index": {"output": "doc/index_page.html", "title": "Index", "index-cache": "doc/index_cache.json" }
+        "index": {"output": "index_page.html", "title": "Index", "index-cache": "doc/index_cache.json" }
     }
 }

@@ -73,7 +73,7 @@ def md2html(document, plugins, metadata_handlers, options):
 
     md_lines = read_lines_from_file(input_file)
     for plugin in plugins:
-        plugin.new_page()
+        plugin.new_page(document)
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
 
     substitutions['content'] = MARKDOWN.convert(source=md_lines)
@@ -137,6 +137,17 @@ def main():
 
         metadata_handlers = register_page_metadata_handlers(arguments.plugins)
 
+        for plugin in arguments.plugins:
+            additional_documents = plugin.get_additional_documents()
+            if additional_documents:
+                argument_file_dict["documents"] = additional_documents
+                additional_arguments = parse_argument_file_content(argument_file_dict, cli_args,
+                                                                   False)
+                plugin.set_additional_documents_processed(additional_arguments.documents,
+                                                          arguments.plugins,
+                                                          metadata_handlers,
+                                                          additional_arguments.options)
+
         for document in arguments.documents:
             try:
                 md2html(document, arguments.plugins, metadata_handlers, arguments.options)
@@ -145,16 +156,6 @@ def main():
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
 
-        for plugin in arguments.plugins:
-            additional_documents = plugin.get_additional_documents()
-            if additional_documents:
-                argument_file_dict["documents"] = additional_documents
-                additional_arguments = parse_argument_file_content(argument_file_dict, cli_args, False)
-                plugin.set_additional_documents_processed(additional_arguments.documents,
-                                                          arguments.plugins,
-                                                          metadata_handlers,
-                                                          additional_arguments.options)
-
         after_all_page_processed_actions = []
         for plugin in arguments.plugins:
             after_all_page_processed_actions.extend(plugin.after_all_page_processed_actions())
@@ -162,7 +163,8 @@ def main():
             try:
                 action.execute_after_all_page_processed()
             except UserError as e:
-                raise UserError(f"Error in after-all-pages-processed action: {type(e).__name__}: {e}")
+                raise UserError(f"Error in after-all-pages-processed action: "
+                                f"{type(e).__name__}: {e}")
 
         if arguments.options["verbose"]:
             end_moment = time.monotonic()

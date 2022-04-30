@@ -1,0 +1,80 @@
+{
+  "readme.html": [
+    {
+      "entry": "Markdown",
+      "link": "../readme.html#index_entry_1",
+      "title": "Home"
+    }
+  ],
+  "doc/usage.html": [
+    {
+      "entry": "argument file",
+      "link": "usage.html#index_entry_1",
+      "title": "Usage"
+    },
+    {
+      "entry": "command scripts",
+      "link": "usage.html#index_entry_2",
+      "title": "Usage"
+    },
+    {
+      "entry": "legacy mode",
+      "link": "usage.html#index_entry_3",
+      "title": "Usage"
+    }
+  ],
+  "doc/page_content.html": [
+    {
+      "entry": "superscript",
+      "link": "page_content.html#index_entry_1",
+      "title": "Page content"
+    },
+    {
+      "entry": "subscript",
+      "link": "page_content.html#index_entry_2",
+      "title": "Page content"
+    },
+    {
+      "entry": "superscript",
+      "link": "page_content.html#index_entry_3",
+      "title": "Page content"
+    },
+    {
+      "entry": "subscript",
+      "link": "page_content.html#index_entry_4",
+      "title": "Page content"
+    },
+    {
+      "entry": "fenced code blocks",
+      "link": "page_content.html#index_entry_5",
+      "title": "Page content"
+    },
+    {
+      "entry": "admonitions",
+      "link": "page_content.html#index_entry_6",
+      "title": "Page content"
+    }
+  ],
+  "doc/templates.html": [
+    {
+      "entry": "template",
+      "link": "templates.html#index_entry_1",
+      "title": "Templates"
+    }
+  ],
+  "doc/plugins.html": [
+    {
+      "entry": "plugins",
+      "link": "plugins.html#index_entry_1",
+      "title": "Plugins"
+    },
+    {
+      "entry": "page flows",
+      "link": "plugins.html#index_entry_2",
+      "title": "Plugins"
+    }
+  ],
+  "doc/installation.html": [],
+  "doc/development.html": [],
+  "doc/index_page.html": []
+}
