@@ -6,6 +6,7 @@
       "title": "Home"
     }
   ],
+  "doc/installation.html": [],
   "doc/usage.html": [
     {
       "entry": "argument file",
@@ -31,27 +32,27 @@
     },
     {
       "entry": "subscript",
-      "link": "page_content.html#index_entry_2",
+      "link": "page_content.html#index_entry_1",
       "title": "Page content"
     },
     {
       "entry": "superscript",
-      "link": "page_content.html#index_entry_3",
+      "link": "page_content.html#index_entry_2",
       "title": "Page content"
     },
     {
       "entry": "subscript",
-      "link": "page_content.html#index_entry_4",
+      "link": "page_content.html#index_entry_3",
       "title": "Page content"
     },
     {
       "entry": "fenced code blocks",
-      "link": "page_content.html#index_entry_5",
+      "link": "page_content.html#index_entry_4",
       "title": "Page content"
     },
     {
       "entry": "admonitions",
-      "link": "page_content.html#index_entry_6",
+      "link": "page_content.html#index_entry_5",
       "title": "Page content"
     }
   ],
@@ -74,7 +75,5 @@
       "title": "Plugins"
     }
   ],
-  "doc/installation.html": [],
-  "doc/development.html": [],
-  "doc/index_page.html": []
+  "doc/development.html": []
 }

@@ -1,12 +1,30 @@
 
-<!--index term1 -->
-Description of term 1.
+<!--index g multiple entries as text and JSON in the same page -->
+Description of __g multiple entries as text and JSON in the same page__.
+Must be sorted properly.
 
-<!--index ["term 2", "term 3"] -->
-Description of term 2 and term 3.
+<!--index a single entry as text -->
+Description of __a single entry as text__.
 
-<!--index multiword term 4 -->
-Description of multiword term 4.
+<!--index ["b single entry as JSON", "c single entry as JSON"] -->
+Description of __b single entry as JSON__ and __c single entry as JSON__.
 
-<!--index term 2 ] -->
-Another description of term 2.
+<!--index d multiple entries in the same page -->
+Description of __d multiple entries in the same page__.
+
+<!--index d multiple entries in the same page -->
+Description of __d multiple entries in the same page__.
+
+<!--index e multiple entries in different pages -->
+Description of __e multiple entries in different pages__.
+
+<!--index F Entry with initial capital -->
+Description of __F Entry with initial capital__. The sort order must be case-insensitive.
+
+<!--index [
+    "g multiple entries as text and JSON in the same page", 
+    "h multiple entries as text and JSON in different page"
+] -->
+Description of __g multiple entries as text and JSON in the same page__
+and __h multiple entries as text and JSON in different page__.
+

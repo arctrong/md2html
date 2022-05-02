@@ -1,4 +1,3 @@
 
-<!--index term6 -->
-Description of term 6.
-
+<!--index v entry for testing partial regeneration -->
+Description of __v entry for testing partial regeneration__.

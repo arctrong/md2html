@@ -15,7 +15,8 @@
         "add-page-flows": { "type": "array", "items": { "type": "string" } },
         "verbose": { "type": "boolean" },
         "report": { "type": "boolean" },
-        "index-cache": { "type": "string" }
+        "index-cache": { "type": "string" },
+        "index-cache-relative": { "type": "boolean" }
     },
     "required": ["output", "index-cache"],
     "additionalProperties": false
