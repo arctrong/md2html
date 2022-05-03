@@ -2,6 +2,7 @@ import sys
 import unittest
 from pathlib import Path
 
+from argument_file_plugins_utils import process_plugins
 from .utils_for_tests import find_single_instance_of_type
 
 sys.path.append(Path(__file__).resolve().parent.parent)
@@ -18,7 +19,8 @@ class PageMetadataUtilsTest(unittest.TestCase):
     def _parse_metadata(self, metadata):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         metadata_handlers = register_page_metadata_handlers(plugins)
         plugin = find_single_instance_of_type(plugins, PageVariablesPlugin)
         page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'

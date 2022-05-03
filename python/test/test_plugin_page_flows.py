@@ -17,7 +17,8 @@ class PageFlowsPluginTest(unittest.TestCase):
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}], '
             '"plugins": {}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         self.assertIsNone(self._find_single_plugin(plugins))
 
     def test_pageSequence_inPluginsSection(self):
@@ -27,7 +28,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"link": "about.html", "title": "About"},'
             '{"link": "other.html", "title": "Other"}'
             ']}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "about.html"}
@@ -47,7 +49,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"input": "about.txt", "title": "About", "page-flows": ["sections"]}, '
             '{"input": "no-page-flow.txt", "title": "No page flow"}'
             '], "plugins": {"page-flows": {}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "index.html"}
@@ -76,7 +79,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '], "plugins": {"page-flows": {"sections": ['
             '    {"link": "other.html", "title": "OtherLink"}'
             ']}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "other.html"}
@@ -95,7 +99,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"documents": [{"input": "index.txt", "output": "index.html", '
             '"title": "Home", "page-flows": ["sections"]}], '
             '"plugins": {}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         self.assertIsNone(self._find_single_plugin(plugins))
 
     def test_severalPageFlows(self):
@@ -111,7 +116,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '    {"link": "other1.html", "title": "OtherLink1"},'
             '    {"link": "other2.html", "title": "OtherLink2"}'
             ']}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "narration.html"}
@@ -144,7 +150,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '], "other_links": ['
             '    {"link": "index.html", "title": "HomeLink"}'
             ']}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "other.html"}
@@ -174,7 +181,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '    {"link": "index.html", "title": "HomeLinkExternal", "external": true}, '
             '    {"link": "index.html", "title": "HomeLink", "external": false}'
             ']}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "index.html"}
@@ -207,7 +215,8 @@ class PageFlowsPluginTest(unittest.TestCase):
         for argument_file_dict, test_name in [(with_plugins_section, "with_plugins_section"), 
                                               (with_documents_section, "with_documents_section")]:
             with self.subTest(test_name=test_name):
-                plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+                parse_argument_file_content(argument_file_dict, {})
+                plugins = process_plugins(argument_file_dict['plugins'])
                 plugin = self._find_single_plugin(plugins)
                 
                 doc = {'output_file': "page1.html"}
@@ -281,7 +290,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             for argument_file_dict, test_name in [(with_plugins_section, "with_plugins_section"), 
                                                   (with_documents_section, "with_documents_section")]:
                 with self.subTest(test_name=test_name, page_count=page_count):
-                    plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+                    parse_argument_file_content(argument_file_dict, {})
+                    plugins = process_plugins(argument_file_dict['plugins'])
                     plugin = self._find_single_plugin(plugins)
                     
                     for i in range(1, page_count + 1):
@@ -315,7 +325,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '    {"link": "doc/ch01/sub-sub-1.html", "title": "whatever"},'
             '    {"link": "doc/ch01/sub-sub-2.html", "title": "whatever"}'
             ']}}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         
         doc = {'output_file': "root1.html"}

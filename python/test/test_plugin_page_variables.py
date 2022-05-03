@@ -11,13 +11,15 @@ from plugins.page_variables_plugin import *
 
 class PageVariablesPluginTest(unittest.TestCase):
 
-    def _find_single_plugin(self, plugins):
+    @staticmethod
+    def _find_single_plugin(plugins):
         return find_single_instance_of_type(plugins, PageVariablesPlugin)
 
     def _parse_plugin_data(self, plugin_data):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": ' + plugin_data + '}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         metadata_handlers = register_page_metadata_handlers(plugins)
         plugin = self._find_single_plugin(plugins)
         return plugin, metadata_handlers
@@ -25,8 +27,8 @@ class PageVariablesPluginTest(unittest.TestCase):
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
-        metadata_handlers = register_page_metadata_handlers(plugins)
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         self.assertIsNone(plugin)
 
@@ -34,8 +36,8 @@ class PageVariablesPluginTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": {}'
             '}}')
-        plugins = parse_argument_file_content(argument_file_dict, {}).plugins
-        metadata_handlers = register_page_metadata_handlers(plugins)
+        parse_argument_file_content(argument_file_dict, {})
+        plugins = process_plugins(argument_file_dict['plugins'])
         plugin = self._find_single_plugin(plugins)
         self.assertIsNotNone(plugin)
         
@@ -60,9 +62,9 @@ class PageVariablesPluginTest(unittest.TestCase):
         page_content = '  \r\n \t \n  no metadata blocks  '
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
-        self.assertDictEqual({'title': 'About1'}, variables) # that's because the plugin was not reset
+        self.assertDictEqual({'title': 'About1'}, variables)  # that's because the plugin wasn't reset
         self.assertEqual("  \r\n \t \n  no metadata blocks  ", result)
-        plugin.new_page({}) # reset
+        plugin.new_page({})  # reset
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
         self.assertDictEqual({}, variables)

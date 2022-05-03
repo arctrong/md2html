@@ -29,7 +29,22 @@ class Md2HtmlPlugin(ABC):
         """
         return False
 
-    def page_metadata_handlers(self):
+    def initialization_actions(self) -> list:
+        """
+        Returns the list of actions that must be fulfilled before the documents processing.
+        Each action must have an `initialize(...)` method.
+        """
+        return []
+
+    def initialize(self, argument_file_dict: dict, cli_args: dict, plugins: list):
+        """
+        This method is going to be called before the documents processing. It accepts additional
+        argument `plugins` as the `plugins` section of the `argument_file_dict` cannot be
+        processed inside a plugin (due to a circular import problem).
+        """
+        pass
+
+    def page_metadata_handlers(self) -> list:
         """
         Returns a list of tuples:
         - page metadata handler that must have the method `accept_page_metadata`;
@@ -40,7 +55,7 @@ class Md2HtmlPlugin(ABC):
         """
         return []
 
-    def accept_page_metadata(self, doc: dict, marker: str, metadata, metadata_section):
+    def accept_page_metadata(self, doc: dict, marker: str, metadata, metadata_section) -> str:
         """
         Accepts document `doc` where the `metadata` was found, the metadata marker, the
         `metadata` itself (as a string) and the whole section `metadata_section` from
@@ -57,21 +72,6 @@ class Md2HtmlPlugin(ABC):
         """
         Reacts on a new page. May be used to reset the plugins state (or a part of the plugin
         state) when a new page comes into processing.
-        """
-        pass
-
-    def get_additional_documents(self) -> list:
-        """
-        A plugin may generate additional documents, like an index file. This method returns  a list of
-        such additional document definitions to be processed using the command line arguments and
-        the argument file.
-        """
-        return []
-
-    def set_additional_documents_processed(self, documents, plugins, metadata_handlers, options):
-        """
-        Accepts additional documents processed using the command line arguments and
-        the argument file. Also accepts the contextual information.
         """
         pass
 

@@ -8,6 +8,7 @@ from pathlib import Path
 import chevron
 from jsonschema import validate, ValidationError
 
+from argument_file_utils import parse_argument_file_content
 from constants import EXEC_NAME, EXEC_VERSION
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
 from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource, \
@@ -72,6 +73,35 @@ class IndexPlugin(Md2HtmlPlugin):
             self.index_cache_relative = data["index-cache-relative"]
         return True
 
+    def initialization_actions(self):
+        return [self]
+
+    def initialize(self, argument_file: dict, cli_args: dict, plugins: list):
+        argument_file = argument_file.copy()
+        self.document["input"] = "fictional.txt"
+        argument_file['documents'] = [self.document]
+
+        cli_args = cli_args.copy()
+        cli_args.pop("input", None)
+        cli_args.pop("output", None)
+
+        arguments = parse_argument_file_content(argument_file, cli_args)
+
+        self.document = arguments.documents[0]
+        del self.document["input_file"]
+
+        if self.index_cache_relative:
+            self.index_cache_file = str(Path(self.document['output_file']).parent
+                                        .joinpath(self.index_cache_file))
+        index_cache_file = Path(self.index_cache_file)
+        if index_cache_file.exists():
+            with open(index_cache_file, 'r') as file:
+                self.index_cache = json.load(file)
+        else:
+            self.index_cache = {}
+
+        self.plugins = plugins
+
     def page_metadata_handlers(self):
         return [(self, "INDEX", False)]
 
@@ -112,26 +142,6 @@ class IndexPlugin(Md2HtmlPlugin):
         self.current_link_page = relativize_relative_resource(self.current_page,
                                                               self.document['output_file'])
         self.current_anchor_number = 0
-
-    def get_additional_documents(self) -> list:
-        self.document["input"] = "fictional.txt"
-        return [self.document]
-
-    def set_additional_documents_processed(self, documents, plugins, metadata_handlers, options):
-        self.document = documents[0]
-        del self.document["input_file"]
-
-        if self.index_cache_relative:
-            self.index_cache_file = str(Path(self.document['output_file']).parent
-                                        .joinpath(self.index_cache_file))
-        index_cache_file = Path(self.index_cache_file)
-        if index_cache_file.exists():
-            with open(index_cache_file, 'r') as file:
-                self.index_cache = json.load(file)
-        else:
-            self.index_cache = {}
-
-        self.plugins = plugins
 
     def after_all_page_processed_actions(self):
         return [self]
