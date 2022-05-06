@@ -52,6 +52,13 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
     public String acceptPageMetadata(Document document, String marker, String metadata,
             String metadataSection) throws PageMetadataException {
 
+        ObjectNode metadataNode = parseAndValidatePageVariableMetadata(metadata);
+        //noinspection unchecked
+        this.pageVariables.putAll((Map<String, Object>) deJson(metadataNode));
+        return "";
+    }
+
+    private ObjectNode parseAndValidatePageVariableMetadata(String metadata) {
         ObjectNode metadataNode;
         try {
             metadataNode = (ObjectNode) MAPPER.readTree(metadata);
@@ -65,9 +72,7 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
             throw new PageMetadataException("Error validating page metadata: " +
                     e.getClass().getSimpleName() + ": " + e.getMessage());
         }
-        //noinspection unchecked
-        this.pageVariables.putAll((Map<String, Object>) deJson(metadataNode));
-        return "";
+        return metadataNode;
     }
 
     @Override
@@ -76,7 +81,7 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
     }
 
     @Override
-    public void newPage() {
+    public void newPage(Document document) {
         resetPageVariable();
     }
 

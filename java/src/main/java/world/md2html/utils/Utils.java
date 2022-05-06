@@ -16,6 +16,18 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
+//    public static final Comparator<String> NULLABLE_STRING_COMPARATOR = (s1, s2) -> {
+//        if (s1 == null && s2 == null) {
+//            return 0;
+//        } else if (s1 == null) {
+//            return 1;
+//        } else if (s2 == null) {
+//            return -1;
+//        } else {
+//            return s1.compareTo(s2);
+//        }
+//    };
+
     public static boolean isNullOrFalse(Object object) {
         return object instanceof Boolean && (Boolean) object;
     }
@@ -141,7 +153,7 @@ public class Utils {
      * a picture, a CSS file etc.). So the both arguments cannot be empty or end with a '/'.
      * <br />
      * The method considers the both arguments being relative to the same location. It returns
-     * the relative location that being applied on the HTML page `page` will resolve to `path`.
+     * the relative location that being applied in the HTML page `page` will resolve to `resource`.
      * <br />
      * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
      */

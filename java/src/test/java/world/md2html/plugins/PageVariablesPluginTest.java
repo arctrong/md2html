@@ -21,13 +21,13 @@ class PageVariablesPluginTest {
     }
 
     private ArgFileOptions parsePluginData(String pluginData) throws ArgFileParseException {
-        return ArgFileParser.parse("{\"documents\": [{\"input\": \"about.md\"}], " +
+        return ArgFileParser.readAndParse("{\"documents\": [{\"input\": \"about.md\"}], " +
                         "\"plugins\": {\"page-variables\": " + pluginData + "}}", null);
     }
 
     @Test
     public void notActivated() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
                         "\"plugins\": {\"variables\": {}}}", null);
         PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
@@ -36,7 +36,7 @@ class PageVariablesPluginTest {
 
     @Test
     public void activated_withDefaultMarker() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
                         "\"plugins\": {\"page-variables\": {}}}", null);
         PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
@@ -51,14 +51,14 @@ class PageVariablesPluginTest {
                 PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
 
         String pageContent = "<!--METADATA {\"title\": \"About\"}-->other content";
-        plugin.newPage();
+        plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("About", variables.get("title"));
         assertEquals("other content", result);
 
         pageContent = "  \r\n \t \n   <!--METADATA{\"title\":\"About1\" } -->";
-        plugin.newPage();
+        plugin.newPage(null);
         result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("About1", variables.get("title"));
@@ -69,7 +69,7 @@ class PageVariablesPluginTest {
         variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("About1", variables.get("title")); // that"s because the plugin was not reset
         assertEquals("  \r\n \t \n  no metadata blocks  ", result);
-        plugin.newPage(); // reset
+        plugin.newPage(null); // reset
         result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         variables = plugin.variables(ANY_DOCUMENT);
         assertNull(variables.get("title"));
@@ -84,7 +84,7 @@ class PageVariablesPluginTest {
                 PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
 
         String pageContent = "<!--variables{ \"key\":\"value\" }-->other content";
-        plugin.newPage();
+        plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("value", variables.get("key"));
@@ -100,7 +100,7 @@ class PageVariablesPluginTest {
                 PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
 
         String pageContent = "start text <!--metadata{ \"logo\":\"COOL!\" }-->other content";
-        plugin.newPage();
+        plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("COOL!", variables.get("logo"));
@@ -116,7 +116,7 @@ class PageVariablesPluginTest {
                 PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
 
         String pageContent = "start text <!--variables\n{\"key\": \"value\"}\r\n-->\n other content";
-        plugin.newPage();
+        plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("value", variables.get("key"));
@@ -131,7 +131,7 @@ class PageVariablesPluginTest {
         PageMetadataHandlersWrapper metadataHandlers =
                 PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
         String pageContent = "start text<!--metadata{\"key\":\"value\"}-->";
-        plugin.newPage();
+        plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
         assertTrue(variables.isEmpty());
@@ -148,7 +148,7 @@ class PageVariablesPluginTest {
 
         String pageContent = "    <!--metadata1{\"key\": \"value\"}--> other " +
                 "text <!--variables1{\"question\": \"answer\"} --> some more text";
-        plugin.newPage();
+        plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
         Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
         assertEquals("value", variables.get("key"));

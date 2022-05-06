@@ -33,6 +33,9 @@ def _generate_content(index_cache) -> str:
         if len(links) > 1:
             links_string = StringIO()
             count = 0
+
+            # links.sort(key=lambda l: l[0])
+            
             for link, title in links:
                 count += 1
                 links_string.write(f'{", " if count > 1 else ""}<a href="{link}"'
@@ -58,7 +61,6 @@ class IndexPlugin(Md2HtmlPlugin):
         self.document = None
         self.plugins = None
 
-        self.current_page = None
         self.current_link_page = ''
         self.current_anchor_number = 0
 
@@ -138,8 +140,7 @@ class IndexPlugin(Md2HtmlPlugin):
         output_file = doc["output_file"]
         self.index_cache[output_file] = []
         self.cached_page_resets.add(output_file)
-        self.current_page = output_file
-        self.current_link_page = relativize_relative_resource(self.current_page,
+        self.current_link_page = relativize_relative_resource(output_file,
                                                               self.document['output_file'])
         self.current_anchor_number = 0
 

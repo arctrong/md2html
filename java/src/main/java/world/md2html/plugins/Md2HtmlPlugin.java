@@ -16,19 +16,33 @@ public interface Md2HtmlPlugin {
      */
     boolean acceptData(JsonNode data) throws ArgFileParseException;
 
+    /**
+     * Returns a list of actions that are going to be fulfilled before the documents processing.
+     */
+    default List<InitializationAction> initializationActions() {
+        return Collections.emptyList();
+    }
+
     default List<PageMetadataHandlerInfo> pageMetadataHandlers() {
         return Collections.emptyList();
     }
 
     /**
-     * Reacts to a new page. May be used to reset the plugin's state when a new page comes to
-     * be processed.
+     * Reacts to a new page. May be used to reset the plugin's state when a new page comes
+     * into processing.
      */
-    default void newPage() {
+    default void newPage(Document document) {
     }
 
     default Map<String, Object> variables(Document document) {
         return Collections.emptyMap();
+    }
+
+    /**
+     * Returns a list of actions that are going to be fulfilled after all documents are processed.
+     */
+    default List<FinalizationAction> finalizationActions() {
+        return Collections.emptyList();
     }
 
 }

@@ -1,28 +1,32 @@
 package world.md2html.options.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@Setter
+@Builder(toBuilder = true)
 public class CliOptions {
 
-    private final Path argumentFile;
-    private final String inputRoot;
-    private final String outputRoot;
-    private final String inputFile;
-    private final String outputFile;
-    private final String title;
-    private final Path template;
-    private final List<Path> includeCss;
-    private final List<String> linkCss;
-    private final boolean noCss;
-    private final boolean force;
-    private final boolean verbose;
-    private final boolean report;
-    private final boolean legacyMode;
+    private Path argumentFile;
+    private String inputRoot;
+    private String outputRoot;
+    private String inputFile;
+    private String outputFile;
+    private String title;
+    private Path template;
+    private List<Path> includeCss;
+    private List<String> linkCss;
+    private boolean noCss;
+    private boolean force;
+    private boolean verbose;
+    private boolean report;
+    private boolean legacyMode;
 
 }
