@@ -41,17 +41,19 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
     """
     If this is done completely in regex, it works about 100 times longer.
     """
-    start = 0
+    done = 0
+    current = 0
     while True:
-        begin = text.find('<!--', start)
+        begin = text.find('<!--', current)
         if begin >= 0:
             end = text.find('-->', begin + 4)
             if end >= 0:
                 match = METADATA_PATTERN.search(text[begin + 4:end])
                 if match:
-                    yield MetadataMatchObject(text[start:begin], match.group(1),
+                    yield MetadataMatchObject(text[done:begin], match.group(1),
                                               match.group(2), text[begin:end + 3], end + 3)
-                start = end + 3
+                    done = end + 3
+                current = end + 3
             else:
                 return
         else:
