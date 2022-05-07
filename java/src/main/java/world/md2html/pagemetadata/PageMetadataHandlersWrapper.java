@@ -121,28 +121,31 @@ public class PageMetadataHandlersWrapper {
 
         return new Iterator<MetadataMatchObject>() {
 
-            int start = 0;
-            int begin;
-            int end;
-            MetadataMatchObject metadataMatchObject;
+            private int current = 0;
+            private int done = 0;
+            private MetadataMatchObject metadataMatchObject;
 
             @Override
             public boolean hasNext() {
                 metadataMatchObject = null;
-                begin = text.indexOf("<!--", start);
-                if (begin >= 0) {
-                    end = text.indexOf("-->", begin + 4);
-                    if (end >= 0) {
-                        Matcher matcher = METADATA_PATTERN.matcher(text.substring(begin + 4, end));
-                        if (matcher.find()) {
-                            metadataMatchObject =
-                                    new MetadataMatchObject(text.substring(start, begin),
-                                            matcher.group(1), matcher.group(2),
-                                            text.substring(begin, end + 3), end + 3);
+                int begin;
+                do {
+                    begin = text.indexOf("<!--", current);
+                    if (begin >= 0) {
+                        int end = text.indexOf("-->", begin + 4);
+                        if (end >= 0) {
+                            Matcher matcher = METADATA_PATTERN.matcher(text.substring(begin + 4, end));
+                            if (matcher.find()) {
+                                metadataMatchObject =
+                                        new MetadataMatchObject(text.substring(done, begin),
+                                                matcher.group(1), matcher.group(2),
+                                                text.substring(begin, end + 3), end + 3);
+                                done = end + 3;
+                            }
+                            current = end + 3;
                         }
-                        start = end + 3;
                     }
-                }
+                } while (begin >= 0 && metadataMatchObject == null);
                 return metadataMatchObject != null;
             }
 
