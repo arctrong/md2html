@@ -29,6 +29,7 @@ body {
     width: 210px;
     overflow-y: auto;
     border-right: solid 1px cadetblue;
+    background-color: white;
 }
 
 table.sidebarAligner {
@@ -47,6 +48,7 @@ table.sidebarAligner td {
 .sidebarAligner td.bottom {
     font-size: smaller;
     color: dimgray;
+    padding-top: 40px;
 }
 
 a[name], a[id] {

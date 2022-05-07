@@ -1,9 +1,9 @@
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
+<!--index plugins -->
 # About plugins
 
-<!--index plugins -->
 Plugins automate and simplify typical tasks and make the documentation more structural and easy
 to use.
 
@@ -12,7 +12,7 @@ documentation content must be readable in plain text even without processing by 
 
 Plugins provide extra possibilities for the templates processing and visualization.
 
-See [this section](usage.html#using_argument_file) for some plugins definition example.
+See [this section](usage.html#using_argument_file) for some plugins definition examples.
 
 ----------------------------------------------------------------------------------------------------
 # "relative-paths" plugin
@@ -34,10 +34,12 @@ $ tree -L 2 --charset=ascii --dirsfirst
 `-- readme.html
 ````
 
-The reference to `styles.css` is `doc/styles.css` from the `readme.html` page, and `styles.css`
-from the `about.html` page.
+The reference to `styles.css` is:
 
-The plugin automatically recalculates relative paths for certain pages depending on their location
+- `doc/styles.css` from the `readme.html` page;
+- and `styles.css` from the `about.html` page.
+
+This plugin automatically recalculates relative paths for certain pages depending on their location
 and avoids manual defining these paths for every page individually.
 
 
@@ -61,7 +63,7 @@ The plugin considers the `"resource_path"` and the current page location being r
 same location, that is the program invocation current directory in this case. When it
 calculates the path then:
 
-- for the page `readme.html` it'll return `doc/`;
+- for the page `readme.html`, it'll return `doc/`;
 - for the page `doc/about.html` it'll return `""` (empty path, as they are located in the same
     directory).
 
@@ -139,7 +141,7 @@ page flows.
 
 ## Usage
 
-In a template each page flow is accessible by its name (`sidebar` in the above example) and
+In a template, each page flow is accessible by its name (`sidebar` in the above example) and
 provides the following structured data:
 
 Field | Description
@@ -210,6 +212,7 @@ used in the template.
     }
 ````
 
+<!-- page metadata -->
 This means that variables will be extracted from the _page metadata_ blocks with marker
 `variables` and only from those blocks that are the first non-blank text on the page.
 This is the definition of the default marker so it may be simplified to `"page-variables": {}`,
@@ -261,8 +264,68 @@ different projects may substitute using their _argument files_.
 Tag (or tags) `{{{logo}}}` in the template will be substituted in the template. (Note that in
 this case three pairs of curly braces are used to avoid HTML-escaping on substitution.)
 
+----------------------------------------------------------------------------------------------------
+<!--index index-->
+# "index" plugin
+
+## Motivation
+
+Some terms, abbreviations and other kind of keywords may be defined, described and mentioned
+in different documents within the documentation project. Searching such keywords may be hard,
+especially if the documentation is large. This plugin allows marking such points on the pages
+as _index entries_ and then collects these entries and put them together on a separate 
+_index page_. See the [index page](index_page.html) of this documentation as an example of what 
+it may look like.
+
+## Definition
+
+````wrapped
+"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", "index-cache-relative": true }
+````
+
+The all possible properties are listed in the table below. They are mostly the same as those 
+of the [`documents` section](usage.html#documents_section) so see that section for the
+absent descriptions.
+
+Name | Type | Required | Description
+---- | ---- | :----: | ----
+output-root | string | No | |
+output | string | Yes | Index page that must be created: absolute or relative to the `output-root` property value
+title | string | No | |
+template | string | No | |
+link-css | array of string | No | |
+include-css | array of string | No | |
+no-css | boolean | No | |
+add-link-css | array of string | No | |
+add-include-css | array of string | No | |
+page-flows | array of string | No | |
+add-page-flows | array of string | No | |
+verbose | boolean | No | |
+report | boolean | No | |
+index-cache | string | Yes | Index cache file (see the note below)
+index-cache-relative | boolean | No | `true` means that the index cache file location is defined relative to the index page location
+        
+!!! note "Index cache file"
+    _Index page_ is generated using the entries from all the documents but
+    the program may regenerate the documentation project partially, i.e. it may regenerate
+    only those documents that were changed or added since the previous program run.
+    In order to always generate a complete index page the program uses an _index cache file_
+    that keeps the collected index entries between the runs.
+    
+    In some cases a forceful full regeneration (with `-f` flag or `"force": true` option, 
+    see [here](usage.html) for more details) is required, for example, if the "index" plugin is
+    activated on an existing project or if the index cache file is deleted. 
 
 
+## Usage
 
+Index entries may be added in two different ways:
+<a name="escaped_code_text_example"></a>
+
+- using a single term entry like <span class="code">&lt;!--index Term 2 --></span>;
+- using a multiple term entry like <span class="code">&lt;!--INDEX ["term 1", "term 3"]--></span>.
+
+The `index` marker is case-insensitive. If the above two entries are added then the index page
+will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.
 
 

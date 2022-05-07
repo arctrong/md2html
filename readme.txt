@@ -24,7 +24,7 @@ You write a text like this:
 
 **M<sub>2</sub>H** converts it into HTML code like this:
 
-````
+````wrapped
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A <strong>monad</strong> is just a <em>monoid</em> in the category of <code>endofunctors</code>.</p>
@@ -57,8 +57,7 @@ helps achieve more complex results when it's required.
 and styles that are ether ready to use or may be easily adapted and extended for certain tasks.
 
 Apart of that it provides means for processing whole sets of documents, organizing the output
-and producing the self-contained static HTML documentation as a set of local files that need 
-only a browser to be viewed.
+and producing a self-contained static HTML documentation that need only a browser to be viewed.
 
 In the end, this tool has a set of useful plugins that automate and simplify typical tasks and
 make the documentation look more professionally.

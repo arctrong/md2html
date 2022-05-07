@@ -38,7 +38,7 @@ ins {
     color: green;
 }
 
-code {
+code, .code {
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
     font-size: 16px;
     background-color: #eeeeee;
@@ -59,6 +59,11 @@ pre>code {
     padding: 10px;
 }
 
+pre>code.language-wrapped {
+    white-space: pre-wrap;
+    min-width: unset;
+}
+
 pre>code.language-text {
     background-color: unset;
     padding: 0;
@@ -72,10 +77,26 @@ pre>code.language-shell {
     border: solid 1px darkslategray;
 }
 
+pre>code.language-wrapped-shell {
+    background-color: darkslategray;
+    color: floralwhite;
+    border: solid 1px darkslategray;
+    white-space: pre-wrap;
+    min-width: unset;
+}
+
 pre>code.language-code {
     color: darkred;
     border: solid 1px darkred;
     background-color: beige;
+}
+
+pre>code.language-wrapped-code {
+    color: darkred;
+    border: solid 1px darkred;
+    background-color: beige;
+    white-space: pre-wrap;
+    min-width: unset;
 }
 
 blockquote {
@@ -115,6 +136,10 @@ table {
 table td, table th {
     border: solid 1px #6a8fb3;
     padding: 7px 14px;
+}
+
+table td {
+    vertical-align: top;
 }
 
 table th {

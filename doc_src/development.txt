@@ -58,6 +58,7 @@ project is built. See the [installation instructions](installation.html#installa
 more details.
 
 ----------------------------------------------------------------------------------------------------
+<!--index integral tests-->
 # Integral tests
 
 The integral tests test the built and ready-to-use program's artifacts. These tests are the same
@@ -103,16 +104,30 @@ The result must look like this:
 
 ````shell
 ===== py implementation integral tests =====
-..........................
+............................
 ----------------------------------------------------------------------
-Ran 26 tests in 8.743s
+Ran 28 tests in 11.669s
 
 OK
 
 ===== java implementation integral tests =====
-..........................
+............................
 ----------------------------------------------------------------------
-Ran 26 tests in 23.038s
+Ran 28 tests in 18.427s
 
 OK
 ````
+
+A certain test may be executed in the following way:
+
+````shell
+>set IMPLEMENTATION=py
+
+>python -m unittest test_index_plugin.py
+````
+
+The above test will be executed for the Python version. Use `set IMPLEMENTATION=java` to execute 
+it for the Java version.
+
+
+
