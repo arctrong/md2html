@@ -35,10 +35,10 @@ class MetadataExtractionLegacyTest(unittest.TestCase):
                         len(matchObject.before) + len(matchObject.metadata_block))
         return None, None, None
 
-    def test_extract_metadata_section_legacy_emptyInput(self):
+    def test_emptyInput(self):
         self.assertEqual(None, self._extract_metadata_section_legacy('')[0])
 
-    def test_extract_metadata_section_legacy_noMetadata(self):
+    def test_noMetadata(self):
         self.assertEqual(None, self._extract_metadata_section_legacy('no metadata')[0])
         self.assertEqual(None, self._extract_metadata_section_legacy('<!---->')[0])
         self.assertEqual(None, self._extract_metadata_section_legacy('<!-- -->')[0])
@@ -49,10 +49,10 @@ class MetadataExtractionLegacyTest(unittest.TestCase):
         self.assertEqual(None, self._extract_metadata_section_legacy(
             '<!-- metadata with leading space -->')[0])
 
-    def test_extract_metadata_section_legacy_emptyMetadata(self):
+    def test_emptyMetadata(self):
         self.assertEqual('', self._extract_metadata_section_legacy('<!--metadata-->')[0])
 
-    def test_extract_metadata_section_legacy_start(self):
+    def test_start(self):
         self.assertEqual(0, self._extract_metadata_section_legacy("<!--metadata-->")[1])
         self.assertEqual(1, self._extract_metadata_section_legacy(" <!--metadata-->")[1])
         self.assertEqual(1, self._extract_metadata_section_legacy("\n<!--metadata-->")[1])
@@ -60,37 +60,41 @@ class MetadataExtractionLegacyTest(unittest.TestCase):
         self.assertEqual(2, self._extract_metadata_section_legacy("\r\n<!--metadata-->")[1])
         self.assertEqual(5, self._extract_metadata_section_legacy("\n \t \n<!--metadata-->")[1])
 
-    def test_extract_metadata_section_legacy_end(self):
+    def test_end(self):
         self.assertEqual(15, self._extract_metadata_section_legacy("<!--metadata-->")[2])
         self.assertEqual(16, self._extract_metadata_section_legacy(" <!--metadata-->whatever")[2])
         self.assertEqual(16, self._extract_metadata_section_legacy(" <!--metadata-->\n")[2])
         self.assertEqual(16, self._extract_metadata_section_legacy(" <!--metadata-->\nwhatever")[2])
 
-    def test_extract_metadata_section_legacy_prepended(self):
+    def test_prepended(self):
         self.assertEqual(' ', self._extract_metadata_section_legacy(' \t \n <!--metadata -->')[0])
         self.assertEqual(None,
                          self._extract_metadata_section_legacy(' \t a \n <!--METADATA -->')[0])
 
-    def test_extract_metadata_section_legacy_postpended(self):
+    def test_postpended(self):
         self.assertEqual('', self._extract_metadata_section_legacy('<!--metadata-->whatever')[0])
 
-    def test_extract_metadata_section_legacy_caseInsensitive(self):
+    def test_caseInsensitive(self):
         self.assertEqual(' ', self._extract_metadata_section_legacy('<!--metadata -->')[0])
         self.assertEqual(' ', self._extract_metadata_section_legacy('<!--meTAdaTA -->')[0])
 
-    def test_extract_metadata_section_legacy_multiline(self):
+    def test_multiline(self):
         self.assertEqual(' L1\nL2 ',
                          self._extract_metadata_section_legacy('<!--metadata L1\nL2 -->')[0])
 
-    def test_extract_metadata_section_legacy_withoutSpaces(self):
+    def test_withoutSpaces(self):
         self.assertEqual('{METADATA}',
                          self._extract_metadata_section_legacy('<!--metadata{METADATA}-->')[0])
 
-    def test_extract_metadata_section_legacy_with_literalClose(self):
+    def test_with_literalClose(self):
         # This is an illegal case but in JSON, strings `-->` may be represented as like `-\u002D>`;
         # that will solve the problem.
         self.assertEqual(' \"',
                          self._extract_metadata_section_legacy('<!--metadata \"-->\" -->')[0])
+
+    def test_severalBlocks(self):
+        self.assertEqual('{payload}', self._extract_metadata_section_legacy(
+            '<!--metadata{payload}-->line1\nline2<!-- something else -->')[0])
 
 
 if __name__ == '__main__':

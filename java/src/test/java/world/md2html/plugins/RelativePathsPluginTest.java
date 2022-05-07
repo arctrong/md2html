@@ -22,7 +22,7 @@ class RelativePathsPluginTest {
 
     @Test
     public void notActivated() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": " +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": " +
                 "[{\"input\": \"whatever.md\"}], \"plugins\": {}}", null);
         RelativePathsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
         assertNull(plugin);
@@ -30,7 +30,7 @@ class RelativePathsPluginTest {
 
     @Test
     public void relativization() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": " +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": " +
                 "[{\"input\": \"whatever.md\"}], \"plugins\": {\"relative-paths\": { " +
                 "\"down1\": \"down1/\", \"down11\": \"down1/down11/\", " +
                 "\"down2\": \"down2/\", \"down22\": \"down2/down22/\", " +

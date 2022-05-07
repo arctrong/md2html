@@ -46,5 +46,5 @@ class PageVariablesPlugin(Md2HtmlPlugin):
     def variables(self, doc: dict) -> dict:
         return self.page_variables
 
-    def new_page(self):
+    def new_page(self, doc: dict):
         self.page_variables = {}

@@ -5,7 +5,7 @@
 # Common steps
 
 This program doesn't have any installer and is installed according to the principle 
-unpack-and-run:
+_unpack-and-run_:
 
 - Put (or clone from the VCS) the unpacked directory `md2html` to the directory by choice.
 - Define the `MD2HTML_HOME` environment variable as the absolute path of the directory `md2html`.
@@ -32,8 +32,8 @@ Python 3 may need to be installed separately and called with command `python3`.
 
 The following Python packages must be installed:
 
-````shell
->python -m pip install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2 jsonschema==3.2.0 chevron-0.14.0
+````wrapped-shell
+>python -m pip install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2 jsonschema==3.2.0 chevron==0.14.0
 ````
 
 !!! note "Notes"
@@ -100,7 +100,7 @@ The following must be output as the process ends:
 [INFO] ------------------------------------------------------------------------
 ````
 
-File `md2html-<version>-bin.jar` must appear in the directory `%MD2HTML_HOME%\java\target\`.
+File `md2html-bin.jar` must appear in the directory `%MD2HTML_HOME%\java\target\`.
 
 !!! note
     __Note.__ The tests and the whole build will fail if the variable 

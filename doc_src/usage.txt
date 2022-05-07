@@ -10,12 +10,10 @@ content writing, formatting and structuring are described in the other sections.
 # On Linux
 
 The Java and the Python executables are platform-independent so they will theoretically work in
-all environments where the corresponding virtual machine is installed. The tests were done only
+all environments where the corresponding virtual machines are installed. The tests were done only
 on Windows and on Ubuntu Linux. The examples in this documentation are mostly given applied to 
-Windows. But the author is completely sure that the Linux users will have no problems with
-adapting them.
-
-Some Linux specific features will be specially pointed out.
+Windows, but they may be easily adapted for Linux. Some Linux specific notes are given when 
+required.
 
 ----------------------------------------------------------------------------------------------------
 # Command line syntax
@@ -91,7 +89,7 @@ optional arguments:
                         newer version
 ````
 
-There are some arguments that need additional explanation:
+Here are some additional explanations:
 
 - The **`--output`** argument. The program expects it to be defined as location relative to the
     program invocation current directory. This is required for possible further relative paths
@@ -100,20 +98,16 @@ There are some arguments that need additional explanation:
     required. See the [recommended project structure](#typical_project_structure) for the
     example.
 
-- The **`--force`** argument. If it's not specified the program looks for the 
-    existing output HTML file and if it exists and its modification time stamp is later that the 
-    modification time stamp of the input file then this documents is skipped. So not until the 
-    input file is updated will the output file be regenerated.
-
-    This needs some caution. When the template is changed or page flow items are added then
-    it's very probable that all documents must be regenerated (as they are just static pages after
-    all). But if the input file stays unchanged then this regeneration will not be done. So use
-    `-f` argument in this cases or, in order to be safe, add this option into the project's
-    command script (see below).
+- The **`--force`** argument. If it's not specified then only the input files that were changed 
+    since their previous generation will be processed. This makes the process faster but needs 
+    some caution. When the template or page flows are changed or in some other cases, it very
+    probably will need all documents regeneration (because they are just static pages). But if
+    some input files stays unchanged then those changes will not be applied to these files.
+    Use `-f` argument to force all documents regeneration.
     
 - The **`--no-css`** argument. If nether `--link-css` nor `--include-css` is specified then the
-    default CSS is included into the page. To avoid this use `--no-css` argument; then no CSS
-    will be used in the template resolution.
+    default CSS is included into the page. To avoid this, use `--no-css` argument; then no CSS
+    will be used on the template resolution.
 
 There are two ways of the program usage:
 
@@ -128,12 +122,17 @@ This method accepts all required parameters in the command line and allows proce
 per one run. It's selected if the `--argument-file` argument is not specified.
 
 ----------------------------------------------------------------------------------------------------
-<a name="using_argument_file"></a>
+<a name="using_argument_file"></a><!--index argument file -->
 # Using argument file
 
 The `--argument-file ARGUMENT_FILE` argument defines the __argument file__ that will be used for
 processing. This may be a single parameter of the call or other command line parameters may be
 specified as well. 
+
+!!! note
+    The command line and the _argument file_ may specify different values for the parameters that
+    mean the same (sometimes they have different name). In this case the command line
+    arguments will **override** the corresponding parameters in the _argument file_.
 
 The _argument file_ allows to define:
 
@@ -142,12 +141,7 @@ The _argument file_ allows to define:
 - some additional parameters;
 - extended processing using plugins.
 
-!!! note
-    The command line and the _argument file_ may specify different values for the parameters with
-    the same meaning (sometimes they have different name). In this case the command line
-    parameters will **override** the corresponding parameters in the _argument file_.
-
-Here is the simplest example of an _argument file_:
+Here is a simplest example of an _argument file_:
 
 ````
 {
@@ -169,7 +163,7 @@ Here is a more complex example:
         "legacy-mode": false
     },
     "default": {
-        # This is the default options for all documents.
+        # These are the default options for all documents.
         "input-root": "doc_src",
         "output-root": "doc",
         "template": "doc_src/templates/custom.html",
@@ -218,7 +212,6 @@ _Argument file_ format is JSON ([home page](https://json.org/),
     be checked before processing.
     
 <a name="section_list"></a>
-
 The following is the detailed _argument file_ format description by sections:
 
 Name | Type | Required | Description
@@ -247,8 +240,8 @@ legacy-mode | boolean | No | Activates [legacy mode](#legacy_mode)
 
 [![](pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
-Document parameters that will be applied to the document definitions that does not define them
-explicitly. See the [`documents` section](#documents_section) for the details.
+These parameters will be applied to the document definitions if they are not defined explicitly.
+See the [`documents` section](#documents_section) for the details.
 
 Properties:
 
@@ -258,10 +251,10 @@ input-root | string | No |
 output-root | string | No | 
 template | string | No | 
 verbose | boolean | No | 
-link-css | array of string | No | 
-include-css | array of string | No | 
+link-css | array of strings | No | 
+include-css | array of strings | No | 
 no-css | boolean | No | 
-page-flows | array of string | No | 
+page-flows | array of strings | No | 
 
 
 <a name="documents_section"></a>
@@ -278,14 +271,14 @@ output-root | string | No | Root directory for output HTML files
 input | string | No | Input Markdown file: absolute or relative to the `input-root` property value
 output | string | No | Output HTML file: absolute or relative to the `output-root` property value
 title | string | No | Page title
-template | string | No | Template that will wrap the generated HTML content
-link-css | array of string | No | List of CSS resources that will be linked to the page
-include-css | array of string | No | List of CSS files that will be included into the page
+template | string | No | [Template](templates.html) that will wrap the generated HTML content
+link-css | array of strings | No | List of CSS resources that will be linked to the page
+include-css | array of strings | No | List of CSS files that will be included into the page
 no-css | boolean | No | Defines no CSS to be linked or included
-add-link-css | array of string | No | Adds linked CSS to the previously defined list
-add-include-css | array of string | No | Adds included CSS to the previously defined list
-page-flows | array of string | No | Names of the page flows the page belongs to
-add-page-flows | array of string | No | Adds page flow names to the previously defined list
+add-link-css | array of strings | No | Adds linked CSS to the previously defined list
+add-include-css | array of strings | No | Adds included CSS to the previously defined list
+page-flows | array of strings | No | Names of the page flows the page belongs to
+add-page-flows | array of strings | No | Adds page flow names to the previously defined list
 verbose | boolean | No | Outputs human readable information about this document generation
 report | boolean | No | The same meaning as the corresponding command line argument
 
@@ -301,35 +294,36 @@ Name | Type | Required | Description
 ---- | ---- | :----: | ----
 _plugin name_ | _defined by plugin_ | No | Plugin data
 
-The plugins data and the plugins themselves are described in [separate sections](plugins.html).
+The plugins data and the plugins themselves are described in the [separate sections](plugins.html).
 
 ----------------------------------------------------------------------------------------------------
-<a name="command_scripts"></a>
+<a name="command_scripts"></a><!--index command scripts -->
 # Command scripts
 
 The following convenience command scripts provided:
 
 For Windows | For Linux | Description
 ---- | ---- | ----
-`generate_doc_py.bat`   | `generate_doc_py`   | Use the Python version
-`generate_doc_java.bat` | `generate_doc_java` | Use the Java version
-`generate_doc.bat`      | `generate_doc`      | Use the executor selector
+`generate_doc_py.bat`   | `generate_doc_py`   | Uses the Python version
+`generate_doc_java.bat` | `generate_doc_java` | Uses the Java version
+`generate_doc.bat`      | `generate_doc`      | Uses the executor selector
 
-The Windows versions may be run by double-click from Windows file explorer. The Linux 
+The Windows versions may be run by double-click from the Windows file explorer. The Linux 
 *Bash script* versions may need special environmental adjustments (depending on the Linux
-distributive) to behave the same way. In Ubuntu these scripts were tested only in the command
+distribution) to behave the same way. In Ubuntu these scripts were tested only in the command
 line terminal.
 
 These scripts execute the _argument file_ `md2html_args.json` in the directory they are called
 from. They will open a command window and close it just as they successfully complete.
-If there are errors, the command window will stay open with information and error messages
+If there are errors, the command window will stay open with the information and error messages
 displayed.
 
 These scripts are very small and intended to be copied to a project's directory where
-they will process the project's _argument file_.
+they will process the project's _argument file_ (see the 
+[recommended project structure](#typical_project_structure)).
 
 The scripts `generate_doc.bat` and `generate_doc` use intermediate scripts with the executor
-selector. These scripts accept the first argument `py`, or `java` and runs the corresponding
+selector. These scripts accept their first argument `py`, or `java` and runs the corresponding
 version of the program. If nether of these arguments are specified the default executor (that is 
 the Python version for now) will be run.
 
@@ -338,6 +332,7 @@ the Python version for now) will be run.
     with these scripts. See [here](#legacy_compatibility) for possible workarounds.
 
 ----------------------------------------------------------------------------------------------------
+<!--index context menu items-->
 # Windows Explorer context menu integration
 
 The program may be integrated into Windows Explorer context menu:
@@ -346,8 +341,8 @@ The program may be integrated into Windows Explorer context menu:
 
 This may be a quick and convenient way to convert single documents.
 
-The "no prompt" version generates HTML on the selected file with default options. It leaves
-the command window open in case of errors. The second version opens a command line window and
+The "no prompt" version generates HTML from the selected file with default options. It leaves
+the command window open only in case of errors. The other version opens a command line window and
 allows redefining some options. Just pressing `Enter` will fulfill generation with the default
 options.
 
@@ -409,18 +404,19 @@ $ tree -L 2 --charset=ascii --dirsfirst
 ````
 
 - `doc0.txt` and `doc0.html` are the Markdown document and its corresponding generated HTML
-    version that we want to have in the project's root (this is not necessary at all);
-- `doc` directory along with file `doc0.html` contains the whole project's documentation. This
-    directory may be used and distributed autonomously (with additional file `doc0.html` if it's
-    used);
-- `doc_src` directory contains all source files required for producing the project's
-    documentation (except file `doc0.txt` if we want to use it);
+    version that we want to have in the project's root (this is not necessary);
+- the `doc` directory along with the file `doc0.html` contain the whole project's documentation.
+    This directory may be used and distributed autonomously (with additional file `doc0.html`
+    if it's used);
+- the `doc_src` directory contains all source files required for producing the project's
+    documentation (except the file `doc0.txt` if we want to use it);
 - `generate_doc.bat` --- the double-click script for the whole HTML documentation regeneration;
 - `md2html_args.json` --- the project's _argument file_.
 
 Some elements may be changed or omitted if required.
 
 ----------------------------------------------------------------------------------------------------
+<!--index quick start-->
 # Documentation project startup
 
 This section provides the steps for starting up the project with the described
@@ -431,33 +427,32 @@ writing work. So in this directory:
 1. Create the directories `doc_src/templates` and put there the template(s) that will be used.
     This template(s) may be created anew or copied from this program's directory with possible
     adaptation.
-1. Create the directory `doc` and add there the necessary resources like styles, and pictures.
+1. Create the directory `doc` and put add there the necessary resources like styles, and pictures.
     Pictures are recommended to be placed in the separate directory `pict` as their number tends
     to grow pretty fast. If required, subdirectories may be created in the `pict` directory for
     further pictures separation.
-1. Create the `md2html_args.json` _argument file_ and add a [double-click script](#command_scripts)
-    (may be just copy-pasted from this program's directory).
+1. Create the `md2html_args.json` [_argument file_](#using_argument_file). It may be copied from
+    this program's directory and adapted accordingly.
+1. Add a [double-click script](#command_scripts) `generate_doc.bat`. In typical cases it may be
+    just copy-pasted from this program's directory.
 1. Write the necessary document source files in the directory `doc_src` (and/or in the project's
     root directory if this is desired). The source files may be additionally separated by
     subdirectories in the directory `doc_src`; this may be reflected in the _argument file_ to
     separate the generated HTML pages the same way.
-1. Run the double-click script to generate the documentation. After massive changes (and in case 
-    of any doubt) run the double-click script like this to forcibly regenerate all documents:
+1. Run the _double-click script_ to generate the documentation. After massive changes (and in case 
+    of any doubt) run the _double-click script_ like this to forcibly regenerate all the documents:
     
     ````shell
     >generate_doc.bat -fv
     Output file generated: readme.html
     Output file generated: doc/installation.html
-    Output file generated: doc/usage.html
-    Output file generated: doc/page_content.html
-    Output file generated: doc/templates.html
-    Output file generated: doc/plugins.html
-    Output file generated: doc/development.html
-    Finished in: 0:00:00.172000
+    .  .  .
+    Index file generated: doc/index_page.html
+    Finished in: 0:00:00.171000
     ````
 
 ----------------------------------------------------------------------------------------------------
-<a name="legacy_compatibility"></a>
+<a name="legacy_compatibility"></a><!--index legacy mode -->
 #Previous versions compatibility
 
 The version 1.0.0 of the program introduced the following significant changes: 
@@ -465,8 +460,9 @@ The version 1.0.0 of the program introduced the following significant changes:
 - More convenient and about ten times more efficient documents bulk processing mechanism;
 - More versatile template engine.
 
-They have made this program version incompatible with the documentation projects prepared for
-the previous versions. The following sections describe the possible solutions in these situations.
+Those changes have made this program version incompatible with the documentation projects prepared
+for the previous versions. The following sections describe the possible solutions in these
+situations.
 
 The descriptions contain not yet introduced terminology. See further sections for
 clarification when required.
@@ -480,9 +476,9 @@ This process consists of several steps.
     `{{{content}}}` and `{{{styles}}}` (with __three__ pairs of curly braces) respectively.
     Replace placeholders in format `${name}` with placeholders in format `{{name}}` (with
     __two__ pairs of curly braces).
-2. In page metadata sections:
+2. In the page metadata sections:
     - replace markers `"METADATA"` (case insensitively) with marker `"VARIABLES"`;
-    - in `"placeholders"` section carry out all variables to the save level as the 
+    - in the `"placeholders"` sections move all variables to the same level as the 
         `"placeholders"` variable and delete the `"placeholders"` variable.
 3. Rewrite the _list file_ `md2html_list.txt` to the _argument file_ `md2html_args.json`. If 
     page metadata was used, add plugin `"page-variables": {}` to the `"plugins"` sections.
@@ -490,11 +486,11 @@ This process consists of several steps.
     by choice, the other script from the section ["Command scripts"](#command_scripts).
 
 
-<a name="legacy_mode"></a>
+<a name="legacy_mode"></a><!--index legacy mode -->
 ## Legacy mode
 
 The `--legacy-mode` command line argument or the `"legacy-mode: true` property in the
-_argument file_ `options` section may make this program process the legacy projects.
+_argument file_ `"options"` section may make this program process the legacy projects.
 
 The command script `generate_html_legacy.bat` is the version of the former script
 `generate_html.bat` with the legacy mode activated. Put it to the documentation project's
@@ -502,20 +498,20 @@ directory and this must be enough.
 
 In this mode the following processing changes will be done:
 
-- Template placeholders in format `${name}` will be replaced with `{{name}}` of `{{{name}}}`
+- Template placeholders in format `${name}` will be considered as `{{name}}` of `{{{name}}}`
     depending on the placeholder name.
 - Plugin `"page-variables": {"metadata": {}}` will be implicitly added and in the pages metadata
-    sections, `"placeholders"` variable content will be carried one level outside.
+    sections, `"placeholders"` variable content will be moved one level up.
 
 These changes will not affect the project files and will be done virtually each time on
 processing.
 
 !!! important
     The former versions of the program used very slow (about ten times slower) documents bulk 
-    processing mechanism. So with large number of files it'll be very helpful to at least replace
+    processing mechanism. So with large number of files it would be very helpful to at least replace
     the outdated _list file_ `md2html_list.txt` with an _argument file_ `md2html_args.json`.
-    In this case use the `generate_doc.bat` double-clock script, and legacy mode may be activated
-    ether in this script or in the _argument file_.
+    In this case use the `generate_doc.bat` script, and legacy mode may be activated
+    ether in that script or in the _argument file_.
 
 
 

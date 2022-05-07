@@ -6,20 +6,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.Constants;
-import world.md2html.options.model.ArgFileOptions;
-import world.md2html.options.model.CliOptions;
-import world.md2html.options.model.Document;
-import world.md2html.options.model.SessionOptions;
+import world.md2html.options.model.*;
 import world.md2html.plugins.Md2HtmlPlugin;
-import world.md2html.options.model.OptionsModelUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static world.md2html.utils.JsonUtils.MAPPER;
-import static world.md2html.utils.JsonUtils.NODE_FACTORY;
 import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.firstNotNull;
 import static world.md2html.utils.Utils.firstNotNullOptional;
@@ -33,14 +27,8 @@ public class ArgFileParser {
     private ArgFileParser() {
     }
 
-    public static ArgFileOptions parse(String argumentFileContent, CliOptions cliOptions)
+    public static ObjectNode readArgumentFileNode(String argumentFileContent)
             throws ArgFileParseException {
-
-        if (cliOptions == null) {
-            cliOptions = new CliOptions(null, null, null, null, null, null, null, null, null,
-                    false, false, false, false, false);
-        }
-
         JsonNode argFileJsonNode;
         try {
             argFileJsonNode = MAPPER.readTree(argumentFileContent);
@@ -61,6 +49,33 @@ public class ArgFileParser {
             validateJsonAgainstSchemaFromResource(argFileNode, "args_file_schema.json");
         } catch (JsonValidationException e) {
             throw new ArgFileParseException("Argument file validation error: " + e.getMessage());
+        }
+        return argFileNode;
+    }
+
+    public static ArgFileOptions readAndParse(String argumentFileContent, CliOptions cliOptions)
+            throws ArgFileParseException {
+        ObjectNode argFileNode = readArgumentFileNode(argumentFileContent);
+        return parse(argFileNode, cliOptions, true);
+    }
+
+    public static ArgFileOptions parse(ObjectNode argFileNode, CliOptions cliOptions)
+            throws ArgFileParseException {
+        return parse(argFileNode, cliOptions, true);
+    }
+
+    /**
+     * If `processPlugins` parameter is set to `false` then plugins will not be processed and
+     * the result will contain empty `plugins` field. This method cannot be easily split
+     * because the `plugins` section processing is connected with the `documents` section
+     * processing.
+     */
+    public static ArgFileOptions parse(ObjectNode argFileNode, CliOptions cliOptions,
+                                       boolean processPlugins) throws ArgFileParseException {
+
+        if (cliOptions == null) {
+            cliOptions = new CliOptions(null, null, null, null, null, null, null, null, null,
+                    false, false, false, false, false);
         }
 
         ObjectNode pluginsNode = (ObjectNode) Optional.ofNullable(argFileNode.get("plugins"))
@@ -249,18 +264,20 @@ public class ArgFileParser {
         }
 
         List<Md2HtmlPlugin> plugins = new ArrayList<>();
-        for (Iterator<Map.Entry<String, JsonNode>> it = pluginsNode.fields(); it.hasNext(); ) {
-            Map.Entry<String, JsonNode> pluginEntry = it.next();
-            Md2HtmlPlugin plugin = Constants.PLUGINS.get(pluginEntry.getKey());
-            if (plugin != null) {
-                try {
-                    if (plugin.acceptData(pluginEntry.getValue())) {
-                        plugins.add(plugin);
+        if (processPlugins) {
+            for (Iterator<Map.Entry<String, JsonNode>> it = pluginsNode.fields(); it.hasNext(); ) {
+                Map.Entry<String, JsonNode> pluginEntry = it.next();
+                Md2HtmlPlugin plugin = Constants.PLUGINS.get(pluginEntry.getKey());
+                if (plugin != null) {
+                    try {
+                        if (plugin.acceptData(pluginEntry.getValue())) {
+                            plugins.add(plugin);
+                        }
+                    } catch (Exception e) {
+                        throw new ArgFileParseException("Error initializing plugin '" +
+                                pluginEntry.getKey() + "': " + e.getClass().getSimpleName() +
+                                ": " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    throw new ArgFileParseException("Error initializing plugin '" +
-                            pluginEntry.getKey() + "': " + e.getClass().getSimpleName() +
-                            ": " + e.getMessage());
                 }
             }
         }

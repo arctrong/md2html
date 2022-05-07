@@ -1,0 +1,6 @@
+
+<!--index e multiple entries in different pages -->
+Description of __e multiple entries in different pages__.
+
+<!--index h multiple entries as text and JSON in different page -->
+Description of __h multiple entries as text and JSON in different page__.

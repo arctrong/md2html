@@ -1,0 +1,30 @@
+
+<!--index g multiple entries as text and JSON in the same page -->
+Description of __g multiple entries as text and JSON in the same page__.
+Must be sorted properly.
+
+<!--index a single entry as text -->
+Description of __a single entry as text__.
+
+<!--index ["b single entry as JSON", "c single entry as JSON"] -->
+Description of __b single entry as JSON__ and __c single entry as JSON__.
+
+<!--index d multiple entries in the same page -->
+Description of __d multiple entries in the same page__.
+
+<!--index d multiple entries in the same page -->
+Description of __d multiple entries in the same page__.
+
+<!--index e multiple entries in different pages -->
+Description of __e multiple entries in different pages__.
+
+<!--index F Entry with initial capital -->
+Description of __F Entry with initial capital__. The sort order must be case-insensitive.
+
+<!--index [
+    "g multiple entries as text and JSON in the same page", 
+    "h multiple entries as text and JSON in different page"
+] -->
+Description of __g multiple entries as text and JSON in the same page__
+and __h multiple entries as text and JSON in different page__.
+

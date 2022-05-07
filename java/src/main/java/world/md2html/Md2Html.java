@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class Md2Html {
 
@@ -63,7 +62,7 @@ public class Md2Html {
 
         String mdText = Utils.readStringFromUtf8File(inputFile);
 
-        plugins.forEach(Md2HtmlPlugin::newPage);
+        plugins.forEach(plugin -> plugin.newPage(document));
         mdText = metadataHandlersWrapper.applyMetadataHandlers(mdText, document);
 
         Map<String, Object> substitutions = new HashMap<>();
@@ -78,32 +77,7 @@ public class Md2Html {
         substitutions.put(TITLE_PLACEHOLDER, title);
         substitutions.put(CONTENT_PLACEHOLDER, htmlText);
 
-        StringBuilder styles = new StringBuilder();
-        boolean[] firstStyle = {true};
-
-        Consumer<String> styleAppender = item -> {
-            if (!firstStyle[0]) {
-                styles.append("\n");
-            }
-            styles.append(item);
-            firstStyle[0] = false;
-        };
-
-        if (document.getLinkCss() != null) {
-            document.getLinkCss().forEach(item -> styleAppender
-                    .accept("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + item + "\">"));
-        }
-        if (document.getIncludeCss() != null) {
-            document.getIncludeCss().forEach(item -> {
-                try {
-                    styleAppender.accept("<style>\n" + Utils.readStringFromUtf8File(item)
-                            + "\n</style>");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
-        substitutions.put(STYLES_PLACEHOLDER, styles.toString());
+        substitutions.put(STYLES_PLACEHOLDER, Md2HtmlUtils.generateDocumentStyles(document));
 
         substitutions.put(EXEC_NAME_PLACEHOLDER, Constants.EXEC_NAME);
         substitutions.put(EXEC_VERSION_PLACEHOLDER, Constants.EXEC_VERSION);

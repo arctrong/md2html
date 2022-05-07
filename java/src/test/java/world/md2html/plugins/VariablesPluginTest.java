@@ -22,7 +22,7 @@ class VariablesPluginTest {
 
     @Test
     public void notActivated() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": " +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": " +
                 "[{\"input\": \"whatever.md\"}], \"plugins\": {}}", null);
         VariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
         assertNull(plugin);
@@ -30,7 +30,7 @@ class VariablesPluginTest {
 
     @Test
     public void variables() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": " +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": " +
                 "[{\"input\": \"whatever.md\"}], \"plugins\": {\"variables\": " +
                 "{\"var1\": \"val1\", \"_var2\": \"val2\", " +
                 "\"strange\": \"Don't do it yourself! -\\u002D>\" }}}", null);

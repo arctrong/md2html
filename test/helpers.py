@@ -17,14 +17,18 @@ def run_with_parameters(params):
     subprocess.run(EXEC + params)
 
 
+def recreate_directory(path: Path):
+    if path.exists():
+        shutil.rmtree(path)
+        time.sleep(0.2)  # this must prevent "Access is denied" error
+    os.makedirs(path)
+
+
 def prepare_output_directory(dir_name):
     if not Path(OUTPUT_DIR).exists():
         os.makedirs(OUTPUT_DIR)
     test_output_dir = Path(OUTPUT_DIR).joinpath(dir_name)
-    if test_output_dir.exists():
-        shutil.rmtree(test_output_dir)
-        time.sleep(0.2)  # this must prevent "Access is denied" error
-    os.mkdir(test_output_dir)
+    recreate_directory(test_output_dir)
     return str(test_output_dir)
 
 

@@ -13,7 +13,7 @@ public final class Constants {
     }
 
     public static final String EXEC_NAME = "md2html_java";
-    public static final String EXEC_VERSION = "1.0.0";
+    public static final String EXEC_VERSION = "1.0.1";
 
     private static final String WORKING_DIR_ENV_VARIABLE_NAME = "MD2HTML_HOME";
     public static final Path WORKING_DIR;
@@ -25,6 +25,7 @@ public final class Constants {
         PLUGINS.put("relative-paths", new RelativePathsPlugin());
         PLUGINS.put("page-variables", new PageVariablesPlugin());
         PLUGINS.put("variables", new VariablesPlugin());
+        PLUGINS.put("index", new IndexPlugin());
     }
 
     static {

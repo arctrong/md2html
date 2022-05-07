@@ -4,11 +4,15 @@
 # About this section
 
 This section describes documentation source text writing and covers such topics as Markdown
-syntax, formatting examples and tricks. The templates and styling question as well as the 
-documentation structuring are discussed in the other sections.
+syntax, formatting examples and tricks. The templates and styling question, as well as the 
+documentation structuring, are discussed in the other sections.
+
+The complete Markdown guide cannot be provided in this section, so see 
+[the original syntax description](https://daringfireball.net/projects/markdown/syntax)
+for more details.
 
 ----------------------------------------------------------------------------------------------------
-# Introduction
+# Example source texts
 
 This documentation is written solely using the **M<sub>2</sub>H** program and itself demonstrates
 the possible result that may be obtained. The source Markdown text files have the same names as
@@ -30,7 +34,8 @@ Text effect | Markdown/HTML syntax
 ---|---
 **bold** | `__bold__` or `**bold**`
 *italic* | `_italic_` or `*italic*`
-`in-line code fragment` | `` `in-line code fragment` ``
+`in-line <code> fragment` | `` `in-line <code> fragment` ``
+<span class="code">escaped &lt;code&gt; fragment</span> | `<span class="code">escaped &lt;code&gt; fragment</span>`
 <del>deleted</del> | `<del>deleted</del>`
 <ins>inserted</ins> | `<ins>inserted</ins>`
 Normal text<sub>subscript</sub> | `Normal text<sub>subscript</sub>`
@@ -38,6 +43,11 @@ Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>`
 --- (em-dash, `&mdash;`) | `---`
 
 !!! note "Notes"
+    1. Sometimes it's required to show HTML entities inside a code block, but the standard Markdown
+        syntax (with backticks) will show the content as is. For this purpose the CSS class `code`
+        was defined, so direct HTML inclusions may be a suitable workaround. For example, 
+        [here](plugins.html#escaped_code_text_example) we wanted to avoid processing the code text
+        by the `index` plugin.
     1. Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
         text is not implemented in this program. First, these effects must not be required very
         often. Second, such markup may cause problems if we write text like "C++", or `++i`.
@@ -46,6 +56,11 @@ Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>`
         is used as a possible workaround.
     
 ----------------------------------------------------------------------------------------------------
+# Horizontal line
+
+Horizontal line (`<hr />`) may be inserted by placing several dashes (`----`).
+
+----------------------------------------------------------------------------------------------------
 # Paragraphs and line breaks
 
 A paragraph (`<p>`) is inserted by an empty line.    
@@ -53,6 +68,7 @@ A line break (`<br />`) may be inserted by leaving more than two spaces at the e
 (as it's done in the previous line).
 
 ----------------------------------------------------------------------------------------------------
+<a name="headers"></a>
 # Headers
 
 Headers are inserted using one to six pound symbols (`#`) at the beginning of line. This
@@ -67,7 +83,7 @@ markup it's better, and sometimes required, to leave an empty line before these 
 
 `[TOC]` element in the Markdown document will resolve into the document's table of contents in
 the generated HTML. The example can be seen at the top of this and other pages. The ToC is
-composed of the headers found on the page.
+composed of the [headers](#headers) found on the page.
 
 !!! note
     Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
@@ -97,7 +113,9 @@ There's the other syntax:
 
 that will make the link text equal the link location.
 
+----------------------------------------------------------------------------------------------------
 <a name="anchor_demo"></a>
+# Anchors
 
 The header tags have their automatically generated `id`s so they can be referenced by the links. 
 But these `id`s are uncontrolled and will change if the the header changes. Anchors may be added
@@ -157,7 +175,9 @@ An image may be used as a link text like this:
 [![](pict/target.png)](page.html)
 ````
 
-Then we will get a clickable image that works as a link.
+Then we will get a clickable image that works as a link:
+
+[![](pict/penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
 
 ----------------------------------------------------------------------------------------------------
 # Lists
@@ -212,6 +232,7 @@ Blockquotes are inserted by starting each line with `> `.
 > - Also a list inside this `blockquote` is used for demonstration.
 
 ----------------------------------------------------------------------------------------------------
+<!--index tables-->
 # Tables
 
 Table are added with the syntax like this:
@@ -273,9 +294,11 @@ This will give:
 | 50 | 60  | 70  | 80  |
 | 90 | 100 | 110 | 120 |
 
-> __Note.__ Small extra gap appears above header-less tables that is not avoidable as for now.
+!!! note
+    Small extra gap appears above header-less tables that is not avoidable as for now.
 
 ----------------------------------------------------------------------------------------------------
+<!--index fenced code blocks -->
 # Fenced code blocks
 
 Fenced code blocks may be set up by four-space indent, or by four backticks (` ```` `), i.e.
@@ -344,7 +367,20 @@ System.out.println("This block demonstrates " +
 >     ````
 > - Item 2
 
+
+## Wrapping
+
+Sometimes it's required to have the long lines inside code blocks wrapped, but the above code
+blocks don't wrap the lines automatically. Of cause we can break the lines manually but this 
+may make the content inconvenient for copy-pasting. To address this cases, additional markers
+`wrapped`, `wrapped-code` and `wrapped-shell` were defined. Here's an example:
+
+````wrapped-code
+This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
+````
+
 ----------------------------------------------------------------------------------------------------
+<!--index admonitions -->
 # Admonitions
 
 !!! info
@@ -387,10 +423,6 @@ System.out.println("This block demonstrates " +
  
     !!! note
         When a default title is used its first character is capitalized.
-
-
-
-
 
 
 

@@ -9,12 +9,13 @@ from pathlib import Path
 import chevron
 import markdown
 
+from argument_file_plugins_utils import process_plugins
 from argument_file_utils import load_json_argument_file, parse_argument_file_content
 from cli_arguments_utils import parse_cli_arguments, CliError
 from constants import EXEC_NAME, EXEC_VERSION
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
 from utils import UserError, read_lines_from_file, \
-    read_lines_from_commented_json_file, read_lines_from_cached_file
+    read_lines_from_commented_json_file, read_lines_from_cached_file, first_not_none
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
@@ -73,7 +74,7 @@ def md2html(document, plugins, metadata_handlers, options):
 
     md_lines = read_lines_from_file(input_file)
     for plugin in plugins:
-        plugin.new_page()
+        plugin.new_page(document)
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
 
     substitutions['content'] = MARKDOWN.convert(source=md_lines)
@@ -121,9 +122,8 @@ def main():
             argument_file_string = read_lines_from_commented_json_file(argument_file)
             try:
                 argument_file_dict = load_json_argument_file(argument_file_string)
-                arguments = parse_argument_file_content(argument_file_dict, cli_args)
             except UserError as e:
-                raise UserError(f"Error parsing argument file '{argument_file}': "
+                raise UserError(f"Error reading argument file '{argument_file}': "
                                 f"{type(e).__name__}: {e}")
         else:
             page_variables = {"VARIABLES": {"only-at-page-start": True}}
@@ -133,16 +133,36 @@ def main():
                                   # When run without argument file, need implicitly added
                                   # plugin for page title extraction from the source text.
                                   "plugins": {"page-variables": page_variables}}
-            arguments = parse_argument_file_content(argument_file_dict, cli_args)
 
-        metadata_handlers = register_page_metadata_handlers(arguments.plugins)
+        try:
+            arguments = parse_argument_file_content(argument_file_dict, cli_args)
+            plugins = process_plugins(argument_file_dict['plugins'])
+        except UserError as e:
+            raise UserError(f"Error parsing argument file '{argument_file}': "
+                            f"{type(e).__name__}: {e}")
+
+        metadata_handlers = register_page_metadata_handlers(plugins)
+
+        for plugin in plugins:
+            for action in first_not_none(plugin.initialization_actions(), []):
+                action.initialize(argument_file_dict, cli_args, plugins)
 
         for document in arguments.documents:
             try:
-                md2html(document, arguments.plugins, metadata_handlers, arguments.options)
+                md2html(document, plugins, metadata_handlers, arguments.options)
             except UserError as e:
                 error_input_file = document["input_file"]
                 raise UserError(f"Error processing input file '{error_input_file}': "
+                                f"{type(e).__name__}: {e}")
+
+        after_all_page_processed_actions = []
+        for plugin in plugins:
+            after_all_page_processed_actions.extend(plugin.after_all_page_processed_actions())
+        for action in after_all_page_processed_actions:
+            try:
+                action.execute_after_all_page_processed()
+            except UserError as e:
+                raise UserError(f"Error in after-all-pages-processed action: "
                                 f"{type(e).__name__}: {e}")
 
         if arguments.options["verbose"]:

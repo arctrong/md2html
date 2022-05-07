@@ -1,0 +1,19 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/IndexPluginTest/template.html",
+        "verbose": false,
+        "link-css": ["../../../../doc/styles.css"]
+    },
+    "documents": [
+        { "input": "page1.txt", "title": "Page 1" },
+        { "input": "page2.txt", "title": "Page 2" }
+    ],
+    "plugins": {
+       "variables": {"custom_variable_1": "custom value 1" },
+        "index": {"output": "index_page.html", "title": "Index",
+            "index-cache": "index_cache.json", "index-cache-relative": true }
+    }
+}

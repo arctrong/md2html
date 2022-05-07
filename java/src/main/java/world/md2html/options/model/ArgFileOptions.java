@@ -9,7 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class ArgFileOptions {
-
     private final SessionOptions options;
     private final List<Document> documents;
     private final List<Md2HtmlPlugin> plugins;

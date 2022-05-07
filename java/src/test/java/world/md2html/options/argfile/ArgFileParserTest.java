@@ -26,30 +26,30 @@ public class ArgFileParserTest {
     @Test
     public void emptyFile_NegativeScenario() {
         assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("", null));
+                () -> ArgFileParser.readAndParse("", null));
     }
 
     @Test
     public void rootElementIsNotObject_NegativeScenario() {
         assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("[1, 2]", null));
+                () -> ArgFileParser.readAndParse("[1, 2]", null));
     }
 
     @Test
     public void defaultElementIsNotObject_NegativeScenario() {
         assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"default\": []}", null));
+                () -> ArgFileParser.readAndParse("{\"default\": []}", null));
     }
 
     @Test
     public void noDefaultElement_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": []}", null);
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": []}", null);
         assertEquals(0, argFileOptions.getDocuments().size());
     }
 
     @Test
     public void allDefaultParameters_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
         Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
@@ -66,7 +66,7 @@ public class ArgFileParserTest {
     @Test
     public void allParametersFromDefaultSection_PositiveScenario()
             throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"default\": {\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
                         "\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
@@ -89,19 +89,19 @@ public class ArgFileParserTest {
     @Test
     public void noDocumentsElement_NegativeScenario() {
         ArgFileParseException e = assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"default\": {}}", null));
+                () -> ArgFileParser.readAndParse("{\"default\": {}}", null));
         assertTrue(e.getMessage().contains("documents"));
     }
 
     @Test
     public void documentsElementIsNotList_NegativeScenario() {
         assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"documents\": \"not a list\"}", null));
+                () -> ArgFileParser.readAndParse("{\"documents\": \"not a list\"}", null));
     }
 
     @Test
     public void emptyDocumentsElement_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": []}", null);
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": []}", null);
         assertEquals(0, argFileOptions.getDocuments().size());
     }
 
@@ -109,7 +109,7 @@ public class ArgFileParserTest {
     @CsvSource({"link-css", "include-css"})
     public void defaultElementNoCssWithCssDefinitions_NegativeScenario(String cssType) {
         ArgFileParseException e = assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"default\": {\"no-css\": true, \"" + cssType +
+                () -> ArgFileParser.readAndParse("{\"default\": {\"no-css\": true, \"" + cssType +
                         "\": [\"some.css\"]}, \"documents\": []}", null));
         assertTrue(e.getMessage().contains("no-css"));
         assertTrue(e.getMessage().contains(cssType));
@@ -117,7 +117,7 @@ public class ArgFileParserTest {
 
     @Test
     public void minimalDocument_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
         Document doc = argFileOptions.getDocuments().get(0);
         assertEquals("index.txt", doc.getInputLocation());
@@ -126,7 +126,7 @@ public class ArgFileParserTest {
 
     @Test
     public void severalDocuments_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\"}, {\"input\": \"about.txt\"}], " +
                         "\"default\": {\"template\": \"common_template.html\"}}", null);
         Document doc = argFileOptions.getDocuments().get(0);
@@ -141,7 +141,7 @@ public class ArgFileParserTest {
 
     @Test
     public void fullDocument_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
                         "\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
@@ -169,7 +169,7 @@ public class ArgFileParserTest {
     @Test
     public void documentsElementNoInputFile_NegativeScenario() {
         ArgFileParseException e = assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"documents\": [{\"output\": \"index.html\"}]}", null));
+                () -> ArgFileParser.readAndParse("{\"documents\": [{\"output\": \"index.html\"}]}", null));
         assertTrue(e.getMessage().toUpperCase().contains("INPUT"));
     }
 
@@ -177,7 +177,7 @@ public class ArgFileParserTest {
     @CsvSource({"link-css", "include-css", "add-link-css", "add-include-css"})
     public void documentNoCssWithCssDefinitions_NegativeScenario(String cssType) {
         ArgFileParseException e = assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"documents\": [{\"no-css\": true, \"" +
+                () -> ArgFileParser.readAndParse("{\"documents\": [{\"no-css\": true, \"" +
                         cssType + "\": [\"some.css\"]}]}", null));
         assertTrue(e.getMessage().contains("no-css"));
         assertTrue(e.getMessage().contains(cssType));
@@ -186,7 +186,7 @@ public class ArgFileParserTest {
     @Test
     public void documentVerboseAndReportFlags_NegativeScenario() {
         ArgFileParseException e = assertThrows(ArgFileParseException.class,
-                () -> ArgFileParser.parse("{\"documents\": [{\"output\": \"index.html\", " +
+                () -> ArgFileParser.readAndParse("{\"documents\": [{\"output\": \"index.html\", " +
                         "\"verbose\": true, \"report\": true}]}", null));
         assertTrue(e.getMessage().contains("verbose"));
         assertTrue(e.getMessage().contains("report"));
@@ -194,7 +194,7 @@ public class ArgFileParserTest {
 
     @Test
     public void overridingWithCliArgs_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
                         "\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
@@ -226,7 +226,7 @@ public class ArgFileParserTest {
 
     @Test
     public void defaultOptions_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
         SessionOptions options = argFileOptions.getOptions();
         assertFalse(options.isLegacyMode());
@@ -235,7 +235,7 @@ public class ArgFileParserTest {
 
     @Test
     public void fullOptions_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"options\": {\"verbose\": true, \"legacy-mode\": true}, " +
                         "\"documents\": [{\"input\": \"index.txt\"}]}", null);
         SessionOptions options = argFileOptions.getOptions();
@@ -245,7 +245,7 @@ public class ArgFileParserTest {
 
     @Test
     public void legacyMode_inCommandLine_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"options\": {\"verbose\": true}, " +
                         "\"documents\": [{\"input\": \"index.txt\"}]}",
                 new CliOptions(Paths.get("unknown_arg_file.json"), null, null,
@@ -265,7 +265,7 @@ public class ArgFileParserTest {
 
     @Test
     public void noPlugins_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", null);
         List<Md2HtmlPlugin> plugins = argFileOptions.getPlugins();
         assertTrue(plugins.isEmpty());
@@ -275,7 +275,7 @@ public class ArgFileParserTest {
     public void allPlugins_PositiveScenario() throws ArgFileParseException {
         // Adding minimum plugin data to make the plugins declare themselves activated.
         // The specific plugins behavior is going to be tested in separate tests.
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": " +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": " +
                 "[{\"input\": \"index.txt\"}], \"plugins\": " +
                 "{\"relative-paths\": {\"rel_path\": \"/doc\"}, " +
                 "\"page-flows\": {\"sections\": [{\"link\": \"doc/about.html\", " +
@@ -288,7 +288,7 @@ public class ArgFileParserTest {
 
     @Test
     public void auto_output_file_with_root_dirs_PositiveScenario() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
                 "{\"input-root\": \"doc_src/txt\", \"output-root\": \"doc/html\", " +
                 "\"input\": \"index.txt\"}, " +
                 "{\"output-root\": \"doc/html\", \"input\": \"index.txt\"}, " +

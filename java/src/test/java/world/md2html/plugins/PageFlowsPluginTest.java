@@ -100,7 +100,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void notActivated() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\"}], " +
                         "\"plugins\": {\"page-flows\": {}}}", null);
         PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
@@ -109,7 +109,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void pageSequence_inPluginsSection() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
                         "\"plugins\": {\"page-flows\": {\"sections\": [" +
                         "{\"link\": \"index.html\", \"title\": \"Home\"}," +
@@ -127,7 +127,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void pageSequence_inDocumentsSection() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
                 "{\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "{\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\"]}, " +
                 "{\"input\": \"no-page-flow.txt\", \"title\": \"No page flow\"}" +
@@ -149,7 +149,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void pageSequence_inBothDocumentsAndPluginsSections() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
                 "    {\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"other.txt\", \"title\": \"Other\"}" +
@@ -168,7 +168,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void notActivated_withoutEmptyPluginDeclaration() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
                 "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"Home\", \"page-flows\": [\"sections\"]}], " +
                         "\"plugins\": {}}", null);
@@ -178,7 +178,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void severalPageFlows() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
                 "    {\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"narration.txt\", \"title\": \"Narration\"}, " +
@@ -208,7 +208,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void sameDocumentInSeveralPageFlows() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
                 "    {\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\", \"other_links\"]}, " +
                 "    {\"input\": \"other.txt\", \"title\": \"Other\", \"page-flows\": [\"other_links\"]}" +
@@ -235,7 +235,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void externalLinks() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
             "    {\"input\": \"index.txt\", \"title\": \"Home\"} " +
                 "], \"plugins\": {\"page-flows\": {\"sections\": [" +
                 "    {\"link\": \"index.html\", \"title\": \"HomeLinkExternal\", \"external\": true}, " +
@@ -272,7 +272,7 @@ class PageFlowsPluginTest {
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource
     public void navigation(String testName, String argFileContent) throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(argFileContent, null);
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(argFileContent, null);
         PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
 
         Document doc = documentWithOutputLocation("page1.html");
@@ -349,7 +349,7 @@ class PageFlowsPluginTest {
     @MethodSource
     public void navigation_generalized(String testName, int pageCount, String argFileContent)
             throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse(argFileContent, null);
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(argFileContent, null);
         PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
 
         for (int i = 1; i <= pageCount; ++i) {
@@ -376,7 +376,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void relativisation() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.parse("{\"documents\": [" +
+        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
                 "    {\"input\": \"root1.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"root2.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"doc/sub1.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}, " +

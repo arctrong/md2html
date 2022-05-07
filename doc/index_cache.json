@@ -1,0 +1,105 @@
+{
+  "readme.html": [
+    {
+      "entry": "Markdown",
+      "link": "../readme.html#index_entry_1",
+      "title": "Home"
+    }
+  ],
+  "doc/installation.html": [],
+  "doc/usage.html": [
+    {
+      "entry": "argument file",
+      "link": "usage.html#index_entry_1",
+      "title": "Usage"
+    },
+    {
+      "entry": "command scripts",
+      "link": "usage.html#index_entry_2",
+      "title": "Usage"
+    },
+    {
+      "entry": "context menu items",
+      "link": "usage.html#index_entry_3",
+      "title": "Usage"
+    },
+    {
+      "entry": "quick start",
+      "link": "usage.html#index_entry_4",
+      "title": "Usage"
+    },
+    {
+      "entry": "legacy mode",
+      "link": "usage.html#index_entry_5",
+      "title": "Usage"
+    },
+    {
+      "entry": "legacy mode",
+      "link": "usage.html#index_entry_6",
+      "title": "Usage"
+    }
+  ],
+  "doc/page_content.html": [
+    {
+      "entry": "tables",
+      "link": "page_content.html#index_entry_1",
+      "title": "Page content"
+    },
+    {
+      "entry": "fenced code blocks",
+      "link": "page_content.html#index_entry_2",
+      "title": "Page content"
+    },
+    {
+      "entry": "admonitions",
+      "link": "page_content.html#index_entry_3",
+      "title": "Page content"
+    }
+  ],
+  "doc/templates.html": [
+    {
+      "entry": "template",
+      "link": "templates.html#index_entry_1",
+      "title": "Templates"
+    },
+    {
+      "entry": "Mustache",
+      "link": "templates.html#index_entry_1",
+      "title": "Templates"
+    },
+    {
+      "entry": "CSS",
+      "link": "templates.html#index_entry_2",
+      "title": "Templates"
+    }
+  ],
+  "doc/plugins.html": [
+    {
+      "entry": "plugins",
+      "link": "plugins.html#index_entry_1",
+      "title": "Plugins"
+    },
+    {
+      "entry": "page flows",
+      "link": "plugins.html#index_entry_2",
+      "title": "Plugins"
+    },
+    {
+      "entry": "page metadata",
+      "link": "plugins.html#index_entry_3",
+      "title": "Plugins"
+    },
+    {
+      "entry": "index",
+      "link": "plugins.html#index_entry_4",
+      "title": "Plugins"
+    }
+  ],
+  "doc/development.html": [
+    {
+      "entry": "integral tests",
+      "link": "development.html#index_entry_1",
+      "title": "Development"
+    }
+  ]
+}
