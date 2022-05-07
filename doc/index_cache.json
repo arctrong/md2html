@@ -85,8 +85,13 @@
       "title": "Plugins"
     },
     {
-      "entry": "index",
+      "entry": "page metadata",
       "link": "plugins.html#index_entry_3",
+      "title": "Plugins"
+    },
+    {
+      "entry": "index",
+      "link": "plugins.html#index_entry_4",
       "title": "Plugins"
     }
   ],

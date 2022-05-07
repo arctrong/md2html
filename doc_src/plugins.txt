@@ -212,7 +212,7 @@ used in the template.
     }
 ````
 
-<!-- page metadata -->
+<!--index page metadata -->
 This means that variables will be extracted from the _page metadata_ blocks with marker
 `variables` and only from those blocks that are the first non-blank text on the page.
 This is the definition of the default marker so it may be simplified to `"page-variables": {}`,

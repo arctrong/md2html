@@ -38,9 +38,8 @@ this:
     A **monad** is just a _monoid_ in the category of `endofunctors`.
 
 
-# Markdown
-
 <!--index Markdown -->
+# Markdown
 
 [Markdown](https://daringfireball.net/projects/markdown/) is a formatting syntax whose main goal
 is making texts that are as readable as possible in plain text.
