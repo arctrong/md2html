@@ -16,7 +16,9 @@
         "verbose": { "type": "boolean" },
         "report": { "type": "boolean" },
         "index-cache": { "type": "string" },
-        "index-cache-relative": { "type": "boolean" }
+        "index-cache-relative": { "type": "boolean" },
+        "letters": { "type": "boolean" },
+        "letters-block": { "type": "boolean" }
     },
     "required": ["output", "index-cache"],
     "additionalProperties": false

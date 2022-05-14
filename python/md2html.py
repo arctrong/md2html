@@ -155,12 +155,12 @@ def main():
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
 
-        after_all_page_processed_actions = []
+        finalization_actions = []
         for plugin in plugins:
-            after_all_page_processed_actions.extend(plugin.after_all_page_processed_actions())
-        for action in after_all_page_processed_actions:
+            finalization_actions.extend(plugin.finalization_actions())
+        for action in finalization_actions:
             try:
-                action.execute_after_all_page_processed()
+                action.finalize()
             except UserError as e:
                 raise UserError(f"Error in after-all-pages-processed action: "
                                 f"{type(e).__name__}: {e}")

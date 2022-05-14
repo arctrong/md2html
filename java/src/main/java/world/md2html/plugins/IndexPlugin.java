@@ -52,6 +52,11 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
 
     private static final String INDEX_ENTRY_ANCHOR_PREFIX = "index_entry_";
+    private static final String INDEX_CONTENT_BLOCK_CLASS = "index-content";
+    private static final String INDEX_ENTRY_CLASS = "index-entry";
+    private static final String INDEX_LETTER_ID_PREFIX = "index_letter_";
+    private static final String INDEX_LETTER_CLASS = "index-letter";
+    private static final String INDEX_LETTERS_BLOCK_CLASS = "index_letters";
 
     // We are going to validate multiple metadata blocks, so preloading the schema.
     private final JsonSchema metadataSchema =
@@ -59,6 +64,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
     private Path indexCacheFile;
     private boolean indexCacheRelative = false;
+    private boolean addLetters = false;
+    private boolean addLettersBlock = false;
+
     private ObjectNode documentJson;
     private Document document;
     private List<Md2HtmlPlugin> plugins;
@@ -83,9 +91,12 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         doStandardJsonInputDataValidation(data, "plugins/index_schema.json");
         this.documentJson = data.deepCopy();
         this.indexCacheFile = Paths.get(data.get("index-cache").asText());
-        JsonNode indexCacheRelativeNode = data.get("index-cache-relative");
-        this.indexCacheRelative =
-                indexCacheRelativeNode != null && indexCacheRelativeNode.asBoolean();
+        ObjectNode dataObj = (ObjectNode) data;
+        this.indexCacheRelative = jsonObjectBooleanField(dataObj, "index-cache-relative",
+                this.indexCacheRelative);
+        this.addLetters = jsonObjectBooleanField(dataObj, "letters", this.addLetters);
+        this.addLettersBlock = jsonObjectBooleanField(dataObj, "letters-block",
+                this.addLettersBlock);
         return true;
     }
 
@@ -215,7 +226,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             title = "";
         }
 
-        String htmlText = generateIndexHtml(this.indexCache);
+        String htmlText = generateIndexHtml(this.indexCache, this.addLetters, this.addLettersBlock);
 
         substitutions.put(TITLE_PLACEHOLDER, title);
         substitutions.put(CONTENT_PLACEHOLDER, htmlText);
@@ -269,7 +280,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         }
     }
 
-    private static String generateIndexHtml(Map<String, List<IndexEntry>> indexCache) {
+    private static String generateIndexHtml(Map<String, List<IndexEntry>> indexCache,
+                                            boolean addLetters, boolean addLettersBlock) {
 
         Map<String, List<IndexEntry>> terms = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (List<IndexEntry> entries : indexCache.values()) {
@@ -279,14 +291,36 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         }
 
         StringBuilder content = new StringBuilder();
+        StringBuilder letterLinks = new StringBuilder();
+        String currentLetter = "";
         for (Map.Entry<String, List<IndexEntry>> termEntry : terms.entrySet()) {
             String term = termEntry.getKey();
             List<IndexEntry> links = termEntry.getValue();
+
+            if (addLetters || addLettersBlock) {
+                String letter = term == null || term.isEmpty() ? "" :
+                        term.substring(0, 1).toUpperCase();
+                if (!letter.equals(currentLetter)) {
+                    currentLetter = letter;
+                    String indexLetterId = INDEX_LETTER_ID_PREFIX + currentLetter;
+                    if (addLetters) {
+                        content.append("<p class=\"" + INDEX_LETTER_CLASS + "\" id=\"")
+                                .append(indexLetterId).append("\">")
+                                .append(currentLetter).append("</p>\n");
+                    } else {
+                        content.append("<a name=\"").append(indexLetterId).append("\">")
+                                .append("</a>\n");
+                    }
+                    if (addLettersBlock) {
+                        letterLinks.append("<a href=\"#").append(indexLetterId).append("\">")
+                                .append(currentLetter).append("</a>").append(" ");
+                    }
+                }
+            }
+
             if (links.size() > 1) {
                 StringBuilder linksString = new StringBuilder();
                 int count = 0;
-//                links.sort((l1, l2) -> Utils.NULLABLE_STRING_COMPARATOR
-//                                .compare(l1.getTitle(), l2.getTitle()));
                 for (IndexEntry indexEntry : links) {
                     count++;
                     linksString.append(count > 1 ? ", " : "").append("<a href=\"")
@@ -294,17 +328,19 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                             .append(createTitleAttr(indexEntry.getTitle())).append(">")
                             .append(count).append("</a>");
                 }
-                content.append("<p>").append(term).append(": ").append(linksString)
-                        .append("</p>\n");
+                content.append("<p class=\"" + INDEX_ENTRY_CLASS + "\">").append(term).append(": ")
+                        .append(linksString).append("</p>\n");
             } else {
                 IndexEntry indexEntry = links.get(0);
-                content.append("<p><a href=\"").append(indexEntry.getLink()).append("\"")
-                        .append(createTitleAttr(indexEntry.getTitle())).append(">")
+                content.append("<p class=\"" + INDEX_ENTRY_CLASS + "\"><a href=\"").append(indexEntry.getLink())
+                        .append("\"").append(createTitleAttr(indexEntry.getTitle())).append(">")
                         .append(term).append("</a></p>\n");
             }
         }
 
-        return content.toString();
+        return (letterLinks.length() > 0 ?
+                "<p class=\"" + INDEX_LETTERS_BLOCK_CLASS + "\">" + letterLinks + "</p>\n" : "") +
+                "<div class=\"" + INDEX_CONTENT_BLOCK_CLASS + "\">\n" + content + "\n</div>";
     }
 
     private static String createTitleAttr(String title) {

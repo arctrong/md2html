@@ -75,11 +75,11 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def after_all_page_processed_actions(self):
+    def finalization_actions(self):
         """
         Returns a list of handlers that must have the method `execute_after_all_page_processed`.
         """
         return []
 
-    def execute_after_all_page_processed(self):
+    def finalize(self):
         pass

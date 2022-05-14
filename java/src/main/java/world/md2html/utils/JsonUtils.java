@@ -27,8 +27,14 @@ public class JsonUtils {
         return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asText).orElse(null);
     }
 
+    public static Boolean jsonObjectBooleanField(ObjectNode objectNode, String fieldName,
+                                                 Boolean defaultValue) {
+        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asBoolean)
+                .orElse(defaultValue);
+    }
+
     public static Boolean jsonObjectBooleanField(ObjectNode objectNode, String fieldName) {
-        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asBoolean).orElse(null);
+        return jsonObjectBooleanField(objectNode, fieldName, null);
     }
 
     public static Path jsonObjectPathField(ObjectNode objectNode, String fieldName) {

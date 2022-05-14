@@ -287,23 +287,25 @@ The all possible properties are listed in the table below. They are mostly the s
 of the [`documents` section](usage.html#documents_section) so see that section for the
 absent descriptions.
 
-Name | Type | Required | Description
----- | ---- | :----: | ----
-output-root | string | No | |
-output | string | Yes | Index page that must be created: absolute or relative to the `output-root` property value
-title | string | No | |
-template | string | No | |
-link-css | array of string | No | |
-include-css | array of string | No | |
-no-css | boolean | No | |
-add-link-css | array of string | No | |
-add-include-css | array of string | No | |
-page-flows | array of string | No | |
-add-page-flows | array of string | No | |
-verbose | boolean | No | |
-report | boolean | No | |
-index-cache | string | Yes | Index cache file (see the note below)
-index-cache-relative | boolean | No | `true` means that the index cache file location is defined relative to the index page location
+Name | Type | Required | Default | Description
+---- | ---- | :----: | ---- | ----
+output-root | string | No |  | |
+output | string | Yes |  | Index page that must be created: absolute or relative to the `output-root` property value
+title | string | No |  | |
+template | string | No |  | |
+link-css | array of string | No |  | |
+include-css | array of string | No |  | |
+no-css | boolean | No |  | |
+add-link-css | array of string | No |  | |
+add-include-css | array of string | No |  | |
+page-flows | array of string | No |  | |
+add-page-flows | array of string | No |  | |
+verbose | boolean | No |  | |
+report | boolean | No |  | |
+index-cache | string | Yes |  | Index cache file (see the note below)
+index-cache-relative | boolean | No | false | `true` means that the index cache file location is defined relative to the index page location
+letters | boolean | No | false | `true` means that the index page content will be divided by the terms first letters
+letters-block | boolean | No | false | `true` means that all terms first letters will be listed at the top of the index page
         
 !!! note "Index cache file"
     _Index page_ is generated using the entries from all the documents but
@@ -327,5 +329,31 @@ Index entries may be added in two different ways:
 
 The `index` marker is case-insensitive. If the above two entries are added then the index page
 will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.
+
+In the index page, the term list will be included into a `<div class="index-content">` element.
+The term first letter delimiters will look like this:
+
+````
+<p class="index-letter" id="index_letter_A">A</p>
+````
+
+The terms themselves will look like this:
+
+````
+<p class="index-entry"><a href="usage.html#index_entry_1" title="Usage">argument file</a></p>
+````
+
+The first letter link block will look like this:
+
+````
+<p class="index_letters">
+    <a href="#index_letter_A">A</a>
+    <a href="#index_letter_C">C</a>
+    .  .  .
+</p>
+````
+
+The above information allows define desirable styling with CSS.
+
 
 

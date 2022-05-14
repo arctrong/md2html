@@ -23,7 +23,10 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         with open(Path(self.OUTPUT_DIR).joinpath('index_page.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
             
-        entry_link = root.body.p.a
+        content_div = root.body.div
+        self.assertEqual(['index-content'], content_div['class'])
+            
+        entry_link = content_div.p.a
         self.assertEqual('Page 1', entry_link['title'])
         href = entry_link['href'].split('#')
         self.assertEqual('page1.html', href[0])
@@ -119,7 +122,7 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         
         self.assertEqual(page1_anchor8g, page1_anchor8h)
         
-        footer = entry_link.parent.next_sibling.next_sibling
+        footer = entry_link.parent.parent.next_sibling.next_sibling
         self.assertIn('Generator name: md2html_', footer.text)
         footer = footer.next_sibling.next_sibling
         self.assertEqual('Custom variable: custom value 1', footer.text)

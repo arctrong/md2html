@@ -16,12 +16,19 @@ from utils import UserError, reduce_json_validation_error_message, relativize_re
 
 MODULE_DIR = Path(__file__).resolve().parent
 
+INDEX_ENTRY_ANCHOR_PREFIX = 'index_entry_'
+INDEX_CONTENT_BLOCK_CLASS = "index-content"
+INDEX_ENTRY_CLASS = "index-entry"
+INDEX_LETTER_ID_PREFIX = "index_letter_"
+INDEX_LETTER_CLASS = "index-letter"
+INDEX_LETTERS_BLOCK_CLASS = "index_letters"
+
 
 def _create_title_attr(title):
     return f' title="{escape(title)}"' if title else ''
 
 
-def _generate_content(index_cache) -> str:
+def _generate_content(index_cache, add_letters, add_letters_block) -> str:
     index_entries = {}
     for entries in index_cache.values():
         for entry in entries:
@@ -29,28 +36,44 @@ def _generate_content(index_cache) -> str:
             anchor_list.append((entry["link"], entry["title"]))
 
     content = StringIO()
-    for entry, links in sorted(index_entries.items(), key=lambda v: v[0].lower()):
+    letter_links = StringIO()
+    current_letter = ""
+    for term, links in sorted(index_entries.items(), key=lambda v: v[0].lower()):
+
+        if add_letters or add_letters_block:
+            letter = term[0:1].upper() if term else ""
+            if letter != current_letter:
+                current_letter = letter
+                index_letter_id = INDEX_LETTER_ID_PREFIX + current_letter
+                if add_letters:
+                    content.write(f'<p class="{INDEX_LETTER_CLASS}" id="{index_letter_id}">'
+                                  f'{current_letter}</p>\n')
+                else:
+                    content.write(f'<a name="{index_letter_id}"></a>\n')
+                if add_letters_block:
+                    letter_links.write(f'<a href="#{index_letter_id}">{current_letter}</a> ')
+
         if len(links) > 1:
             links_string = StringIO()
             count = 0
-
-            # links.sort(key=lambda l: l[0])
-            
             for link, title in links:
                 count += 1
                 links_string.write(f'{", " if count > 1 else ""}<a href="{link}"'
                                    f'{_create_title_attr(title)}>{count}</a>')
-            content.write(f'<p>{entry}: {links_string.getvalue()}</p>\n')
+            content.write(f'<p class="{INDEX_ENTRY_CLASS}">{term}: '
+                          f'{links_string.getvalue()}</p>\n')
         else:
             link, title = links[0]
-            content.write(f'<p><a href="{link}"{_create_title_attr(title)}>{entry}</a></p>\n')
+            content.write(f'<p class="{INDEX_ENTRY_CLASS}">'
+                          f'<a href="{link}"{_create_title_attr(title)}>{term}</a></p>\n')
 
-    return content.getvalue()
+    letter_links = letter_links.getvalue()
+    return (f'<p class="{INDEX_LETTERS_BLOCK_CLASS}">{letter_links}</p>\n'
+            if letter_links else '') + (f'<div class="{INDEX_CONTENT_BLOCK_CLASS}">\n'
+                                        f'{content.getvalue()}\n</div>')
 
 
 class IndexPlugin(Md2HtmlPlugin):
-
-    INDEX_ENTRY_ANCHOR_PREFIX = 'index_entry_'
 
     def __init__(self):
         with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r') as schema_file:
@@ -58,6 +81,9 @@ class IndexPlugin(Md2HtmlPlugin):
 
         self.index_cache_file = None
         self.index_cache_relative = False
+        self.add_letters = False
+        self.add_letters_block = False
+
         self.document = None
         self.plugins = None
 
@@ -71,8 +97,9 @@ class IndexPlugin(Md2HtmlPlugin):
         validate_data(data, MODULE_DIR.joinpath('index_schema.json'))
         self.document = {k: v for k, v in data.items()}
         self.index_cache_file = data["index-cache"]
-        if data.get("index-cache-relative") is not None:
-            self.index_cache_relative = data["index-cache-relative"]
+        self.index_cache_relative = data.get("index-cache-relative", self.index_cache_relative)
+        self.add_letters = data.get("letters", self.add_letters)
+        self.add_letters_block = data.get("letters-block", self.add_letters_block)
         return True
 
     def initialization_actions(self):
@@ -125,13 +152,12 @@ class IndexPlugin(Md2HtmlPlugin):
 
         anchors = self.index_cache[output_file]
         self.current_anchor_number += 1
-        anchor_text = f'<a name="{self.INDEX_ENTRY_ANCHOR_PREFIX}' \
-                      f'{self.current_anchor_number}"></a>'
+        anchor_text = f'<a name="{INDEX_ENTRY_ANCHOR_PREFIX}{self.current_anchor_number}"></a>'
 
         for entry in metadata:
             normalized_entry = entry.strip()
             anchors.append({"entry": normalized_entry,
-                            "link": f'{self.current_link_page}#{self.INDEX_ENTRY_ANCHOR_PREFIX}'
+                            "link": f'{self.current_link_page}#{INDEX_ENTRY_ANCHOR_PREFIX}'
                                     f'{self.current_anchor_number}', "title": doc.get('title')})
 
         return anchor_text
@@ -144,10 +170,10 @@ class IndexPlugin(Md2HtmlPlugin):
                                                               self.document['output_file'])
         self.current_anchor_number = 0
 
-    def after_all_page_processed_actions(self):
+    def finalization_actions(self):
         return [self]
 
-    def execute_after_all_page_processed(self):
+    def finalize(self):
 
         output_location = self.document['output_file']
 
@@ -180,7 +206,8 @@ class IndexPlugin(Md2HtmlPlugin):
                 plugin.new_page(self.document)
             substitutions.update(plugin.variables(self.document))
 
-        substitutions['content'] = _generate_content(self.index_cache)
+        substitutions['content'] = _generate_content(self.index_cache, self.add_letters,
+                                                     self.add_letters_block)
 
         if substitutions['title'] is None:
             substitutions['title'] = ''
