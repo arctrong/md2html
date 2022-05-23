@@ -1,8 +1,8 @@
 import unittest
+from bs4 import BeautifulSoup
+from pathlib import Path
 
 import helpers as h
-
-SIMPLE_TEST_TEMPLATE = f'{h.INPUT_DIR}/test_template_simple.html'
 
 
 class Md2htmlContentIntegralTest(unittest.TestCase):
@@ -10,11 +10,18 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.OUTPUT_DIR = h.prepare_output_directory(cls.__name__)
-    
+        input_dir = Path(h.INPUT_DIR).joinpath('ContentTest')
+        # For better performance all the output files are generated in one run
+        h.run_with_parameters(['--input-root', str(input_dir), '--output-root', cls.OUTPUT_DIR,
+            '-f', '--argument-file', str(input_dir.joinpath('md2html_args.json'))])
+            
+    def _read_output_file(self, file_name):
+        with open(Path(self.OUTPUT_DIR).joinpath(file_name)) as html_file:
+            root = BeautifulSoup(html_file, 'html.parser')
+        return root
+            
     def test_formatting(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/formatting_test.txt', 
-                                f'{self.OUTPUT_DIR}/formatting_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('formatting_test.html')
         
         paragraphs = root.body.find_all('p')
         self.assertEqual(1, len(paragraphs))
@@ -35,9 +42,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual(' fragments.', paragraph_contents[6])
         
     def test_br(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/br_test.txt', 
-                                f'{self.OUTPUT_DIR}/br_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('br_test.html')
 
         paragraphs = root.body.find_all('p')
         self.assertEqual(4, len(paragraphs))
@@ -46,9 +51,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertIsNotNone(paragraphs[2].br)
 
     def test_headers(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/headers_test.txt', 
-                                f'{self.OUTPUT_DIR}/headers_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('headers_test.html')
             
         header = root.body.contents[0].next_sibling
         for i in range(1, 7):
@@ -57,9 +60,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
             header = header.next_sibling.next_sibling
 
     def test_toc(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/toc_test.txt', 
-                                f'{self.OUTPUT_DIR}/toc_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('toc_test.html')
         
         item = root.body.ul.li
         for i in range(1, 7):
@@ -67,9 +68,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
             item = item.li
     
     def test_links(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/links_test.txt', 
-                                f'{self.OUTPUT_DIR}/links_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('links_test.html')
 
         paragraphs = root.body.find_all('p')
         self.assertEqual(3, len(paragraphs))
@@ -85,9 +84,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('http://test_link_without_text', link['href'])
     
     def test_images(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/images_test.txt',
-                                f'{self.OUTPUT_DIR}/images_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('images_test.html')
 
         paragraphs = root.body.find_all('p')
         self.assertEqual(3, len(paragraphs))
@@ -102,11 +99,8 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('', image['alt'])
         self.assertEqual('test hint', image['title'])
         
-        
     def test_images_in_links(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/images_in_links_test.txt',
-                                f'{self.OUTPUT_DIR}/images_in_links_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('images_in_links_test.html')
 
         paragraphs = root.body.find_all('p')
         self.assertEqual(3, len(paragraphs))
@@ -132,9 +126,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('image hint', image['title'])
 
     def test_lists(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/lists_test.txt',
-                                f'{self.OUTPUT_DIR}/lists_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('lists_test.html')
         
         paragraph = root.body.p
         self.assertEqual('The first list, unordered:', paragraph.text)
@@ -178,9 +170,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('Level 1, item 2', li1.contents[0].strip())
 
     def test_blockquotes(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/blockquotes_test.txt',
-                                f'{self.OUTPUT_DIR}/blockquotes_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('blockquotes_test.html')
 
         paragraph = root.body.p
         self.assertEqual('The following is a blockquote:', paragraph.text)
@@ -199,9 +189,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('.', fragment)
 
     def test_fenced_blocks(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/fenced_blocks_test.txt',
-                                f'{self.OUTPUT_DIR}/fenced_blocks_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('fenced_blocks_test.html')
 
         paragraph = root.body.p
         self.assertEqual('Indented fenced block:', paragraph.text)
@@ -226,9 +214,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('Styled line 1\nStyled line 2', code.text.strip())
 
     def test_fenced_blocks_in_blockquotes(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/fenced_blocks_in_blockquotes_test.txt',
-                                f'{self.OUTPUT_DIR}/fenced_blocks_in_blockquotes_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('fenced_blocks_in_blockquotes_test.html')
         
         paragraph = root.body.p
         self.assertEqual('Indented:', paragraph.text)
@@ -273,9 +259,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('Styled end.', paragraph.text)
 
     def test_fenced_blocks_in_lists(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/fenced_blocks_in_lists_test.txt',
-                                f'{self.OUTPUT_DIR}/fenced_blocks_in_lists_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('fenced_blocks_in_lists_test.html')
 
         li1 = root.body.ul.li
         self.assertEqual('Level 1, item 1', li1.contents[0].strip())
@@ -302,9 +286,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('Styled line 1, level 2\nStyled line 2, level 2', code.text.strip())
 
     def test_tables(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/tables_test.txt',
-                                f'{self.OUTPUT_DIR}/tables_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('tables_test.html')
 
         table = root.body.table
         ths = table.thead.find_all('th')
@@ -320,9 +302,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('right', tds[2].get('align'))
 
     def test_admonitions(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/admonitions_test.txt',
-                                f'{self.OUTPUT_DIR}/admonitions_test.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('admonitions_test.html')
 
         paragraph = root.body.p
         self.assertEqual('The following is an admonition:', paragraph.text)
@@ -348,9 +328,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('.', fragment)
 
     def test_admonition_custom_header(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/admonition_custom_header.txt',
-                                f'{self.OUTPUT_DIR}/admonition_custom_header.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('admonition_custom_header.html')
 
         admonition_block = root.body.div
         self.assertEqual(['admonition', 'hint'], admonition_block.get('class'))
@@ -360,9 +338,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('This admonition has a custom header.', content)
 
     def test_admonition_without_header(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/admonition_without_header.txt',
-                                f'{self.OUTPUT_DIR}/admonition_without_header.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('admonition_without_header.html')
 
         admonition_block = root.body.div
         self.assertEqual(['admonition', 'danger'], admonition_block.get('class'))
@@ -370,9 +346,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('This admonition has no header.', content)
 
     def test_admonition_with_fenced_block(self):
-        root = h.execute_simple(f'{h.INPUT_DIR}/admonition_with_fenced_block.txt',
-                                f'{self.OUTPUT_DIR}/admonition_with_fenced_block.html',
-                                SIMPLE_TEST_TEMPLATE)
+        root = self._read_output_file('admonition_with_fenced_block.html')
 
         admonition_block = root.body.div
         self.assertEqual(['admonition', 'attention'], admonition_block.get('class'))

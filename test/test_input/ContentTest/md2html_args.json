@@ -1,0 +1,34 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/ContentTest/test_template_simple.html",
+        "verbose": false,
+        "no-css": true
+    },
+    "documents": [
+        { "input": "formatting_test.txt" },
+        { "input": "br_test.txt" },
+        { "input": "headers_test.txt" },
+        { "input": "toc_test.txt" },
+        { "input": "links_test.txt" },
+        { "input": "images_test.txt" },
+        { "input": "images_in_links_test.txt" },
+        { "input": "lists_test.txt" },
+        { "input": "blockquotes_test.txt" },
+        { "input": "fenced_blocks_test.txt" },
+        { "input": "fenced_blocks_in_blockquotes_test.txt" },
+        { "input": "fenced_blocks_in_lists_test.txt" },
+        { "input": "tables_test.txt" },
+        { "input": "admonitions_test.txt" },
+        { "input": "admonition_custom_header.txt" },
+        { "input": "admonition_without_header.txt" },
+        { "input": "admonition_with_fenced_block.txt" }
+    ]
+}
+
+
+
+
+
