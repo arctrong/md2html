@@ -4,6 +4,10 @@ from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
 from plugins.variables_plugin import VariablesPlugin
 
-PLUGINS = {'relative-paths': RelativePathsPlugin(), "page-flows": PageFlowsPlugin(),
-           'page-variables': PageVariablesPlugin(), "variables": VariablesPlugin(),
-           'index': IndexPlugin()}
+PLUGIN_PROVIDERS = {
+    'relative-paths': lambda: RelativePathsPlugin(),
+    "page-flows": lambda: PageFlowsPlugin(),
+    'page-variables': lambda: PageVariablesPlugin(),
+    "variables": lambda: VariablesPlugin(),
+    'index': lambda: IndexPlugin()
+}

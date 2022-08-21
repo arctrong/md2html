@@ -8,9 +8,10 @@ from pathlib import Path
 import chevron
 from jsonschema import validate, ValidationError
 
-from argument_file_utils import parse_argument_file_content
+from argument_file_utils import complete_argument_file_processing, merge_and_canonize_argument_file
+from cli_arguments_utils import CliArgDataObject
 from constants import EXEC_NAME, EXEC_VERSION
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
+from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource, \
     read_lines_from_cached_file, read_lines_from_file
 
@@ -85,57 +86,35 @@ class IndexPlugin(Md2HtmlPlugin):
         self.add_letters_block = False
 
         self.document = None
-        self.plugins = None
 
         self.current_link_page = ''
         self.current_anchor_number = 0
-
         self.index_cache = {}
         self.cached_page_resets = set()
 
     def accept_data(self, data):
-        validate_data(data, MODULE_DIR.joinpath('index_schema.json'))
+        validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
         self.document = {k: v for k, v in data.items()}
         self.index_cache_file = data["index-cache"]
         self.index_cache_relative = data.get("index-cache-relative", self.index_cache_relative)
         self.add_letters = data.get("letters", self.add_letters)
         self.add_letters_block = data.get("letters-block", self.add_letters_block)
-        return True
+        self.document.pop('index-cache', None)
+        self.document.pop('index-cache-relative', None)
+        self.document.pop('letters', None)
+        self.document.pop('letters-block', None)
+
+    def is_blank(self) -> bool:
+        return False
 
     def initialization_actions(self):
-        return [self]
-
-    def initialize(self, argument_file: dict, cli_args: dict, plugins: list):
-        argument_file = argument_file.copy()
-        self.document["input"] = "fictional.txt"
-        argument_file['documents'] = [self.document]
-
-        cli_args = cli_args.copy()
-        cli_args.pop("input", None)
-        cli_args.pop("output", None)
-
-        arguments = parse_argument_file_content(argument_file, cli_args)
-
-        self.document = arguments.documents[0]
-        del self.document["input_file"]
-
-        if self.index_cache_relative:
-            self.index_cache_file = str(Path(self.document['output_file']).parent
-                                        .joinpath(self.index_cache_file))
-        index_cache_file = Path(self.index_cache_file)
-        if index_cache_file.exists():
-            with open(index_cache_file, 'r') as file:
-                self.index_cache = json.load(file)
-        else:
-            self.index_cache = {}
-
-        self.plugins = plugins
+        return []
 
     def page_metadata_handlers(self):
         return [(self, "INDEX", False)]
 
     def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section):
-        output_file = doc["output_file"]
+        output_file = doc["output"]
 
         metadata_str = metadata_str.strip()
         if metadata_str.startswith('['):
@@ -163,19 +142,33 @@ class IndexPlugin(Md2HtmlPlugin):
         return anchor_text
 
     def new_page(self, doc: dict):
-        output_file = doc["output_file"]
+        output_file = doc["output"]
         self.index_cache[output_file] = []
         self.cached_page_resets.add(output_file)
         self.current_link_page = relativize_relative_resource(output_file,
-                                                              self.document['output_file'])
+                                                              self.document['output'])
         self.current_anchor_number = 0
 
-    def finalization_actions(self):
-        return [self]
+    def finalize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: dict):
+        argument_file = argument_file.copy()
+        self.document["input"] = "fictional.txt"
+        argument_file['documents'] = [self.document]
+        canonized_argument_file = merge_and_canonize_argument_file(argument_file, cli_args)
+        arguments, _ = complete_argument_file_processing(canonized_argument_file, plugins)
+        self.document = arguments.documents[0]
+        del self.document["input"]
 
-    def finalize(self):
+        if self.index_cache_relative:
+            self.index_cache_file = str(Path(self.document['output']).parent
+                                        .joinpath(self.index_cache_file))
+        index_cache_file = Path(self.index_cache_file)
+        if index_cache_file.exists():
+            with open(index_cache_file, 'r') as file:
+                self.index_cache = json.load(file)
+        else:
+            self.index_cache = {}
 
-        output_location = self.document['output_file']
+        output_location = self.document['output']
 
         if not self.cached_page_resets:
             if self.document['verbose']:
@@ -183,8 +176,8 @@ class IndexPlugin(Md2HtmlPlugin):
             return
 
         template_file = self.document['template']
-        link_css = self.document['link_css']
-        include_css = self.document['include_css']
+        link_css = self.document['link-css']
+        include_css = self.document['include-css']
 
         current_time = datetime.today()
         substitutions = {'title': self.document["title"],
@@ -201,7 +194,7 @@ class IndexPlugin(Md2HtmlPlugin):
                            for item in include_css])
         substitutions['styles'] = '\n'.join(styles) if styles else ''
 
-        for plugin in self.plugins:
+        for plugin in plugins.values():
             if plugin is not self:
                 plugin.new_page(self.document)
             substitutions.update(plugin.variables(self.document))
@@ -219,7 +212,7 @@ class IndexPlugin(Md2HtmlPlugin):
         except chevron.ChevronError as e:
             raise UserError(f"Error processing template: {type(e).__name__}: {e}")
 
-        with open(self.document["output_file"], 'w') as result_file:
+        with open(self.document["output"], 'w') as result_file:
             result_file.write(result)
 
         with open(self.index_cache_file, 'w') as cache_file:

@@ -1,7 +1,9 @@
+import json
 from collections.abc import Iterator
 from pathlib import Path
 
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
+from cli_arguments_utils import CliArgDataObject
+from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file, validate_data_with_schema
 from utils import relativize_relative_resource, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -57,12 +59,31 @@ def process_page_flow(page_flow, output_file):
 
 class PageFlowsPlugin(Md2HtmlPlugin):
     def __init__(self):
+        self.raw_data: dict = {}
         self.data: dict = {}
+        with open(MODULE_DIR.joinpath('page_flows_schema.json'), 'r') as schema_file:
+            self.data_schema = json.load(schema_file)
 
     def accept_data(self, data):
-        validate_data(data, MODULE_DIR.joinpath('page_flows_schema.json'))
-        result = {}
+        validate_data_with_schema(data, self.data_schema)
+        if self.raw_data:
+            self.add_to_start(data)
+        else:
+            self.raw_data = data
+
+    def add_to_start(self, data):
+        if data is None:
+            return
         for k, v in data.items():
+            page_flow_items = self.raw_data.setdefault(k, [])
+            new_items = v[:]
+            for item in page_flow_items:
+                new_items.append(item)
+            self.raw_data[k] = new_items
+
+    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
+        result = {}
+        for k, v in self.raw_data.items():
             page_flow_items = []
             new_page = {}
             is_first = True
@@ -71,16 +92,18 @@ class PageFlowsPlugin(Md2HtmlPlugin):
                 # TODO Consider letting other arbitrary fields. Then they might be used in
                 #  the template. This is already done in Java version.
 
-                new_page = {"link": item["link"], "title": item["title"], 
-                            "external": first_not_none(item.get("external"), False), 
+                new_page = {"link": item["link"], "title": item["title"],
+                            "external": first_not_none(item.get("external"), False),
                             "first": is_first, "last": False}
                 page_flow_items.append(new_page)
                 is_first = False
             new_page["last"] = True
             result[k] = page_flow_items
         self.data = result
-        return bool(self.data)
+
+    def is_blank(self) -> bool:
+        return not bool(self.data)
 
     def variables(self, doc: dict) -> dict:
-        output_file = str(doc['output_file'])
+        output_file = str(doc['output'])
         return {k: process_page_flow(v, output_file) for k, v in self.data.items()}

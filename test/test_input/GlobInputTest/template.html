@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html><head><title>{{title}}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="{{resource_path}}styles.css">
+<style>
+.toc {margin: 5px; padding: 5px; border: solid blue 1px; font-size: smaller;}
+</style>
+</head>
+<body>
+
+<div class="toc">
+{{#all_pages}}<a href="{{link}}">{{title}}</a><br />
+{{/all_pages}}
+</div>
+<div class="toc">
+{{#subdir01}}<a href="{{link}}">{{title}}</a><br />
+{{/subdir01}}
+</div>
+<div class="toc">
+{{#subdir02}}<a href="{{link}}">{{title}}</a><br />
+{{/subdir02}}
+</div>
+<div class="toc">
+{{#subdir03}}<a href="{{link}}">{{title}}</a><br />
+{{/subdir03}}
+</div>
+
+{{{content}}}
+

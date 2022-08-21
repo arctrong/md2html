@@ -1,0 +1,3 @@
+<!--VARIABLES {"title": "sort-by-variable: page01", "SORT_ORDER": "18"}--> 
+
+**Subdirectory 2, page 1**

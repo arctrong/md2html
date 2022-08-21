@@ -3,6 +3,7 @@ from abc import ABC
 
 from jsonschema import validate, ValidationError
 
+from cli_arguments_utils import CliArgDataObject
 from utils import UserError, reduce_json_validation_error_message
 
 
@@ -10,9 +11,13 @@ class PluginDataUserError(UserError):
     pass
 
 
-def validate_data(data, schema_file):
+def validate_data_with_file(data, schema_file):
     with open(schema_file, 'r') as schema_file:
         schema = json.load(schema_file)
+    validate_data_with_schema(data, schema)
+
+
+def validate_data_with_schema(data, schema):
     try:
         validate(instance=data, schema=schema)
     except ValidationError as e:
@@ -22,25 +27,22 @@ def validate_data(data, schema_file):
 
 class Md2HtmlPlugin(ABC):
 
-    def accept_data(self, data) -> bool:
+    def accept_data(self, data):
         """
-        Returns the plugin activated state. After accepting the data, the plugin may declare
-        itself as not activated and return `False`. In this case it should not be used.
+        Accepts plugin configuration data. Plugin may be asked to accept data several times.
         """
-        return False
+        pass
 
-    def initialization_actions(self) -> list:
+    def is_blank(self) -> bool:
         """
-        Returns the list of actions that must be fulfilled before the documents processing.
-        Each action must have an `initialize(...)` method.
+        If a plugin is blank its usage will have no effect. This method allows removing such
+        plugins from consideration.
         """
-        return []
+        return True
 
-    def initialize(self, argument_file_dict: dict, cli_args: dict, plugins: list):
+    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
         """
-        This method is going to be called before the documents processing. It accepts additional
-        argument `plugins` as the `plugins` section of the `argument_file_dict` cannot be
-        processed inside a plugin (due to a circular import problem).
+        This method is going to be called before the documents processing.
         """
         pass
 
@@ -75,11 +77,8 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def finalization_actions(self):
+    def finalize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
         """
-        Returns a list of handlers that must have the method `execute_after_all_page_processed`.
+        Executes after all page processed.
         """
-        return []
-
-    def finalize(self):
         pass

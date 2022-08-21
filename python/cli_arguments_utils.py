@@ -1,22 +1,43 @@
 import argparse
 from pathlib import Path
 
-from utils import UserError
 
 USE_HELP_TEXT = 'use -h for help'
 
 
-class CliError(UserError):
-    def __init__(self, help_requested: bool):
-        self.help_requested = help_requested
+class CliError(Exception):
+    pass
 
 
-def parse_cli_arguments(*args) -> dict:
+class CliArgDataObject:
+
+    def __init__(self):
+        self.argument_file = None
+        self.input_root = None
+        self.output_root = None
+        self.input_file = None
+        self.input_glob = None
+        self.sort_by_variable = None
+        self.sort_by_file_path = None
+        self.sort_by_title = None
+        self.output_file = None
+        self.title = None
+        self.title_from_variable = None
+        self.template = None
+        self.no_css = None
+        self.link_css = None
+        self.include_css = None
+        self.force = None
+        self.verbose = None
+        self.report = None
+        self.legacy_mode = None
+
+
+def parse_cli_arguments(*args) -> CliArgDataObject:
     """
     If the declarative constraints, defined in the used command line parser, are broken then
     the parser prints the error message to the console and exits the program.
-    Further procedural checks behave the same way. `CliError` will tell whether help was requested.
-    This lets the caller to, for example, define the program's exit code.
+    Further procedural checks behave the same way, by raising a `CliError`.
     """
 
     def formatter_creator(prog):
@@ -24,15 +45,28 @@ def parse_cli_arguments(*args) -> dict:
 
     # noinspection PyTypeChecker
     parser = argparse.ArgumentParser(description='Creates HTML documentation out of Markdown '
-                                     'texts.', formatter_class=formatter_creator, add_help=False)
+                                                 'texts.', formatter_class=formatter_creator,
+                                     add_help=False)
     parser.add_argument("-h", "--help", help="shows this help message and exits",
                         action='store_true')
 
     parser.add_argument("--input-root", help="root directory for input Markdown files. "
                                              "Defaults to current directory", type=str)
     parser.add_argument("-i", "--input", help="input Markdown file name: absolute or relative "
-                                              "to '--input-root' argument value. Mandatory "
-                                              "if argument file is not used", type=str)
+                                              "to the '--input-root' argument value", type=str)
+    parser.add_argument("--input-glob", help="input Markdown file name pattern: absolute or "
+                                             "relative to the '--input-root' argument "
+                                             "value", type=str)
+
+    parser.add_argument("--sort-by-file-path", help="If '--input-glob' is used, the documents "
+                                                    "will be sorted by the input file "
+                                                    "path", action='store_true')
+    parser.add_argument("--sort-by-variable", help="If '--input-glob' is used, the documents "
+                                                   "will be sorted by the value of the specified "
+                                                   "page variable", type=str)
+    parser.add_argument("--sort-by-title", help="If '--input-glob' is used, the documents "
+                                                "will be sorted by their "
+                                                "titles", action='store_true')
 
     parser.add_argument("--output-root", help="root directory for output HTML files. Defaults "
                                               "to current directory", type=str)
@@ -47,6 +81,11 @@ def parse_cli_arguments(*args) -> dict:
                                                 "will be processed", type=str)
 
     parser.add_argument("-t", "--title", help="the HTML page title", type=str)
+    parser.add_argument("--title-from-variable", help="If specified then the program will take "
+                                                      "the title from the page metadata at the "
+                                                      "step of making up the input file "
+                                                      "list", type=str)
+
     parser.add_argument("--template", help="template that will be used for HTML documents "
                                            "generation", type=str)
     parser.add_argument("--link-css", help="links CSS file, multiple entries allowed", type=str,
@@ -61,61 +100,79 @@ def parse_cli_arguments(*args) -> dict:
     parser.add_argument("-v", "--verbose", help="outputs human readable information messages",
                         action='store_true')
     parser.add_argument("-r", "--report",
-                        help="defines formalized output that may be further automatically "
+                        help="turns on formalized output that may be further automatically "
                              "processed. Only if HTML file is generated, the path of this file "
                              "will be output. Incompatible with -v", action='store_true')
     parser.add_argument("--legacy-mode",
                         help="Allows processing documentation projects prepared for version of "
-                             "the program prior to 1.0.0. Still it's recommended to migrate the "
+                             "the program prior to 1.0.0. It's still recommended to migrate the "
                              "documentation projects to the newer version", action='store_true')
 
     args = parser.parse_args(*args)
 
     if args.help:
         parser.print_help()
-        raise CliError(True)
+        raise CliError()
 
-    md2html_args = {}
+    cli_arg_data_object = CliArgDataObject()
 
     if args.argument_file:
-        md2html_args['argument_file'] = Path(args.argument_file)
+        cli_arg_data_object.argument_file = Path(args.argument_file)
 
-    md2html_args['input_root'] = args.input_root
-    md2html_args['output_root'] = args.output_root
+    cli_arg_data_object.input_root = args.input_root
+    cli_arg_data_object.output_root = args.output_root
 
     if args.input:
-        md2html_args['input_file'] = args.input
-    elif not args.argument_file:
+        cli_arg_data_object.input_file = args.input
+    if args.input_glob:
+        cli_arg_data_object.input_glob = args.glob
+
+    if cli_arg_data_object.input_file and cli_arg_data_object.input_glob:
         parser.print_usage()
-        print(f'Input file is not specified ({USE_HELP_TEXT})')
-        raise CliError(False)
+        print(f'Both input file GLOB and input file name are defined ({USE_HELP_TEXT})')
+        raise CliError()
+    if not args.argument_file and not (cli_arg_data_object.input_file or
+                                       cli_arg_data_object.input_glob):
+        parser.print_usage()
+        print(f'None of the input file name or input file GLOB is specified ({USE_HELP_TEXT})')
+        raise CliError()
 
-    md2html_args['output_file'] = args.output
+    if (1 if args.sort_by_file_path else 0) + (1 if args.sort_by_variable else 0) + (
+            1 if args.sort_by_title else 0) > 1:
+        parser.print_usage()
+        print(f'The options --sort-by-file-path, --sort-by-variable and --sort-by-title are not '
+              f'compatible ({USE_HELP_TEXT})')
+        raise CliError()
+    cli_arg_data_object.sort_by_variable = args.sort_by_variable
+    cli_arg_data_object.sort_by_file_path = args.sort_by_file_path
+    cli_arg_data_object.sort_by_title = args.sort_by_title
 
-    md2html_args['title'] = args.title
+    cli_arg_data_object.output_file = args.output
 
-    md2html_args['template'] = Path(args.template) if args.template else None
+    cli_arg_data_object.title = args.title
+    cli_arg_data_object.title_from_variable = args.title_from_variable
 
-    md2html_args['no_css'] = True if args.no_css else False
+    cli_arg_data_object.template = Path(args.template) if args.template else None
+
+    cli_arg_data_object.no_css = True if args.no_css else False
     if args.no_css and (args.link_css or args.include_css):
         parser.print_usage()
         print(f'--no-css argument is not compatible with --link-css and --include-css '
               f'arguments ({USE_HELP_TEXT})')
-        raise CliError(False)
+        raise CliError()
 
-    md2html_args['link_css'] = args.link_css if args.link_css else []
-    md2html_args['include_css'] = [Path(item) for item in
-                                   args.include_css] if args.include_css else []
+    cli_arg_data_object.link_css = args.link_css if args.link_css else []
+    cli_arg_data_object.include_css = args.include_css if args.include_css else []
 
-    md2html_args['force'] = args.force
-    md2html_args['verbose'] = args.verbose
-    md2html_args['report'] = args.report
+    cli_arg_data_object.force = args.force
+    cli_arg_data_object.verbose = args.verbose
+    cli_arg_data_object.report = args.report
 
-    if md2html_args['report'] and md2html_args['verbose']:
+    if cli_arg_data_object.report and cli_arg_data_object.verbose:
         parser.print_usage()
         print(f'--report and --verbose arguments are not compatible ({USE_HELP_TEXT})')
-        raise CliError(False)
+        raise CliError()
 
-    md2html_args['legacy_mode'] = args.legacy_mode
+    cli_arg_data_object.legacy_mode = args.legacy_mode
 
-    return md2html_args
+    return cli_arg_data_object

@@ -1,5 +1,5 @@
 import re
-from typing import List, Iterator
+from typing import List, Iterator, Dict
 
 from plugins.md2html_plugin import Md2HtmlPlugin
 
@@ -12,10 +12,10 @@ class PageMetadataHandlers:
         self.all_only_at_page_start = all_only_at_page_start
 
 
-def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadataHandlers:
+def register_page_metadata_handlers(plugins: Dict[str, Md2HtmlPlugin]) -> PageMetadataHandlers:
     marker_handlers = {}
     all_only_at_page_start = True
-    for plugin in plugins:
+    for plugin in plugins.values():
         handlers = plugin.page_metadata_handlers()
         if handlers is not None:
             for handler, marker, only_at_page_start in handlers:
@@ -60,7 +60,8 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
             return
 
 
-def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: dict):
+def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: dict,
+                            extract_only=False):
     marker_handlers = page_metadata_handlers.marker_handlers
     all_only_at_page_start = page_metadata_handlers.all_only_at_page_start
     new_md_lines_list = []
@@ -79,11 +80,15 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, 
                 replacement = h.accept_page_metadata(doc, matchObj.marker,
                                                      matchObj.metadata, matchObj.metadata_block)
                 replacement_done = True
-        new_md_lines_list.append(matchObj.before)
-        new_md_lines_list.append(replacement)
+        if not extract_only:
+            new_md_lines_list.append(matchObj.before)
+            new_md_lines_list.append(replacement)
         if all_only_at_page_start:
             break
-    if replacement_done:
-        return ''.join(new_md_lines_list) + text[last_position:]
+    if extract_only:
+        return None
     else:
-        return text
+        if replacement_done:
+            return ''.join(new_md_lines_list) + text[last_position:]
+        else:
+            return text

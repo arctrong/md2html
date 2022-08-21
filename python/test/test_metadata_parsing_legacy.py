@@ -2,11 +2,10 @@ import sys
 import unittest
 from pathlib import Path
 
-from argument_file_plugins_utils import process_plugins
+from md2html import parse_argument_file
 from .utils_for_tests import find_single_instance_of_type
 
 sys.path.append(Path(__file__).resolve().parent.parent)
-from page_metadata_utils import *
 from argument_file_utils import *
 from plugins.page_variables_plugin import PageVariablesPlugin
 
@@ -19,28 +18,27 @@ class PageMetadataUtilsTest(unittest.TestCase):
     def _parse_metadata(self, metadata):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
-        parse_argument_file_content(argument_file_dict, {})
-        plugins = process_plugins(argument_file_dict['plugins'])
+        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = find_single_instance_of_type(plugins.values(), PageVariablesPlugin)
         metadata_handlers = register_page_metadata_handlers(plugins)
-        plugin = find_single_instance_of_type(plugins, PageVariablesPlugin)
         page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
         plugin.new_page({})
-        result = apply_metadata_handlers(page_content, metadata_handlers, {})
+        apply_metadata_handlers(page_content, metadata_handlers, {})
         return plugin.variables({})
 
     def test_notObject(self):
         with self.assertRaises(UserError) as cm:
-            metadata = self._parse_metadata('[]')
+            self._parse_metadata('[]')
         self.assertIn('object', str(cm.exception))
   
     def test_emptyString(self):
         with self.assertRaises(UserError) as cm:
-            metadata = self._parse_metadata('')
+            self._parse_metadata('')
         self.assertIn('JSON', str(cm.exception))
 
     def test_malformedJson(self):
         with self.assertRaises(UserError) as cm:
-            metadata = self._parse_metadata('not a Json')
+            self._parse_metadata('not a Json')
         self.assertIn('JSON', str(cm.exception))
 
     def test_emptyObject(self):

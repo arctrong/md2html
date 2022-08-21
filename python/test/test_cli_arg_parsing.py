@@ -17,32 +17,32 @@ class NonWritable:
 class CliArgParseTest(unittest.TestCase):
 
     def _assertMd2HtmlOptionsEquals(self, o1, o2):
-        self.assertEqual(o1['input_root'], o2['input_root'])
-        self.assertEqual(o1['output_root'], o2['output_root'])
-        self.assertEqual(o1['input_file'], o2['input_file'])
-        self.assertEqual(o1['output_file'], o2['output_file'])
-        self.assertEqual(o1['title'], o2['title'])
-        self.assertEqual(o1['template'], o2['template'])
-        self.assertEqual(o1['include_css'], o2['include_css'])
-        self.assertEqual(o1['link_css'], o2['link_css'])
-        self.assertEqual(o1['force'], o2['force'])
-        self.assertEqual(o1['verbose'], o2['verbose'])
-        self.assertEqual(o1['report'], o2['report'])
+        self.assertEqual(o1.input_root, o2.input_root)
+        self.assertEqual(o1.output_root, o2.output_root)
+        self.assertEqual(o1.input_file, o2.input_file)
+        self.assertEqual(o1.output_file, o2.output_file)
+        self.assertEqual(o1.title, o2.title)
+        self.assertEqual(o1.template, o2.template)
+        self.assertEqual(o1.include_css, o2.include_css)
+        self.assertEqual(o1.link_css, o2.link_css)
+        self.assertEqual(o1.force, o2.force)
+        self.assertEqual(o1.verbose, o2.verbose)
+        self.assertEqual(o1.report, o2.report)
         
-    def _assert_cli_error(self, arguments: list, help_requested: bool = False):
+    def _assert_cli_error(self, arguments: list):
         try:
             parse_cli_arguments(arguments)
             self.fail("Exception expected")
         except CliError as e:
-            self.assertEqual(help_requested, e.help_requested)
+            pass
 
     def test_helpRequested(self):
         with contextlib.redirect_stdout(NonWritable()):
-            self._assert_cli_error(['-h'], True)
+            self._assert_cli_error(['-h'])
         with contextlib.redirect_stdout(NonWritable()):
-            self._assert_cli_error(['--help'], True)
+            self._assert_cli_error(['--help'])
         with contextlib.redirect_stdout(NonWritable()):
-            self._assert_cli_error(['-i \"whatever\"', '--help'], True)
+            self._assert_cli_error(['-i \"whatever\"', '--help'])
 
     def test_noInputFile(self):
         with contextlib.redirect_stdout(NonWritable()):
@@ -54,16 +54,18 @@ class CliArgParseTest(unittest.TestCase):
 
     def test_minimalArgumentSet(self):
         md2html_args = parse_cli_arguments(['-i', '../doc/notes.md'])
-        enrich_document(md2html_args)
-        self.assertEqual('../doc/notes.md', md2html_args['input_file'])
-        self.assertEqual('../doc/notes.html', md2html_args['output_file'])
-        self.assertFalse(md2html_args['title'])
+        args, _ = parse_argument_file({"documents": [{}]}, md2html_args)
+        doc = args.documents[0]
+        enrich_document(doc)
+        self.assertEqual('../doc/notes.md', doc['input'])
+        self.assertEqual('../doc/notes.html', doc['output'])
+        self.assertFalse(doc['title'])
         # Template path depends on the environment and is not checked here.
-        self.assertFalse(md2html_args['link_css'])
-        self.assertTrue(md2html_args['include_css'])
-        self.assertFalse(md2html_args['force'])
-        self.assertFalse(md2html_args['verbose'])
-        self.assertFalse(md2html_args['report'])
+        self.assertFalse(doc['link-css'])
+        self.assertTrue(doc['include-css'])
+        self.assertFalse(doc['force'])
+        self.assertFalse(doc['verbose'])
+        self.assertFalse(doc['report'])
 
     def test_maxArguments(self):
         # Short form
@@ -71,18 +73,18 @@ class CliArgParseTest(unittest.TestCase):
                 ['--input-root', 'input/root', '--output-root', 'output/root', 
                  '-i', 'input.md', '-o', 'doc/output.htm', '-t', 'someTitle', '--template',
                  '../templateDir', '--link-css=someStyles.css', '-fv'])
-        self.assertEqual('input/root', md2html_args['input_root'])
-        self.assertEqual('input.md', md2html_args['input_file'])
-        self.assertEqual('output/root', md2html_args['output_root'])
-        self.assertEqual('doc/output.htm', md2html_args['output_file'])
-        self.assertEqual('someTitle', md2html_args['title'])
-        self.assertEqual(Path('../templateDir'), md2html_args['template'])
-        self.assertEqual(1, len(md2html_args['link_css']))
-        self.assertEqual('someStyles.css', md2html_args['link_css'][0])
-        self.assertFalse(md2html_args['include_css'])
-        self.assertTrue(md2html_args['force'])
-        self.assertTrue(md2html_args['verbose'])
-        self.assertFalse(md2html_args['report'])
+        self.assertEqual('input/root', md2html_args.input_root)
+        self.assertEqual('input.md', md2html_args.input_file)
+        self.assertEqual('output/root', md2html_args.output_root)
+        self.assertEqual('doc/output.htm', md2html_args.output_file)
+        self.assertEqual('someTitle', md2html_args.title)
+        self.assertEqual(Path('../templateDir'), md2html_args.template)
+        self.assertEqual(1, len(md2html_args.link_css))
+        self.assertEqual('someStyles.css', md2html_args.link_css[0])
+        self.assertFalse(md2html_args.include_css)
+        self.assertTrue(md2html_args.force)
+        self.assertTrue(md2html_args.verbose)
+        self.assertFalse(md2html_args.report)
         # Long form
         md2html_args1 = parse_cli_arguments(
             ['--input-root', 'input/root', '--output-root', 'output/root', 
@@ -93,37 +95,39 @@ class CliArgParseTest(unittest.TestCase):
     def test_includeCss(self):
         md2html_args = parse_cli_arguments(
             ['-i', 'input.md', '--include-css=styles1.css', '--include-css=styles2.css'])
-        self.assertEqual(2, len(md2html_args['include_css']))
-        self.assertTrue(Path('styles1.css') in md2html_args['include_css'])
-        self.assertTrue(Path('styles2.css') in md2html_args['include_css'])
-        self.assertFalse(md2html_args['link_css'])
+        self.assertEqual(2, len(md2html_args.include_css))
+        self.assertTrue('styles1.css' in md2html_args.include_css)
+        self.assertTrue('styles2.css' in md2html_args.include_css)
+        self.assertFalse(md2html_args.link_css)
 
     def test_linkCss(self):
         md2html_args = parse_cli_arguments(
             ['-i', 'input.md', '--link-css=styles1.css', '--link-css=styles2.css'])
-        self.assertEqual(2, len(md2html_args['link_css']))
-        self.assertTrue('styles1.css' in md2html_args['link_css'])
-        self.assertTrue('styles2.css' in md2html_args['link_css'])
-        self.assertFalse(md2html_args['include_css'])
+        self.assertEqual(2, len(md2html_args.link_css))
+        self.assertTrue('styles1.css' in md2html_args.link_css)
+        self.assertTrue('styles2.css' in md2html_args.link_css)
+        self.assertFalse(md2html_args.include_css)
 
     def test_linkAndIncludeCss(self):
         md2html_args = parse_cli_arguments(
             ['-i', 'input.md', '--link-css=styles1.css', '--include-css=styles2.css'])
-        self.assertEqual(1, len(md2html_args['link_css']))
-        self.assertEqual(1, len(md2html_args['include_css']))
-        self.assertTrue('styles1.css' in md2html_args['link_css'])
-        self.assertTrue(Path('styles2.css') in md2html_args['include_css'])
+        self.assertEqual(1, len(md2html_args.link_css))
+        self.assertEqual(1, len(md2html_args.include_css))
+        self.assertTrue('styles1.css' in md2html_args.link_css)
+        self.assertTrue('styles2.css' in md2html_args.include_css)
 
     def test_defaultCss(self):
         md2html_args = parse_cli_arguments(['-i', 'input.md'])
-        enrich_document(md2html_args)
-        self.assertFalse(md2html_args['link_css'])
-        self.assertEqual(1, len(md2html_args['include_css']))
+        args, _ = parse_argument_file({"documents": [{}]}, md2html_args)
+        doc = args.documents[0]
+        enrich_document(doc)
+        self.assertFalse(doc['link-css'])
+        self.assertEqual(1, len(doc['include-css']))
 
     def test_noCss(self):
         md2html_args = parse_cli_arguments(['-i', 'input.md', '--no-css'])
-        self.assertFalse(md2html_args['link_css'])
-        self.assertFalse(md2html_args['include_css'])
+        self.assertFalse(md2html_args.link_css)
+        self.assertFalse(md2html_args.include_css)
 
     def test_wrongVerboseAndReportFlags(self):
         with contextlib.redirect_stdout(NonWritable()):
@@ -138,7 +142,7 @@ class CliArgParseTest(unittest.TestCase):
 
     def test_argumentFile(self):
         md2html_args = parse_cli_arguments(['--argument-file', 'md2html_args.json'])
-        self.assertEqual(Path('md2html_args.json'), md2html_args['argument_file'])
+        self.assertEqual(Path('md2html_args.json'), md2html_args.argument_file)
 
 
 if __name__ == '__main__':

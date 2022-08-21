@@ -18,27 +18,24 @@ class PageVariablesPluginTest(unittest.TestCase):
     def _parse_plugin_data(self, plugin_data):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": ' + plugin_data + '}}')
-        parse_argument_file_content(argument_file_dict, {})
-        plugins = process_plugins(argument_file_dict['plugins'])
+        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = self._find_single_plugin(plugins.values())
         metadata_handlers = register_page_metadata_handlers(plugins)
-        plugin = self._find_single_plugin(plugins)
         return plugin, metadata_handlers
         
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {}}')
-        parse_argument_file_content(argument_file_dict, {})
-        plugins = process_plugins(argument_file_dict['plugins'])
-        plugin = self._find_single_plugin(plugins)
+        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = self._find_single_plugin(plugins.values())
         self.assertIsNone(plugin)
 
     def test_notActivated_withDefaultMarker(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
             '"plugins": {"page-variables": {}'
             '}}')
-        parse_argument_file_content(argument_file_dict, {})
-        plugins = process_plugins(argument_file_dict['plugins'])
-        plugin = self._find_single_plugin(plugins)
+        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = self._find_single_plugin(plugins.values())
         self.assertIsNotNone(plugin)
         
     def test_singleBlock_complexTest(self):

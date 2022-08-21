@@ -11,12 +11,19 @@
     },
     "documents": [
         { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", "page-flows": ["sections"] },
-        { "input": "installation.txt", "title": "Installation", "page-flows": ["sections"] },
-        { "input": "usage.txt", "title": "Usage", "page-flows": ["sections"] },
-        { "input": "page_content.txt", "title": "Page content", "page-flows": ["sections"] },
-        { "input": "templates.txt", "title": "Templates", "page-flows": ["sections"] },
-        { "input": "plugins.txt", "title": "Plugins", "page-flows": ["sections"] },
-        { "input": "development.txt", "title": "Development", "page-flows": ["sections"] }
+        
+        { "input-glob": "*.txt", "page-flows": ["sections"], "title-from-variable": "title", "sort-by-variable": "SORT_ORDER" }
+        
+      
+        
+ #       { "input": "installation.txt", "title": "Installation", "page-flows": ["sections"] },
+ #       { "input": "usage.txt", "title": "Usage", "page-flows": ["sections"] },
+ #       { "input": "page_content.txt", "title": "Page content", "page-flows": ["sections"] },
+ #       { "input": "templates.txt", "title": "Templates", "page-flows": ["sections"] },
+ #       { "input": "plugins.txt", "title": "Plugins", "page-flows": ["sections"] },
+ #       { "input": "development.txt", "title": "Development", "page-flows": ["sections"] }
+ 
+ 
     ],
     "plugins": {
         "relative-paths": { "resource_path": "doc/" },

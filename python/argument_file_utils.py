@@ -1,12 +1,15 @@
+import glob
 import json
 from json.decoder import JSONDecodeError
 from pathlib import Path
 
 from jsonschema import validate, ValidationError
 
+from cli_arguments_utils import CliArgDataObject
 from constants import DEFAULT_TEMPLATE_PATH, DEFAULT_CSS_FILE_PATH
-from utils import UserError, read_lines_from_commented_json_file, \
-    reduce_json_validation_error_message, first_not_none, strip_extension
+from page_metadata_utils import apply_metadata_handlers, register_page_metadata_handlers
+from utils import UserError, reduce_json_validation_error_message, first_not_none, \
+    strip_extension, read_lines_from_cached_file, read_lines_from_file
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -22,12 +25,203 @@ def load_json_argument_file(argument_file_string) -> dict:
         raise UserError(f"Error loading JSON argument file: {type(e).__name__}: {e}")
     try:
         schema = json.loads(
-            read_lines_from_commented_json_file(MODULE_DIR.joinpath('args_file_schema.json')))
+            read_lines_from_file(MODULE_DIR.joinpath('args_file_schema.json')))
         validate(instance=arguments_item, schema=schema)
     except ValidationError as e:
         raise UserError(f"Error validating argument file content: {type(e).__name__}: " +
                         reduce_json_validation_error_message(str(e)))
     return arguments_item
+
+
+# def add_documents_page_flows_data(page_flow_plugin_item, documents_page_flows):
+#     if page_flow_plugin_item is None or documents_page_flows is None:
+#         return
+#     for k, v in documents_page_flows.items():
+#         page_flow_items = page_flow_plugin_item.setdefault(k, [])
+#         new_items = v[:]
+#         for item in page_flow_items:
+#             new_items.append(item)
+#         page_flow_plugin_item[k] = new_items
+
+
+def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> dict:
+    """
+    Makes changes to the argument file to bring it to a more canonical form:
+
+    - merges arguments from the command line into the argument file;
+    - applies the arguments from the default section to the documents;
+    - canonizes some parameters that may be defined in different ways;
+    - explicitly set defaults values;
+    - creates some default structures like empty collections;
+    - doesn't change the plugins.
+
+    This method works only with the argument file's content and doesn't use the context.
+    So it, for example, doesn't resolve the GLOBs as it would need to read the file system.
+    """
+
+    options = argument_file_dict.get('options', {})
+    argument_file_dict.setdefault('plugins', {})
+    defaults_item = argument_file_dict.get('default', {})
+
+    merged_and_canonized_argument_file = {
+        'options': options,
+        'plugins': argument_file_dict.get('plugins', [])
+    }
+
+    if bool(options.get('verbose')) and bool(cli_args.report):
+        raise UserError("'verbose' parameter in 'options' section is incompatible "
+                        "with '--report' command line argument.")
+
+    options['verbose'] = first_not_none(options.get('verbose'), cli_args.verbose, False)
+    options['legacy-mode'] = first_not_none(cli_args.legacy_mode,
+                                            options.get('legacy-mode'), False)
+
+    if 'no-css' in defaults_item and (
+            'link-css' in defaults_item or 'include-css' in defaults_item):
+        raise UserError(f"'no-css' parameter incompatible with one of the ['link-css', "
+                        f"'include-css'] in the 'default' section.")
+
+    canonized_document_items = []
+    for document_item in argument_file_dict['documents']:
+        canonized_document_items.append(
+            merge_and_canonize_document(document_item, defaults_item, cli_args))
+    merged_and_canonized_argument_file['documents'] = canonized_document_items
+
+    # index_plugin = merged_and_canonized_argument_file.get('plugins', {}).get('index')
+    # if index_plugin is not None:
+    #     index_plugin['input'] = 'fictional.txt'
+    #     merge_and_canonize_document(cli_args, defaults_item, index_plugin)
+    #     del index_plugin['input']
+    #     # TODO Review the following field
+    #     index_plugin.pop('output-file', None)
+
+    return merged_and_canonized_argument_file
+
+
+def merge_and_canonize_document(document_item: dict, defaults_item: dict,
+                                cli_args: CliArgDataObject) -> dict:
+
+    canonized_document_item = {}
+
+    input_file = first_not_none(cli_args.input_file,
+                                document_item.get("input"),
+                                defaults_item.get("input"))
+    input_glob = first_not_none(cli_args.input_glob,
+                                document_item.get("input-glob"),
+                                defaults_item.get("input-glob"))
+    if input_glob and input_file:
+        raise UserError(f"Both input file GLOB and input file name are defined "
+                        f"for 'documents' item: {document_item}.")
+    elif not input_glob and not input_file:
+        raise UserError(f"None of the input file name or input file GLOB is specified "
+                        f"for 'documents' item: {document_item}.")
+    canonized_document_item['input'] = input_file
+    canonized_document_item['input-glob'] = input_glob
+    if input_glob:
+        sort_by_file_path = first_not_none(
+            True if cli_args.sort_by_file_path else None,
+            document_item.get("sort-by-file-path"), defaults_item.get("sort-by-file-path"))
+        sort_by_variable = first_not_none(
+            cli_args.sort_by_variable, document_item.get("sort-by-variable"),
+            defaults_item.get("sort-by-variable"))
+        sort_by_title = first_not_none(
+            True if cli_args.sort_by_title else None,
+            document_item.get("sort-by-title"), defaults_item.get("sort-by-title"))
+
+        sorts = []
+        if sort_by_file_path:
+            sorts.append("'sort-by-file-path'")
+        if sort_by_variable:
+            sorts.append("'sort-by-variable'")
+        if sort_by_title:
+            sorts.append("'sort-by-title'")
+        if len(sorts) > 1:
+            raise UserError(f"Incompatible sort options {', '.join(sorts)} for 'documents' "
+                            f"item: {document_item}.")
+
+        canonized_document_item["sort-by-file-path"] = sort_by_file_path
+        canonized_document_item["sort-by-variable"] = sort_by_variable
+        canonized_document_item["sort-by-title"] = sort_by_title
+    canonized_document_item['output'] = first_not_none(cli_args.output_file,
+                                                       document_item.get("output"),
+                                                       defaults_item.get("output"))
+    canonized_document_item['input-root'] = first_not_none(cli_args.input_root,
+                                                           document_item.get("input-root"),
+                                                           defaults_item.get('input-root'))
+    canonized_document_item['output-root'] = first_not_none(cli_args.output_root,
+                                                            document_item.get("output-root"),
+                                                            defaults_item.get('output-root'))
+    canonized_document_item['title'] = first_not_none(cli_args.title,
+                                                      document_item.get('title'),
+                                                      defaults_item.get('title'), '')
+    canonized_document_item['title-from-variable'] = first_not_none(
+        cli_args.title_from_variable,
+        document_item.get('title-from-variable'),
+        defaults_item.get('title-from-variable'), '')
+    canonized_document_item['template'] = first_not_none(cli_args.template,
+                                                         document_item.get('template'),
+                                                         defaults_item.get('template'), '')
+    link_css = []
+    include_css = []
+    no_css = False
+    if cli_args.no_css or cli_args.link_css or cli_args.include_css:
+        if cli_args.no_css:
+            no_css = True
+        else:
+            link_css.extend(first_not_none(cli_args.link_css, []))
+            include_css.extend(first_not_none(cli_args.include_css, []))
+    else:
+        link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
+        if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
+            q = '\''
+            raise UserError(f"'no-css' parameter incompatible with one of "
+                            f"[{', '.join([q + a + q for a in link_args])}] "
+                            f"in `documents` item: {document_item}.")
+
+        no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'),
+                                False)
+
+        link_css.extend(first_not_none(document_item.get('link-css'),
+                                       defaults_item.get('link-css'), []))
+        link_css.extend(first_not_none(document_item.get('add-link-css'), []))
+        include_css.extend(first_not_none(document_item.get('include-css'),
+                                          defaults_item.get('include-css'), []))
+        include_css.extend(first_not_none(document_item.get('add-include-css'), []))
+
+        if link_css or include_css:
+            no_css = False
+    canonized_document_item['link-css'] = link_css
+    canonized_document_item['include-css'] = include_css
+    canonized_document_item['no-css'] = no_css
+    canonized_document_item['force'] = first_not_none(True if cli_args.force else None,
+                                                      document_item.get('force'),
+                                                      defaults_item.get('force'), False)
+    verbose = first_not_none(True if cli_args.verbose else None,
+                             document_item.get('verbose'),
+                             defaults_item.get('verbose'), False)
+    report = first_not_none(True if cli_args.report else None,
+                            document_item.get('report'),
+                            defaults_item.get('report'), False)
+    if verbose and report:
+        raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
+                        f"item: {document_item}.")
+    canonized_document_item['verbose'] = verbose
+    canonized_document_item['report'] = report
+    # Page flows must be ignored if the 'page-flows' plugin is not defined.
+    # But this is not checked here and must be checked at the following steps.
+    if ((1 if 'page-flows' in document_item else 0) +
+            (1 if 'add-page-flows' in document_item else 0) > 1):
+        raise UserError(f"Incompatible 'page-flows' and 'add-page-flows' "
+                        f"parameters in the 'documents' item: {document_item}.")
+    page_flows = first_not_none(document_item.get('page-flows'),
+                                defaults_item.get('page-flows'), [])
+    canonized_document_item['page-flows'] = page_flows
+    add_page_flows = document_item.get("add-page-flows")
+    if add_page_flows is not None:
+        for page_flow in add_page_flows:
+            page_flows.append(page_flow)
+
+    return canonized_document_item
 
 
 class Arguments:
@@ -36,170 +230,140 @@ class Arguments:
         self.documents: list = documents
 
 
-def add_documents_page_flows_data(plugins_page_flow_item, documents_page_flows):
-    if plugins_page_flow_item is None or documents_page_flows is None:
-        return
-    for k, v in documents_page_flows.items():
-        page_flow_items = plugins_page_flow_item.setdefault(k, [])
-        new_items = v[:]
-        for item in page_flow_items:
-            new_items.append(item)
-        plugins_page_flow_item[k] = new_items
+# class PageVariablesExtractor:
+#     def __init__(self):
+#         self.page_metadata_handler = None
+#         self.page_metadata_handlers = None
+#
+#     def extract_page_variables(self, text: str, doc: dict) -> dict:
+#         if not self.page_metadata_handlers:
+#             self.page_metadata_handler = PageVariablesCollectingMetadataHandler()
+#             self.page_metadata_handlers = PageMetadataHandlers(
+#                 {("VARIABLES", True): [self.page_metadata_handler]}, True)
+#         self.page_metadata_handler.reset()
+#         apply_metadata_handlers(text, self.page_metadata_handlers, doc, extract_only=True)
+#         return self.page_metadata_handler.variables()
 
 
-def parse_argument_file_content(argument_file_dict: dict, cli_args: dict) -> Arguments:
+def expand_document_globs(documents_item, plugins) -> list:
     """
-    This method makes modifications to the content of the `argument_file_dict` instance.
-    These modifications assure presence of some fields and enrich the data.
-    Some data may be added to the `plugins` section, but the plugins are not processed in this
-    method for technical reasons (due to a circular import). The plugins may then be obtained
-    by calling `argument_file_plugin_utils.process_plugins(...)` method.
+    Expands the GLOBs, reads the necessary metadata, and resolves some overriding properties.
     """
+    expanded_documents_item = []
+    for document_item in documents_item:
+        input_file_glob = document_item.get("input-glob")
+        title_from_variable = document_item.get("title-from-variable")
+        input_root = document_item.get("input-root")
 
-    options = argument_file_dict.setdefault('options', {})
-    plugins_item = argument_file_dict.setdefault('plugins', {})
+        if input_file_glob:
+            # in Python 3.10 `glob.glob` has additional argument `root_dir` that would allow
+            # to avoid usage of `relative_to`. But here, as for now, Python 3.9 is used.
+            file_list = glob.glob(str(Path(input_root).joinpath(input_file_glob)), recursive=True)
+            file_list = [str(Path(f).relative_to(input_root)) for f in file_list]
 
-    page_flows_plugin_item = plugins_item.get("page-flows")
+            sort_by_file_path = document_item.get("sort-by-file-path")
+            sort_by_variable = document_item.get("sort-by-variable")
+            sort_by_title = document_item.get("sort-by-title")
 
-    if bool(options.get('verbose')) and bool(cli_args.get("report")):
-        raise UserError("'verbose' parameter in 'options' section is incompatible "
-                        "with '--report' command line argument.")
+            if sort_by_file_path:
+                file_list.sort(key=lambda doc: doc)
 
-    options['verbose'] = first_not_none(options.get('verbose'), cli_args.get('verbose'), False)
-    options['legacy_mode'] = first_not_none(cli_args.get('legacy_mode'),
-                                            options.get('legacy-mode'), False)
+            glob_document_items = []
+            for file in file_list:
+                glob_document_item = {k: v for k, v in document_item.items() if k != "input-glob"}
+                glob_document_item["input"] = file
 
-    if options['legacy_mode']:
-        page_variables = plugins_item.setdefault("page-variables", {})
-        page_variables.setdefault("METADATA", {"only-at-page-start": True})
+                if title_from_variable or sort_by_variable:
+                    page_variables_plugin = plugins.get("page-variables")
+                    if page_variables_plugin:
+                        page_variables_plugin.new_page({})
+                        metadata_handlers = register_page_metadata_handlers(
+                            {"page-variables": page_variables_plugin})
+                        input_file_string = read_lines_from_cached_file(
+                            str(Path(input_root).joinpath(file)))
+                        apply_metadata_handlers(input_file_string, metadata_handlers,
+                                                glob_document_item, extract_only=True)
+                        page_variables = page_variables_plugin.variables({})
+                        if title_from_variable:
+                            title = page_variables.get(title_from_variable)
+                            if title:
+                                glob_document_item["title"] = title
+                        if sort_by_variable:
+                            glob_document_item["SORT_ORDER"] = page_variables.get(sort_by_variable)
 
-    defaults_item = argument_file_dict.get('default')
-    if defaults_item is None:
-        defaults_item = {}
+                glob_document_items.append(glob_document_item)
 
-    if 'no-css' in defaults_item and (
-            'link-css' in defaults_item or 'include-css' in defaults_item):
-        raise UserError(f"'no-css' parameter incompatible with one of the ['link-css', "
-                        f"'include-css'] in the 'default' section.")
+            if sort_by_variable:
+                glob_document_items.sort(key=lambda doc: first_not_none(doc.get("SORT_ORDER"), ""))
+            elif sort_by_title:
+                glob_document_items.sort(key=lambda doc: first_not_none(doc.get("title"), ""))
 
+            expanded_documents_item.extend(glob_document_items)
+        else:
+            expanded_documents_item.append(document_item)
+
+    return expanded_documents_item
+
+
+def complete_argument_file_processing(canonized_argument_file: dict, plugins) -> (Arguments, dict):
+
+    options = canonized_argument_file['options']
+    page_flows_plugin = {}
+    document_plugins_items = {"page-flows": page_flows_plugin}
+
+    documents_item = expand_document_globs(canonized_argument_file['documents'], plugins)
     documents = []
-    documents_page_flows = {}
-    for document_item in argument_file_dict['documents']:
+    for document_item in documents_item:
         document = {}
 
-        input_file = first_not_none(cli_args.get('input_file'), document_item.get("input"),
-                                    defaults_item.get("input"))
+        input_file = document_item.get("input")
+        # Such check is probably done before but let it stay here as a safeguard.
         if input_file is None:
             raise UserError(f"Undefined input file for 'documents' item: {document_item}.")
-        document['input_file'] = input_file
+        document['input'] = input_file
 
-        document['output_file'] = first_not_none(cli_args.get('output_file'),
-                                                 document_item.get("output"),
-                                                 defaults_item.get("output"))
-        document['input_root'] = first_not_none(cli_args.get('input_root'),
-                                                document_item.get("input-root"),
-                                                defaults_item.get('input-root'))
-        document['output_root'] = first_not_none(cli_args.get('output_root'),
-                                                 document_item.get("output-root"),
-                                                 defaults_item.get('output-root'))
+        document['output'] = document_item.get("output")
+        document['input-root'] = document_item.get("input-root")
+        document['output-root'] = document_item.get("output-root")
 
-        document['title'] = first_not_none(cli_args.get('title'), document_item.get('title'),
-                                           defaults_item.get('title'), '')
+        document['title'] = document_item.get('title')
+        document['template'] = document_item.get('template')
 
-        template = first_not_none(cli_args.get('template'), document_item.get('template'),
-                                  defaults_item.get('template'))
-        document['template'] = Path(template) if template is not None else None
+        document['link-css'] = document_item.get('link-css')
+        document['include-css'] = document_item.get('include-css')
+        document['no-css'] = document_item.get('no-css')
 
-        link_css = []
-        include_css = []
-        no_css = False
-        if cli_args.get('no_css') or cli_args.get('link_css') or cli_args.get('include_css'):
-            if cli_args.get('no_css'):
-                no_css = True
-            else:
-                link_css.extend(first_not_none(cli_args.get('link_css'), []))
-                include_css.extend(first_not_none(cli_args.get('include_css'), []))
-        else:
-            link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
-            if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
-                q = '\''
-                raise UserError(f"'no-css' parameter incompatible with one of "
-                                f"[{', '.join([q + a + q for a in link_args])}] "
-                                f"in `documents` item: {document_item}.")
+        document['page-flows'] = document_item.get('page-flows')
 
-            no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'), False)
-
-            link_css.extend(first_not_none(document_item.get('link-css'),
-                                           defaults_item.get('link-css'), []))
-            link_css.extend(first_not_none(document_item.get('add-link-css'), []))
-            include_css.extend(first_not_none(document_item.get('include-css'),
-                                              defaults_item.get('include-css'), []))
-            include_css.extend(first_not_none(document_item.get('add-include-css'), []))
-
-            if link_css or include_css:
-                no_css = False
-
-        document['link_css'] = link_css
-        document['include_css'] = include_css
-        document['no_css'] = no_css
-
-        document['force'] = first_not_none(True if cli_args.get('force') else None,
-                                           document_item.get('force'),
-                                           defaults_item.get('force'), False)
-        document['verbose'] = first_not_none(True if cli_args.get('verbose') else None,
-                                             document_item.get('verbose'),
-                                             defaults_item.get('verbose'), False)
-        document['report'] = first_not_none(True if cli_args.get('report') else None,
-                                            document_item.get('report'),
-                                            defaults_item.get('report'), False)
-
-        if document['report'] and document['verbose']:
-            raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
-                            f"item: {document_item}.")
+        document['force'] = document_item.get('force')
+        document['verbose'] = document_item.get('verbose')
+        document['report'] = document_item.get('report')
 
         enrich_document(document)
-
-        # Even if all page flows are defined in the 'documents' section, at least empty
-        # 'page-flows' plugin must be defined in order to activate page flows processing.
-        if page_flows_plugin_item is not None:
-            if ((1 if 'no-page-flows' in document_item else 0) +
-                    (1 if 'page-flows' in document_item else 0) +
-                    (1 if 'add-page-flows' in document_item else 0) > 1):
-                raise UserError(f"Incompatible 'no-page-flows', 'page-flows' and 'add-page-flows' "
-                                f"parameters for 'documents' item: {document_item}.")
-            page_flows = first_not_none([] if document_item.get('no-page-flows') else
-                                        document_item.get('page-flows'),
-                                        defaults_item.get('page-flows'), [])
-            for page_flow in page_flows:
-                page_flow_list = documents_page_flows.setdefault(page_flow, [])
-                page_flow_list.append({"link": document["output_file"], "title": document["title"]})
-            add_page_flows = first_not_none(document_item.get("add-page-flows"), [])
-            for page_flow in add_page_flows:
-                page_flow_list = documents_page_flows.setdefault(page_flow, [])
-                page_flow_list.append({"link": document["output_file"], "title": document["title"]})
-
         documents.append(document)
 
-    add_documents_page_flows_data(page_flows_plugin_item, documents_page_flows)
+        for page_flow in first_not_none(document.get('page-flows'), []):
+            page_flow_list = page_flows_plugin.setdefault(page_flow, [])
+            page_flow_list.append({"link": document["output"], "title": document["title"]})
 
-    return Arguments(options, documents)
+    return Arguments(options, documents), document_plugins_items
 
 
 def enrich_document(document):
     if not document['template']:
         document['template'] = MODULE_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
-    if not document['output_file']:
-        document['output_file'] = str(Path(strip_extension(document['input_file']) + '.html')
-                                      ).replace('\\', '/')
+    if not document['output']:
+        document['output'] = str(Path(strip_extension(document['input']) + '.html')
+                                 ).replace('\\', '/')
 
-    input_root = document['input_root']
+    input_root = document['input-root']
     if input_root:
-        document['input_file'] = str(Path(input_root).joinpath(document['input_file'])
+        document['input'] = str(Path(input_root).joinpath(document['input'])
                                      ).replace('\\', '/')
-    output_root = document['output_root']
+    output_root = document['output-root']
     if output_root:
-        document['output_file'] = str(Path(output_root).joinpath(document['output_file'])
-                                      ).replace('\\', '/')
+        document['output'] = str(Path(output_root).joinpath(document['output'])
+                                 ).replace('\\', '/')
 
-    if not document['no_css'] and not document['link_css'] and not document['include_css']:
-        document['include_css'] = [MODULE_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]
+    if not document['no-css'] and not document['link-css'] and not document['include-css']:
+        document['include-css'] = [MODULE_DIR.joinpath(DEFAULT_CSS_FILE_PATH)]

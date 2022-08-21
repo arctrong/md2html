@@ -1,0 +1,21 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/GlobInputTest/template.html",
+        "verbose": false
+    },
+    "documents": [
+        { "input": "single_doc.txt", "title": "Single document", "page-flows": ["all_pages"] },
+        { "input-glob": "subdir01/*.txt", "page-flows": ["all_pages", "subdir01"], "title-from-metadata": true, "sort-by-file-name": true },
+        { "input-glob": "subdir02/*.txt", "page-flows": ["all_pages", "subdir02"], "title-from-metadata": true, "sort-by-variable": "SORT_ORDER" },
+        { "input-glob": "subdir03/*.txt", "page-flows": ["all_pages", "subdir03"], "title-from-metadata": true, "sort-by-title": true }
+
+    ],
+    "plugins": {
+        "relative-paths": { "resource_path": "../doc/" },
+        "page-flows": {},
+        "page-variables": {}
+    }
+}

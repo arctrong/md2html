@@ -4,7 +4,7 @@ from pathlib import Path
 
 from jsonschema import validate, ValidationError
 
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data
+from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import UserError, reduce_json_validation_error_message, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -13,23 +13,42 @@ MODULE_DIR = Path(__file__).resolve().parent
 class PageVariablesPlugin(Md2HtmlPlugin):
     def __init__(self):
         self.data = {}
-        self.page_variables = {}
-        with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r') as schema_file:
-            self.metadata_schema = json.load(schema_file)
+        self.page_metadata_handler = PageVariablesCollectingMetadataHandler()
 
     def accept_data(self, data):
-        validate_data(data, MODULE_DIR.joinpath('page_variables_schema.json'))
+        validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
         if data:
             self.data.update({k.upper(): v for k, v in data.items()})
-        else:
+        if not self.data:
             self.data = {"VARIABLES": {"only-at-page-start": True}}
-        return bool(self.data)
+
+    def is_blank(self) -> bool:
+        return not bool(self.data)
+
+    def add_if_not_present(self, data):
+        validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
+        for k, v in data:
+            self.data.setdefault(k, v)
 
     def page_metadata_handlers(self):
         result = []
         for k, v in self.data.items():
-            result.append((self, k, first_not_none(v.get("only-at-page-start"), True)))
+            result.append((self.page_metadata_handler, k,
+                           first_not_none(v.get("only-at-page-start"), True)))
         return result
+
+    def variables(self, doc: dict) -> dict:
+        return self.page_metadata_handler.variables()
+
+    def new_page(self, doc: dict):
+        self.page_metadata_handler.reset()
+
+
+class PageVariablesCollectingMetadataHandler:
+    def __init__(self):
+        self.page_variables = {}
+        with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r') as schema_file:
+            self.metadata_schema = json.load(schema_file)
 
     def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section):
         try:
@@ -43,8 +62,8 @@ class PageVariablesPlugin(Md2HtmlPlugin):
         self.page_variables.update(metadata)
         return ''
 
-    def variables(self, doc: dict) -> dict:
+    def variables(self) -> dict:
         return self.page_variables
 
-    def new_page(self, doc: dict):
+    def reset(self):
         self.page_variables = {}
