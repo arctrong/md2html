@@ -107,8 +107,24 @@ class IndexPlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return False
 
-    def initialization_actions(self):
-        return []
+    def initialize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: list):
+        argument_file = argument_file.copy()
+        self.document["input"] = "fictional.txt"
+        argument_file['documents'] = [self.document]
+        canonized_argument_file = merge_and_canonize_argument_file(argument_file, cli_args)
+        arguments, _ = complete_argument_file_processing(canonized_argument_file, plugins)
+        self.document = arguments.documents[0]
+        del self.document["input"]
+
+        if self.index_cache_relative:
+            self.index_cache_file = str(Path(self.document['output']).parent
+                                        .joinpath(self.index_cache_file))
+        index_cache_file = Path(self.index_cache_file)
+        if index_cache_file.exists():
+            with open(index_cache_file, 'r') as file:
+                self.index_cache = json.load(file)
+        else:
+            self.index_cache = {}
 
     def page_metadata_handlers(self):
         return [(self, "INDEX", False)]
@@ -150,23 +166,6 @@ class IndexPlugin(Md2HtmlPlugin):
         self.current_anchor_number = 0
 
     def finalize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: dict):
-        argument_file = argument_file.copy()
-        self.document["input"] = "fictional.txt"
-        argument_file['documents'] = [self.document]
-        canonized_argument_file = merge_and_canonize_argument_file(argument_file, cli_args)
-        arguments, _ = complete_argument_file_processing(canonized_argument_file, plugins)
-        self.document = arguments.documents[0]
-        del self.document["input"]
-
-        if self.index_cache_relative:
-            self.index_cache_file = str(Path(self.document['output']).parent
-                                        .joinpath(self.index_cache_file))
-        index_cache_file = Path(self.index_cache_file)
-        if index_cache_file.exists():
-            with open(index_cache_file, 'r') as file:
-                self.index_cache = json.load(file)
-        else:
-            self.index_cache = {}
 
         output_location = self.document['output']
 
