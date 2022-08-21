@@ -1,5 +1,5 @@
 import re
-from typing import List, Iterator, Dict
+from typing import Iterator, Dict
 
 from plugins.md2html_plugin import Md2HtmlPlugin
 

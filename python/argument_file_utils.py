@@ -33,17 +33,6 @@ def load_json_argument_file(argument_file_string) -> dict:
     return arguments_item
 
 
-# def add_documents_page_flows_data(page_flow_plugin_item, documents_page_flows):
-#     if page_flow_plugin_item is None or documents_page_flows is None:
-#         return
-#     for k, v in documents_page_flows.items():
-#         page_flow_items = page_flow_plugin_item.setdefault(k, [])
-#         new_items = v[:]
-#         for item in page_flow_items:
-#             new_items.append(item)
-#         page_flow_plugin_item[k] = new_items
-
-
 def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> dict:
     """
     Makes changes to the argument file to bring it to a more canonical form:
@@ -86,14 +75,6 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
         canonized_document_items.append(
             merge_and_canonize_document(document_item, defaults_item, cli_args))
     merged_and_canonized_argument_file['documents'] = canonized_document_items
-
-    # index_plugin = merged_and_canonized_argument_file.get('plugins', {}).get('index')
-    # if index_plugin is not None:
-    #     index_plugin['input'] = 'fictional.txt'
-    #     merge_and_canonize_document(cli_args, defaults_item, index_plugin)
-    #     del index_plugin['input']
-    #     # TODO Review the following field
-    #     index_plugin.pop('output-file', None)
 
     return merged_and_canonized_argument_file
 
@@ -230,21 +211,6 @@ class Arguments:
         self.documents: list = documents
 
 
-# class PageVariablesExtractor:
-#     def __init__(self):
-#         self.page_metadata_handler = None
-#         self.page_metadata_handlers = None
-#
-#     def extract_page_variables(self, text: str, doc: dict) -> dict:
-#         if not self.page_metadata_handlers:
-#             self.page_metadata_handler = PageVariablesCollectingMetadataHandler()
-#             self.page_metadata_handlers = PageMetadataHandlers(
-#                 {("VARIABLES", True): [self.page_metadata_handler]}, True)
-#         self.page_metadata_handler.reset()
-#         apply_metadata_handlers(text, self.page_metadata_handlers, doc, extract_only=True)
-#         return self.page_metadata_handler.variables()
-
-
 def expand_document_globs(documents_item, plugins) -> list:
     """
     Expands the GLOBs, reads the necessary metadata, and resolves some overriding properties.
@@ -257,7 +223,7 @@ def expand_document_globs(documents_item, plugins) -> list:
 
         if input_file_glob:
             # in Python 3.10 `glob.glob` has additional argument `root_dir` that would allow
-            # to avoid usage of `relative_to`. But here, as for now, Python 3.9 is used.
+            # to avoid usage of `relative_to`. But here, as for now, Python 3.8 is used.
             file_list = glob.glob(str(Path(input_root).joinpath(input_file_glob)), recursive=True)
             file_list = [str(Path(f).relative_to(input_root)) for f in file_list]
 
@@ -359,7 +325,7 @@ def enrich_document(document):
     input_root = document['input-root']
     if input_root:
         document['input'] = str(Path(input_root).joinpath(document['input'])
-                                     ).replace('\\', '/')
+                                ).replace('\\', '/')
     output_root = document['output-root']
     if output_root:
         document['output'] = str(Path(output_root).joinpath(document['output'])

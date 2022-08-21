@@ -16,24 +16,24 @@ class PageVariablesPluginTest(unittest.TestCase):
         return find_single_instance_of_type(plugins, PageVariablesPlugin)
 
     def _parse_plugin_data(self, plugin_data):
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
-            '"plugins": {"page-variables": ' + plugin_data + '}}')
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "about.md"}], "plugins": {"page-variables": ' +
+            plugin_data + '}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = self._find_single_plugin(plugins.values())
         metadata_handlers = register_page_metadata_handlers(plugins)
         return plugin, metadata_handlers
         
     def test_notActivated(self):
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
-            '"plugins": {}}')
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "about.md"}], "plugins": {}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = self._find_single_plugin(plugins.values())
         self.assertIsNone(plugin)
 
     def test_notActivated_withDefaultMarker(self):
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
-            '"plugins": {"page-variables": {}'
-            '}}')
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "about.md"}], "plugins": {"page-variables": {}}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = self._find_single_plugin(plugins.values())
         self.assertIsNotNone(plugin)
@@ -59,7 +59,8 @@ class PageVariablesPluginTest(unittest.TestCase):
         page_content = '  \r\n \t \n  no metadata blocks  '
         result = apply_metadata_handlers(page_content, metadata_handlers, {})
         variables = plugin.variables({})
-        self.assertDictEqual({'title': 'About1'}, variables)  # that's because the plugin wasn't reset
+        self.assertDictEqual({'title': 'About1'},
+                             variables)  # that's because the plugin wasn't reset
         self.assertEqual("  \r\n \t \n  no metadata blocks  ", result)
         plugin.new_page({})  # reset
         result = apply_metadata_handlers(page_content, metadata_handlers, {})

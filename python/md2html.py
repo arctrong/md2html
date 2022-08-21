@@ -159,16 +159,11 @@ def main():
                 raise UserError(f"Error reading argument file '{cli_args.argument_file}': "
                                 f"{type(e).__name__}: {e}")
         else:
-            # page_variables = {"VARIABLES": {"only-at-page-start": True}}
-            # if cli_args["legacy_mode"]:
-            #     page_variables["METADATA"] = {"only-at-page-start": True}
             argument_file_dict = {"documents": [{}],
-                                  # # When run without argument file, need to implicitly add
-                                  # # plugin for page title extraction from the source text.
-
-                                  # "plugins": {"page-variables": page_variables}
-                                  "plugins": {"page-variables":
-                                                  {"VARIABLES": {"only-at-page-start": True}}}
+                                  # When run without argument file, need to implicitly add
+                                  # plugin for page title extraction from the source text.
+                                  "plugins": {"page-variables": {
+                                          "VARIABLES": {"only-at-page-start": True}}}
                                   }
 
         try:

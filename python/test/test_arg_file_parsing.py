@@ -95,7 +95,8 @@ class ArgFileParseTest(unittest.TestCase):
             '"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
-            '"include-css": ["include.css"], "add-include-css": ["add_include1.css", "add_include1.css"], '
+            '"include-css": ["include.css"], '
+            '"add-include-css": ["add_include1.css", "add_include1.css"], '
             '"force": true, "verbose": true}]}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         doc = arguments.documents[0]
@@ -143,7 +144,8 @@ class ArgFileParseTest(unittest.TestCase):
             '"input": "index.txt", "output": "index.html", '
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
-            '"include-css": ["include.css"], "add-include-css": ["add_include1.css", "add_include1.css"], '
+            '"include-css": ["include.css"], '
+            '"add-include-css": ["add_include1.css", "add_include1.css"], '
             '"force": false, "verbose": false}]}')
         cli_args = parse_cli_arguments([
             "--input-root", "cli_doc_src", "--output-root", "cli_doc",
@@ -189,7 +191,8 @@ class ArgFileParseTest(unittest.TestCase):
     def test_allPlugins_PositiveScenario(self):
         # Adding minimum plugin data to make the plugins declare themselves activated.
         # The specific plugins behavior is going to be tested in separate tests.
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}], '
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "index.txt"}], '
             '"plugins": {"relative-paths": {"rel_path": "/doc"}, '
             '"page-flows": {"sections": [{"link": "doc/about.html", "title": "About"}]}, '
             '"page-variables":{"v": {}}, '
@@ -198,7 +201,8 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertEqual(4, len(plugins))
         
     def test_auto_output_file_with_root_dirs_PositiveScenario(self):
-        argument_file_dict = load_json_argument_file('{"documents": ['
+        argument_file_dict = load_json_argument_file(
+            '{"documents": ['
             '{"input-root": "doc_src/txt", "output-root": "doc/html", "input": "index.txt"}, '
             '{"output-root": "doc/html", "input": "index.txt"}, '
             '{"input-root": "doc_src/txt", "input": "index.txt"}'

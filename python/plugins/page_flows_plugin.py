@@ -3,7 +3,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 from cli_arguments_utils import CliArgDataObject
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file, validate_data_with_schema
+from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_schema
 from utils import relativize_relative_resource, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent

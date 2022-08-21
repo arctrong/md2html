@@ -27,10 +27,14 @@ class UtilTest(unittest.TestCase):
     def test_strip_extension_special_cases(self):
         with self.assertRaises(TypeError):
             strip_extension(None)
-        self.assertEqual(Path(''), Path(strip_extension(Path(''))))
-        self.assertEqual('file_with.two', strip_extension(Path('file_with.two.extensions')))
-        self.assertEqual(Path('file/with/path'), Path(strip_extension(Path('file/with/path.txt'))))
-        self.assertEqual(Path('file\\with\\path'), Path(strip_extension(Path('file\\with\\path.txt'))))
+        self.assertEqual(Path(''),
+                         Path(strip_extension(Path(''))))
+        self.assertEqual('file_with.two',
+                         strip_extension(Path('file_with.two.extensions')))
+        self.assertEqual(Path('file/with/path'),
+                         Path(strip_extension(Path('file/with/path.txt'))))
+        self.assertEqual(Path('file\\with\\path'),
+                         Path(strip_extension(Path('file\\with\\path.txt'))))
 
     def test_blank_comment_line(self):
         self.assertEqual('        ', blank_comment_line('#comment', '#'))
@@ -72,10 +76,14 @@ class UtilTest(unittest.TestCase):
         self.assertEqual('', relativize_relative_resource_path('doc/', 'doc/index.html'))
         self.assertEqual('pict/', relativize_relative_resource_path('doc/pict/', 'doc/index.html'))
 
-        self.assertEqual('../pict/', relativize_relative_resource_path('pict/', 'doc/index.html'))
-        self.assertEqual('../pict/doc/', relativize_relative_resource_path('pict/doc/', 'doc/index.html'))
-        self.assertEqual('../../pict/', relativize_relative_resource_path('pict/', 'doc/chapter01/index.html'))
-        self.assertEqual('../../pict/doc/', relativize_relative_resource_path('pict/doc/', 'doc/chapter01/index.html'))
+        self.assertEqual('../pict/',
+                         relativize_relative_resource_path('pict/', 'doc/index.html'))
+        self.assertEqual('../pict/doc/',
+                         relativize_relative_resource_path('pict/doc/', 'doc/index.html'))
+        self.assertEqual('../../pict/',
+                         relativize_relative_resource_path('pict/', 'doc/chapter01/index.html'))
+        self.assertEqual('../../pict/doc/',
+                         relativize_relative_resource_path('pict/doc/', 'doc/chapter01/index.html'))
         
         self.assertEqual('', relativize_relative_resource_path('./', 'index.html'))
         self.assertEqual('../', relativize_relative_resource_path('./', 'doc/index.html'))
@@ -94,22 +102,36 @@ class UtilTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             relativize_relative_resource(None, 'index.html')
 
-        self.assertEqual('styles.css', relativize_relative_resource('styles.css', 'index.html'))
-        self.assertEqual('doc/styles.css', relativize_relative_resource('doc/styles.css', 'index.html'))
-        self.assertEqual('doc/pict/logo.png', relativize_relative_resource('doc/pict/logo.png', 'index.html'))
+        self.assertEqual('styles.css',
+                         relativize_relative_resource('styles.css', 'index.html'))
+        self.assertEqual('doc/styles.css',
+                         relativize_relative_resource('doc/styles.css', 'index.html'))
+        self.assertEqual('doc/pict/logo.png',
+                         relativize_relative_resource('doc/pict/logo.png', 'index.html'))
         
-        self.assertEqual('../../logo.png', relativize_relative_resource('../logo.png', 'doc/index.html'))
-        self.assertEqual('../logo.png', relativize_relative_resource('logo.png', 'doc/index.html'))
-        self.assertEqual('logo.png', relativize_relative_resource('doc/logo.png', 'doc/index.html'))
-        self.assertEqual('pict/logo.png', relativize_relative_resource('doc/pict/logo.png', 'doc/index.html'))
+        self.assertEqual('../../logo.png',
+                         relativize_relative_resource('../logo.png', 'doc/index.html'))
+        self.assertEqual('../logo.png',
+                         relativize_relative_resource('logo.png', 'doc/index.html'))
+        self.assertEqual('logo.png',
+                         relativize_relative_resource('doc/logo.png', 'doc/index.html'))
+        self.assertEqual('pict/logo.png',
+                         relativize_relative_resource('doc/pict/logo.png', 'doc/index.html'))
 
-        self.assertEqual('../pict/logo.png', relativize_relative_resource('pict/logo.png', 'doc/index.html'))
-        self.assertEqual('../pict/doc/logo.png', relativize_relative_resource('pict/doc/logo.png', 'doc/index.html'))
-        self.assertEqual('../../pict/logo.png', relativize_relative_resource('pict/logo.png', 'doc/chapter01/index.html'))
-        self.assertEqual('../../pict/doc/logo.png', relativize_relative_resource('pict/doc/logo.png', 'doc/chapter01/index.html'))
+        self.assertEqual('../pict/logo.png',
+                         relativize_relative_resource('pict/logo.png', 'doc/index.html'))
+        self.assertEqual('../pict/doc/logo.png',
+                         relativize_relative_resource('pict/doc/logo.png', 'doc/index.html'))
+        self.assertEqual('../../pict/logo.png',
+                         relativize_relative_resource('pict/logo.png', 'doc/chapter01/index.html'))
+        self.assertEqual('../../pict/doc/logo.png',
+                         relativize_relative_resource('pict/doc/logo.png',
+                                                      'doc/chapter01/index.html'))
         
-        self.assertEqual('logo.png', relativize_relative_resource('./logo.png', 'index.html'))
-        self.assertEqual('../logo.png', relativize_relative_resource('./logo.png', 'doc/index.html'))
+        self.assertEqual('logo.png',
+                         relativize_relative_resource('./logo.png', 'index.html'))
+        self.assertEqual('../logo.png',
+                         relativize_relative_resource('./logo.png', 'doc/index.html'))
 
 
 if __name__ == '__main__':

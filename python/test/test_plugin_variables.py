@@ -9,16 +9,17 @@ from md2html import *
 from plugins.variables_plugin import *
 
 
-class VariablesPluginTest(unittest.TestCase):
+def _find_single_plugin(plugins):
+    return find_single_instance_of_type(plugins, VariablesPlugin)
 
-    def _find_single_plugin(self, plugins):
-        return find_single_instance_of_type(plugins, VariablesPlugin)
+
+class VariablesPluginTest(unittest.TestCase):
 
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.md"}], "plugins": {}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = self._find_single_plugin(plugins.values())
+        plugin = _find_single_plugin(plugins.values())
         self.assertIsNone(plugin)
 
     def test_variables(self):
@@ -27,7 +28,7 @@ class VariablesPluginTest(unittest.TestCase):
             '"plugins": {"variables": {"var1": "val1", "_var2": "val2", '
             '"strange": "Don\'t do it yourself! -\u002D>" }}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = self._find_single_plugin(plugins.values())
+        plugin = _find_single_plugin(plugins.values())
         variables = plugin.variables({})
         self.assertDictEqual({"var1": "val1", "_var2": "val2", 
                               "strange": "Don\'t do it yourself! -->"}, variables)

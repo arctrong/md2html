@@ -6,7 +6,7 @@ from pathlib import Path
 class UserError(Exception):
     """
     Error that was caused by correct processing of incorrect user input or actions.
-    The message must be more user friendly, and the application output may be simpler, e.g.
+    The message must be more user-friendly, and the application output may be simpler, e.g.
     without a stack trace.
     """
     pass

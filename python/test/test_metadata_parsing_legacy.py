@@ -10,66 +10,68 @@ from argument_file_utils import *
 from plugins.page_variables_plugin import PageVariablesPlugin
 
 
+def _parse_metadata(metadata):
+    argument_file_dict = load_json_argument_file(
+        '{"documents": [{"input": "about.md"}], '
+        '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
+    _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
+    plugin = find_single_instance_of_type(plugins.values(), PageVariablesPlugin)
+    metadata_handlers = register_page_metadata_handlers(plugins)
+    page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
+    plugin.new_page({})
+    apply_metadata_handlers(page_content, metadata_handlers, {})
+    return plugin.variables({})
+
+
 class PageMetadataUtilsTest(unittest.TestCase):
     """
     Reusing legacy page metadata parsing tests.
     """
 
-    def _parse_metadata(self, metadata):
-        argument_file_dict = load_json_argument_file('{"documents": [{"input": "about.md"}], '
-            '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = find_single_instance_of_type(plugins.values(), PageVariablesPlugin)
-        metadata_handlers = register_page_metadata_handlers(plugins)
-        page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
-        plugin.new_page({})
-        apply_metadata_handlers(page_content, metadata_handlers, {})
-        return plugin.variables({})
-
     def test_notObject(self):
         with self.assertRaises(UserError) as cm:
-            self._parse_metadata('[]')
+            _parse_metadata('[]')
         self.assertIn('object', str(cm.exception))
   
     def test_emptyString(self):
         with self.assertRaises(UserError) as cm:
-            self._parse_metadata('')
+            _parse_metadata('')
         self.assertIn('JSON', str(cm.exception))
 
     def test_malformedJson(self):
         with self.assertRaises(UserError) as cm:
-            self._parse_metadata('not a Json')
+            _parse_metadata('not a Json')
         self.assertIn('JSON', str(cm.exception))
 
     def test_emptyObject(self):
-        metadata = self._parse_metadata('{}')
+        metadata = _parse_metadata('{}')
         self.assertTrue(isinstance(metadata, dict))
         self.assertNotIn('title', metadata)
         self.assertNotIn('placeholders', metadata)
 
     def test_correctTitle(self):
-        metadata = self._parse_metadata('{"title": "My title"}')
+        metadata = _parse_metadata('{"title": "My title"}')
         self.assertEqual('My title', metadata['title'])
 
     def test_emptyTitle(self):
-        metadata = self._parse_metadata('{"title": ""}')
+        metadata = _parse_metadata('{"title": ""}')
         self.assertEqual('', metadata['title'])
 
     def test_unicodeEntitiesInStrings(self):
-        metadata = self._parse_metadata('{\"title\":\"<!\\u002D-value-\\u002D>\"}')
+        metadata = _parse_metadata('{\"title\":\"<!\\u002D-value-\\u002D>\"}')
         self.assertEqual('<!--value-->', metadata['title'])
 
     def test_keysCaseSensitive(self):
-        metadata = self._parse_metadata('{"Title": "correct title value"}')
+        metadata = _parse_metadata('{"Title": "correct title value"}')
         self.assertIn('Title', metadata)
         self.assertNotIn('title', metadata)
 
     def test_customTemplatePlaceholders_empty(self):
-        metadata = self._parse_metadata('{ "placeholders": {} }')
+        metadata = _parse_metadata('{ "placeholders": {} }')
         self.assertDictEqual({"placeholders": {}}, metadata)
 
     def test_customTemplatePlaceholders_correctItems(self):
-        metadata = self._parse_metadata('{ "placeholders": {"ph1": "val1", "ph2": "val2"} }')
+        metadata = _parse_metadata('{ "placeholders": {"ph1": "val1", "ph2": "val2"} }')
         self.assertDictEqual({'placeholders': {'ph1': 'val1', 'ph2': 'val2'}}, metadata)
 
 

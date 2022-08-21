@@ -5,7 +5,7 @@ setlocal
 set ARGS=%*
 
 call :RUN_TEST py
-call :RUN_TEST java
+REM call :RUN_TEST java
 
 exit /b
 
