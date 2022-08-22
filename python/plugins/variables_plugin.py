@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from models import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -19,5 +20,5 @@ class VariablesPlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return not bool(self.data)
 
-    def variables(self, doc: dict) -> dict:
+    def variables(self, doc: Document) -> dict:
         return self.data

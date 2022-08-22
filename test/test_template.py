@@ -58,7 +58,7 @@ class Md2htmlTemplateIntegralTest(unittest.TestCase):
         output_file = f'{self.OUTPUT_DIR}/link_css_test.html'
         root = h.execute(['-f', '-i', f'{h.INPUT_DIR}/any_content.txt', '-o', output_file, 
                           '--template', f'{h.INPUT_DIR}/test_template_styles.html',
-                          '--link-css', '../../../test_input/test_styles.css'],
+                          '--link-css', 'test_input/test_styles.css'],
                           output_file)
         
         self.assertIsNone(root.head.style)

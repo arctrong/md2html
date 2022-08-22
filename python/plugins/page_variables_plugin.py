@@ -4,6 +4,7 @@ from pathlib import Path
 
 from jsonschema import validate, ValidationError
 
+from models import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import UserError, reduce_json_validation_error_message, first_not_none
 
@@ -37,10 +38,10 @@ class PageVariablesPlugin(Md2HtmlPlugin):
                            first_not_none(v.get("only-at-page-start"), True)))
         return result
 
-    def variables(self, doc: dict) -> dict:
+    def variables(self, doc: Document) -> dict:
         return self.page_metadata_handler.variables()
 
-    def new_page(self, doc: dict):
+    def new_page(self, doc: Document):
         self.page_metadata_handler.reset()
 
 

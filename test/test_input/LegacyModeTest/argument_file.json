@@ -3,7 +3,7 @@
         "template": "test_input/LegacyModeTest/legacy_template.html",
         "verbose": false,
         "force": true,
-        "link-css": ["../../../test_input/test_styles.css"]
+        "link-css": ["test_input/test_styles.css"]
     },
     "documents": [
         { "input": "test_input/LegacyModeTest/legacy_source_text.txt" }

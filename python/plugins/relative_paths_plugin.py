@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from models import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import relativize_relative_resource_path
 
@@ -19,9 +20,8 @@ class RelativePathsPlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return not bool(self.data)
 
-    def variables(self, doc: dict) -> dict:
+    def variables(self, doc: Document) -> dict:
         result = {}
-        output_file = str(doc['output'])
         for k, v in self.data.items():
-            result[k] = relativize_relative_resource_path(v, output_file)
+            result[k] = relativize_relative_resource_path(v, doc.output_file)
         return result

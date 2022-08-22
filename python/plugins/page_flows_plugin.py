@@ -2,6 +2,7 @@ import json
 from collections.abc import Iterator
 from pathlib import Path
 
+from models import Document
 from cli_arguments_utils import CliArgDataObject
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_schema
 from utils import relativize_relative_resource, first_not_none
@@ -104,6 +105,5 @@ class PageFlowsPlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return not bool(self.data)
 
-    def variables(self, doc: dict) -> dict:
-        output_file = str(doc['output'])
-        return {k: process_page_flow(v, output_file) for k, v in self.data.items()}
+    def variables(self, doc: Document) -> dict:
+        return {k: process_page_flow(v, doc.output_file) for k, v in self.data.items()}

@@ -16,7 +16,7 @@ class LegacyModeTest(unittest.TestCase):
                                             f'{self.OUTPUT_DIR}/test_in_legacy_mode_without_arg_file.html',
                                             f'{h.INPUT_DIR}/{self.CLASS_NAME}/legacy_template.html',
                                             '--legacy-mode', 
-                                            '--link-css', '../../../test_input/test_styles.css')
+                                            '--link-css', 'test_input/test_styles.css')
 
         output_file = f'{self.OUTPUT_DIR}/test_in_legacy_mode_with_arg_file.html'
         with_arg_file = h.execute(['--argument-file', f'{h.INPUT_DIR}/{self.CLASS_NAME}/argument_file.json',

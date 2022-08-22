@@ -7,6 +7,7 @@ from jsonschema import validate, ValidationError
 
 from cli_arguments_utils import CliArgDataObject
 from constants import DEFAULT_TEMPLATE_PATH, DEFAULT_CSS_FILE_PATH
+from models import Options, Document, Arguments
 from page_metadata_utils import apply_metadata_handlers, register_page_metadata_handlers
 from utils import UserError, reduce_json_validation_error_message, first_not_none, \
     strip_extension, read_lines_from_cached_file, read_lines_from_file
@@ -33,6 +34,7 @@ def load_json_argument_file(argument_file_string) -> dict:
     return arguments_item
 
 
+# TODO Consider renaming this method
 def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> dict:
     """
     Makes changes to the argument file to bring it to a more canonical form:
@@ -75,6 +77,11 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
         canonized_document_items.append(
             merge_and_canonize_document(document_item, defaults_item, cli_args))
     merged_and_canonized_argument_file['documents'] = canonized_document_items
+
+    if merged_and_canonized_argument_file["options"]['legacy-mode']:
+        page_variables = merged_and_canonized_argument_file["plugins"].setdefault(
+            "page-variables", {})
+        page_variables.setdefault("METADATA", {"only-at-page-start": True})
 
     return merged_and_canonized_argument_file
 
@@ -205,12 +212,6 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
     return canonized_document_item
 
 
-class Arguments:
-    def __init__(self, options, documents):
-        self.options: dict = options
-        self.documents: list = documents
-
-
 def expand_document_globs(documents_item, plugins) -> list:
     """
     Expands the GLOBs, reads the necessary metadata, and resolves some overriding properties.
@@ -273,49 +274,44 @@ def expand_document_globs(documents_item, plugins) -> list:
 
 def complete_argument_file_processing(canonized_argument_file: dict, plugins) -> (Arguments, dict):
 
-    options = canonized_argument_file['options']
-    page_flows_plugin = {}
-    document_plugins_items = {"page-flows": page_flows_plugin}
+    options_item = canonized_argument_file['options']
+    options = Options(verbose=options_item['verbose'],
+                      legacy_mode=options_item['legacy-mode'])
+
+    documents_page_flows_plugin = {}
+    document_plugins_items = {"page-flows": documents_page_flows_plugin}
 
     documents_item = expand_document_globs(canonized_argument_file['documents'], plugins)
     documents = []
     for document_item in documents_item:
-        document = {}
+        # Such check was probably done before but let it stay here as a safeguard.
+        if document_item.get("input") is None:
+            raise Exception(f"Undefined input file for 'documents' item: {document_item}.")
 
-        input_file = document_item.get("input")
-        # Such check is probably done before but let it stay here as a safeguard.
-        if input_file is None:
-            raise UserError(f"Undefined input file for 'documents' item: {document_item}.")
-        document['input'] = input_file
+        _enrich_document(document_item)
 
-        document['output'] = document_item.get("output")
-        document['input-root'] = document_item.get("input-root")
-        document['output-root'] = document_item.get("output-root")
+        for page_flow in first_not_none(document_item.get('page-flows'), []):
+            page_flow_list = documents_page_flows_plugin.setdefault(page_flow, [])
+            page_flow_list.append({"link": document_item["output"],
+                                   "title": document_item["title"]})
 
-        document['title'] = document_item.get('title')
-        document['template'] = document_item.get('template')
-
-        document['link-css'] = document_item.get('link-css')
-        document['include-css'] = document_item.get('include-css')
-        document['no-css'] = document_item.get('no-css')
-
-        document['page-flows'] = document_item.get('page-flows')
-
-        document['force'] = document_item.get('force')
-        document['verbose'] = document_item.get('verbose')
-        document['report'] = document_item.get('report')
-
-        enrich_document(document)
-        documents.append(document)
-
-        for page_flow in first_not_none(document.get('page-flows'), []):
-            page_flow_list = page_flows_plugin.setdefault(page_flow, [])
-            page_flow_list.append({"link": document["output"], "title": document["title"]})
+        document_object = Document(input_file=document_item.get("input"),
+                                   output_file=document_item.get("output"),
+                                   title=document_item.get('title'),
+                                   template=document_item.get('template'),
+                                   link_css=document_item.get('link-css'),
+                                   include_css=document_item.get('include-css'),
+                                   no_css=document_item.get('no-css'),
+                                   force=document_item.get('force'),
+                                   verbose=document_item.get('verbose'),
+                                   report=document_item.get('report'),
+                                   )
+        documents.append(document_object)
 
     return Arguments(options, documents), document_plugins_items
 
 
-def enrich_document(document):
+def _enrich_document(document):
     if not document['template']:
         document['template'] = MODULE_DIR.joinpath(DEFAULT_TEMPLATE_PATH)
     if not document['output']:
@@ -326,6 +322,7 @@ def enrich_document(document):
     if input_root:
         document['input'] = str(Path(input_root).joinpath(document['input'])
                                 ).replace('\\', '/')
+
     output_root = document['output-root']
     if output_root:
         document['output'] = str(Path(output_root).joinpath(document['output'])

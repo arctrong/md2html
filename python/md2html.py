@@ -9,14 +9,15 @@ from pathlib import Path
 import chevron
 import markdown
 
-from argument_file_plugins_utils import process_plugins, filter_non_blank_plugins
+from plugins_utils import process_plugins, filter_non_blank_plugins
 from argument_file_utils import load_json_argument_file, complete_argument_file_processing, \
-    merge_and_canonize_argument_file, Arguments
+    merge_and_canonize_argument_file
+from models import Arguments
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
 from constants import EXEC_NAME, EXEC_VERSION
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
 from utils import UserError, read_lines_from_file, \
-    read_lines_from_commented_json_file, read_lines_from_cached_file
+    read_lines_from_commented_json_file, read_lines_from_cached_file, relativize_relative_resource
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
@@ -39,41 +40,34 @@ def read_lines_from_cached_file_legacy(template_file):
 
 
 def md2html(document, plugins, metadata_handlers, options):
-    input_location = document['input']
-    output_location = document['output']
-    title = document['title']
-    template_file = document['template']
-    link_css = document['link-css']
-    include_css = document['include-css']
-    force = document['force']
-    verbose = document['verbose']
-    report = document['report']
+    input_path = Path(document.input_file)
+    output_path = Path(document.output_file)
 
-    output_file = Path(output_location)
-    input_file = Path(input_location)
-
-    if not force and output_file.exists():
-        output_file_mtime = os.path.getmtime(output_file)
-        input_file_mtime = os.path.getmtime(input_file)
+    if not document.force and output_path.exists():
+        output_file_mtime = os.path.getmtime(output_path)
+        input_file_mtime = os.path.getmtime(input_path)
         if output_file_mtime > input_file_mtime:
-            if verbose:
-                print(f'The output file is up-to-date. Skipping: {output_location}')
+            if document.verbose:
+                print(f'The output file is up-to-date. Skipping: {document.output_file}')
             return
 
     current_time = datetime.today()
-    substitutions = {'title': title, 'exec_name': EXEC_NAME, 'exec_version': EXEC_VERSION,
+    substitutions = {'title': document.title,
+                     'exec_name': EXEC_NAME, 'exec_version': EXEC_VERSION,
                      'generation_date': current_time.strftime('%Y-%m-%d'),
                      'generation_time': current_time.strftime('%H:%M:%S')}
     styles = []
-    if link_css:
-        styles.extend([f'<link rel="stylesheet" type="text/css" href="{item}">'
-                       for item in link_css])
-    if include_css:
-        styles.extend(['<style>\n' + read_lines_from_file(item) + '\n</style>'
-                       for item in include_css])
+    if document.link_css:
+        # TODO Consider applying HTML encoding to the `href` value
+        styles.extend([f'<link rel="stylesheet" type="text/css" '
+                       f'href="{relativize_relative_resource(css, document.output_file)}">'
+                       for css in document.link_css])
+    if document.include_css:
+        styles.extend(['<style>\n' + read_lines_from_file(css) + '\n</style>'
+                       for css in document.include_css])
     substitutions['styles'] = '\n'.join(styles) if styles else ''
 
-    md_lines = read_lines_from_cached_file(str(input_file))
+    md_lines = read_lines_from_cached_file(document.input_file)
     for plugin in plugins.values():
         plugin.new_page(document)
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
@@ -83,14 +77,14 @@ def md2html(document, plugins, metadata_handlers, options):
     for plugin in plugins.values():
         substitutions.update(plugin.variables(document))
 
-    if options['legacy-mode']:
+    if options.legacy_mode:
         placeholders = substitutions.get('placeholders')
         if placeholders is not None:
             del substitutions['placeholders']
             substitutions.update(placeholders)
-        template = read_lines_from_cached_file_legacy(template_file)
+        template = read_lines_from_cached_file_legacy(document.template)
     else:
-        template = read_lines_from_cached_file(template_file)
+        template = read_lines_from_cached_file(document.template)
 
     if substitutions['title'] is None:
         substitutions['title'] = ''
@@ -100,30 +94,29 @@ def md2html(document, plugins, metadata_handlers, options):
     except chevron.ChevronError as e:
         raise UserError(f"Error processing template: {type(e).__name__}: {e}")
 
-    output_path = Path(output_file).resolve().parent
-    if not output_path.exists():
-        os.makedirs(output_path)
+    output_dir_path = output_path.resolve().parent
+    if not output_dir_path.exists():
+        os.makedirs(output_dir_path)
 
-    with open(output_file, 'w') as result_file:
+    with open(output_path, 'w') as result_file:
         result_file.write(result)
 
-    if verbose:
-        print(f'Output file generated: {output_location}')
-    if report:
-        print(output_location)
+    if document.verbose:
+        print(f'Output file generated: {document.output_file}')
+    if document.report:
+        print(document.output_file)
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> (Arguments, dict):
-    canonized_argument_file = merge_and_canonize_argument_file(argument_file_dict, cli_args)
-    if canonized_argument_file["options"]['legacy-mode']:
-        # noinspection PyTypeChecker
-        page_variables = canonized_argument_file["plugins"].setdefault("page-variables", {})
-        page_variables.setdefault("METADATA", {"only-at-page-start": True})
 
+    canonized_argument_file = merge_and_canonize_argument_file(argument_file_dict, cli_args)
     plugins = process_plugins(canonized_argument_file['plugins'])
     arguments, document_plugins_items = complete_argument_file_processing(
         canonized_argument_file, plugins)
 
+
+
+    # TODO Consider moving this logic inside `complete_argument_file_processing`
     for plugin_name, plugin_data in document_plugins_items.items():
         plugin = plugins.get(plugin_name)
         if plugin is not None:
@@ -146,9 +139,9 @@ def main():
         try:
             cli_args = parse_cli_arguments(sys.argv[1:])
         except CliError:
-            # This exception is also raised when the user asks for the help info.
-            # But when this program is run from inside a script such situation must be
-            # considered as an error so the error code >0 is always returned.
+            # This exception is also raised when the user asks for the help info that may look
+            # illogical. But when this program is run from inside a script, this situation must
+            # be considered as an error so the error code >0 is always returned.
             sys.exit(1)
 
         if cli_args.argument_file:
@@ -178,7 +171,7 @@ def main():
             try:
                 md2html(document, plugins, metadata_handlers, arguments.options)
             except UserError as e:
-                error_input_file = document["input"]
+                error_input_file = document.input_file
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
 
@@ -189,7 +182,7 @@ def main():
                 raise UserError(f"Error in after-all-pages-processed action: "
                                 f"{type(e).__name__}: {e}")
 
-        if arguments.options["verbose"]:
+        if arguments.options.verbose:
             end_moment = time.monotonic()
             print('Finished in: ' + str(timedelta(seconds=end_moment - start_moment)))
     except UserError as ue:

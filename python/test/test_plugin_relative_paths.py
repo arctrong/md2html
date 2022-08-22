@@ -31,17 +31,17 @@ class RelativePathsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        rel_paths = plugin.variables({'output': "root.html"})
+        rel_paths = plugin.variables(Document(output_file="root.html"))
         self.assertDictEqual({"down1": "down1/", "down11": "down1/down11/", 
                               "down2": "down2/", "down22": "down2/down22/", 
                               "root": "", "up1": "../", "up2": "../../" }, rel_paths)
         
-        rel_paths = plugin.variables({'output': "down1/doc.html"})
+        rel_paths = plugin.variables(Document(output_file="down1/doc.html"))
         self.assertDictEqual({"down1": "", "down11": "down11/", 
                               "down2": "../down2/", "down22": "../down2/down22/", 
                               "root": "../", "up1": "../../", "up2": "../../../" }, rel_paths)
         
-        rel_paths = plugin.variables({'output': "down2/down22/doc.html"})
+        rel_paths = plugin.variables(Document(output_file="down2/down22/doc.html"))
         self.assertDictEqual({"down1": "../../down1/", "down11": "../../down1/down11/", 
                               "down2": "../", "down22": "", 
                               "root": "../../", "up1": "../../../", "up2": "../../../../" },

@@ -9,6 +9,7 @@ import chevron
 from jsonschema import validate, ValidationError
 
 from argument_file_utils import complete_argument_file_processing, merge_and_canonize_argument_file
+from models import Document
 from cli_arguments_utils import CliArgDataObject
 from constants import EXEC_NAME, EXEC_VERSION
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
@@ -85,6 +86,7 @@ class IndexPlugin(Md2HtmlPlugin):
         self.add_letters = False
         self.add_letters_block = False
 
+        self.document_dict = None
         self.document = None
 
         self.current_link_page = ''
@@ -94,30 +96,30 @@ class IndexPlugin(Md2HtmlPlugin):
 
     def accept_data(self, data):
         validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
-        self.document = {k: v for k, v in data.items()}
+        self.document_dict = {k: v for k, v in data.items()}
         self.index_cache_file = data["index-cache"]
         self.index_cache_relative = data.get("index-cache-relative", self.index_cache_relative)
         self.add_letters = data.get("letters", self.add_letters)
         self.add_letters_block = data.get("letters-block", self.add_letters_block)
-        self.document.pop('index-cache', None)
-        self.document.pop('index-cache-relative', None)
-        self.document.pop('letters', None)
-        self.document.pop('letters-block', None)
+        self.document_dict.pop('index-cache', None)
+        self.document_dict.pop('index-cache-relative', None)
+        self.document_dict.pop('letters', None)
+        self.document_dict.pop('letters-block', None)
 
     def is_blank(self) -> bool:
         return False
 
     def initialize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: list):
         argument_file = argument_file.copy()
-        self.document["input"] = "fictional.txt"
-        argument_file['documents'] = [self.document]
+        self.document_dict["input"] = "fictional.txt"
+        argument_file['documents'] = [self.document_dict]
         canonized_argument_file = merge_and_canonize_argument_file(argument_file, cli_args)
         arguments, _ = complete_argument_file_processing(canonized_argument_file, plugins)
         self.document = arguments.documents[0]
-        del self.document["input"]
+        self.document.input_file = None
 
         if self.index_cache_relative:
-            self.index_cache_file = str(Path(self.document['output']).parent
+            self.index_cache_file = str(Path(self.document.output_file).parent
                                         .joinpath(self.index_cache_file))
         index_cache_file = Path(self.index_cache_file)
         if index_cache_file.exists():
@@ -129,9 +131,8 @@ class IndexPlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return [(self, "INDEX", False)]
 
-    def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section):
-        output_file = doc["output"]
-
+    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
+                             metadata_section):
         metadata_str = metadata_str.strip()
         if metadata_str.startswith('['):
             try:
@@ -145,7 +146,7 @@ class IndexPlugin(Md2HtmlPlugin):
         else:
             metadata = [metadata_str]
 
-        anchors = self.index_cache[output_file]
+        anchors = self.index_cache[doc.output_file]
         self.current_anchor_number += 1
         anchor_text = f'<a name="{INDEX_ENTRY_ANCHOR_PREFIX}{self.current_anchor_number}"></a>'
 
@@ -153,44 +154,37 @@ class IndexPlugin(Md2HtmlPlugin):
             normalized_entry = entry.strip()
             anchors.append({"entry": normalized_entry,
                             "link": f'{self.current_link_page}#{INDEX_ENTRY_ANCHOR_PREFIX}'
-                                    f'{self.current_anchor_number}', "title": doc.get('title')})
+                                    f'{self.current_anchor_number}', "title": doc.title})
 
         return anchor_text
 
-    def new_page(self, doc: dict):
-        output_file = doc["output"]
-        self.index_cache[output_file] = []
-        self.cached_page_resets.add(output_file)
-        self.current_link_page = relativize_relative_resource(output_file,
-                                                              self.document['output'])
+    def new_page(self, doc: Document):
+        self.index_cache[doc.output_file] = []
+        self.cached_page_resets.add(doc.output_file)
+        self.current_link_page = relativize_relative_resource(doc.output_file,
+                                                              self.document.output_file)
         self.current_anchor_number = 0
 
     def finalize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: dict):
 
-        output_location = self.document['output']
-
         if not self.cached_page_resets:
-            if self.document['verbose']:
-                print(f'Index file is up-to-date. Skipping: {output_location}')
+            if self.document.verbose:
+                print(f'Index file is up-to-date. Skipping: {self.document.output_file}')
             return
 
-        template_file = self.document['template']
-        link_css = self.document['link-css']
-        include_css = self.document['include-css']
-
         current_time = datetime.today()
-        substitutions = {'title': self.document["title"],
+        substitutions = {'title': self.document.title,
                          'exec_name': EXEC_NAME, 'exec_version': EXEC_VERSION,
                          'generation_date': current_time.strftime('%Y-%m-%d'),
                          'generation_time': current_time.strftime('%H:%M:%S')}
 
         styles = []
-        if link_css:
+        if self.document.link_css:
             styles.extend([f'<link rel="stylesheet" type="text/css" href="{item}">'
-                           for item in link_css])
-        if include_css:
+                           for item in self.document.link_css])
+        if self.document.include_css:
             styles.extend(['<style>\n' + read_lines_from_file(item) + '\n</style>'
-                           for item in include_css])
+                           for item in self.document.include_css])
         substitutions['styles'] = '\n'.join(styles) if styles else ''
 
         for plugin in plugins.values():
@@ -204,20 +198,20 @@ class IndexPlugin(Md2HtmlPlugin):
         if substitutions['title'] is None:
             substitutions['title'] = ''
 
-        template = read_lines_from_cached_file(template_file)
+        template = read_lines_from_cached_file(self.document.template)
 
         try:
             result = chevron.render(template, substitutions)
         except chevron.ChevronError as e:
             raise UserError(f"Error processing template: {type(e).__name__}: {e}")
 
-        with open(self.document["output"], 'w') as result_file:
+        with open(self.document.output_file, 'w') as result_file:
             result_file.write(result)
 
         with open(self.index_cache_file, 'w') as cache_file:
             json.dump(self.index_cache, cache_file, indent=2)
 
-        if self.document['verbose']:
-            print(f'Index file generated: {output_location}')
-        if self.document['report']:
-            print(output_location)
+        if self.document.verbose:
+            print(f'Index file generated: {self.document.output_file}')
+        if self.document.report:
+            print(self.document.output_file)

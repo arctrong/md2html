@@ -59,8 +59,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             ']}}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
-        
-        doc = {'output': "about.html"}
+
+        doc = Document(output_file="about.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
@@ -81,7 +81,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        doc = {'output': "index.html"}
+        doc = Document(output_file="index.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
@@ -90,7 +90,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertDictEqual({"link": "about.html", "title": "About", "current": False,
                               "external": False, "first": False, "last": True}, pages[1])
 
-        doc = {'output': "no-page-flow.html"}
+        doc = Document(output_file="no-page-flow.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
@@ -111,7 +111,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        doc = {'output': "other.html"}
+        doc = Document(output_file="other.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
@@ -147,7 +147,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        doc = {'output': "narration.html"}
+        doc = Document(output_file="narration.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
@@ -158,7 +158,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertDictEqual({"link": "narration.html", "title": "Narration", "current": True,
                               "external": False, "first": False, "last": True}, pages[2])
 
-        doc = {'output': "other1.html"}
+        doc = Document(output_file="other1.html")
         page_flow = plugin.variables(doc)["other_links"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
@@ -182,7 +182,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        doc = {'output': "other.html"}
+        doc = Document(output_file="other.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(3, len(pages))
@@ -213,7 +213,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        doc = {'output': "index.html"}
+        doc = Document(output_file="index.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
@@ -251,7 +251,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                 _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
                 plugin = _find_single_plugin(plugins.values())
 
-                doc = {'output': "page1.html"}
+                doc = Document(output_file="page1.html")
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
                 self.assertTrue(page_flow.not_empty)
@@ -263,7 +263,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                     {"link": "page2.html", "title": "Title2", "current": False,
                      "external": False}, {k: page_flow.next[k] for k in projection})
                 
-                doc = {'output': "page2.html"}
+                doc = Document(output_file="page2.html")
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
                 self.assertTrue(page_flow.not_empty)
@@ -277,7 +277,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                     {"link": "page3.html", "title": "Title3", "current": False,
                      "external": False}, {k: page_flow.next[k] for k in projection})
      
-                doc = {'output': "page3.html"}
+                doc = Document(output_file="page3.html")
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
                 self.assertTrue(page_flow.not_empty)
@@ -309,7 +309,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                     plugin = _find_single_plugin(plugins.values())
 
                     for i in range(1, page_count + 1):
-                        doc = {'output': f"page{i}.html"}
+                        doc = Document(output_file=f"page{i}.html")
                         page_flow = plugin.variables(doc)["sections"]
                         self.assertEqual(page_count > 1, page_flow.has_navigation)
                         self.assertTrue(page_flow.not_empty)
@@ -346,7 +346,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(plugins.values())
         
-        doc = {'output': "root1.html"}
+        doc = Document(output_file="root1.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual("root1.html", pages[0]["link"])
@@ -354,7 +354,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertEqual("doc/sub1.html", pages[2]["link"])
         self.assertEqual("doc/ch01/sub-sub-1.html", pages[4]["link"])
 
-        doc = {'output': "doc/sub1.html"}
+        doc = Document(output_file="doc/sub1.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual("../root1.html", pages[0]["link"])
@@ -362,7 +362,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertEqual("sub2.html", pages[3]["link"])
         self.assertEqual("ch01/sub-sub-1.html", pages[4]["link"])
         
-        doc = {'output': "doc/ch01/sub-sub-1"}
+        doc = Document(output_file="doc/ch01/sub-sub-1")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
         self.assertEqual("../../root1.html", pages[0]["link"])

@@ -3,7 +3,7 @@ import sys
 import unittest
 from pathlib import Path
 
-from argument_file_utils import enrich_document
+from argument_file_utils import _enrich_document
 
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
@@ -56,16 +56,15 @@ class CliArgParseTest(unittest.TestCase):
         md2html_args = parse_cli_arguments(['-i', '../doc/notes.md'])
         args, _ = parse_argument_file({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
-        enrich_document(doc)
-        self.assertEqual('../doc/notes.md', doc['input'])
-        self.assertEqual('../doc/notes.html', doc['output'])
-        self.assertFalse(doc['title'])
+        self.assertEqual('../doc/notes.md', doc.input_file)
+        self.assertEqual('../doc/notes.html', doc.output_file)
+        self.assertFalse(doc.title)
         # Template path depends on the environment and is not checked here.
-        self.assertFalse(doc['link-css'])
-        self.assertTrue(doc['include-css'])
-        self.assertFalse(doc['force'])
-        self.assertFalse(doc['verbose'])
-        self.assertFalse(doc['report'])
+        self.assertFalse(doc.link_css)
+        self.assertTrue(doc.include_css)
+        self.assertFalse(doc.force)
+        self.assertFalse(doc.verbose)
+        self.assertFalse(doc.report)
 
     def test_maxArguments(self):
         # Short form
@@ -120,9 +119,8 @@ class CliArgParseTest(unittest.TestCase):
         md2html_args = parse_cli_arguments(['-i', 'input.md'])
         args, _ = parse_argument_file({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
-        enrich_document(doc)
-        self.assertFalse(doc['link-css'])
-        self.assertEqual(1, len(doc['include-css']))
+        self.assertFalse(doc.link_css)
+        self.assertEqual(1, len(doc.include_css))
 
     def test_noCss(self):
         md2html_args = parse_cli_arguments(['-i', 'input.md', '--no-css'])

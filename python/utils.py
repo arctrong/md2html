@@ -56,7 +56,7 @@ def relativize_relative_resource(resource, page):
     a picture, a CSS file etc.). So the both arguments cannot be empty or end with a '/'.
 
     The method considers the both arguments being relative to the same location. It returns the
-    relative location that being applied on the HTML page `page` will resolve to `path`.
+    relative location that being applied on the HTML page `page` will resolve to `resource`.
 
     ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
     """

@@ -3,6 +3,7 @@ from abc import ABC
 
 from jsonschema import validate, ValidationError
 
+from models import Document
 from cli_arguments_utils import CliArgDataObject
 from utils import UserError, reduce_json_validation_error_message
 
@@ -31,6 +32,9 @@ class Md2HtmlPlugin(ABC):
         """
         Accepts plugin configuration data. Plugin may be asked to accept data several times.
         """
+
+        # TODO Probably there's no need for calling this method several times.
+        #  See `post_initialize`.
         pass
 
     def is_blank(self) -> bool:
@@ -44,6 +48,15 @@ class Md2HtmlPlugin(ABC):
         """
         This method is going to be called before the documents processing.
         """
+
+        # TODO Must return additional info for other plugins
+
+        pass
+
+    def post_initialize(self):
+
+        # TODO This method can be called after all plugins are completely initialized
+
         pass
 
     def page_metadata_handlers(self) -> list:
@@ -57,7 +70,8 @@ class Md2HtmlPlugin(ABC):
         """
         return []
 
-    def accept_page_metadata(self, doc: dict, marker: str, metadata, metadata_section) -> str:
+    def accept_page_metadata(self, doc: Document, marker: str, metadata,
+                             metadata_section) -> str:
         """
         Accepts document `doc` where the `metadata` was found, the metadata marker, the
         `metadata` itself (as a string) and the whole section `metadata_section` from
@@ -67,10 +81,10 @@ class Md2HtmlPlugin(ABC):
         """
         return metadata_section
 
-    def variables(self, doc: dict) -> dict:
+    def variables(self, doc: Document) -> dict:
         return {}
 
-    def new_page(self, doc: dict):
+    def new_page(self, doc: Document):
         """
         Reacts on a new page. May be used to reset the plugins state (or a part of the plugin
         state) when a new page comes into processing.
@@ -79,6 +93,6 @@ class Md2HtmlPlugin(ABC):
 
     def finalize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
         """
-        Executes after all page processed.
+        Executes after all pages processed.
         """
         pass

@@ -33,15 +33,15 @@ class ArgFileParseTest(unittest.TestCase):
             '"force": true, "verbose": true}, "documents": [{}]}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         doc = arguments.documents[0]
-        self.assertEqual('doc_src/index.txt', doc["input"])
-        self.assertEqual('doc/index.html', doc["output"])
-        self.assertEqual('some title', doc["title"])
-        self.assertEqual('path/templates/custom.html', doc["template"])
-        self.assertFalse(doc["no-css"])
-        self.assertListEqual(["link1.css", "link2.css"], doc["link-css"])
-        self.assertListEqual(["include.css"], doc["include-css"])
-        self.assertTrue(doc["force"])
-        self.assertTrue(doc["verbose"])
+        self.assertEqual('doc_src/index.txt', doc.input_file)
+        self.assertEqual('doc/index.html', doc.output_file)
+        self.assertEqual('some title', doc.title)
+        self.assertEqual('path/templates/custom.html', doc.template)
+        self.assertFalse(doc.no_css)
+        self.assertListEqual(["link1.css", "link2.css"], doc.link_css)
+        self.assertListEqual(["include.css"], doc.include_css)
+        self.assertTrue(doc.force)
+        self.assertTrue(doc.verbose)
 
     def test_noDocumentsElement_NegativeScenario(self):
         with self.assertRaises(UserError) as cm:
@@ -72,8 +72,8 @@ class ArgFileParseTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         doc = arguments.documents[0]
-        self.assertEqual('index.txt', doc["input"])
-        self.assertTrue('index.html' in doc["output"])
+        self.assertEqual('index.txt', doc.input_file)
+        self.assertTrue('index.html' in doc.output_file)
 
     def test_severalDocuments_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
@@ -81,13 +81,13 @@ class ArgFileParseTest(unittest.TestCase):
             '"default": {"template": "common_template.html"}}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         doc = arguments.documents[0]
-        self.assertEqual('index.txt', doc["input"])
-        self.assertEqual('common_template.html', doc["template"])
-        self.assertTrue('index.html' in doc["output"])
+        self.assertEqual('index.txt', doc.input_file)
+        self.assertEqual('common_template.html', doc.template)
+        self.assertTrue('index.html' in doc.output_file)
         doc = arguments.documents[1]
-        self.assertEqual('about.txt', doc["input"])
-        self.assertEqual('common_template.html', doc["template"])
-        self.assertTrue('about.html' in doc["output"])
+        self.assertEqual('about.txt', doc.input_file)
+        self.assertEqual('common_template.html', doc.template)
+        self.assertTrue('about.html' in doc.output_file)
 
     def test_fullDocument_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
@@ -100,17 +100,17 @@ class ArgFileParseTest(unittest.TestCase):
             '"force": true, "verbose": true}]}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         doc = arguments.documents[0]
-        self.assertEqual('doc_src/index.txt', doc["input"])
-        self.assertEqual('doc/index.html', doc["output"])
-        self.assertEqual('some title', doc["title"])
-        self.assertEqual('path/templates/custom.html', doc["template"])
-        self.assertFalse(doc["no-css"])
-        self.assertEqual('some title', doc["title"])
-        self.assertListEqual(["link1.css", "link2.css", "add_link.css"], doc["link-css"])
+        self.assertEqual('doc_src/index.txt', doc.input_file)
+        self.assertEqual('doc/index.html', doc.output_file)
+        self.assertEqual('some title', doc.title)
+        self.assertEqual('path/templates/custom.html', doc.template)
+        self.assertFalse(doc.no_css)
+        self.assertEqual('some title', doc.title)
+        self.assertListEqual(["link1.css", "link2.css", "add_link.css"], doc.link_css)
         self.assertListEqual(["include.css", "add_include1.css", "add_include1.css"],
-                             doc["include-css"])
-        self.assertTrue(doc["force"])
-        self.assertTrue(doc["verbose"])
+                             doc.include_css)
+        self.assertTrue(doc.force)
+        self.assertTrue(doc.verbose)
 
     def test_documentsElementNoInputFile_NegativeScenario(self):
         with self.assertRaises(UserError) as cm:
@@ -156,22 +156,22 @@ class ArgFileParseTest(unittest.TestCase):
             "--force", "--verbose"])
         arguments, _ = parse_argument_file(argument_file_dict, cli_args)
         doc = arguments.documents[0]
-        self.assertEqual('cli_doc_src/cli_index.txt', doc["input"])
-        self.assertEqual('cli_doc/cli_index.html', doc["output"])
-        self.assertEqual('cli_title', doc["title"])
-        self.assertEqual(Path('cli/custom.html'), doc["template"])
-        self.assertFalse(doc["no-css"])
-        self.assertListEqual(["cli_link1.css", "cli_link2.css"], doc["link-css"])
-        self.assertListEqual(["cli_include1.css", "cli_include2.css"], doc["include-css"])
-        self.assertTrue(doc["force"])
-        self.assertTrue(doc["verbose"])
+        self.assertEqual('cli_doc_src/cli_index.txt', doc.input_file)
+        self.assertEqual('cli_doc/cli_index.html', doc.output_file)
+        self.assertEqual('cli_title', doc.title)
+        self.assertEqual(Path('cli/custom.html'), doc.template)
+        self.assertFalse(doc.no_css)
+        self.assertListEqual(["cli_link1.css", "cli_link2.css"], doc.link_css)
+        self.assertListEqual(["cli_include1.css", "cli_include2.css"], doc.include_css)
+        self.assertTrue(doc.force)
+        self.assertTrue(doc.verbose)
 
     def test_defaultOptions_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         options = arguments.options
-        self.assertFalse(options["verbose"])
-        self.assertFalse(options["legacy-mode"])
+        self.assertFalse(options.verbose)
+        self.assertFalse(options.legacy_mode)
 
     def test_fullOptions_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
@@ -179,8 +179,8 @@ class ArgFileParseTest(unittest.TestCase):
             '"documents": [{"input": "index.txt"}]}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         options = arguments.options
-        self.assertTrue(options["verbose"])
-        self.assertTrue(options["legacy-mode"])
+        self.assertTrue(options.verbose)
+        self.assertTrue(options.legacy_mode)
 
     def test_noPlugins_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
@@ -209,14 +209,14 @@ class ArgFileParseTest(unittest.TestCase):
             ']}')
         arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
         doc = arguments.documents[0]
-        self.assertEqual('doc_src/txt/index.txt', doc["input"])
-        self.assertTrue('doc/html/index.html' in doc["output"])
+        self.assertEqual('doc_src/txt/index.txt', doc.input_file)
+        self.assertTrue('doc/html/index.html' in doc.output_file)
         doc = arguments.documents[1]
-        self.assertEqual('index.txt', doc["input"])
-        self.assertTrue('doc/html/index.html' in doc["output"])
+        self.assertEqual('index.txt', doc.input_file)
+        self.assertTrue('doc/html/index.html' in doc.output_file)
         doc = arguments.documents[2]
-        self.assertEqual('doc_src/txt/index.txt', doc["input"])
-        self.assertTrue('index.html' in doc["output"])
+        self.assertEqual('doc_src/txt/index.txt', doc.input_file)
+        self.assertTrue('index.html' in doc.output_file)
 
 
 if __name__ == '__main__':
