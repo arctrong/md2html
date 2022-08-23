@@ -1,20 +1,17 @@
 import json
-from datetime import datetime
 from html import escape
 from io import StringIO
 from json import JSONDecodeError
 from pathlib import Path
 
-import chevron
 from jsonschema import validate, ValidationError
 
 from argument_file_utils import complete_argument_file_processing, merge_and_canonize_argument_file
-from models import Document
 from cli_arguments_utils import CliArgDataObject
-from constants import EXEC_NAME, EXEC_VERSION
+from output_utils import output_page
+from models import Document, Options
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
-from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource, \
-    read_lines_from_cached_file, read_lines_from_file
+from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -93,6 +90,7 @@ class IndexPlugin(Md2HtmlPlugin):
         self.current_anchor_number = 0
         self.index_cache = {}
         self.cached_page_resets = set()
+        self.finalization_started = False
 
     def accept_data(self, data):
         validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
@@ -159,59 +157,31 @@ class IndexPlugin(Md2HtmlPlugin):
         return anchor_text
 
     def new_page(self, doc: Document):
+        if self.finalization_started:
+            return
+
         self.index_cache[doc.output_file] = []
         self.cached_page_resets.add(doc.output_file)
         self.current_link_page = relativize_relative_resource(doc.output_file,
                                                               self.document.output_file)
         self.current_anchor_number = 0
 
-    def finalize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: dict):
+    def finalize(self, plugins: dict, options: Options):
+        self.finalization_started = True
 
         if not self.cached_page_resets:
             if self.document.verbose:
                 print(f'Index file is up-to-date. Skipping: {self.document.output_file}')
             return
 
-        current_time = datetime.today()
-        substitutions = {'title': self.document.title,
-                         'exec_name': EXEC_NAME, 'exec_version': EXEC_VERSION,
-                         'generation_date': current_time.strftime('%Y-%m-%d'),
-                         'generation_time': current_time.strftime('%H:%M:%S')}
-
-        styles = []
-        if self.document.link_css:
-            styles.extend([f'<link rel="stylesheet" type="text/css" href="{item}">'
-                           for item in self.document.link_css])
-        if self.document.include_css:
-            styles.extend(['<style>\n' + read_lines_from_file(item) + '\n</style>'
-                           for item in self.document.include_css])
-        substitutions['styles'] = '\n'.join(styles) if styles else ''
-
         for plugin in plugins.values():
-            if plugin is not self:
-                plugin.new_page(self.document)
-            substitutions.update(plugin.variables(self.document))
+            plugin.new_page(self.document)
 
-        substitutions['content'] = _generate_content(self.index_cache, self.add_letters,
-                                                     self.add_letters_block)
+        substitutions = {'content': _generate_content(self.index_cache, self.add_letters,
+                                                      self.add_letters_block)}
 
-        if substitutions['title'] is None:
-            substitutions['title'] = ''
-
-        template = read_lines_from_cached_file(self.document.template)
-
-        try:
-            result = chevron.render(template, substitutions)
-        except chevron.ChevronError as e:
-            raise UserError(f"Error processing template: {type(e).__name__}: {e}")
-
-        with open(self.document.output_file, 'w') as result_file:
-            result_file.write(result)
+        output_page(self.document, plugins, substitutions, options)
 
         with open(self.index_cache_file, 'w') as cache_file:
             json.dump(self.index_cache, cache_file, indent=2)
 
-        if self.document.verbose:
-            print(f'Index file generated: {self.document.output_file}')
-        if self.document.report:
-            print(self.document.output_file)

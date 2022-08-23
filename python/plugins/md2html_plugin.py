@@ -3,7 +3,7 @@ from abc import ABC
 
 from jsonschema import validate, ValidationError
 
-from models import Document
+from models import Document, Options
 from cli_arguments_utils import CliArgDataObject
 from utils import UserError, reduce_json_validation_error_message
 
@@ -91,7 +91,7 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def finalize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
+    def finalize(self, plugins: dict, options: Options):
         """
         Executes after all pages processed.
         """

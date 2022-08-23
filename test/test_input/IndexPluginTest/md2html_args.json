@@ -5,7 +5,7 @@
     "default": {
         "template": "test_input/IndexPluginTest/template.html",
         "verbose": false,
-        "link-css": ["../../../../doc/styles.css"]
+        "link-css": ["../doc/styles.css"]
     },
     "documents": [
         { "input": "page1.txt", "title": "Page 1" },

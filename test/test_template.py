@@ -88,12 +88,15 @@ class Md2htmlTemplateIntegralTest(unittest.TestCase):
                           
         pattern = re.compile('\d')
         paragraphs = root.body.find_all('p')
-        self.assertEqual(5, len(paragraphs))
+        self.assertEqual(6, len(paragraphs))
         self.assertEqual('Generator name: md2html_', paragraphs[0].text[0:24])
         self.assertEqual('Generator version: X.X.X', pattern.sub('X', paragraphs[1].text))
         self.assertEqual('Generation date: XXXX-XX-XX', pattern.sub('X', paragraphs[2].text))
         self.assertEqual('Generation time: XX:XX:XX', pattern.sub('X', paragraphs[3].text))
         self.assertEqual('Custom value: test custom value', paragraphs[4].text)
+        self.assertEqual('Source file: ', paragraphs[5].contents[0])
+        self.assertEqual('../../../test_input/placeholders_test.txt', paragraphs[5].a['href'])
+        self.assertEqual('click to open', paragraphs[5].a.text)
 
 
 if __name__ == '__main__':

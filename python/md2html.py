@@ -1,48 +1,30 @@
 import os
-import re
 import sys
 import time
-from datetime import datetime
 from datetime import timedelta
 from pathlib import Path
 
-import chevron
 import markdown
 
+from output_utils import output_page
 from plugins_utils import process_plugins, filter_non_blank_plugins
 from argument_file_utils import load_json_argument_file, complete_argument_file_processing, \
     merge_and_canonize_argument_file
 from models import Arguments
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
-from constants import EXEC_NAME, EXEC_VERSION
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
-from utils import UserError, read_lines_from_file, \
-    read_lines_from_commented_json_file, read_lines_from_cached_file, relativize_relative_resource
+from utils import UserError, read_lines_from_commented_json_file, read_lines_from_cached_file, \
+    relativize_relative_resource
 
 WORKING_DIR = Path(__file__).resolve().parent
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
                                          "pymdownx.superfences", "admonition"])
 
-LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${([^}]+)}')
-LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${(styles|content)}')
-
-CACHED_FILES = {}
-
-
-def read_lines_from_cached_file_legacy(template_file):
-    lines = CACHED_FILES.get(template_file)
-    if lines is None:
-        lines = read_lines_from_file(template_file)
-        lines = re.sub(LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN, r'\1{{{\2}}}', lines)
-        lines = re.sub(LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN, r'\1{{\2}}', lines)
-        CACHED_FILES[template_file] = lines
-    return lines
-
 
 def md2html(document, plugins, metadata_handlers, options):
+
     input_path = Path(document.input_file)
     output_path = Path(document.output_file)
-
     if not document.force and output_path.exists():
         output_file_mtime = os.path.getmtime(output_path)
         input_file_mtime = os.path.getmtime(input_path)
@@ -51,60 +33,16 @@ def md2html(document, plugins, metadata_handlers, options):
                 print(f'The output file is up-to-date. Skipping: {document.output_file}')
             return
 
-    current_time = datetime.today()
-    substitutions = {'title': document.title,
-                     'exec_name': EXEC_NAME, 'exec_version': EXEC_VERSION,
-                     'generation_date': current_time.strftime('%Y-%m-%d'),
-                     'generation_time': current_time.strftime('%H:%M:%S')}
-    styles = []
-    if document.link_css:
-        # TODO Consider applying HTML encoding to the `href` value
-        styles.extend([f'<link rel="stylesheet" type="text/css" '
-                       f'href="{relativize_relative_resource(css, document.output_file)}">'
-                       for css in document.link_css])
-    if document.include_css:
-        styles.extend(['<style>\n' + read_lines_from_file(css) + '\n</style>'
-                       for css in document.include_css])
-    substitutions['styles'] = '\n'.join(styles) if styles else ''
-
-    md_lines = read_lines_from_cached_file(document.input_file)
     for plugin in plugins.values():
         plugin.new_page(document)
+
+    md_lines = read_lines_from_cached_file(document.input_file)
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
+    substitutions = {'content': MARKDOWN.convert(source=md_lines),
+                     'source_file': relativize_relative_resource(document.input_file,
+                                                                 document.output_file)}
 
-    substitutions['content'] = MARKDOWN.convert(source=md_lines)
-
-    for plugin in plugins.values():
-        substitutions.update(plugin.variables(document))
-
-    if options.legacy_mode:
-        placeholders = substitutions.get('placeholders')
-        if placeholders is not None:
-            del substitutions['placeholders']
-            substitutions.update(placeholders)
-        template = read_lines_from_cached_file_legacy(document.template)
-    else:
-        template = read_lines_from_cached_file(document.template)
-
-    if substitutions['title'] is None:
-        substitutions['title'] = ''
-
-    try:
-        result = chevron.render(template, substitutions)
-    except chevron.ChevronError as e:
-        raise UserError(f"Error processing template: {type(e).__name__}: {e}")
-
-    output_dir_path = output_path.resolve().parent
-    if not output_dir_path.exists():
-        os.makedirs(output_dir_path)
-
-    with open(output_path, 'w') as result_file:
-        result_file.write(result)
-
-    if document.verbose:
-        print(f'Output file generated: {document.output_file}')
-    if document.report:
-        print(document.output_file)
+    output_page(document, plugins, substitutions, options)
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> (Arguments, dict):
@@ -113,8 +51,6 @@ def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) ->
     plugins = process_plugins(canonized_argument_file['plugins'])
     arguments, document_plugins_items = complete_argument_file_processing(
         canonized_argument_file, plugins)
-
-
 
     # TODO Consider moving this logic inside `complete_argument_file_processing`
     for plugin_name, plugin_data in document_plugins_items.items():
@@ -177,7 +113,7 @@ def main():
 
         for plugin in plugins.values():
             try:
-                plugin.finalize(argument_file_dict, cli_args, plugins)
+                plugin.finalize(plugins, arguments.options)
             except UserError as e:
                 raise UserError(f"Error in after-all-pages-processed action: "
                                 f"{type(e).__name__}: {e}")
