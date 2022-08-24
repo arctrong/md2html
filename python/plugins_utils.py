@@ -18,7 +18,7 @@ PLUGIN_PROVIDERS = {
 }
 
 
-def process_plugins(plugins_item) -> dict:
+def instantiate_plugins(plugins_item) -> dict:
     plugins = {}
     for k, v in plugins_item.items():
         plugin = PLUGIN_PROVIDERS.get(k)()
@@ -37,3 +37,23 @@ def filter_non_blank_plugins(plugins: Dict[str, Md2HtmlPlugin]) -> Dict[str, Md2
         if not v.is_blank():
             non_blank_plugins[k] = v
     return non_blank_plugins
+
+
+def add_extra_plugin_data(extra_plugin_data, plugins):
+    for plugin_name, plugin_data in extra_plugin_data.items():
+        plugin = plugins.get(plugin_name)
+        if plugin is not None:
+            plugin.accept_data(plugin_data)
+
+
+def complete_plugins_initialization(argument_file_dict, cli_args, plugins):
+    extra_plugin_data_dict = {}
+    for plugin in plugins.values():
+        extra_plugin_data = plugin.initialize(argument_file_dict, cli_args, plugins)
+        for k, v in extra_plugin_data.items():
+            data_for_plugin = extra_plugin_data_dict.setdefault(k, [])
+            data_for_plugin.append(v)
+    for name, plugin in plugins.items():
+        data_for_plugin = extra_plugin_data_dict.get(name, [None])
+        for data in data_for_plugin:
+            plugin.post_initialize(data)

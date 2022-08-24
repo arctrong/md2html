@@ -8,12 +8,13 @@
         "link-css": ["../doc/styles.css"]
     },
     "documents": [
-        { "input": "page1.txt", "title": "Page 1" },
-        { "input": "page2.txt", "title": "Page 2" }
+        { "input": "page1.txt", "title": "Page 1", "page-flows": ["page_flow_1"] },
+        { "input": "page2.txt", "title": "Page 2", "page-flows": ["page_flow_1"] }
     ],
     "plugins": {
-       "variables": {"custom_variable_1": "custom value 1" },
-        "index": {"output": "index_page.html", "title": "Index",
-            "index-cache": "index_cache.json", "index-cache-relative": true }
+        "page-flows": {},
+        "variables": {"custom_variable_1": "custom value 1" },
+        "index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json",
+            "index-cache-relative": true, "page-flows": ["page_flow_1"] }
     }
 }

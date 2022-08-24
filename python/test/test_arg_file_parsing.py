@@ -185,7 +185,7 @@ class ArgFileParseTest(unittest.TestCase):
     def test_noPlugins_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugins = process_plugins(argument_file_dict['plugins'])
+        plugins = instantiate_plugins(argument_file_dict['plugins'])
         self.assertEqual({}, plugins)
 
     def test_allPlugins_PositiveScenario(self):

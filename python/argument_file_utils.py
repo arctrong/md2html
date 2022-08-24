@@ -37,7 +37,7 @@ def load_json_argument_file(argument_file_string) -> dict:
 # TODO Consider renaming this method
 def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> dict:
     """
-    Makes changes to the argument file to bring it to a more canonical form:
+    Brings the argument file to a more canonical form:
 
     - merges arguments from the command line into the argument file;
     - applies the arguments from the default section to the documents;
@@ -48,6 +48,8 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
 
     This method works only with the argument file's content and doesn't use the context.
     So it, for example, doesn't resolve the GLOBs as it would need to read the file system.
+
+    This method does not instantiate plugins.
     """
 
     options = argument_file_dict.get('options', {})
@@ -213,9 +215,6 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
 
 
 def expand_document_globs(documents_item, plugins) -> list:
-    """
-    Expands the GLOBs, reads the necessary metadata, and resolves some overriding properties.
-    """
     expanded_documents_item = []
     for document_item in documents_item:
         input_file_glob = document_item.get("input-glob")
@@ -243,14 +242,14 @@ def expand_document_globs(documents_item, plugins) -> list:
                 if title_from_variable or sort_by_variable:
                     page_variables_plugin = plugins.get("page-variables")
                     if page_variables_plugin:
-                        page_variables_plugin.new_page({})
+                        page_variables_plugin.new_page(None)
                         metadata_handlers = register_page_metadata_handlers(
                             {"page-variables": page_variables_plugin})
                         input_file_string = read_lines_from_cached_file(
                             str(Path(input_root).joinpath(file)))
                         apply_metadata_handlers(input_file_string, metadata_handlers,
                                                 glob_document_item, extract_only=True)
-                        page_variables = page_variables_plugin.variables({})
+                        page_variables = page_variables_plugin.variables(None)
                         if title_from_variable:
                             title = page_variables.get(title_from_variable)
                             if title:
@@ -272,14 +271,21 @@ def expand_document_globs(documents_item, plugins) -> list:
     return expanded_documents_item
 
 
-def complete_argument_file_processing(canonized_argument_file: dict, plugins) -> (Arguments, dict):
+def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Arguments, dict):
+    """
+    Returns a tuple:
 
+    - Arguments data object without plugins;
+    - Definitions of the plugins that are defined outside the `plugins` section.
+
+    This method does not instantiate plugins.
+    """
     options_item = canonized_argument_file['options']
     options = Options(verbose=options_item['verbose'],
                       legacy_mode=options_item['legacy-mode'])
 
     documents_page_flows_plugin = {}
-    document_plugins_items = {"page-flows": documents_page_flows_plugin}
+    extra_plugin_items = {"page-flows": documents_page_flows_plugin}
 
     documents_item = expand_document_globs(canonized_argument_file['documents'], plugins)
     documents = []
@@ -308,7 +314,7 @@ def complete_argument_file_processing(canonized_argument_file: dict, plugins) ->
                                    )
         documents.append(document_object)
 
-    return Arguments(options, documents), document_plugins_items
+    return Arguments(options, documents), extra_plugin_items
 
 
 def _enrich_document(document):

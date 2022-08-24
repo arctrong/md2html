@@ -3,10 +3,11 @@ from html import escape
 from io import StringIO
 from json import JSONDecodeError
 from pathlib import Path
+from typing import Any
 
 from jsonschema import validate, ValidationError
 
-from argument_file_utils import complete_argument_file_processing, merge_and_canonize_argument_file
+from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
 from cli_arguments_utils import CliArgDataObject
 from output_utils import output_page
 from models import Document, Options
@@ -75,6 +76,7 @@ def _generate_content(index_cache, add_letters, add_letters_block) -> str:
 class IndexPlugin(Md2HtmlPlugin):
 
     def __init__(self):
+        super().__init__()
         with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r') as schema_file:
             self.metadata_schema = json.load(schema_file)
 
@@ -93,26 +95,32 @@ class IndexPlugin(Md2HtmlPlugin):
         self.finalization_started = False
 
     def accept_data(self, data):
+        self.assure_accept_data_once()
+
         validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
+
         self.document_dict = {k: v for k, v in data.items()}
-        self.index_cache_file = data["index-cache"]
-        self.index_cache_relative = data.get("index-cache-relative", self.index_cache_relative)
-        self.add_letters = data.get("letters", self.add_letters)
-        self.add_letters_block = data.get("letters-block", self.add_letters_block)
         self.document_dict.pop('index-cache', None)
         self.document_dict.pop('index-cache-relative', None)
         self.document_dict.pop('letters', None)
         self.document_dict.pop('letters-block', None)
 
+        self.index_cache_file = data["index-cache"]
+        self.index_cache_relative = data.get("index-cache-relative", self.index_cache_relative)
+        self.add_letters = data.get("letters", self.add_letters)
+        self.add_letters_block = data.get("letters-block", self.add_letters_block)
+
     def is_blank(self) -> bool:
         return False
 
-    def initialize(self, argument_file: dict, cli_args: CliArgDataObject, plugins: list):
+    def initialize(self, argument_file: dict, cli_args: CliArgDataObject,
+                   plugins: list) -> dict[str, Any]:
         argument_file = argument_file.copy()
         self.document_dict["input"] = "fictional.txt"
         argument_file['documents'] = [self.document_dict]
         canonized_argument_file = merge_and_canonize_argument_file(argument_file, cli_args)
-        arguments, _ = complete_argument_file_processing(canonized_argument_file, plugins)
+        arguments, extra_plugin_data = complete_arguments_processing(canonized_argument_file,
+                                                                     plugins)
         self.document = arguments.documents[0]
         self.document.input_file = None
 
@@ -126,7 +134,10 @@ class IndexPlugin(Md2HtmlPlugin):
         else:
             self.index_cache = {}
 
+        return extra_plugin_data
+
     def page_metadata_handlers(self):
+        # TODO Add several indexes
         return [(self, "INDEX", False)]
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,

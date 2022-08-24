@@ -2,11 +2,20 @@
 <html><head><title>{{title}}</title>
 <meta charset="utf-8">
 {{{styles}}}
+<style>
+.toc {margin: 5px; padding: 5px; border: solid blue 1px; font-size: smaller;}
+</style>
 </head>
 <body>
 {{{content}}}
 
 <p>Generator name: {{exec_name}}</p>
 <p>Custom variable: {{custom_variable_1}}</p>
+
+<div class="toc">
+{{#page_flow_1}}<a href="{{link}}">{{title}}</a><br />
+{{/page_flow_1}}
+</div>
+
 </body>
 </html>

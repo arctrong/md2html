@@ -1,12 +1,10 @@
 class Options:
-
     def __init__(self, verbose=False, legacy_mode=False):
         self.verbose = verbose
         self.legacy_mode = legacy_mode
 
 
 class Document:
-
     def __init__(self, input_file=None, output_file=None, title=None, template=None, link_css=None,
                  include_css=None, no_css=None, force=None, verbose=None, report=None):
         self.input_file = input_file

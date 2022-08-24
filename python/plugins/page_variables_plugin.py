@@ -13,10 +13,12 @@ MODULE_DIR = Path(__file__).resolve().parent
 
 class PageVariablesPlugin(Md2HtmlPlugin):
     def __init__(self):
+        super().__init__()
         self.data = {}
         self.page_metadata_handler = PageVariablesCollectingMetadataHandler()
 
     def accept_data(self, data):
+        self.assure_accept_data_once()
         validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
         if data:
             self.data.update({k.upper(): v for k, v in data.items()})

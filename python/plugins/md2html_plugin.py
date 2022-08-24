@@ -1,5 +1,6 @@
 import json
 from abc import ABC
+from typing import Any
 
 from jsonschema import validate, ValidationError
 
@@ -28,13 +29,13 @@ def validate_data_with_schema(data, schema):
 
 class Md2HtmlPlugin(ABC):
 
+    def __init__(self):
+        self.data_accepted = False
+
     def accept_data(self, data):
         """
-        Accepts plugin configuration data. Plugin may be asked to accept data several times.
+        Accepts plugin configuration data. Some plugins may be able to accept data several times.
         """
-
-        # TODO Probably there's no need for calling this method several times.
-        #  See `post_initialize`.
         pass
 
     def is_blank(self) -> bool:
@@ -44,19 +45,17 @@ class Md2HtmlPlugin(ABC):
         """
         return True
 
-    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
+    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
+                   plugins: dict) -> dict[str, Any]:
         """
         This method is going to be called before the documents processing.
         """
+        return {}
 
-        # TODO Must return additional info for other plugins
-
-        pass
-
-    def post_initialize(self):
-
-        # TODO This method can be called after all plugins are completely initialized
-
+    def post_initialize(self, extra_plugin_data):
+        """
+        This method will be called after all plugins are `initialized`.
+        """
         pass
 
     def page_metadata_handlers(self) -> list:
@@ -96,3 +95,8 @@ class Md2HtmlPlugin(ABC):
         Executes after all pages processed.
         """
         pass
+
+    def assure_accept_data_once(self):
+        if self.data_accepted:
+            raise Exception("Trying to accept data again.")
+        self.data_accepted = True

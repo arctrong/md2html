@@ -1,6 +1,7 @@
 import json
 from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 
 from models import Document
 from cli_arguments_utils import CliArgDataObject
@@ -59,7 +60,10 @@ def process_page_flow(page_flow, output_file):
 
 
 class PageFlowsPlugin(Md2HtmlPlugin):
+
     def __init__(self):
+        super().__init__()
+        self.post_initialize_done = False
         self.raw_data: dict = {}
         self.data: dict = {}
         with open(MODULE_DIR.joinpath('page_flows_schema.json'), 'r') as schema_file:
@@ -82,14 +86,25 @@ class PageFlowsPlugin(Md2HtmlPlugin):
                 new_items.append(item)
             self.raw_data[k] = new_items
 
-    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject, plugins: dict):
+    def add_to_end(self, data):
+        if data is None:
+            return
+        for k, v in data.items():
+            page_flow_items = self.raw_data.setdefault(k, [])
+            for item in v:
+                page_flow_items.append(item)
+
+    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
+                   plugins: dict) -> dict[str, Any]:
+        return {}
+
+    def initialize_data(self):
         result = {}
         for k, v in self.raw_data.items():
             page_flow_items = []
             new_page = {}
             is_first = True
             for item in v:
-
                 # TODO Consider letting other arbitrary fields. Then they might be used in
                 #  the template. This is already done in Java version.
 
@@ -100,10 +115,22 @@ class PageFlowsPlugin(Md2HtmlPlugin):
                 is_first = False
             new_page["last"] = True
             result[k] = page_flow_items
-        self.data = result
+        return result
+
+    def post_initialize(self, extra_plugin_data):
+        self.assure_post_initialize_once()
+        if bool(extra_plugin_data):
+            validate_data_with_schema(extra_plugin_data, self.data_schema)
+            self.add_to_end(extra_plugin_data)
+        self.data = self.initialize_data()
 
     def is_blank(self) -> bool:
         return not bool(self.data)
 
     def variables(self, doc: Document) -> dict:
         return {k: process_page_flow(v, doc.output_file) for k, v in self.data.items()}
+
+    def assure_post_initialize_once(self):
+        if self.post_initialize_done:
+            raise Exception("Trying to post initialize again.")
+        self.post_initialize_done = True

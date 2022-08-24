@@ -7,8 +7,9 @@ from pathlib import Path
 import markdown
 
 from output_utils import output_page
-from plugins_utils import process_plugins, filter_non_blank_plugins
-from argument_file_utils import load_json_argument_file, complete_argument_file_processing, \
+from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_extra_plugin_data, \
+    complete_plugins_initialization
+from argument_file_utils import load_json_argument_file, complete_arguments_processing, \
     merge_and_canonize_argument_file
 from models import Arguments
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
@@ -47,24 +48,15 @@ def md2html(document, plugins, metadata_handlers, options):
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> (Arguments, dict):
 
-    canonized_argument_file = merge_and_canonize_argument_file(argument_file_dict, cli_args)
-    plugins = process_plugins(canonized_argument_file['plugins'])
-    arguments, document_plugins_items = complete_argument_file_processing(
-        canonized_argument_file, plugins)
-
-    # TODO Consider moving this logic inside `complete_argument_file_processing`
-    for plugin_name, plugin_data in document_plugins_items.items():
-        plugin = plugins.get(plugin_name)
-        if plugin is not None:
-            plugin.accept_data(plugin_data)
-
-    for plugin in plugins.values():
-        plugin.initialize(argument_file_dict, cli_args, plugins)
-
-    # Removing "blank" plugins may be done only here because at the earlier steps they
-    # are not completely defined.
+    canonized_arguments_dict = merge_and_canonize_argument_file(argument_file_dict, cli_args)
+    plugins = instantiate_plugins(canonized_arguments_dict['plugins'])
+    # Plugins are not initialized yet, but 'page-variables' plugin will be used in the
+    # following call. Still particularly this plugin is already fully functional.
+    arguments, extra_plugin_data = complete_arguments_processing(
+        canonized_arguments_dict, plugins)
+    add_extra_plugin_data(extra_plugin_data, plugins)
+    complete_plugins_initialization(argument_file_dict, cli_args, plugins)
     plugins = filter_non_blank_plugins(plugins)
-
     return arguments, plugins
 
 

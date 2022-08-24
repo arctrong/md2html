@@ -15,6 +15,18 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         cls.OUTPUT_DIR = h.prepare_output_directory(cls.__name__)
         cls.INPUT_DIR = Path(h.INPUT_DIR).joinpath('IndexPluginTest')
         cls.COMMON_PARAMS = ['--input-root', str(cls.INPUT_DIR), '--output-root', cls.OUTPUT_DIR]
+        
+    def _check_toc(self, root):
+        all_pages_links = root.body.find('div', {"class": 'toc'})
+        link = all_pages_links.a
+        self.assertEqual('page1.html', link['href'])
+        self.assertEqual('Page 1', link.text)
+        link = link.next_sibling.next_sibling.next_sibling
+        self.assertEqual('page2.html', link['href'])
+        self.assertEqual('Page 2', link.text)
+        link = link.next_sibling.next_sibling.next_sibling
+        self.assertEqual('index_page.html', link['href'])
+        self.assertEqual('Index', link.text)        
     
     def test_index_page_generation(self):
 
@@ -126,6 +138,19 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         self.assertIn('Generator name: md2html_', footer.text)
         footer = footer.next_sibling.next_sibling
         self.assertEqual('Custom variable: custom value 1', footer.text)
+        
+        self._check_toc(root)
+                
+        # all_pages_links = root.body.find('div', {"class": 'toc'})
+        # link = all_pages_links.a
+        # self.assertEqual('page1.html', link['href'])
+        # self.assertEqual('Page 1', link.text)
+        # link = link.next_sibling.next_sibling.next_sibling
+        # self.assertEqual('page2.html', link['href'])
+        # self.assertEqual('Page 2', link.text)
+        # link = link.next_sibling.next_sibling.next_sibling
+        # self.assertEqual('index_page.html', link['href'])
+        # self.assertEqual('Index', link.text)
 
         with open(Path(self.OUTPUT_DIR).joinpath('page1.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
@@ -174,6 +199,8 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         descr = descr.next_sibling.next_sibling
         self.assertIn('h multiple entries as text and JSON in different page', descr.string)
 
+        self._check_toc(root)
+
         with open(Path(self.OUTPUT_DIR).joinpath('page2.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
             
@@ -186,6 +213,8 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         self.assertEqual(page2_anchor2, anchor[anchor_attr])
         descr = anchor.next_sibling.next_sibling
         self.assertIn('h multiple entries as text and JSON in different page', descr.string)
+        
+        self._check_toc(root)
 
     def test_partial_generation(self):
 

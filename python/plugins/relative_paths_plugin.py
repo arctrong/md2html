@@ -10,10 +10,12 @@ MODULE_DIR = Path(__file__).resolve().parent
 class RelativePathsPlugin(Md2HtmlPlugin):
 
     def __init__(self):
+        super().__init__()
         # noinspection PyTypeChecker
         self.data: dict = None
 
     def accept_data(self, data):
+        self.assure_accept_data_once()
         validate_data_with_file(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
         self.data = data
 
