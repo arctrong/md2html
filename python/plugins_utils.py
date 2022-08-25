@@ -8,7 +8,6 @@ from plugins.relative_paths_plugin import RelativePathsPlugin
 from plugins.variables_plugin import VariablesPlugin
 from utils import UserError
 
-
 PLUGIN_PROVIDERS = {
     'relative-paths': lambda: RelativePathsPlugin(),
     "page-flows": lambda: PageFlowsPlugin(),
@@ -49,11 +48,11 @@ def add_extra_plugin_data(extra_plugin_data, plugins):
 def complete_plugins_initialization(argument_file_dict, cli_args, plugins):
     extra_plugin_data_dict = {}
     for plugin in plugins.values():
-        extra_plugin_data = plugin.initialize(argument_file_dict, cli_args, plugins)
+        extra_plugin_data = plugin.pre_initialize(argument_file_dict, cli_args, plugins)
         for k, v in extra_plugin_data.items():
             data_for_plugin = extra_plugin_data_dict.setdefault(k, [])
             data_for_plugin.append(v)
     for name, plugin in plugins.items():
         data_for_plugin = extra_plugin_data_dict.get(name, [None])
         for data in data_for_plugin:
-            plugin.post_initialize(data)
+            plugin.initialize(data)

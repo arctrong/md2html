@@ -46,7 +46,6 @@ class PageFlowsPluginTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
         self.assertIsNone(_find_single_plugin(plugins))
 
     def test_pageSequence_inPluginsSection(self):

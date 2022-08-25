@@ -8,7 +8,7 @@
     },
     "documents": [
         { "input": "single_doc.txt", "title": "Single document", "page-flows": ["all_pages"] },
-        { "input-glob": "subdir01/*.txt", "page-flows": ["all_pages", "subdir01"], "title-from-variable": "title", "sort-by-file-name": true },
+        { "input-glob": "subdir01/**/*.txt", "page-flows": ["all_pages", "subdir01"], "title-from-variable": "title", "sort-by-file-name": true },
         { "input-glob": "subdir02/*.txt", "page-flows": ["all_pages", "subdir02"], "title-from-variable": "title", "sort-by-variable": "SORT_ORDER" },
         { "input-glob": "subdir03/*.txt", "page-flows": ["all_pages", "subdir03"], "title-from-variable": "title", "sort-by-title": true }
 

@@ -3,8 +3,8 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
-from models import Document
 from cli_arguments_utils import CliArgDataObject
+from models import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_schema
 from utils import relativize_relative_resource, first_not_none
 
@@ -94,8 +94,8 @@ class PageFlowsPlugin(Md2HtmlPlugin):
             for item in v:
                 page_flow_items.append(item)
 
-    def initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
-                   plugins: dict) -> dict[str, Any]:
+    def pre_initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
+                       plugins: dict) -> dict[str, Any]:
         return {}
 
     def initialize_data(self):
@@ -117,7 +117,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
             result[k] = page_flow_items
         return result
 
-    def post_initialize(self, extra_plugin_data):
+    def initialize(self, extra_plugin_data):
         self.assure_post_initialize_once()
         if bool(extra_plugin_data):
             validate_data_with_schema(extra_plugin_data, self.data_schema)

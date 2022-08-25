@@ -1,0 +1,14 @@
+
+<!--index2 m index2 entry as text -->
+Description of __m index2 entry as text__.
+
+<!--index1 k index1 entry as text -->
+Description of __k index_1 entry as text__.
+Must be sorted properly.
+
+<!--index2 ["f index2 entry JSON"] -->
+Description of __f index2 entry JSON__.
+
+<!--index1 ["d index1 entry as JSON"]-->
+Description of __d index_1 entry as JSON__.
+Must be sorted properly.

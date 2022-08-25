@@ -36,6 +36,9 @@ class Md2htmlGlobIntegralTest(unittest.TestCase):
         self.assertEqual('subdir01/subdir01_page03.html', link['href'])
         self.assertEqual('sort-by-file-name: page03', link.text)
         link = link.next_sibling.next_sibling.next_sibling
+        self.assertEqual('subdir01/recursive/recursive_page01.html', link['href'])
+        self.assertEqual('sort-by-file-name: recursive_page01', link.text)
+        link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir02/subdir02_page03.html', link['href'])
         self.assertEqual('sort-by-variable: page03', link.text)
         link = link.next_sibling.next_sibling.next_sibling
@@ -64,6 +67,9 @@ class Md2htmlGlobIntegralTest(unittest.TestCase):
         link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir01/subdir01_page03.html', link['href'])
         self.assertEqual('sort-by-file-name: page03', link.text)
+        link = link.next_sibling.next_sibling.next_sibling
+        self.assertEqual('subdir01/recursive/recursive_page01.html', link['href'])
+        self.assertEqual('sort-by-file-name: recursive_page01', link.text)
 
         subdir02_links = subdir01_links.next_sibling.next_sibling
         link = subdir02_links.a
@@ -97,6 +103,8 @@ class Md2htmlGlobIntegralTest(unittest.TestCase):
         self.assertEqual('Subdirectory 1, page 2', content.text)
         content = self._read_output_file('subdir01/subdir01_page03.html').p.strong
         self.assertEqual('Subdirectory 1, page 3', content.text)
+        content = self._read_output_file('subdir01/recursive/recursive_page01.html').p.strong
+        self.assertEqual('Subdirectory 1 | recursive | page 1', content.text)
         
         content = self._read_output_file('subdir02/subdir02_page01.html').p.strong
         self.assertEqual('Subdirectory 2, page 1', content.text)
@@ -112,9 +120,18 @@ class Md2htmlGlobIntegralTest(unittest.TestCase):
         content = self._read_output_file('subdir03/subdir03_page03.html').p.strong
         self.assertEqual('Subdirectory 3, page 3', content.text)
 
+    def test_from_command_line(self):
+        h.run_with_parameters(['--input-root', str(self.INPUT_DIR.joinpath('subdir02')), 
+        '--output-root', str(Path(self.OUTPUT_DIR).joinpath('from_command_line')),
+            '-f', '--input-glob', "*.txt", 
+            '--template', str(self.INPUT_DIR.joinpath('template.html'))])
 
-
-
+        content = self._read_output_file('from_command_line/subdir02_page01.html').p.strong
+        self.assertEqual('Subdirectory 2, page 1', content.text)
+        content = self._read_output_file('from_command_line/subdir02_page02.html').p.strong
+        self.assertEqual('Subdirectory 2, page 2', content.text)
+        content = self._read_output_file('from_command_line/subdir02_page03.html').p.strong
+        self.assertEqual('Subdirectory 2, page 3', content.text)
 
 
 if __name__ == '__main__':

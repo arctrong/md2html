@@ -35,8 +35,7 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         with open(Path(self.OUTPUT_DIR).joinpath('index_page.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
             
-        content_div = root.body.div
-        self.assertEqual(['index-content'], content_div['class'])
+        content_div = root.body.find('div', {"class": 'index-content'})
             
         entry_link = content_div.p.a
         self.assertEqual('Page 1', entry_link['title'])
@@ -140,17 +139,6 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         self.assertEqual('Custom variable: custom value 1', footer.text)
         
         self._check_toc(root)
-                
-        # all_pages_links = root.body.find('div', {"class": 'toc'})
-        # link = all_pages_links.a
-        # self.assertEqual('page1.html', link['href'])
-        # self.assertEqual('Page 1', link.text)
-        # link = link.next_sibling.next_sibling.next_sibling
-        # self.assertEqual('page2.html', link['href'])
-        # self.assertEqual('Page 2', link.text)
-        # link = link.next_sibling.next_sibling.next_sibling
-        # self.assertEqual('index_page.html', link['href'])
-        # self.assertEqual('Index', link.text)
 
         with open(Path(self.OUTPUT_DIR).joinpath('page1.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
@@ -237,6 +225,22 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
         self.assertIsNotNone(root.body.find(name='a', string='a single entry as text'))
         self.assertIsNotNone(root.body.find(name='a', 
             string='v entry for testing partial regeneration'))
+
+    def test_several_index_pages(self):
+
+        h.run_with_parameters(self.COMMON_PARAMS + ['-f', '--argument-file', 
+            str(self.INPUT_DIR.joinpath('md2html_args_several.json'))])
+
+        for file_name, substring in [('index_page_1.html', "#index_entry_index1_"), 
+                                     ('index_page_2.html', "#index_entry_index2_")]:
+            with self.subTest(test_name=file_name):
+                with open(Path(self.OUTPUT_DIR).joinpath(file_name)) as html_file:
+                    root = BeautifulSoup(html_file, 'html.parser')
+
+                index_pars = root.body.find('div', {"class": 'index-content'}).findAll('p')
+                self.assertEqual(4, len(index_pars))
+                for p in index_pars:
+                    self.assertTrue(substring in p.a['href'])
 
 
 if __name__ == '__main__':

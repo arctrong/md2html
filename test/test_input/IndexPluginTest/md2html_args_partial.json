@@ -13,8 +13,8 @@
         { "input": "page3.txt", "title": "Page 3" }
     ],
     "plugins": {
-       "variables": {"custom_variable_1": "custom value 1" },
-        "index": {"output": "index_page.html", "title": "Index",
-            "index-cache": "index_cache.json", "index-cache-relative": true }
+        "variables": {"custom_variable_1": "custom value 1" },
+        "index": {"index": {"output": "index_page.html", "title": "Index", 
+            "index-cache": "index_cache.json", "index-cache-relative": true } }
     }
 }

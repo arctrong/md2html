@@ -1,6 +1,7 @@
 import re
 from typing import Iterator, Dict
 
+from models import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
 
 METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
@@ -60,10 +61,9 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
             return
 
 
-def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: dict,
+def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: Document,
                             extract_only=False):
     marker_handlers = page_metadata_handlers.marker_handlers
-    all_only_at_page_start = page_metadata_handlers.all_only_at_page_start
     new_md_lines_list = []
     last_position = 0
     replacement_done = False
@@ -83,7 +83,7 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, 
         if not extract_only:
             new_md_lines_list.append(matchObj.before)
             new_md_lines_list.append(replacement)
-        if all_only_at_page_start:
+        if page_metadata_handlers.all_only_at_page_start:
             break
     if extract_only:
         return None

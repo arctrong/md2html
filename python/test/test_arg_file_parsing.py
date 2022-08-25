@@ -193,12 +193,15 @@ class ArgFileParseTest(unittest.TestCase):
         # The specific plugins behavior is going to be tested in separate tests.
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], '
-            '"plugins": {"relative-paths": {"rel_path": "/doc"}, '
+            '"plugins": {'
+            '"relative-paths": {"rel_path": "/doc"}, '
             '"page-flows": {"sections": [{"link": "doc/about.html", "title": "About"}]}, '
             '"page-variables":{"v": {}}, '
-            '"variables": {"logo": "THE GREATEST SITE EVER!"}}}')
+            '"variables": {"logo": "THE GREATEST SITE EVER!"}, '
+            '"index": {"index": {"output": "o.html", "index-cache": "ic.json"}} '
+            '}}')
         _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertEqual(4, len(plugins))
+        self.assertEqual(5, len(plugins))
         
     def test_auto_output_file_with_root_dirs_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(

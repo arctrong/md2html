@@ -1,0 +1,14 @@
+
+<!--index1 g index1 entry as text -->
+Description of __g index_1 entry as text__.
+Must be sorted properly.
+
+<!--index2 c index2 entry as text-->
+Description of __c index2 entry as text__.
+
+<!--index2 ["b index2 entry JSON"] -->
+Description of __b index2 entry JSON__.
+
+<!--index1 ["a index1 entry as JSON"]-->
+Description of __a index1 entry as JSON__.
+Must be sorted properly.

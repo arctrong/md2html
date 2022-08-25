@@ -1,0 +1,23 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/IndexPluginTest/template.html",
+        "verbose": false,
+        "link-css": ["../doc/styles.css"]
+    },
+    "documents": [
+        { "input": "several_indexes_1.txt", "title": "Page 1", "page-flows": ["page_flow_1"] },
+        { "input": "several_indexes_2.txt", "title": "Page 2", "page-flows": ["page_flow_1"] }
+    ],
+    "plugins": {
+        "page-flows": {},
+        "variables": {"custom_variable_1": "custom value 1" },
+        "index": {"index1": {"output": "index_page_1.html", "title": "Index 1", "page-flows": ["page_flow_1"],
+                             "index-cache": "index_cache_1.json", "index-cache-relative": true },
+                  "index2": {"output": "index_page_2.html", "title": "Index 2", "page-flows": ["page_flow_1"],
+                             "index-cache": "index_cache_2.json", "index-cache-relative": true } 
+                 }
+    }
+}

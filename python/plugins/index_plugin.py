@@ -9,8 +9,8 @@ from jsonschema import validate, ValidationError
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
 from cli_arguments_utils import CliArgDataObject
-from output_utils import output_page
 from models import Document, Options
+from output_utils import output_page
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource
 
@@ -73,13 +73,8 @@ def _generate_content(index_cache, add_letters, add_letters_block) -> str:
                                         f'{content.getvalue()}\n</div>')
 
 
-class IndexPlugin(Md2HtmlPlugin):
-
+class IndexData:
     def __init__(self):
-        super().__init__()
-        with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r') as schema_file:
-            self.metadata_schema = json.load(schema_file)
-
         self.index_cache_file = None
         self.index_cache_relative = False
         self.add_letters = False
@@ -92,56 +87,74 @@ class IndexPlugin(Md2HtmlPlugin):
         self.current_anchor_number = 0
         self.index_cache = {}
         self.cached_page_resets = set()
+
+
+class IndexPlugin(Md2HtmlPlugin):
+
+    def __init__(self):
+        super().__init__()
+        with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r') as schema_file:
+            self.metadata_schema = json.load(schema_file)
+        self.index_data = {}
         self.finalization_started = False
 
     def accept_data(self, data):
         self.assure_accept_data_once()
-
         validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
-
-        self.document_dict = {k: v for k, v in data.items()}
-        self.document_dict.pop('index-cache', None)
-        self.document_dict.pop('index-cache-relative', None)
-        self.document_dict.pop('letters', None)
-        self.document_dict.pop('letters-block', None)
-
-        self.index_cache_file = data["index-cache"]
-        self.index_cache_relative = data.get("index-cache-relative", self.index_cache_relative)
-        self.add_letters = data.get("letters", self.add_letters)
-        self.add_letters_block = data.get("letters-block", self.add_letters_block)
+        for marker, data_dict in data.items():
+            index_data = IndexData()
+            index_data.document_dict = {k: v for k, v in data_dict.items()}
+            index_data.document_dict.pop('index-cache', None)
+            index_data.document_dict.pop('index-cache-relative', None)
+            index_data.document_dict.pop('letters', None)
+            index_data.document_dict.pop('letters-block', None)
+            index_data.index_cache_file = data_dict["index-cache"]
+            index_data.index_cache_relative = data_dict.get("index-cache-relative",
+                                                            index_data.index_cache_relative)
+            index_data.add_letters = data_dict.get("letters", index_data.add_letters)
+            index_data.add_letters_block = data_dict.get("letters-block",
+                                                         index_data.add_letters_block)
+            self.index_data[marker.upper()] = index_data
 
     def is_blank(self) -> bool:
-        return False
+        return not bool(self.index_data)
 
-    def initialize(self, argument_file: dict, cli_args: CliArgDataObject,
-                   plugins: list) -> dict[str, Any]:
+    def pre_initialize(self, argument_file: dict, cli_args: CliArgDataObject,
+                       plugins: list) -> dict[str, Any]:
         argument_file = argument_file.copy()
-        self.document_dict["input"] = "fictional.txt"
-        argument_file['documents'] = [self.document_dict]
+        document_dicts = []
+        for index_data in self.index_data.values():
+            index_data.document_dict["input"] = "fictional.txt"
+            document_dicts.append(index_data.document_dict)
+
+        argument_file['documents'] = document_dicts
         canonized_argument_file = merge_and_canonize_argument_file(argument_file, cli_args)
         arguments, extra_plugin_data = complete_arguments_processing(canonized_argument_file,
                                                                      plugins)
-        self.document = arguments.documents[0]
-        self.document.input_file = None
+        i = 0
+        for index_data in self.index_data.values():
+            index_data.document = arguments.documents[i]
+            i += 1
+            index_data.document.input_file = None
 
-        if self.index_cache_relative:
-            self.index_cache_file = str(Path(self.document.output_file).parent
-                                        .joinpath(self.index_cache_file))
-        index_cache_file = Path(self.index_cache_file)
-        if index_cache_file.exists():
-            with open(index_cache_file, 'r') as file:
-                self.index_cache = json.load(file)
-        else:
-            self.index_cache = {}
+            if index_data.index_cache_relative:
+                index_data.index_cache_file = str(Path(index_data.document.output_file).parent
+                                                  .joinpath(index_data.index_cache_file))
+            index_cache_file = Path(index_data.index_cache_file)
+            if index_cache_file.exists():
+                with open(index_cache_file, 'r') as file:
+                    index_data.index_cache = json.load(file)
+            else:
+                index_data.index_cache = {}
 
         return extra_plugin_data
 
     def page_metadata_handlers(self):
-        # TODO Add several indexes
-        return [(self, "INDEX", False)]
+        return [(self, marker, False) for marker in self.index_data.keys()]
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
                              metadata_section):
+        index_data = self.index_data[marker.upper()]
         metadata_str = metadata_str.strip()
         if metadata_str.startswith('['):
             try:
@@ -155,44 +168,47 @@ class IndexPlugin(Md2HtmlPlugin):
         else:
             metadata = [metadata_str]
 
-        anchors = self.index_cache[doc.output_file]
-        self.current_anchor_number += 1
-        anchor_text = f'<a name="{INDEX_ENTRY_ANCHOR_PREFIX}{self.current_anchor_number}"></a>'
+        anchors = index_data.index_cache[doc.output_file]
+        index_data.current_anchor_number += 1
+        anchor_name = f'{INDEX_ENTRY_ANCHOR_PREFIX}{marker.lower()}_' \
+                      f'{index_data.current_anchor_number}'
+        anchor_text = f'<a name="{anchor_name}"></a>'
 
         for entry in metadata:
             normalized_entry = entry.strip()
             anchors.append({"entry": normalized_entry,
-                            "link": f'{self.current_link_page}#{INDEX_ENTRY_ANCHOR_PREFIX}'
-                                    f'{self.current_anchor_number}', "title": doc.title})
+                            "link": f'{index_data.current_link_page}#{anchor_name}',
+                            "title": doc.title})
 
         return anchor_text
 
     def new_page(self, doc: Document):
         if self.finalization_started:
             return
-
-        self.index_cache[doc.output_file] = []
-        self.cached_page_resets.add(doc.output_file)
-        self.current_link_page = relativize_relative_resource(doc.output_file,
-                                                              self.document.output_file)
-        self.current_anchor_number = 0
+        for index_data in self.index_data.values():
+            index_data.index_cache[doc.output_file] = []
+            index_data.cached_page_resets.add(doc.output_file)
+            index_data.current_link_page = relativize_relative_resource(
+                doc.output_file, index_data.document.output_file)
+            index_data.current_anchor_number = 0
 
     def finalize(self, plugins: dict, options: Options):
         self.finalization_started = True
 
-        if not self.cached_page_resets:
-            if self.document.verbose:
-                print(f'Index file is up-to-date. Skipping: {self.document.output_file}')
-            return
+        for index_data in self.index_data.values():
+            if not index_data.cached_page_resets:
+                if index_data.document.verbose:
+                    print(f'Index file is up-to-date. Skipping: {index_data.document.output_file}')
+                return
 
-        for plugin in plugins.values():
-            plugin.new_page(self.document)
+            for plugin in plugins.values():
+                plugin.new_page(index_data.document)
 
-        substitutions = {'content': _generate_content(self.index_cache, self.add_letters,
-                                                      self.add_letters_block)}
+            substitutions = {'content': _generate_content(index_data.index_cache,
+                                                          index_data.add_letters,
+                                                          index_data.add_letters_block)}
 
-        output_page(self.document, plugins, substitutions, options)
+            output_page(index_data.document, plugins, substitutions, options)
 
-        with open(self.index_cache_file, 'w') as cache_file:
-            json.dump(self.index_cache, cache_file, indent=2)
-
+            with open(index_data.index_cache_file, 'w') as cache_file:
+                json.dump(index_data.index_cache, cache_file, indent=2)

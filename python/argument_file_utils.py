@@ -34,7 +34,6 @@ def load_json_argument_file(argument_file_string) -> dict:
     return arguments_item
 
 
-# TODO Consider renaming this method
 def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> dict:
     """
     Brings the argument file to a more canonical form:

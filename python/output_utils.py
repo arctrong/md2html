@@ -9,7 +9,6 @@ from constants import EXEC_NAME, EXEC_VERSION
 from utils import relativize_relative_resource, read_lines_from_cached_file, UserError, \
     read_lines_from_file
 
-
 LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${(styles|content)}')
 LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${([^}]+)}')
 

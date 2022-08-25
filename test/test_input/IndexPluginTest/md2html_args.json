@@ -14,7 +14,7 @@
     "plugins": {
         "page-flows": {},
         "variables": {"custom_variable_1": "custom value 1" },
-        "index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json",
-            "index-cache-relative": true, "page-flows": ["page_flow_1"] }
+        "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json",
+            "index-cache-relative": true, "page-flows": ["page_flow_1"] } }
     }
 }

@@ -81,6 +81,7 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
                                                 "will be processed", type=str)
 
     parser.add_argument("-t", "--title", help="the HTML page title", type=str)
+    # TODO Clarify how it works if GLOBs are not used.
     parser.add_argument("--title-from-variable", help="If specified then the program will take "
                                                       "the title from the page metadata at the "
                                                       "step of making up the input file "
@@ -125,7 +126,7 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
     if args.input:
         cli_arg_data_object.input_file = args.input
     if args.input_glob:
-        cli_arg_data_object.input_glob = args.glob
+        cli_arg_data_object.input_glob = args.input_glob
 
     if cli_arg_data_object.input_file and cli_arg_data_object.input_glob:
         parser.print_usage()
