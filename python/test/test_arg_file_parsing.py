@@ -31,8 +31,8 @@ class ArgFileParseTest(unittest.TestCase):
             '"title": "some title", "template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "include-css": ["include.css"], '
             '"force": true, "verbose": true}, "documents": [{}]}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        doc = arguments.documents[0]
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
         self.assertEqual('doc_src/index.txt', doc.input_file)
         self.assertEqual('doc/index.html', doc.output_file)
         self.assertEqual('some title', doc.title)
@@ -54,8 +54,8 @@ class ArgFileParseTest(unittest.TestCase):
         
     def test_emptyDocumentsElement_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": []}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertEqual([], arguments.documents)
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertEqual([], args.documents)
 
     def test_defaultElementNoCssWithCssDefinitions_NegativeScenario(self):
         for css_type in ["link-css", "include-css"]:
@@ -64,14 +64,14 @@ class ArgFileParseTest(unittest.TestCase):
                     argument_file_dict = load_json_argument_file(
                         '{"default": {"no-css": true, "' + css_type +
                         '": ["some.css"]}, "documents": []}')
-                    _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
+                    parse_argument_file(argument_file_dict, CliArgDataObject())
                 self.assertTrue('no-css' in str(cm.exception))
                 self.assertTrue(css_type in str(cm.exception))
 
     def test_minimalDocument_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        doc = arguments.documents[0]
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
         self.assertEqual('index.txt', doc.input_file)
         self.assertTrue('index.html' in doc.output_file)
 
@@ -79,12 +79,12 @@ class ArgFileParseTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}, {"input": "about.txt"}], '
             '"default": {"template": "common_template.html"}}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        doc = arguments.documents[0]
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
         self.assertEqual('index.txt', doc.input_file)
         self.assertEqual('common_template.html', doc.template)
         self.assertTrue('index.html' in doc.output_file)
-        doc = arguments.documents[1]
+        doc = args.documents[1]
         self.assertEqual('about.txt', doc.input_file)
         self.assertEqual('common_template.html', doc.template)
         self.assertTrue('about.html' in doc.output_file)
@@ -98,8 +98,8 @@ class ArgFileParseTest(unittest.TestCase):
             '"include-css": ["include.css"], '
             '"add-include-css": ["add_include1.css", "add_include1.css"], '
             '"force": true, "verbose": true}]}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        doc = arguments.documents[0]
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
         self.assertEqual('doc_src/index.txt', doc.input_file)
         self.assertEqual('doc/index.html', doc.output_file)
         self.assertEqual('some title', doc.title)
@@ -154,8 +154,8 @@ class ArgFileParseTest(unittest.TestCase):
             "--link-css", "cli_link1.css", "--link-css", "cli_link2.css",
             "--include-css", "cli_include1.css", "--include-css", "cli_include2.css",
             "--force", "--verbose"])
-        arguments, _ = parse_argument_file(argument_file_dict, cli_args)
-        doc = arguments.documents[0]
+        args = parse_argument_file(argument_file_dict, cli_args)
+        doc = args.documents[0]
         self.assertEqual('cli_doc_src/cli_index.txt', doc.input_file)
         self.assertEqual('cli_doc/cli_index.html', doc.output_file)
         self.assertEqual('cli_title', doc.title)
@@ -168,8 +168,8 @@ class ArgFileParseTest(unittest.TestCase):
 
     def test_defaultOptions_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        options = arguments.options
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        options = args.options
         self.assertFalse(options.verbose)
         self.assertFalse(options.legacy_mode)
 
@@ -177,16 +177,15 @@ class ArgFileParseTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file(
             '{"options": {"verbose": true, "legacy-mode": true}, '
             '"documents": [{"input": "index.txt"}]}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        options = arguments.options
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        options = args.options
         self.assertTrue(options.verbose)
         self.assertTrue(options.legacy_mode)
 
     def test_noPlugins_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugins = instantiate_plugins(argument_file_dict['plugins'])
-        self.assertEqual({}, plugins)
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertEqual(0, len(args.plugins))
 
     def test_allPlugins_PositiveScenario(self):
         # Adding minimum plugin data to make the plugins declare themselves activated.
@@ -200,8 +199,8 @@ class ArgFileParseTest(unittest.TestCase):
             '"variables": {"logo": "THE GREATEST SITE EVER!"}, '
             '"index": {"index": {"output": "o.html", "index-cache": "ic.json"}} '
             '}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertEqual(5, len(plugins))
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertEqual(5, len(args.plugins))
         
     def test_auto_output_file_with_root_dirs_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
@@ -210,14 +209,14 @@ class ArgFileParseTest(unittest.TestCase):
             '{"output-root": "doc/html", "input": "index.txt"}, '
             '{"input-root": "doc_src/txt", "input": "index.txt"}'
             ']}')
-        arguments, _ = parse_argument_file(argument_file_dict, CliArgDataObject())
-        doc = arguments.documents[0]
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
         self.assertEqual('doc_src/txt/index.txt', doc.input_file)
         self.assertTrue('doc/html/index.html' in doc.output_file)
-        doc = arguments.documents[1]
+        doc = args.documents[1]
         self.assertEqual('index.txt', doc.input_file)
         self.assertTrue('doc/html/index.html' in doc.output_file)
-        doc = arguments.documents[2]
+        doc = args.documents[2]
         self.assertEqual('doc_src/txt/index.txt', doc.input_file)
         self.assertTrue('index.html' in doc.output_file)
 

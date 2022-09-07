@@ -4,7 +4,7 @@ from pathlib import Path
 
 from jsonschema import validate, ValidationError
 
-from models import Document
+from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import UserError, reduce_json_validation_error_message, first_not_none
 

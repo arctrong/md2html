@@ -9,7 +9,7 @@ import markdown
 from argument_file_utils import load_json_argument_file, complete_arguments_processing, \
     merge_and_canonize_argument_file
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
-from models import Arguments
+from models.arguments import Arguments
 from output_utils import output_page
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
 from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_extra_plugin_data, \
@@ -34,7 +34,7 @@ def md2html(document, plugins, metadata_handlers, options):
                 print(f'The output file is up-to-date. Skipping: {document.output_file}')
             return
 
-    for plugin in plugins.values():
+    for plugin in plugins:
         plugin.new_page(document)
 
     md_lines = read_lines_from_cached_file(document.input_file)
@@ -45,8 +45,13 @@ def md2html(document, plugins, metadata_handlers, options):
 
     output_page(document, plugins, substitutions, options)
 
+    if document.verbose:
+        print(f'Output file generated: {document.output_file}')
+    if document.report:
+        print(document.output_file)
 
-def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> (Arguments, dict):
+
+def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> Arguments:
 
     canonized_arguments_dict = merge_and_canonize_argument_file(argument_file_dict, cli_args)
     plugins = instantiate_plugins(canonized_arguments_dict['plugins'])
@@ -57,7 +62,8 @@ def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) ->
     add_extra_plugin_data(extra_plugin_data, plugins)
     complete_plugins_initialization(argument_file_dict, cli_args, plugins)
     plugins = filter_non_blank_plugins(plugins)
-    return arguments, plugins
+    arguments.plugins = [plugin for plugin in plugins.values()]
+    return arguments
 
 
 def main():
@@ -69,7 +75,7 @@ def main():
         except CliError:
             # This exception is also raised when the user asks for the help info that may look
             # illogical. But when this program is run from inside a script, this situation must
-            # be considered as an error so the error code >0 is always returned.
+            # be considered as an error so an error code > 0 is always returned.
             sys.exit(1)
 
         if cli_args.argument_file:
@@ -88,27 +94,30 @@ def main():
                                   }
 
         try:
-            arguments, plugins = parse_argument_file(argument_file_dict, cli_args)
+            arguments = parse_argument_file(argument_file_dict, cli_args)
         except UserError as e:
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
 
-        metadata_handlers = register_page_metadata_handlers(plugins)
+        metadata_handlers = register_page_metadata_handlers(arguments.plugins)
 
         for document in arguments.documents:
             try:
-                md2html(document, plugins, metadata_handlers, arguments.options)
+
+                # TODO Consider removing `plugins` argument and using only `plugins.values()`.
+
+                md2html(document, arguments.plugins, metadata_handlers, arguments.options)
             except UserError as e:
                 error_input_file = document.input_file
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
 
-        for plugin in plugins.values():
+        for plugin in arguments.plugins:
             try:
-                plugin.finalize(plugins, arguments.options)
+                plugin.finalize(arguments.plugins, arguments.options)
             except UserError as e:
-                raise UserError(f"Error in after-all-pages-processed action: "
-                                f"{type(e).__name__}: {e}")
+                raise UserError(f"Error executing finalization action in plugin " +
+                                f"'{type(plugin).__name__}': {e}")
 
         if arguments.options.verbose:
             end_moment = time.monotonic()

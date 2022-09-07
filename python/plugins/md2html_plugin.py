@@ -5,7 +5,8 @@ from typing import Any
 from jsonschema import validate, ValidationError
 
 from cli_arguments_utils import CliArgDataObject
-from models import Document, Options
+from models.document import Document
+from models.options import Options
 from utils import UserError, reduce_json_validation_error_message
 
 
@@ -48,13 +49,14 @@ class Md2HtmlPlugin(ABC):
     def pre_initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
                        plugins: dict) -> dict[str, Any]:
         """
-        This method is going to be called before the documents processing.
+        Returns extra plugins data.
         """
         return {}
 
     def initialize(self, extra_plugin_data):
         """
-        This method will be called after all plugins are `initialized`.
+        This method will be called after all plugins are `pre_initialized` and before the
+        documents processing.
         """
         pass
 
@@ -90,7 +92,7 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def finalize(self, plugins: dict, options: Options):
+    def finalize(self, plugins: list, options: Options):
         """
         Executes after all pages processed.
         """

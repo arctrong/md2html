@@ -14,9 +14,9 @@ def _parse_metadata(metadata):
     argument_file_dict = load_json_argument_file(
         '{"documents": [{"input": "about.md"}], '
         '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
-    _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-    plugin = find_single_instance_of_type(plugins.values(), PageVariablesPlugin)
-    metadata_handlers = register_page_metadata_handlers(plugins)
+    args = parse_argument_file(argument_file_dict, CliArgDataObject())
+    plugin = find_single_instance_of_type(args.plugins, PageVariablesPlugin)
+    metadata_handlers = register_page_metadata_handlers(args.plugins)
     page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
     plugin.new_page({})
     apply_metadata_handlers(page_content, metadata_handlers, {})

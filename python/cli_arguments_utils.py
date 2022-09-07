@@ -47,7 +47,7 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
     parser = argparse.ArgumentParser(description='Creates HTML documentation out of Markdown '
                                                  'texts.', formatter_class=formatter_creator,
                                      add_help=False)
-    parser.add_argument("-h", "--help", help="shows this help message and exits",
+    parser.add_argument("-h", "--help", help="show this help message and exit",
                         action='store_true')
 
     parser.add_argument("--input-root", help="root directory for input Markdown files. "

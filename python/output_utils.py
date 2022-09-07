@@ -25,7 +25,7 @@ def read_lines_from_cached_file_legacy(template_file):
     return lines
 
 
-def output_page(document, plugins, substitutions: dict, options):
+def output_page(document, plugins: list, substitutions: dict, options):
 
     substitutions = substitutions.copy()
 
@@ -37,7 +37,8 @@ def output_page(document, plugins, substitutions: dict, options):
 
     styles = []
     if document.link_css:
-        # TODO Consider applying HTML encoding to the `href` value
+        # TODO Consider applying HTML encoding to the `href` value. Not sure
+        #  it's required.
         styles.extend([f'<link rel="stylesheet" type="text/css" '
                        f'href="{relativize_relative_resource(css, document.output_file)}">'
                        for css in document.link_css])
@@ -46,7 +47,7 @@ def output_page(document, plugins, substitutions: dict, options):
                        for css in document.include_css])
     substitutions['styles'] = '\n'.join(styles) if styles else ''
 
-    for plugin in plugins.values():
+    for plugin in plugins:
         substitutions.update(plugin.variables(document))
 
     if options.legacy_mode:
@@ -72,8 +73,3 @@ def output_page(document, plugins, substitutions: dict, options):
 
     with open(document.output_file, 'w') as result_file:
         result_file.write(result)
-
-    if document.verbose:
-        print(f'Output file generated: {document.output_file}')
-    if document.report:
-        print(document.output_file)

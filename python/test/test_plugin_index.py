@@ -7,7 +7,6 @@ from .utils_for_tests import find_single_instance_of_type
 
 sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
-from plugins.page_flows_plugin import *
 
 
 def _find_single_plugin(plugins):
@@ -19,14 +18,14 @@ class IndexPluginTest(unittest.TestCase):
     def test_notActivated_no_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertIsNone(_find_single_plugin(plugins))
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_notActivated_with_empty_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {"index": {} }}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertIsNone(_find_single_plugin(plugins))
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_minimal(self):
         argument_file_dict = load_json_argument_file(
@@ -34,11 +33,11 @@ class IndexPluginTest(unittest.TestCase):
             '"plugins": {'
             '"index": {"index": {"output": "index_page.html", "index-cache": "index_cache.json"}}'
             '}}')
-        arguments, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
 
-        doc = arguments.documents[0]
-        metadata_handlers = register_page_metadata_handlers(plugins)
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--index entry 1--> after"
         plugin.new_page(doc)
@@ -63,11 +62,11 @@ class IndexPluginTest(unittest.TestCase):
             '          "index2": {"output": "index_page2.html", "index-cache": "cache2.json"}'
             '         }'
             '}}')
-        arguments, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
 
-        doc = arguments.documents[0]
-        metadata_handlers = register_page_metadata_handlers(plugins)
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--index1 entry 1--> after"
         plugin.new_page(doc)

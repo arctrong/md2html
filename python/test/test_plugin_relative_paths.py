@@ -18,8 +18,8 @@ class RelativePathsPluginTest(unittest.TestCase):
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.md"}], "plugins": {}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         self.assertIsNone(plugin)
         
     def test_relativisation(self):
@@ -28,8 +28,8 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": {"relative-paths": { "down1": "down1/", "down11": "down1/down11/", '
             '"down2": "down2/", "down22": "down2/down22/", "root": "", '
             '"up1": "../", "up2": "../../" }}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         rel_paths = plugin.variables(Document(output_file="root.html"))
         self.assertDictEqual({"down1": "down1/", "down11": "down1/down11/", 

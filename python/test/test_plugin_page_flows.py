@@ -45,8 +45,8 @@ class PageFlowsPluginTest(unittest.TestCase):
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertIsNone(_find_single_plugin(plugins))
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_pageSequence_inPluginsSection(self):
         argument_file_dict = load_json_argument_file(
@@ -56,8 +56,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"link": "about.html", "title": "About"},'
             '{"link": "other.html", "title": "Other"}'
             ']}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
 
         doc = Document(output_file="about.html")
         page_flow = plugin.variables(doc)["sections"]
@@ -77,8 +77,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"input": "about.txt", "title": "About", "page-flows": ["sections"]}, '
             '{"input": "no-page-flow.txt", "title": "No page flow"}'
             '], "plugins": {"page-flows": {}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         doc = Document(output_file="index.html")
         page_flow = plugin.variables(doc)["sections"]
@@ -107,8 +107,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '], "plugins": {"page-flows": {"sections": ['
             '    {"link": "other.html", "title": "OtherLink"}'
             ']}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         doc = Document(output_file="other.html")
         page_flow = plugin.variables(doc)["sections"]
@@ -126,8 +126,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"documents": [{"input": "index.txt", "output": "index.html", '
             '"title": "Home", "page-flows": ["sections"]}], '
             '"plugins": {}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertIsNone(_find_single_plugin(plugins))
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_severalPageFlows(self):
         argument_file_dict = load_json_argument_file(
@@ -143,8 +143,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '    {"link": "other1.html", "title": "OtherLink1"},'
             '    {"link": "other2.html", "title": "OtherLink2"}'
             ']}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         doc = Document(output_file="narration.html")
         page_flow = plugin.variables(doc)["sections"]
@@ -178,8 +178,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '], "other_links": ['
             '    {"link": "index.html", "title": "HomeLink"}'
             ']}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         doc = Document(output_file="other.html")
         page_flow = plugin.variables(doc)["sections"]
@@ -209,8 +209,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '    {"link": "index.html", "title": "HomeLinkExternal", "external": true}, '
             '    {"link": "index.html", "title": "HomeLink", "external": false}'
             ']}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         doc = Document(output_file="index.html")
         page_flow = plugin.variables(doc)["sections"]
@@ -247,8 +247,8 @@ class PageFlowsPluginTest(unittest.TestCase):
         for argument_file_dict, test_name in [(with_plugins_section, "with_plugins_section"), 
                                               (with_documents_section, "with_documents_section")]:
             with self.subTest(test_name=test_name):
-                _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-                plugin = _find_single_plugin(plugins.values())
+                args = parse_argument_file(argument_file_dict, CliArgDataObject())
+                plugin = _find_single_plugin(args.plugins)
 
                 doc = Document(output_file="page1.html")
                 page_flow = plugin.variables(doc)["sections"]
@@ -304,8 +304,8 @@ class PageFlowsPluginTest(unittest.TestCase):
                 (with_plugins_section, "with_plugins_section"),
                 (with_documents_section, "with_documents_section")]:
                 with self.subTest(test_name=test_name, page_count=page_count):
-                    _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-                    plugin = _find_single_plugin(plugins.values())
+                    args = parse_argument_file(argument_file_dict, CliArgDataObject())
+                    plugin = _find_single_plugin(args.plugins)
 
                     for i in range(1, page_count + 1):
                         doc = Document(output_file=f"page{i}.html")
@@ -342,8 +342,8 @@ class PageFlowsPluginTest(unittest.TestCase):
             '    {"link": "doc/ch01/sub-sub-1.html", "title": "whatever"},'
             '    {"link": "doc/ch01/sub-sub-2.html", "title": "whatever"}'
             ']}}}')
-        _, plugins = parse_argument_file(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(plugins.values())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
         
         doc = Document(output_file="root1.html")
         page_flow = plugin.variables(doc)["sections"]

@@ -7,7 +7,9 @@ from jsonschema import validate, ValidationError
 
 from cli_arguments_utils import CliArgDataObject
 from constants import DEFAULT_TEMPLATE_PATH, DEFAULT_CSS_FILE_PATH
-from models import Options, Document, Arguments
+from models.arguments import Arguments
+from models.document import Document
+from models.options import Options
 from page_metadata_utils import apply_metadata_handlers, register_page_metadata_handlers
 from utils import UserError, reduce_json_validation_error_message, first_not_none, \
     strip_extension, read_lines_from_cached_file, read_lines_from_file
@@ -41,7 +43,7 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
     - merges arguments from the command line into the argument file;
     - applies the arguments from the default section to the documents;
     - canonizes some parameters that may be defined in different ways;
-    - explicitly set defaults values;
+    - explicitly sets defaults values;
     - creates some default structures like empty collections;
     - doesn't change the plugins.
 
@@ -52,19 +54,18 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
     """
 
     options = argument_file_dict.get('options', {})
-    argument_file_dict.setdefault('plugins', {})
     defaults_item = argument_file_dict.get('default', {})
 
     merged_and_canonized_argument_file = {
         'options': options,
-        'plugins': argument_file_dict.get('plugins', [])
+        'plugins': argument_file_dict.get('plugins', {})
     }
 
     if bool(options.get('verbose')) and bool(cli_args.report):
         raise UserError("'verbose' parameter in 'options' section is incompatible "
                         "with '--report' command line argument.")
 
-    options['verbose'] = first_not_none(options.get('verbose'), cli_args.verbose, False)
+    options['verbose'] = first_not_none(cli_args.verbose, options.get('verbose'), False)
     options['legacy-mode'] = first_not_none(cli_args.legacy_mode,
                                             options.get('legacy-mode'), False)
 
@@ -142,14 +143,14 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
                                                             defaults_item.get('output-root'))
     canonized_document_item['title'] = first_not_none(cli_args.title,
                                                       document_item.get('title'),
-                                                      defaults_item.get('title'), '')
+                                                      defaults_item.get('title'))
     canonized_document_item['title-from-variable'] = first_not_none(
         cli_args.title_from_variable,
         document_item.get('title-from-variable'),
-        defaults_item.get('title-from-variable'), '')
+        defaults_item.get('title-from-variable'))
     canonized_document_item['template'] = first_not_none(cli_args.template,
                                                          document_item.get('template'),
-                                                         defaults_item.get('template'), '')
+                                                         defaults_item.get('template'))
     link_css = []
     include_css = []
     no_css = False
@@ -161,9 +162,11 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
             include_css.extend(first_not_none(cli_args.include_css, []))
     else:
         link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
+        # TODO Looks like if any of the CSS options is defined in the command line then
+        #  all CSS options are taken from the command line. Need to check whether it's correct.
         if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
             q = '\''
-            raise UserError(f"'no-css' parameter incompatible with one of "
+            raise UserError(f"'no-css' parameter incompatible with any of "
                             f"[{', '.join([q + a + q for a in link_args])}] "
                             f"in `documents` item: {document_item}.")
 
@@ -179,6 +182,7 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
 
         if link_css or include_css:
             no_css = False
+
     canonized_document_item['link-css'] = link_css
     canonized_document_item['include-css'] = include_css
     canonized_document_item['no-css'] = no_css
@@ -243,11 +247,23 @@ def expand_document_globs(documents_item, plugins) -> list:
                     if page_variables_plugin:
                         page_variables_plugin.new_page(None)
                         metadata_handlers = register_page_metadata_handlers(
-                            {"page-variables": page_variables_plugin})
+                            [page_variables_plugin])
                         input_file_string = read_lines_from_cached_file(
                             str(Path(input_root).joinpath(file)))
-                        apply_metadata_handlers(input_file_string, metadata_handlers,
-                                                glob_document_item, extract_only=True)
+                        temp_doc = Document(
+                            input_file=glob_document_item.get("input"),
+                            output_file=glob_document_item.get("output"),
+                            title=glob_document_item.get("title"),
+                            template=glob_document_item.get("template"),
+                            link_css=glob_document_item.get("link-css"),
+                            include_css=glob_document_item.get("include-css"),
+                            no_css=glob_document_item.get("no-css"),
+                            force=glob_document_item.get("force"),
+                            verbose=glob_document_item.get("verbose"),
+                            report=glob_document_item.get("report")
+                        )
+                        apply_metadata_handlers(input_file_string, metadata_handlers, temp_doc,
+                                                extract_only=True)
                         page_variables = page_variables_plugin.variables(None)
                         if title_from_variable:
                             title = page_variables.get(title_from_variable)
@@ -313,7 +329,7 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
                                    )
         documents.append(document_object)
 
-    return Arguments(options, documents), extra_plugin_items
+    return Arguments(options, documents, []), extra_plugin_items
 
 
 def _enrich_document(document):

@@ -1,7 +1,7 @@
 import re
 from typing import Iterator, Dict
 
-from models import Document
+from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
 
 METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
@@ -13,10 +13,10 @@ class PageMetadataHandlers:
         self.all_only_at_page_start = all_only_at_page_start
 
 
-def register_page_metadata_handlers(plugins: Dict[str, Md2HtmlPlugin]) -> PageMetadataHandlers:
+def register_page_metadata_handlers(plugins: list[Md2HtmlPlugin]) -> PageMetadataHandlers:
     marker_handlers = {}
     all_only_at_page_start = True
-    for plugin in plugins.values():
+    for plugin in plugins:
         handlers = plugin.page_metadata_handlers()
         if handlers is not None:
             for handler, marker, only_at_page_start in handlers:

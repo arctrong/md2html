@@ -3,7 +3,7 @@
 Description of __g multiple entries as text and JSON in the same page__.
 Must be sorted properly.
 
-<!--index a single entry as text -->
+<!--iNDEx a single entry as text -->
 Description of __a single entry as text__.
 
 <!--index ["b single entry as JSON", "c single entry as JSON"] -->

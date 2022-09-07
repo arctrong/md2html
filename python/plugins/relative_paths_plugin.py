@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from models import Document
+from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import relativize_relative_resource_path
 

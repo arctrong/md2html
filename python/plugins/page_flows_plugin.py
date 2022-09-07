@@ -1,10 +1,8 @@
 import json
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
 
-from cli_arguments_utils import CliArgDataObject
-from models import Document
+from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_schema
 from utils import relativize_relative_resource, first_not_none
 
@@ -63,7 +61,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
 
     def __init__(self):
         super().__init__()
-        self.post_initialize_done = False
+        self.initialize_done = False
         self.raw_data: dict = {}
         self.data: dict = {}
         with open(MODULE_DIR.joinpath('page_flows_schema.json'), 'r') as schema_file:
@@ -94,10 +92,6 @@ class PageFlowsPlugin(Md2HtmlPlugin):
             for item in v:
                 page_flow_items.append(item)
 
-    def pre_initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
-                       plugins: dict) -> dict[str, Any]:
-        return {}
-
     def initialize_data(self):
         result = {}
         for k, v in self.raw_data.items():
@@ -118,7 +112,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
         return result
 
     def initialize(self, extra_plugin_data):
-        self.assure_post_initialize_once()
+        self.assure_initialize_once()
         if bool(extra_plugin_data):
             validate_data_with_schema(extra_plugin_data, self.data_schema)
             self.add_to_end(extra_plugin_data)
@@ -130,7 +124,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
     def variables(self, doc: Document) -> dict:
         return {k: process_page_flow(v, doc.output_file) for k, v in self.data.items()}
 
-    def assure_post_initialize_once(self):
-        if self.post_initialize_done:
-            raise Exception("Trying to post initialize again.")
-        self.post_initialize_done = True
+    def assure_initialize_once(self):
+        if self.initialize_done:
+            raise Exception("Trying to initialize again.")
+        self.initialize_done = True

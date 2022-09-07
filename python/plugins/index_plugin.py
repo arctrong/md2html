@@ -9,7 +9,8 @@ from jsonschema import validate, ValidationError
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
 from cli_arguments_utils import CliArgDataObject
-from models import Document, Options
+from models.document import Document
+from models.options import Options
 from output_utils import output_page
 from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
 from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource
@@ -192,7 +193,7 @@ class IndexPlugin(Md2HtmlPlugin):
                 doc.output_file, index_data.document.output_file)
             index_data.current_anchor_number = 0
 
-    def finalize(self, plugins: dict, options: Options):
+    def finalize(self, plugins: list, options: Options):
         self.finalization_started = True
 
         for index_data in self.index_data.values():
@@ -201,7 +202,7 @@ class IndexPlugin(Md2HtmlPlugin):
                     print(f'Index file is up-to-date. Skipping: {index_data.document.output_file}')
                 return
 
-            for plugin in plugins.values():
+            for plugin in plugins:
                 plugin.new_page(index_data.document)
 
             substitutions = {'content': _generate_content(index_data.index_cache,
@@ -212,3 +213,8 @@ class IndexPlugin(Md2HtmlPlugin):
 
             with open(index_data.index_cache_file, 'w') as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)
+
+            if index_data.document.verbose:
+                print(f'Index file generated: {index_data.document.output_file}')
+            if index_data.document.report:
+                print(index_data.document.output_file)

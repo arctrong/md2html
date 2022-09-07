@@ -52,7 +52,7 @@ class CliArgParseTest(unittest.TestCase):
 
     def test_minimalArgumentSet(self):
         md2html_args = parse_cli_arguments(['-i', '../doc/notes.md'])
-        args, _ = parse_argument_file({"documents": [{}]}, md2html_args)
+        args = parse_argument_file({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
         self.assertEqual('../doc/notes.md', doc.input_file)
         self.assertEqual('../doc/notes.html', doc.output_file)
@@ -115,7 +115,7 @@ class CliArgParseTest(unittest.TestCase):
 
     def test_defaultCss(self):
         md2html_args = parse_cli_arguments(['-i', 'input.md'])
-        args, _ = parse_argument_file({"documents": [{}]}, md2html_args)
+        args = parse_argument_file({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
         self.assertFalse(doc.link_css)
         self.assertEqual(1, len(doc.include_css))
