@@ -27,17 +27,17 @@ class Md2htmlGlobIntegralTest(unittest.TestCase):
         self.assertEqual('single_doc.html', link['href'])
         self.assertEqual('Single document', link.text)
         link = link.next_sibling.next_sibling.next_sibling
+        self.assertEqual('subdir01/recursive/recursive_page01.html', link['href'])
+        self.assertEqual('sort-by-file-path: recursive_page01', link.text)        
+        link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir01/subdir01_page01.html', link['href'])
-        self.assertEqual('sort-by-file-name: page01', link.text)
+        self.assertEqual('sort-by-file-path: page01', link.text)
         link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir01/subdir01_page02.html', link['href'])
-        self.assertEqual('sort-by-file-name: page02', link.text)
+        self.assertEqual('sort-by-file-path: page02', link.text)
         link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir01/subdir01_page03.html', link['href'])
-        self.assertEqual('sort-by-file-name: page03', link.text)
-        link = link.next_sibling.next_sibling.next_sibling
-        self.assertEqual('subdir01/recursive/recursive_page01.html', link['href'])
-        self.assertEqual('sort-by-file-name: recursive_page01', link.text)
+        self.assertEqual('sort-by-file-path: page03', link.text)
         link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir02/subdir02_page03.html', link['href'])
         self.assertEqual('sort-by-variable: page03', link.text)
@@ -59,17 +59,17 @@ class Md2htmlGlobIntegralTest(unittest.TestCase):
 
         subdir01_links = all_pages_links.next_sibling.next_sibling
         link = subdir01_links.a
+        self.assertEqual('subdir01/recursive/recursive_page01.html', link['href'])
+        self.assertEqual('sort-by-file-path: recursive_page01', link.text)        
+        link = link.next_sibling.next_sibling.next_sibling        
         self.assertEqual('subdir01/subdir01_page01.html', link['href'])
-        self.assertEqual('sort-by-file-name: page01', link.text)
+        self.assertEqual('sort-by-file-path: page01', link.text)
         link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir01/subdir01_page02.html', link['href'])
-        self.assertEqual('sort-by-file-name: page02', link.text)
+        self.assertEqual('sort-by-file-path: page02', link.text)
         link = link.next_sibling.next_sibling.next_sibling
         self.assertEqual('subdir01/subdir01_page03.html', link['href'])
-        self.assertEqual('sort-by-file-name: page03', link.text)
-        link = link.next_sibling.next_sibling.next_sibling
-        self.assertEqual('subdir01/recursive/recursive_page01.html', link['href'])
-        self.assertEqual('sort-by-file-name: recursive_page01', link.text)
+        self.assertEqual('sort-by-file-path: page03', link.text)
 
         subdir02_links = subdir01_links.next_sibling.next_sibling
         link = subdir02_links.a

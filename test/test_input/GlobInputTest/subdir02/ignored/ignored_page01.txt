@@ -1,0 +1,3 @@
+<!--VARIABLES {"title": "sort-by-file-name: ignored_page01"}--> 
+
+**Subdirectory 2 | ignored | page 1**

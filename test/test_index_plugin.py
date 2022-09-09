@@ -240,7 +240,7 @@ class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
                 index_pars = root.body.find('div', {"class": 'index-content'}).findAll('p')
                 self.assertEqual(4, len(index_pars))
                 for p in index_pars:
-                    self.assertTrue(substring in p.a['href'])
+                    self.assertTrue(substring in p.a['href'], msg=f'href={p.a["href"]}')
 
 
 if __name__ == '__main__':

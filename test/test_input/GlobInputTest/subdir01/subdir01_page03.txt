@@ -1,3 +1,3 @@
-<!--VARIABLES {"title": "sort-by-file-name: page03"}--> 
+<!--VARIABLES {"title": "sort-by-file-path: page03"}--> 
 
 **Subdirectory 1, page 3**
