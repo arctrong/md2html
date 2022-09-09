@@ -137,10 +137,12 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
                                                        defaults_item.get("output"))
     canonized_document_item['input-root'] = first_not_none(cli_args.input_root,
                                                            document_item.get("input-root"),
-                                                           defaults_item.get('input-root'))
+                                                           defaults_item.get('input-root'),
+                                                           "")
     canonized_document_item['output-root'] = first_not_none(cli_args.output_root,
                                                             document_item.get("output-root"),
-                                                            defaults_item.get('output-root'))
+                                                            defaults_item.get('output-root'),
+                                                            "")
     canonized_document_item['title'] = first_not_none(cli_args.title,
                                                       document_item.get('title'),
                                                       defaults_item.get('title'))
@@ -316,8 +318,8 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
             page_flow_list.append({"link": document_item["output"],
                                    "title": document_item["title"]})
 
-        document_object = Document(input_file=document_item.get("input"),
-                                   output_file=document_item.get("output"),
+        document_object = Document(input_file=document_item.get("input").replace("\\", "/"),
+                                   output_file=document_item.get("output").replace("\\", "/"),
                                    title=document_item.get('title'),
                                    template=document_item.get('template'),
                                    link_css=document_item.get('link-css'),
