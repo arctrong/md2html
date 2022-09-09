@@ -3,7 +3,8 @@ package world.md2html.options.model.raw;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
 
 import java.util.List;
 import java.util.Map;

@@ -1,17 +1,13 @@
 package world.md2html.options.argfile;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.Constants;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.plugins.Md2HtmlPlugin;
-import world.md2html.utils.JsonUtils;
 
 import java.util.*;
 import java.util.function.Supplier;
-
-import static world.md2html.utils.JsonUtils.*;
 
 public class PluginHelper {
 

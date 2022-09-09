@@ -30,9 +30,6 @@ class PageFlowsPluginTest {
      */
     private static class PageFlow {
 
-        // Now need for the pages here. They will be accessed via its `Iterable`
-        // implementation.
-        // @Getter private final List<Map<String, Object>> pages;
         @Getter private final Map<String, Object> previous;
         @Getter private final Map<String, Object> current;
         @Getter private final Map<String, Object> next;
@@ -42,7 +39,6 @@ class PageFlowsPluginTest {
         @SuppressWarnings("unchecked")
         private PageFlow(Object pageFlow) {
             try {
-                //this.pages = (List<Map<String, Object>>) property(pageFlow, "getPages");
                 this.previous = (Map<String, Object>) property(pageFlow, "getPrevious");
                 this.current = (Map<String, Object>) property(pageFlow, "getCurrent");
                 this.next = (Map<String, Object>) property(pageFlow, "getNext");

@@ -2,15 +2,11 @@ package world.md2html.options.cli;
 
 import org.apache.commons.cli.*;
 import world.md2html.options.model.CliOptions;
-import world.md2html.utils.Utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static world.md2html.utils.Utils.isNullOrEmpty;
 

@@ -39,42 +39,6 @@ public class JsonUtils {
         });
     }
 
-    public static String jsonObjectStringField(ObjectNode objectNode, String fieldName) {
-        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asText).orElse(null);
-    }
-
-    public static Boolean jsonObjectBooleanField(ObjectNode objectNode, String fieldName,
-                                                 Boolean defaultValue) {
-        return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asBoolean)
-                .orElse(defaultValue);
-    }
-
-    public static Boolean jsonObjectBooleanField(ObjectNode objectNode, String fieldName) {
-        return jsonObjectBooleanField(objectNode, fieldName, null);
-    }
-
-    public static Path jsonObjectPathField(ObjectNode objectNode, String fieldName) {
-        return Optional.ofNullable(objectNode.get(fieldName))
-                .map(JsonNode::asText).map(Paths::get).orElse(null);
-    }
-
-    public static List<String> jsonArrayToStringList(ArrayNode array) {
-        List<String> result = new ArrayList<>();
-        for (Iterator<JsonNode> it = array.elements(); it.hasNext(); ) {
-            result.add(it.next().asText());
-        }
-        return result;
-    }
-
-//    public static JsonNode jsonNodeGetDefault(JsonNode node, String propertyName,
-//            JsonNode defaultValue) {
-//        JsonNode result = node.get(propertyName);
-//        if (result == null) {
-//            return defaultValue;
-//        }
-//        return result;
-//    }
-
     public static JsonNode objectNodeSetDefault(ObjectNode node, String propertyName,
             JsonNode value) {
         JsonNode result = node.get(propertyName);

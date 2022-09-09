@@ -57,29 +57,6 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         private final Set<String> cachedPageResets = new HashSet<>();
     }
 
-//    self.index_cache_file = None
-//    self.index_cache_relative = False
-//    self.add_letters = False
-//    self.add_letters_block = False
-//
-//    self.document_dict = None
-//    self.document = None
-//
-//    self.current_link_page = ''
-//    self.current_anchor_number = 0
-//    self.index_cache = {}
-//    self.cached_page_resets = set()
-
-
-
-//    private static final String TITLE_PLACEHOLDER = "title";
-//    private static final String STYLES_PLACEHOLDER = "styles";
-//    private static final String CONTENT_PLACEHOLDER = "content";
-//    private static final String EXEC_NAME_PLACEHOLDER = "exec_name";
-//    private static final String EXEC_VERSION_PLACEHOLDER = "exec_version";
-//    private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
-//    private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
-//
     private static final String INDEX_ENTRY_ANCHOR_PREFIX = "index_entry_";
     private static final String INDEX_CONTENT_BLOCK_CLASS = "index-content";
     private static final String INDEX_ENTRY_CLASS = "index-entry";
@@ -91,25 +68,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
     private boolean finalizationStarted = false;
 
-
     // We are going to validate multiple metadata blocks, so preloading the schema.
     private final JsonSchema metadataSchema =
             loadJsonSchemaFromResource("plugins/index_metadata_schema.json");
-
-//    private Path indexCacheFile;
-//    private boolean indexCacheRelative = false;
-//    private boolean addLetters = false;
-//    private boolean addLettersBlock = false;
-
-//    private ObjectNode documentJson;
-//    private Document document;
-//    private List<Md2HtmlPlugin> plugins;
-
-//    private String currentLinkPage;
-//    private int currentAnchorNumber = 0;
-
-//    private Map<String, List<IndexEntry>> indexCache;
-//    private final Set<String> cachedPageResets = new HashSet<>();
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {

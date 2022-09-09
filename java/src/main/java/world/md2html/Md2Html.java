@@ -14,7 +14,6 @@ import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.CheckedIllegalArgumentException;
-import world.md2html.utils.MustacheUtils;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
@@ -32,10 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static world.md2html.utils.MustacheUtils.*;
+import static world.md2html.utils.MustacheUtils.createCachedMustacheRenderer;
+import static world.md2html.utils.MustacheUtils.createCachedMustacheRendererLegacy;
 import static world.md2html.utils.Utils.*;
-import static world.md2html.utils.Utils.firstNotNull;
-import static world.md2html.utils.Utils.getCachedString;
 
 public class Md2Html {
 
@@ -47,10 +45,6 @@ public class Md2Html {
     private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
     private static final String SOURCE_FILE_PLACEHOLDER = "source_file";
-
-//    public static void execute(SessionOptions options, Document document,
-//            List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper)
-//            throws IOException, UserError {
 
     public static void execute(Document document, List<Md2HtmlPlugin> plugins,
             PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options)
@@ -196,8 +190,5 @@ public class Md2Html {
         Node document = parser.parse(mdText);
         return renderer.render(document);
     }
-
-//    public static void execute(Document doc, List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options) {
-//    }
 
 }

@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import world.md2html.options.cli.CliArgumentsException.CliParsingExceptionType;
 import world.md2html.options.model.CliOptions;
 
-import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +33,7 @@ class CliParserTest {
         return cliParser.parse(args);
     }
 
+    @SuppressWarnings("unused")
     private static Stream<Arguments> helpRequested() {
         return Stream.of(
                 Arguments.of((Object) new String[] {"-h"}),

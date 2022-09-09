@@ -13,8 +13,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,18 +22,6 @@ public class Utils {
     public interface FunctionWithException<T, R> {
         R apply(T arg) throws Exception;
     }
-
-//    public static final Comparator<String> NULLABLE_STRING_COMPARATOR = (s1, s2) -> {
-//        if (s1 == null && s2 == null) {
-//            return 0;
-//        } else if (s1 == null) {
-//            return 1;
-//        } else if (s2 == null) {
-//            return -1;
-//        } else {
-//            return s1.compareTo(s2);
-//        }
-//    };
 
     public static final Map<Path, String> CACHED_FILES = new HashMap<>();
 
@@ -139,16 +125,6 @@ public class Utils {
         return null;
     }
 
-    @SafeVarargs
-    public static <T> Optional<T> firstNotNullOptional(T... values) {
-        for (T value : values) {
-            if (value != null) {
-                return Optional.of(value);
-            }
-        }
-        return Optional.empty();
-    }
-
     public static String formatNanoSeconds(long duration) {
         StringBuilder sb = new StringBuilder(20);
         long quotient = duration / 1_000_000;
@@ -186,10 +162,13 @@ public class Utils {
      * <br />
      * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
      */
-    // TODO Consider refusing from `CheckedIllegalArgumentException` by replacing
-    //  with `IllegalArgumentException`.
+
     public static String relativizeRelativeResource(String resource, String page)
             throws CheckedIllegalArgumentException {
+
+        // TODO Consider refusing from `CheckedIllegalArgumentException` by replacing
+        //  with `IllegalArgumentException`.
+
         page = page.replace('\\', '/');
         if (page.isEmpty() || page.endsWith("/")) {
             throw new CheckedIllegalArgumentException("Incorrect page location: " + page);

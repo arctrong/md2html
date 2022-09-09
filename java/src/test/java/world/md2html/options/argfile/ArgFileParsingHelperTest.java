@@ -13,7 +13,6 @@ import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageVariablesPlugin;
 import world.md2html.utils.UserError;
 
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,30 +25,8 @@ import static world.md2html.testutils.PluginTestUtils.findSinglePlugin;
 
 public class ArgFileParsingHelperTest {
 
-//    private static final Method method;
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
     private static final CliParser cliParser = new CliParser("whatever");
-
-//    static {
-//        try {
-//            // The decision was made not to make the original method public as it must not
-//            // be called from the outside.
-//            // TODO There's a possible problem here: coverage and mutation tests (not used yet)
-//            //  may not see this code invocation during tests.
-//            method = Md2HtmlRunner.class.getDeclaredMethod("parseArgumentFile",
-//                    ArgFileRaw.class, CliOptions.class);
-//            method.setAccessible(true);
-//        } catch (NoSuchMethodException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    private static Pair<ArgFile, List<Md2HtmlPlugin>> parseArgumentFile(String argFileString,
-//            CliOptions cliOptions) throws Exception {
-//        ArgFileRaw argFileRaw = readArgumentFileNode(argFileString);
-//        //noinspection unchecked
-//        return (Pair<ArgFile, List<Md2HtmlPlugin>>) method.invoke(null, argFileRaw, cliOptions);
-//    }
 
     @Test
     public void emptyFile_NegativeScenario() {

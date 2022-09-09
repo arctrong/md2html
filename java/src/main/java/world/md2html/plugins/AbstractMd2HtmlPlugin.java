@@ -3,7 +3,6 @@ package world.md2html.plugins;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchema;
 import world.md2html.options.argfile.ArgFileParseException;
-import world.md2html.utils.JsonUtils;
 
 import static world.md2html.utils.JsonUtils.*;
 
@@ -48,6 +47,5 @@ abstract public class AbstractMd2HtmlPlugin implements Md2HtmlPlugin {
         }
         initialized = true;
     }
-
 
 }

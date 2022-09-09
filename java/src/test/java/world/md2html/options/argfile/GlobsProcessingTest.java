@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.TestUtils.relativeToCurrentDir;
 
@@ -36,7 +37,7 @@ public class GlobsProcessingTest {
     @Test
     public void test_recursive() throws ArgFileParseException {
         ArgFile argFile = parseArgumentFile("{\"documents\": [{\"input-glob\": \"" + THIS_DIR +
-                        "for_globs_processing_test/**/*.txt\"}]}", DUMMY_CLI_OPTIONS);
+                "for_globs_processing_test/**/*.txt\"}]}", DUMMY_CLI_OPTIONS);
         List<String> inputFilesToCheck = argFile.getDocuments().stream()
                 .map(d -> d.getInput().substring(THIS_DIR.length())).collect(Collectors.toList());
         assertThat(inputFilesToCheck, containsInAnyOrder(
@@ -48,8 +49,8 @@ public class GlobsProcessingTest {
     @Test
     public void test_sort_by_file_path() throws ArgFileParseException {
         ArgFile argFile = parseArgumentFile("{\"documents\": [{\"input-glob\": \"" + THIS_DIR +
-                        "for_globs_processing_test/**/*.txt\", " +
-                        "\"sort-by-file-path\": true}]}", DUMMY_CLI_OPTIONS);
+                "for_globs_processing_test/**/*.txt\", " +
+                "\"sort-by-file-path\": true}]}", DUMMY_CLI_OPTIONS);
         List<String> inputFilesToCheck = argFile.getDocuments().stream()
                 .map(d -> d.getInput().substring(THIS_DIR.length())).collect(Collectors.toList());
         assertThat(inputFilesToCheck, contains(

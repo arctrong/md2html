@@ -42,4 +42,5 @@ public class RelativePathsPlugin extends AbstractMd2HtmlPlugin {
         });
         return variables;
     }
+
 }

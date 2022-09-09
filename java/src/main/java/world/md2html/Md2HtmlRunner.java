@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-import static world.md2html.options.argfile.ArgFileParsingHelper.*;
+import static world.md2html.options.argfile.ArgFileParsingHelper.readArgumentFileNode;
 import static world.md2html.utils.Utils.formatNanoSeconds;
 import static world.md2html.utils.Utils.readStringFromCommentedFile;
 
@@ -62,17 +62,9 @@ public class Md2HtmlRunner {
         }
 
         ArgFile argFile;
-//        List<Md2HtmlPlugin> plugins;
         try {
             ArgFileRaw argFileRaw = readArgumentFileNode(argumentFileString);
             argFile = ArgumentsHelper.parseArgumentFile(argFileRaw, cliOptions);
-
-
-//            System.out.println("### argFile=" + argFile);
-
-
-//            argFile = argumentsAndPlugins.getValue0();
-//            plugins = argumentsAndPlugins.getValue1();
         } catch (ArgFileParseException e) {
             throw new UserError("Error parsing argument file '" + argumentFile + "': " +
                     e.getMessage());
