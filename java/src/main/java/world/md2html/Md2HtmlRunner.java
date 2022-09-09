@@ -1,114 +1,109 @@
 package world.md2html;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.options.argfile.ArgFileParseException;
-import world.md2html.options.argfile.ArgFileParser;
 import world.md2html.options.cli.CliArgumentsException;
 import world.md2html.options.cli.CliParser;
-import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
-import world.md2html.plugins.FinalizationAction;
-import world.md2html.plugins.InitializationAction;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.UserError;
-import world.md2html.utils.Utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.List;
+import java.nio.file.Paths;
+
+import static world.md2html.options.argfile.ArgFileParsingHelper.*;
+import static world.md2html.utils.Utils.formatNanoSeconds;
+import static world.md2html.utils.Utils.readStringFromCommentedFile;
 
 public class Md2HtmlRunner {
 
     public static void main(String[] args) throws Exception {
+        try {
+            execute(args);
+        } catch (UserError ue) {
+            System.out.println(ue.getMessage());
+            System.exit(1);
+        }
+    }
 
+    private static void execute(String[] args) throws IOException {
         long start = System.nanoTime();
 
         String usage = "java " + Md2Html.class.getSimpleName();
-        CliOptions cliOptions = null;
+        CliOptions cliOptions;
         try {
             cliOptions = new CliParser(usage).parse(args);
         } catch (CliArgumentsException e) {
-            System.out.println(e.getPrintText());
-            System.exit(1);
+            throw new UserError(e.getPrintText());
         }
 
-        Path argumentFile = cliOptions.getArgumentFile();
-        String argumentFileString = null;
-        if (argumentFile != null) {
-            try {
-                argumentFileString = Utils.readStringFromCommentedFile(argumentFile, "#",
-                        StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                System.out.println("Error parsing argument file '" + argumentFile +
-                        "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                System.exit(1);
-            }
+        String argumentFileString;
+        String argumentFile = cliOptions.getArgumentFile();
+        if (argumentFile == null) {
+            argumentFileString =
+                    "{\"documents\": [{}], \n" +
+                    // When run without argument file, need to implicitly add
+                    // plugin for page title extraction from the source text.
+                    "\"plugins\": {\"page-variables\": \n" +
+                    "    {\"VARIABLES\": {\"only-at-page-start\": true}}} \n" +
+                    "}";
         } else {
-            // When run without argument file, need implicitly added
-            // plugin for page title extraction from the source text.
-            argumentFileString = "{\"documents\": [{}], \"plugins\": {\"page-variables\": " +
-                    "{\"VARIABLES\": {\"only-at-page-start\": true}";
-            if (cliOptions.isLegacyMode()) {
-                argumentFileString += ", \"METADATA\": {\"only-at-page-start\": true}";
+            try {
+                argumentFileString = readStringFromCommentedFile(Paths.get(argumentFile),
+                        "#", StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new UserError("Error reading argument file '" + argumentFile + "': " +
+                        e.getClass().getSimpleName() + ": " + e.getMessage());
             }
-            argumentFileString += "}}}}";
         }
 
-        ArgFileOptions argFileOptions = null;
-        ObjectNode argFileNode = null;
+        ArgFile argFile;
+//        List<Md2HtmlPlugin> plugins;
         try {
-            argFileNode = ArgFileParser.readArgumentFileNode(argumentFileString);
-            argFileOptions = ArgFileParser.parse(argFileNode, cliOptions);
-        } catch (ArgFileParseException e) {
-            System.out.println("Error parsing argument file '" + argumentFile + "': " +
-                    e.getMessage());
-            System.exit(1);
-        }
+            ArgFileRaw argFileRaw = readArgumentFileNode(argumentFileString);
+            argFile = ArgumentsHelper.parseArgumentFile(argFileRaw, cliOptions);
 
-        for (Md2HtmlPlugin plugin : argFileOptions.getPlugins()) {
-            List<InitializationAction> initializationActions = plugin.initializationActions();
-            if (initializationActions != null) {
-                for (InitializationAction action : initializationActions) {
-                    action.initialize(argFileNode, cliOptions, argFileOptions.getPlugins());
-                }
-            }
+
+//            System.out.println("### argFile=" + argFile);
+
+
+//            argFile = argumentsAndPlugins.getValue0();
+//            plugins = argumentsAndPlugins.getValue1();
+        } catch (ArgFileParseException e) {
+            throw new UserError("Error parsing argument file '" + argumentFile + "': " +
+                    e.getMessage());
         }
 
         PageMetadataHandlersWrapper metadataHandlersWrapper =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
-        for (Document doc : argFileOptions.getDocuments()) {
+        for (Document doc : argFile.getDocuments()) {
             try {
-                Md2Html.execute(argFileOptions.getOptions(), doc, argFileOptions.getPlugins(),
-                        metadataHandlersWrapper);
+                Md2Html.execute(doc, argFile.getPlugins(), metadataHandlersWrapper,
+                        argFile.getOptions());
             } catch(UserError e) {
-                System.out.println("Error processing input file '" + doc.getInputLocation() +
+                System.out.println("Error processing input file '" + doc.getInput() +
                         "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
                 System.exit(1);
             }
         }
 
-        for (Md2HtmlPlugin plugin : argFileOptions.getPlugins()) {
-            List<FinalizationAction> finalizationActions = plugin.finalizationActions();
-            if (finalizationActions != null) {
-                try {
-                    for (FinalizationAction finalizationAction : finalizationActions) {
-                        finalizationAction.finalizePlugin();
-                    }
-                } catch (UserError e) {
-                    System.out.println("Error executing finalization action for plugin '"
-                            + plugin.getClass().getSimpleName() + "': " + e.getMessage());
-                    System.exit(1);
-                }
+        for (Md2HtmlPlugin plugin : argFile.getPlugins()) {
+            try {
+                plugin.finalize(argFile.getOptions(), argFile.getPlugins());
+            } catch (UserError ue) {
+                throw new UserError("Error executing finalization action in plugin '" +
+                        plugin.getClass().getSimpleName() + "': " + ue.getMessage());
             }
         }
 
-        if (argFileOptions.getOptions().isVerbose()) {
+        if (argFile.getOptions().isVerbose()) {
             long end = System.nanoTime();
-            System.out.println("Finished in: " + Utils.formatNanoSeconds(end - start));
+            System.out.println("Finished in: " + formatNanoSeconds(end - start));
         }
     }
 

@@ -24,12 +24,12 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
             loadJsonSchemaFromResource("plugins/page_variables_metadata_schema.json");
 
     public PageVariablesPlugin() {
-        resetPageVariable();
+        resetPageVariables();
     }
 
     @Override
-    public boolean acceptData(JsonNode data) throws ArgFileParseException {
-        doStandardJsonInputDataValidation(data, "plugins/page_variables_schema.json");
+    public void acceptData(JsonNode data) throws ArgFileParseException {
+        validateInputDataAgainstSchemaFromResource(data, "plugins/page_variables_schema.json");
         List<PageMetadataHandlerInfo> handlers = new ArrayList<>();
         data.fields().forEachRemaining(entry -> {
             JsonNode valueNode = entry.getValue().get("only-at-page-start");
@@ -40,7 +40,11 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
         if (handlers.isEmpty()) {
             this.handlers.add(new PageMetadataHandlerInfo(this, "VARIABLES", true));
         }
-        return !this.handlers.isEmpty();
+    }
+
+    @Override
+    public boolean isBlank() {
+        return this.handlers.isEmpty();
     }
 
     @Override
@@ -51,27 +55,27 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
             String metadataSection) throws PageMetadataException {
-
-        ObjectNode metadataNode = parseAndValidatePageVariableMetadata(metadata);
+        ObjectNode metadataNode;
+        try {
+            metadataNode = parseAndValidatePageVariableMetadata(metadata);
+        } catch (ArgFileParseException e) {
+            throw new PageMetadataException(e.getMessage());
+        }
         //noinspection unchecked
         this.pageVariables.putAll((Map<String, Object>) deJson(metadataNode));
         return "";
     }
 
-    private ObjectNode parseAndValidatePageVariableMetadata(String metadata) {
+    private ObjectNode parseAndValidatePageVariableMetadata(String metadata)
+            throws ArgFileParseException {
         ObjectNode metadataNode;
         try {
-            metadataNode = (ObjectNode) MAPPER.readTree(metadata);
+            metadataNode = (ObjectNode) OBJECT_MAPPER.readTree(metadata);
         } catch (JsonProcessingException e) {
             throw new PageMetadataException("Incorrect JSON in page metadata: " +
                     e.getClass().getSimpleName() + ": " + e.getMessage());
         }
-        try {
-            validateJson(metadataNode, this.metadataSchema);
-        } catch (JsonValidationException e) {
-            throw new PageMetadataException("Error validating page metadata: " +
-                    e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
+        validateInputDataAgainstSchema(metadataNode, this.metadataSchema);
         return metadataNode;
     }
 
@@ -82,10 +86,10 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
 
     @Override
     public void newPage(Document document) {
-        resetPageVariable();
+        resetPageVariables();
     }
 
-    private void resetPageVariable() {
+    private void resetPageVariables() {
         this.pageVariables = new HashMap<>();
     }
 

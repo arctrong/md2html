@@ -1,11 +1,11 @@
 package world.md2html.options.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Value;
 
-@AllArgsConstructor
-@Getter
+@Value
+@Builder(toBuilder = true)
 public class SessionOptions {
-    private final boolean verbose;
-    private final boolean legacyMode;
+    boolean verbose;
+    boolean legacyMode;
 }

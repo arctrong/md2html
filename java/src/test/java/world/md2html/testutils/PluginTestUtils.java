@@ -11,8 +11,8 @@ public final class PluginTestUtils {
 
     private PluginTestUtils() {}
 
-    public static Md2HtmlPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins,
-            Class<? extends Md2HtmlPlugin> pluginClass) {
+    public static <T extends Md2HtmlPlugin> T findSinglePlugin(List<? extends Md2HtmlPlugin> plugins,
+            Class<T> pluginClass) {
         Md2HtmlPlugin result = null;
         for (Md2HtmlPlugin plugin : plugins) {
             if (pluginClass.equals(plugin.getClass())) {
@@ -24,12 +24,12 @@ public final class PluginTestUtils {
                 }
             }
         }
-        return result;
+        // TODO Try to remove this warning.
+        return (T) result;
     }
 
     public static Document documentWithOutputLocation(String outputLocation) {
-        return new Document(null, outputLocation, null, null, null, null, false, false, false,
-                false);
+        return Document.builder().output(outputLocation).build();
     }
 
 }

@@ -127,4 +127,11 @@ class UtilsTest {
         assertEquals("", Utils.relativizeRelativePath("./", "index.html"));
         assertEquals("../", Utils.relativizeRelativePath("./", "doc/index.html"));
     }
+
+    @Test
+    void refineToString() {
+        RefineToStringTestClass object = new RefineToStringTestClass("value1", "value2");
+        assertEquals("{field1=value1, field2=value2}", Utils.refineToString(object));
+    }
+
 }

@@ -6,8 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import world.md2html.options.argfile.ArgFileParseException;
-import world.md2html.options.argfile.ArgFileParser;
-import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.testutils.PluginTestUtils;
 
@@ -19,6 +18,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.PluginTestUtils.documentWithOutputLocation;
 
 class PageFlowsPluginTest {
@@ -63,6 +63,8 @@ class PageFlowsPluginTest {
         FIRST, LAST, BETWEEN
     }
 
+    private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
+
     /**
      * The pages will be accessed via the page flow's `Iterable` interface implementation.
      * This method reproduces such behaviour.
@@ -77,7 +79,7 @@ class PageFlowsPluginTest {
     }
 
     private PageFlowsPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return (PageFlowsPlugin) PluginTestUtils.findSinglePlugin(plugins, PageFlowsPlugin.class);
+        return PluginTestUtils.findSinglePlugin(plugins, PageFlowsPlugin.class);
     }
 
     private void assertPageEquals(String link, String title, boolean current, boolean external,
@@ -100,23 +102,23 @@ class PageFlowsPluginTest {
 
     @Test
     public void notActivated() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
+        List<Md2HtmlPlugin> plugins = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"index.txt\"}], " +
-                        "\"plugins\": {\"page-flows\": {}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                        "\"plugins\": {\"page-flows\": {}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
         assertNull(plugin);
     }
 
     @Test
     public void pageSequence_inPluginsSection() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
+        List<Md2HtmlPlugin> plugins = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
                         "\"plugins\": {\"page-flows\": {\"sections\": [" +
                         "{\"link\": \"index.html\", \"title\": \"Home\"}," +
                         "{\"link\": \"about.html\", \"title\": \"About\"}," +
                         "{\"link\": \"other.html\", \"title\": \"Other\"}" +
-                        "]}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                        "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
         Document doc = documentWithOutputLocation("about.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
         assertEquals(3, pages.size());
@@ -127,12 +129,12 @@ class PageFlowsPluginTest {
 
     @Test
     public void pageSequence_inDocumentsSection() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
                 "{\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "{\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\"]}, " +
                 "{\"input\": \"no-page-flow.txt\", \"title\": \"No page flow\"}" +
-                "], \"plugins\": {\"page-flows\": {}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                "], \"plugins\": {\"page-flows\": {}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
         
         Document doc = documentWithOutputLocation("index.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
@@ -149,14 +151,14 @@ class PageFlowsPluginTest {
 
     @Test
     public void pageSequence_inBothDocumentsAndPluginsSections() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
                 "    {\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"other.txt\", \"title\": \"Other\"}" +
                 "], \"plugins\": {\"page-flows\": {\"sections\": [" +
                 "    {\"link\": \"other.html\", \"title\": \"OtherLink\"}" +
-                "]}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("other.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
@@ -168,17 +170,17 @@ class PageFlowsPluginTest {
 
     @Test
     public void notActivated_withoutEmptyPluginDeclaration() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
+        List<Md2HtmlPlugin> plugins = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"index.txt\", \"output\": \"index.html\", " +
                         "\"title\": \"Home\", \"page-flows\": [\"sections\"]}], " +
-                        "\"plugins\": {}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                        "\"plugins\": {}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
         assertNull(plugin);
     }
 
     @Test
     public void severalPageFlows() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
                 "    {\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"narration.txt\", \"title\": \"Narration\"}, " +
@@ -189,8 +191,8 @@ class PageFlowsPluginTest {
                 "], \"other_links\": [" +
                 "    {\"link\": \"other1.html\", \"title\": \"OtherLink1\"}," +
                 "    {\"link\": \"other2.html\", \"title\": \"OtherLink2\"}" +
-            "]}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+            "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("narration.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
@@ -208,7 +210,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void sameDocumentInSeveralPageFlows() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
                 "    {\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"about.txt\", \"title\": \"About\", \"page-flows\": [\"sections\", \"other_links\"]}, " +
                 "    {\"input\": \"other.txt\", \"title\": \"Other\", \"page-flows\": [\"other_links\"]}" +
@@ -216,8 +218,8 @@ class PageFlowsPluginTest {
                 "    {\"link\": \"other.html\", \"title\": \"OtherLink\"}" +
                 "], \"other_links\": [" +
                 "    {\"link\": \"index.html\", \"title\": \"HomeLink\"}" +
-                "]}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("other.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
@@ -235,13 +237,13 @@ class PageFlowsPluginTest {
 
     @Test
     public void externalLinks() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
             "    {\"input\": \"index.txt\", \"title\": \"Home\"} " +
                 "], \"plugins\": {\"page-flows\": {\"sections\": [" +
                 "    {\"link\": \"index.html\", \"title\": \"HomeLinkExternal\", \"external\": true}, " +
                 "    {\"link\": \"index.html\", \"title\": \"HomeLink\", \"external\": false}" +
-                "]}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("index.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
@@ -250,6 +252,7 @@ class PageFlowsPluginTest {
         assertPageEquals("index.html", "HomeLink", true, false, PagePosition.LAST, pages.get(1));
     }
 
+    @SuppressWarnings("unused")
     private static Stream<Arguments> navigation() {
         return Stream.of(
                 Arguments.of("with_plugins_section", "\n{\"documents\": [ \n" +
@@ -271,9 +274,11 @@ class PageFlowsPluginTest {
 
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource
+    @SuppressWarnings("unused")
     public void navigation(String testName, String argFileContent) throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(argFileContent, null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        List<Md2HtmlPlugin> plugins = parseArgumentFile(argFileContent, DUMMY_CLI_OPTIONS)
+                .getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("page1.html");
         PageFlow pageFlow = new PageFlow(plugin.variables(doc).get("sections"));
@@ -336,6 +341,7 @@ class PageFlowsPluginTest {
         return sb.toString();
     }
 
+    @SuppressWarnings("unused")
     private static Stream<Arguments> navigation_generalized() {
         return IntStream.rangeClosed(1, 4).boxed().flatMap(pageCount -> Stream.of(
                 Arguments.of("with_plugins_section", pageCount,
@@ -347,10 +353,12 @@ class PageFlowsPluginTest {
 
     @ParameterizedTest(name = "[{index}] {0}, pageCount={1}")
     @MethodSource
+    @SuppressWarnings("unused")
     public void navigation_generalized(String testName, int pageCount, String argFileContent)
             throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(argFileContent, null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        List<Md2HtmlPlugin> plugins = parseArgumentFile(argFileContent, DUMMY_CLI_OPTIONS)
+                .getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         for (int i = 1; i <= pageCount; ++i) {
             Document doc = documentWithOutputLocation("page" + i + ".html");
@@ -376,7 +384,7 @@ class PageFlowsPluginTest {
 
     @Test
     public void relativisation() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse("{\"documents\": [" +
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
                 "    {\"input\": \"root1.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"root2.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}, " +
                 "    {\"input\": \"doc/sub1.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}, " +
@@ -385,8 +393,8 @@ class PageFlowsPluginTest {
                 "], \"plugins\": {\"page-flows\": {\"sections\": [" +
                 "    {\"link\": \"doc/ch01/sub-sub-1.html\", \"title\": \"whatever\"}," +
                 "    {\"link\": \"doc/ch01/sub-sub-2.html\", \"title\": \"whatever\"}" +
-                "]}}}", null);
-        PageFlowsPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("root1.html");
         List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));

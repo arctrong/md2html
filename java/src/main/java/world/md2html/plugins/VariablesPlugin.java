@@ -13,15 +13,20 @@ public class VariablesPlugin extends AbstractMd2HtmlPlugin {
     private Map<String, Object> pageVariables;
 
     @Override
-    public boolean acceptData(JsonNode data) throws ArgFileParseException {
-        doStandardJsonInputDataValidation(data, "plugins/variables_schema.json");
+    public void acceptData(JsonNode data) throws ArgFileParseException {
+        validateInputDataAgainstSchemaFromResource(data, "plugins/variables_schema.json");
         //noinspection unchecked
         this.pageVariables = (Map<String, Object>) deJson(data);
-        return !this.pageVariables.isEmpty();
+    }
+
+    @Override
+    public boolean isBlank() {
+        return this.pageVariables.isEmpty();
     }
 
     @Override
     public Map<String, Object> variables(Document document) {
         return this.pageVariables;
     }
+
 }

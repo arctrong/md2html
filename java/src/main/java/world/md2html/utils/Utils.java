@@ -10,11 +10,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    @FunctionalInterface
+    public interface FunctionWithException<T, R> {
+        R apply(T arg) throws Exception;
+    }
 
 //    public static final Comparator<String> NULLABLE_STRING_COMPARATOR = (s1, s2) -> {
 //        if (s1 == null && s2 == null) {
@@ -28,8 +37,14 @@ public class Utils {
 //        }
 //    };
 
+    public static final Map<Path, String> CACHED_FILES = new HashMap<>();
+
     public static boolean isNullOrFalse(Object object) {
         return object instanceof Boolean && (Boolean) object;
+    }
+
+    public static boolean isNullOrEmpty(String string) {
+        return string == null || string.isEmpty();
     }
 
     private static final Pattern JSON_COMMENT_BLANKING_PATTERN = Pattern.compile("[^\\s]");
@@ -55,6 +70,20 @@ public class Utils {
         try (BufferedReader reader = Files.newBufferedReader(filePath, charset)) {
             return readStringFromReader(reader);
         }
+    }
+
+    public static String getCachedString(Path path,
+            FunctionWithException<Path, String> stringProvider) {
+        String lines = CACHED_FILES.get(path);
+        if (lines == null) {
+            try {
+                lines = stringProvider.apply(path);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            CACHED_FILES.put(path, lines);
+        }
+        return lines;
     }
 
     private static String readStringFromReader(Reader reader) throws IOException {
@@ -157,6 +186,8 @@ public class Utils {
      * <br />
      * ATTENTION! This method wasn't tested with ABSOLUTE paths as any of the arguments.
      */
+    // TODO Consider refusing from `CheckedIllegalArgumentException` by replacing
+    //  with `IllegalArgumentException`.
     public static String relativizeRelativeResource(String resource, String page)
             throws CheckedIllegalArgumentException {
         page = page.replace('\\', '/');
@@ -173,7 +204,7 @@ public class Utils {
         if (basePath == null) {
             result = Paths.get(resource);
         } else {
-            result = basePath.relativize(Paths.get(resource));
+            result = basePath.toAbsolutePath().relativize(Paths.get(resource).toAbsolutePath());
         }
         return result.normalize().toString().replace('\\', '/');
     }
@@ -205,7 +236,7 @@ public class Utils {
         if (basePath == null) {
             resultPath = Paths.get(path);
         } else {
-            resultPath = basePath.relativize(Paths.get(path));
+            resultPath = basePath.toAbsolutePath().relativize(Paths.get(path).toAbsolutePath());
         }
         String result = resultPath.normalize().toString().replace('\\', '/');
         if (result.isEmpty() || result.equals("./") || result.equals(".")) {
@@ -215,6 +246,17 @@ public class Utils {
         } else {
             return result + "/";
         }
+    }
+
+    /**
+     * This method assumes that the `object`'s `toString()` method returns value is like
+     * `ClassName(field1=value1, field2=value2,...)`. It then returns the value like:
+     * `{field1=value1, field2=value2,...}`.
+     */
+    public static String refineToString(Object object) {
+        int prefixLength = object.getClass().getSimpleName().length() + 1;
+        String string = object.toString();
+        return "{" + string.substring(prefixLength, string.length() - 1) + "}";
     }
 
 }

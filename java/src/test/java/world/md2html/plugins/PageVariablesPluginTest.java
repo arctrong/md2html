@@ -2,8 +2,8 @@ package world.md2html.plugins;
 
 import org.junit.jupiter.api.Test;
 import world.md2html.options.argfile.ArgFileParseException;
-import world.md2html.options.argfile.ArgFileParser;
-import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.model.ArgFile;
+import world.md2html.options.model.CliOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.testutils.PluginTestUtils;
 
@@ -11,44 +11,47 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
 
 class PageVariablesPluginTest {
 
+    private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
+
     private PageVariablesPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return (PageVariablesPlugin) PluginTestUtils.findSinglePlugin(plugins,
-                PageVariablesPlugin.class);
+        return PluginTestUtils.findSinglePlugin(plugins, PageVariablesPlugin.class);
     }
 
-    private ArgFileOptions parsePluginData(String pluginData) throws ArgFileParseException {
-        return ArgFileParser.readAndParse("{\"documents\": [{\"input\": \"about.md\"}], " +
-                        "\"plugins\": {\"page-variables\": " + pluginData + "}}", null);
+    private ArgFile parsePluginData(String pluginData) throws ArgFileParseException {
+        return parseArgumentFile("{\"documents\": [{\"input\": \"about.md\"}], " +
+                        "\"plugins\": {\"page-variables\": " + pluginData + "}}",
+                DUMMY_CLI_OPTIONS);
     }
 
     @Test
     public void notActivated() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
+        ArgFile argFile = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
-                        "\"plugins\": {\"variables\": {}}}", null);
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                        "\"plugins\": {\"variables\": {}}}", DUMMY_CLI_OPTIONS);
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         assertNull(plugin);
     }
 
     @Test
     public void activated_withDefaultMarker() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = ArgFileParser.readAndParse(
+        ArgFile argFile = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"about.md\"}], " +
-                        "\"plugins\": {\"page-variables\": {}}}", null);
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+                        "\"plugins\": {\"page-variables\": {}}}", DUMMY_CLI_OPTIONS);
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         assertNotNull(plugin);
     }
 
     @Test
     public void singleBlock_complexTest() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = parsePluginData("{\"METADATA\": { }}");
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        ArgFile argFile = parsePluginData("{\"METADATA\": { }}");
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
         String pageContent = "<!--METADATA {\"title\": \"About\"}-->other content";
         plugin.newPage(null);
@@ -78,10 +81,10 @@ class PageVariablesPluginTest {
 
     @Test
     public void caseInsensitive() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = parsePluginData("{\"VariaBLEs\": {}}");
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        ArgFile argFile = parsePluginData("{\"VariaBLEs\": {}}");
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
         String pageContent = "<!--variables{ \"key\":\"value\" }-->other content";
         plugin.newPage(null);
@@ -93,11 +96,11 @@ class PageVariablesPluginTest {
 
     @Test
     public void inPageMiddle() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = parsePluginData(
+        ArgFile argFile = parsePluginData(
                 "{\"metadata\": {\"only-at-page-start\": false}}");
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
         String pageContent = "start text <!--metadata{ \"logo\":\"COOL!\" }-->other content";
         plugin.newPage(null);
@@ -109,11 +112,11 @@ class PageVariablesPluginTest {
 
     @Test
     public void multiline() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = parsePluginData(
+        ArgFile argFile = parsePluginData(
                 "{\"variables\": {\"only-at-page-start\": false}}");
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
         String pageContent = "start text <!--variables\n{\"key\": \"value\"}\r\n-->\n other content";
         plugin.newPage(null);
@@ -125,11 +128,11 @@ class PageVariablesPluginTest {
 
     @Test
     public void wrongMarker() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = parsePluginData(
+        ArgFile argFile = parsePluginData(
                 "{\"variables\": {\"only-at-page-start\": false}}");
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
         String pageContent = "start text<!--metadata{\"key\":\"value\"}-->";
         plugin.newPage(null);
         String result = metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
@@ -140,11 +143,11 @@ class PageVariablesPluginTest {
 
     @Test
     public void severalBlocks() throws ArgFileParseException {
-        ArgFileOptions argFileOptions = parsePluginData(
+        ArgFile argFile = parsePluginData(
                 "{\"variables1\": {\"only-at-page-start\": false}, \"metadata1\": {}}");
-        PageVariablesPlugin plugin = findSinglePlugin(argFileOptions.getPlugins());
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
         PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(argFileOptions.getPlugins());
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
         String pageContent = "    <!--metadata1{\"key\": \"value\"}--> other " +
                 "text <!--variables1{\"question\": \"answer\"} --> some more text";

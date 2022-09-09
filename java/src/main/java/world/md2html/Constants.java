@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public final class Constants {
 
@@ -18,14 +19,14 @@ public final class Constants {
     private static final String WORKING_DIR_ENV_VARIABLE_NAME = "MD2HTML_HOME";
     public static final Path WORKING_DIR;
 
-    public static final Map<String, Md2HtmlPlugin> PLUGINS = new HashMap<>();
+    public static final Map<String, Supplier<Md2HtmlPlugin>> PLUGIN_PROVIDERS = new HashMap<>();
 
     static {
-        PLUGINS.put("page-flows", new PageFlowsPlugin());
-        PLUGINS.put("relative-paths", new RelativePathsPlugin());
-        PLUGINS.put("page-variables", new PageVariablesPlugin());
-        PLUGINS.put("variables", new VariablesPlugin());
-        PLUGINS.put("index", new IndexPlugin());
+        PLUGIN_PROVIDERS.put("page-flows", PageFlowsPlugin::new);
+        PLUGIN_PROVIDERS.put("relative-paths", RelativePathsPlugin::new);
+        PLUGIN_PROVIDERS.put("page-variables", PageVariablesPlugin::new);
+        PLUGIN_PROVIDERS.put("variables", VariablesPlugin::new);
+        PLUGIN_PROVIDERS.put("index", IndexPlugin::new);
     }
 
     static {

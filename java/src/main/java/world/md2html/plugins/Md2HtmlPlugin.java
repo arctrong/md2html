@@ -2,7 +2,10 @@ package world.md2html.plugins;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.options.argfile.ArgFileParseException;
+import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
+import world.md2html.options.model.raw.ArgFileRaw;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,16 +14,29 @@ import java.util.Map;
 public interface Md2HtmlPlugin {
 
     /**
-     * Returns the plugin activated state. After accepting the given data, the plugin may declare
-     * itself as not activated and return `False`. In this case it should not be used.
+     * Accepts plugin configuration data. Some plugins may be able to accept data several times.
      */
-    boolean acceptData(JsonNode data) throws ArgFileParseException;
+    void acceptData(JsonNode data) throws ArgFileParseException;
 
     /**
-     * Returns a list of actions that are going to be fulfilled before the documents processing.
+     * If a plugin is blank its usage will have no effect. This method allows removing such
+     * plugins from consideration.
      */
-    default List<InitializationAction> initializationActions() {
-        return Collections.emptyList();
+    boolean isBlank();
+
+    /**
+     * @return Extra plugins data.
+     */
+    default Map<String, JsonNode> preInitialize(ArgFileRaw argFileRaw, CliOptions cliOptions,
+            Map<String, Md2HtmlPlugin> plugins) {
+        return Collections.emptyMap();
+    }
+
+    /**
+     * This method will be called after all plugins are pre-initialized and before the
+     * documents processing.
+     */
+    default void initialize(JsonNode extraPluginData) throws ArgFileParseException {
     }
 
     default List<PageMetadataHandlerInfo> pageMetadataHandlers() {
@@ -39,10 +55,9 @@ public interface Md2HtmlPlugin {
     }
 
     /**
-     * Returns a list of actions that are going to be fulfilled after all documents are processed.
+     * Executes after all pages processed.
      */
-    default List<FinalizationAction> finalizationActions() {
-        return Collections.emptyList();
+    default void finalize(SessionOptions options, List<Md2HtmlPlugin> plugins) {
     }
 
 }

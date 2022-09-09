@@ -18,8 +18,8 @@ class CliParserTest {
     private void assertMd2HtmlOptionsEquals(CliOptions o1, CliOptions o2) {
         assertEquals(o1.getInputRoot(), o2.getInputRoot());
         assertEquals(o1.getOutputRoot(), o2.getOutputRoot());
-        assertEquals(o1.getInputFile(), o2.getInputFile());
-        assertEquals(o1.getOutputFile(), o2.getOutputFile());
+        assertEquals(o1.getInput(), o2.getInput());
+        assertEquals(o1.getOutput(), o2.getOutput());
         assertEquals(o1.getTitle(), o2.getTitle());
         assertEquals(o1.getTemplate(), o2.getTemplate());
         assertEquals(o1.getIncludeCss(), o2.getIncludeCss());
@@ -30,8 +30,8 @@ class CliParserTest {
     }
 
     private CliOptions getParsingResult(String... args) throws CliArgumentsException {
-        CliParser CliParser = new CliParser("whatever");
-        return CliParser.parse(args);
+        CliParser cliParser = new CliParser("whatever");
+        return cliParser.parse(args);
     }
 
     private static Stream<Arguments> helpRequested() {
@@ -53,7 +53,7 @@ class CliParserTest {
     @Test
     public void minimalArgumentSet() throws Exception {
         CliOptions options = getParsingResult("-i", "../doc/notes.md");
-        assertEquals("../doc/notes.md", options.getInputFile());
+        assertEquals("../doc/notes.md", options.getInput());
         assertNull(options.getArgumentFile());
         assertNull(options.getTitle());
         assertNull(options.getLinkCss());
@@ -66,7 +66,7 @@ class CliParserTest {
     @Test
     public void argumentFile() throws Exception {
         CliOptions options = getParsingResult("--argument-file", "md2html_args.json");
-        assertEquals(Paths.get("md2html_args.json"), options.getArgumentFile());
+        assertEquals("md2html_args.json", options.getArgumentFile());
     }
 
     @Test
@@ -83,10 +83,10 @@ class CliParserTest {
                 "-i", "input.md", "-o", "doc/output.htm",
                 "-t", "someTitle", "--template", "../templateDir", "--link-css=someStyles.css",
                 "-fv");
-        assertEquals("input.md", options.getInputFile());
-        assertEquals("doc/output.htm", options.getOutputFile());
+        assertEquals("input.md", options.getInput());
+        assertEquals("doc/output.htm", options.getOutput());
         assertEquals("someTitle", options.getTitle());
-        assertEquals(Paths.get("../templateDir"), options.getTemplate());
+        assertEquals("../templateDir", options.getTemplate());
         assertEquals(1, options.getLinkCss().size());
         assertEquals("someStyles.css", options.getLinkCss().get(0));
         assertNull(options.getIncludeCss());
@@ -108,8 +108,8 @@ class CliParserTest {
         CliOptions options = getParsingResult("-i", "input.md", "--include-css=styles1.css",
                 "--include-css=styles2.css");
         assertEquals(2, options.getIncludeCss().size());
-        assertTrue(options.getIncludeCss().contains(Paths.get("styles1.css")));
-        assertTrue(options.getIncludeCss().contains(Paths.get("styles2.css")));
+        assertTrue(options.getIncludeCss().contains("styles1.css"));
+        assertTrue(options.getIncludeCss().contains("styles2.css"));
         assertTrue(options.getLinkCss() == null || options.getLinkCss().isEmpty());
     }
 
@@ -130,7 +130,7 @@ class CliParserTest {
         assertEquals(1, options.getLinkCss().size());
         assertEquals(1, options.getIncludeCss().size());
         assertTrue(options.getLinkCss().contains("styles1.css"));
-        assertTrue(options.getIncludeCss().contains(Paths.get("styles2.css")));
+        assertTrue(options.getIncludeCss().contains("styles2.css"));
     }
 
     @Test

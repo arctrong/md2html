@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -20,8 +23,21 @@ import java.util.stream.Collectors;
 
 public class JsonUtils {
 
-    public static final ObjectMapper MAPPER = new ObjectMapper();
-    public static final JsonNodeFactory NODE_FACTORY = MAPPER.getNodeFactory();
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final JsonNodeFactory NODE_FACTORY = OBJECT_MAPPER.getNodeFactory();
+    public static final ObjectMapper OBJECT_MAPPER_FOR_BUILDERS = new ObjectMapper();
+
+    static {
+        OBJECT_MAPPER_FOR_BUILDERS.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
+            @Override
+            public JsonPOJOBuilder.Value findPOJOBuilderConfig(AnnotatedClass ac) {
+                if (ac.hasAnnotation(JsonPOJOBuilder.class)) {
+                    return super.findPOJOBuilderConfig(ac);
+                }
+                return new JsonPOJOBuilder.Value("build", "");
+            }
+        });
+    }
 
     public static String jsonObjectStringField(ObjectNode objectNode, String fieldName) {
         return Optional.ofNullable(objectNode.get(fieldName)).map(JsonNode::asText).orElse(null);
@@ -46,6 +62,25 @@ public class JsonUtils {
         List<String> result = new ArrayList<>();
         for (Iterator<JsonNode> it = array.elements(); it.hasNext(); ) {
             result.add(it.next().asText());
+        }
+        return result;
+    }
+
+//    public static JsonNode jsonNodeGetDefault(JsonNode node, String propertyName,
+//            JsonNode defaultValue) {
+//        JsonNode result = node.get(propertyName);
+//        if (result == null) {
+//            return defaultValue;
+//        }
+//        return result;
+//    }
+
+    public static JsonNode objectNodeSetDefault(ObjectNode node, String propertyName,
+            JsonNode value) {
+        JsonNode result = node.get(propertyName);
+        if (result == null) {
+            result = value;
+            node.set(propertyName, result);
         }
         return result;
     }
@@ -78,7 +113,7 @@ public class JsonUtils {
                     return value.asDouble();
                 }
             case OBJECT:
-                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map = new LinkedHashMap<>();
                 value.fields().forEachRemaining(entry -> map.put(entry.getKey(),
                         deJson(entry.getValue())));
                 return map;

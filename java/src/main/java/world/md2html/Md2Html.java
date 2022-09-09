@@ -13,6 +13,7 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
+import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.MustacheUtils;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
@@ -31,6 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static world.md2html.utils.MustacheUtils.*;
+import static world.md2html.utils.Utils.*;
+import static world.md2html.utils.Utils.firstNotNull;
+import static world.md2html.utils.Utils.getCachedString;
+
 public class Md2Html {
 
     private static final String TITLE_PLACEHOLDER = "title";
@@ -40,13 +46,18 @@ public class Md2Html {
     private static final String EXEC_VERSION_PLACEHOLDER = "exec_version";
     private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
+    private static final String SOURCE_FILE_PLACEHOLDER = "source_file";
 
-    public static void execute(SessionOptions options, Document document,
-            List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper)
+//    public static void execute(SessionOptions options, Document document,
+//            List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper)
+//            throws IOException, UserError {
+
+    public static void execute(Document document, List<Md2HtmlPlugin> plugins,
+            PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options)
             throws IOException, UserError {
 
-        Path outputFile = Paths.get(document.getOutputLocation());
-        Path inputFile = Paths.get(document.getInputLocation());
+        Path outputFile = Paths.get(document.getOutput());
+        Path inputFile = Paths.get(document.getInput());
 
         if (!document.isForce() && Files.exists(outputFile)) {
             FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
@@ -54,31 +65,42 @@ public class Md2Html {
             if (outputFileTime.compareTo(inputFileTime) > 0) {
                 if (document.isVerbose()) {
                     System.out.println("The output file is up-to-date. Skipping: "
-                            + document.getOutputLocation());
+                            + document.getOutput());
                 }
                 return;
             }
         }
 
-        String mdText = Utils.readStringFromUtf8File(inputFile);
+        for (Md2HtmlPlugin plugin : plugins) {
+            plugin.newPage(document);
+        }
 
-        plugins.forEach(plugin -> plugin.newPage(document));
+        String mdText = getCachedString(inputFile, Utils::readStringFromUtf8File);
         mdText = metadataHandlersWrapper.applyMetadataHandlers(mdText, document);
 
         Map<String, Object> substitutions = new HashMap<>();
-        String title = document.getTitle();
-
-        if (title == null) {
-            title = "";
-        }
 
         String htmlText = generateHtml(mdText);
 
-        substitutions.put(TITLE_PLACEHOLDER, title);
         substitutions.put(CONTENT_PLACEHOLDER, htmlText);
+        try {
+            substitutions.put(SOURCE_FILE_PLACEHOLDER,
+                    relativizeRelativeResource(document.getInput(), document.getOutput()));
+        } catch (CheckedIllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
 
-        substitutions.put(STYLES_PLACEHOLDER, Md2HtmlUtils.generateDocumentStyles(document));
+        outputPage(document, plugins, substitutions, options);
+    }
 
+    public static void outputPage(Document document, List<Md2HtmlPlugin> plugins,
+            Map<String, Object> substitutions, SessionOptions options) {
+
+        // TODO Probably move to `Md2HtmlUtils`.
+
+        substitutions = new HashMap<>(substitutions);
+
+        substitutions.put(TITLE_PLACEHOLDER, firstNotNull(document.getTitle(), ""));
         substitutions.put(EXEC_NAME_PLACEHOLDER, Constants.EXEC_NAME);
         substitutions.put(EXEC_VERSION_PLACEHOLDER, Constants.EXEC_VERSION);
 
@@ -87,6 +109,8 @@ public class Md2Html {
         LocalDateTime dateTime = LocalDateTime.now(ZoneId.systemDefault());
         substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
         substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
+
+        substitutions.put(STYLES_PLACEHOLDER, Md2HtmlUtils.generateDocumentStyles(document));
 
         for (Md2HtmlPlugin plugin : plugins) {
             substitutions.putAll(plugin.variables(document));
@@ -98,7 +122,7 @@ public class Md2Html {
                 //noinspection unchecked
                 placeholders = (Map<String, Object>) substitutions.get("placeholders");
             } catch (Exception e) {
-                // Deliberate ignore.
+                // Intentional ignore.
             }
             if (placeholders != null) {
                 substitutions.remove("placeholders");
@@ -106,29 +130,43 @@ public class Md2Html {
             }
         }
 
+        // TODO Decide whether it's required.
+        substitutions.putIfAbsent(TITLE_PLACEHOLDER, "");
+
+        Path  outputDirPath = Paths.get((document.getOutput())).normalize().getParent();
+        if (!Files.exists(outputDirPath)) {
+            try {
+                Files.createDirectories(outputDirPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not create output file directory structure: " +
+                        outputDirPath, e);
+            }
+        }
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(outputFile.toFile()), StandardCharsets.UTF_8))) {
+                new FileOutputStream(document.getOutput()), StandardCharsets.UTF_8))) {
             Mustache mustache;
             try {
                 if (options.isLegacyMode()) {
-                    mustache = MustacheUtils.createCachedMustacheRendererLegacy(document.getTemplate());
+                    mustache = createCachedMustacheRendererLegacy(Paths.get(document.getTemplate()));
                 } else {
-                    mustache = MustacheUtils.createCachedMustacheRenderer(document.getTemplate());
+                    mustache = createCachedMustacheRenderer(Paths.get(document.getTemplate()));
                 }
             } catch (FileNotFoundException e) {
                 throw new UserError(String.format("Error reading template file '%s': %s: %s",
-                        document.getTemplate().toString(), e.getClass().getSimpleName(),
+                        document.getTemplate(), e.getClass().getSimpleName(),
                         e.getMessage()));
             }
             mustache.execute(writer, substitutions);
             writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         if (document.isVerbose()) {
-            System.out.println("Output file generated: " + document.getOutputLocation());
+            System.out.println("Output file generated: " + document.getOutput());
         }
         if (document.isReport()) {
-            System.out.println(document.getOutputLocation());
+            System.out.println(document.getOutput());
         }
     }
 
@@ -158,5 +196,8 @@ public class Md2Html {
         Node document = parser.parse(mdText);
         return renderer.render(document);
     }
+
+//    public static void execute(Document doc, List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options) {
+//    }
 
 }

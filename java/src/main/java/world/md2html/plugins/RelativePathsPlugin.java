@@ -16,13 +16,17 @@ public class RelativePathsPlugin extends AbstractMd2HtmlPlugin {
     private Map<String, String> data = null;
 
     @Override
-    public boolean acceptData(JsonNode data) throws ArgFileParseException {
-        doStandardJsonInputDataValidation(data, "plugins/relative_paths_schema.json");
+    public void acceptData(JsonNode data) throws ArgFileParseException {
+        validateInputDataAgainstSchemaFromResource(data, "plugins/relative_paths_schema.json");
         Map<String, String> pluginData = new HashMap<>();
         data.fields().forEachRemaining(entry -> pluginData.put(entry.getKey(),
                 entry.getValue().asText()));
         this.data = pluginData;
-        return !this.data.isEmpty();
+    }
+
+    @Override
+    public boolean isBlank() {
+        return this.data.isEmpty();
     }
 
     @Override
@@ -30,10 +34,10 @@ public class RelativePathsPlugin extends AbstractMd2HtmlPlugin {
         Map<String, Object> variables = new HashMap<>();
         this.data.forEach((k, v) -> {
             try {
-                variables.put(k, relativizeRelativePath(v, document.getOutputLocation()));
+                variables.put(k, relativizeRelativePath(v, document.getOutput()));
             } catch (CheckedIllegalArgumentException e) {
                 throw new UserError("Error recalculating relative path '" + k + "'='" + v +
-                        "' for page '" + document.getOutputLocation() + "': " + e.getMessage());
+                        "' for page '" + document.getOutput() + "': " + e.getMessage());
             }
         });
         return variables;

@@ -2,7 +2,7 @@ package world.md2html.utils;
 
 /**
  * Error that was caused by correct processing of incorrect user input or actions.
- * The message must be more user friendly, and the application output may be simpler, e.g.
+ * The message must be more user-friendly, and the application output may be simpler, e.g.
  * without a stack trace.
  */
 public class UserError extends RuntimeException {

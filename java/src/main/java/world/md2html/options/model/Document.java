@@ -1,26 +1,23 @@
 package world.md2html.options.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Value;
 
-import java.nio.file.Path;
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Value
+@Builder(toBuilder = true)
 public class Document {
 
-    private String inputLocation;
-    private String outputLocation;
-    private String title;
-    private Path template;
-    private List<Path> includeCss;
-    private List<String> linkCss;
-    private boolean noCss;
-    private boolean force;
-    private boolean verbose;
-    private boolean report;
+    String input;
+    String output;
+    String title;
+    String template;
+    List<String> includeCss;
+    List<String> linkCss;
+    boolean noCss;
+    boolean force;
+    boolean verbose;
+    boolean report;
 
 }

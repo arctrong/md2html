@@ -1,7 +1,9 @@
 package world.md2html.options.cli;
 
+// TODO Consider extending `UserError`.
 public class CliArgumentsException extends Exception {
 
+    // TODO Consider removing this information (like in the Python version).
     public enum CliParsingExceptionType {
         /** Parsing error occurred. */
         ERROR,

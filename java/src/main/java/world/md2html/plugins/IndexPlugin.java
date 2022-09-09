@@ -9,48 +9,77 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.mustachejava.Mustache;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import com.networknt.schema.JsonSchema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import world.md2html.Constants;
-import world.md2html.Md2HtmlUtils;
+import lombok.*;
+import org.javatuples.Pair;
+import world.md2html.Md2Html;
 import world.md2html.options.argfile.ArgFileParseException;
-import world.md2html.options.argfile.ArgFileParser;
-import world.md2html.options.model.ArgFileOptions;
+import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
+import world.md2html.options.model.raw.ArgFileDocumentRaw;
+import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.utils.CheckedIllegalArgumentException;
-import world.md2html.utils.MustacheUtils;
-import world.md2html.utils.UserError;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
+import static world.md2html.options.argfile.ArgFileParsingHelper.completeArgFileProcessing;
+import static world.md2html.options.argfile.ArgFileParsingHelper.mergeAndCanonizeArgFileRaw;
 import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 
-public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler,
-        InitializationAction, FinalizationAction {
+public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
-    private static final String TITLE_PLACEHOLDER = "title";
-    private static final String STYLES_PLACEHOLDER = "styles";
-    private static final String CONTENT_PLACEHOLDER = "content";
-    private static final String EXEC_NAME_PLACEHOLDER = "exec_name";
-    private static final String EXEC_VERSION_PLACEHOLDER = "exec_version";
-    private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
-    private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
+    // TODO Consider using Jackson object mapper
+    // TODO Remove all getters and setters and use direct field access. This is a nested class
+    //  and the outer class anyway has access to its private fields.
+    @Getter
+    @Setter
+    @Builder(toBuilder = true)
+    private static class IndexData {
+        private Path indexCacheFile;
+        private boolean indexCacheRelative;
+        private boolean addLetters;
+        private boolean addLettersBlock;
+        private ObjectNode documentJson;
+        private Document document;
+        private String currentLinkPage;
+        private int currentAnchorNumber;
+        private Map<String, List<IndexEntry>> indexCache;
+        private final Set<String> cachedPageResets = new HashSet<>();
+    }
 
+//    self.index_cache_file = None
+//    self.index_cache_relative = False
+//    self.add_letters = False
+//    self.add_letters_block = False
+//
+//    self.document_dict = None
+//    self.document = None
+//
+//    self.current_link_page = ''
+//    self.current_anchor_number = 0
+//    self.index_cache = {}
+//    self.cached_page_resets = set()
+
+
+
+//    private static final String TITLE_PLACEHOLDER = "title";
+//    private static final String STYLES_PLACEHOLDER = "styles";
+//    private static final String CONTENT_PLACEHOLDER = "content";
+//    private static final String EXEC_NAME_PLACEHOLDER = "exec_name";
+//    private static final String EXEC_VERSION_PLACEHOLDER = "exec_version";
+//    private static final String GENERATION_DATE_PLACEHOLDER = "generation_date";
+//    private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
+//
     private static final String INDEX_ENTRY_ANCHOR_PREFIX = "index_entry_";
     private static final String INDEX_CONTENT_BLOCK_CLASS = "index-content";
     private static final String INDEX_ENTRY_CLASS = "index-entry";
@@ -58,70 +87,162 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private static final String INDEX_LETTER_CLASS = "index-letter";
     private static final String INDEX_LETTERS_BLOCK_CLASS = "index_letters";
 
+    private Map<String, IndexData> indexData;
+
+    private boolean finalizationStarted = false;
+
+
     // We are going to validate multiple metadata blocks, so preloading the schema.
     private final JsonSchema metadataSchema =
             loadJsonSchemaFromResource("plugins/index_metadata_schema.json");
 
-    private Path indexCacheFile;
-    private boolean indexCacheRelative = false;
-    private boolean addLetters = false;
-    private boolean addLettersBlock = false;
+//    private Path indexCacheFile;
+//    private boolean indexCacheRelative = false;
+//    private boolean addLetters = false;
+//    private boolean addLettersBlock = false;
 
-    private ObjectNode documentJson;
-    private Document document;
-    private List<Md2HtmlPlugin> plugins;
+//    private ObjectNode documentJson;
+//    private Document document;
+//    private List<Md2HtmlPlugin> plugins;
 
-    private String currentLinkPage;
-    private int currentAnchorNumber = 0;
+//    private String currentLinkPage;
+//    private int currentAnchorNumber = 0;
 
-    private Map<String, List<IndexEntry>> indexCache;
-    private final Set<String> cachedPageResets = new HashSet<>();
-
-    private final List<PageMetadataHandlerInfo> handlers =
-            Collections.singletonList(new PageMetadataHandlerInfo(this, "INDEX", false));
-
-    private final List<InitializationAction> initializationActions =
-            Collections.singletonList(this);
-
-    private final List<FinalizationAction> finalizationActions =
-            Collections.singletonList(this);
+//    private Map<String, List<IndexEntry>> indexCache;
+//    private final Set<String> cachedPageResets = new HashSet<>();
 
     @Override
-    public boolean acceptData(JsonNode data) throws ArgFileParseException {
-        doStandardJsonInputDataValidation(data, "plugins/index_schema.json");
-        this.documentJson = data.deepCopy();
-        this.indexCacheFile = Paths.get(data.get("index-cache").asText());
-        ObjectNode dataObj = (ObjectNode) data;
-        this.indexCacheRelative = jsonObjectBooleanField(dataObj, "index-cache-relative",
-                this.indexCacheRelative);
-        this.addLetters = jsonObjectBooleanField(dataObj, "letters", this.addLetters);
-        this.addLettersBlock = jsonObjectBooleanField(dataObj, "letters-block",
-                this.addLettersBlock);
-        return true;
+    public void acceptData(JsonNode data) throws ArgFileParseException {
+
+        assureAcceptDataOnce();
+        validateInputDataAgainstSchemaFromResource(data, "plugins/index_schema.json");
+        Map<String, IndexData> indexDataMap = new LinkedHashMap<>();
+
+        Iterator<Map.Entry<String, JsonNode>> fieldIterator = data.fields();
+        while (fieldIterator.hasNext()) {
+            Map.Entry<String, JsonNode> fieldEntry = fieldIterator.next();
+            String marker = fieldEntry.getKey();
+            ObjectNode indexData = fieldEntry.getValue().deepCopy();
+
+            IndexData.IndexDataBuilder indexDataBuilder = IndexData.builder();
+
+            indexDataBuilder.documentJson(indexData);
+            indexDataBuilder.indexCacheFile(Paths.get(indexData.get("index-cache").asText()));
+
+            ValueNode indexCacheRelativeNode = (ValueNode) indexData.get("index-cache-relative");
+            if (indexCacheRelativeNode != null) {
+                indexDataBuilder.indexCacheRelative(indexCacheRelativeNode.asBoolean());
+            }
+            ValueNode addLettersNode = (ValueNode) indexData.get("letters");
+            if (addLettersNode != null) {
+                indexDataBuilder.addLetters(addLettersNode.asBoolean());
+            }
+            ValueNode lettersBlock = (ValueNode) indexData.get("letters-block");
+            if (lettersBlock != null) {
+                indexDataBuilder.addLetters(lettersBlock.asBoolean());
+            }
+
+            indexDataMap.put(marker.toUpperCase(), indexDataBuilder.build());
+
+            indexData.remove("index-cache");
+            indexData.remove("index-cache-relative");
+            indexData.remove("letters");
+            indexData.remove("letters-block");
+        }
+        this.indexData = indexDataMap;
     }
 
     @Override
-    public List<InitializationAction> initializationActions() {
-        return this.initializationActions;
+    public boolean isBlank() {
+        return indexData.isEmpty();
+    }
+
+    @Override
+    public Map<String, JsonNode> preInitialize(ArgFileRaw argFileRaw, CliOptions cliOptions,
+            Map<String, Md2HtmlPlugin> plugins) {
+
+        ArgFileRaw.ArgFileRawBuilder argFileRawBuilder = argFileRaw.toBuilder();
+        List<ArgFileDocumentRaw> documentRawList = new ArrayList<>();
+        for (IndexData indexData : indexData.values()) {
+            ArgFileDocumentRaw argFileDocumentRaw;
+            try {
+                argFileDocumentRaw = OBJECT_MAPPER_FOR_BUILDERS
+                        .treeToValue(indexData.getDocumentJson(), ArgFileDocumentRaw.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            documentRawList.add(argFileDocumentRaw.toBuilder().input("fictional.txt").build());
+        }
+        argFileRawBuilder.documents(documentRawList);
+
+        ArgFileRaw canonizedArgFileRaw = mergeAndCanonizeArgFileRaw(argFileRawBuilder.build(),
+                cliOptions);
+
+        Pair<ArgFile, Map<String, JsonNode>> processingResult =
+                completeArgFileProcessing(canonizedArgFileRaw, plugins);
+        ArgFile arguments = processingResult.getValue0();
+        Map<String, JsonNode> extraPluginData = processingResult.getValue1();
+
+        Map<String, IndexData> newIndexData = new HashMap<>();
+        int i = 0;
+        for (Map.Entry<String, IndexData> indexDataEntry : this.indexData.entrySet()) {
+            String marker = indexDataEntry.getKey();
+            IndexData indexData = indexDataEntry.getValue();
+            IndexData.IndexDataBuilder indexDataBuilder = indexData.toBuilder();
+            Document.DocumentBuilder documentBuilder = arguments.getDocuments().get(i).toBuilder();
+            i++;
+            documentBuilder.input(null);
+            Document document = documentBuilder.build();
+            indexDataBuilder.document(document);
+
+            Path indexCacheFile = indexData.indexCacheRelative ? Paths.get(document.getOutput())
+                    .getParent().resolve(indexData.getIndexCacheFile()) :
+                    indexData.getIndexCacheFile();
+            indexDataBuilder.indexCacheFile(indexCacheFile);
+
+            if (Files.exists(indexCacheFile)) {
+                try {
+                    indexDataBuilder.indexCache(OBJECT_MAPPER.readValue(indexCacheFile.toFile(),
+                            new TypeReference<Map<String, List<IndexEntry>>>() {
+                            }));
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading index cache file '" + indexCacheFile
+                            + "': " + e.getMessage(), e);
+                }
+            } else {
+                indexDataBuilder.indexCache(new LinkedHashMap<>());
+            }
+            newIndexData.put(marker, indexDataBuilder.build());
+        }
+        this.indexData = newIndexData;
+
+        return extraPluginData;
     }
 
     @Override
     public List<PageMetadataHandlerInfo> pageMetadataHandlers() {
-        return this.handlers;
+        return this.indexData.keySet().stream().map(marker ->
+                new PageMetadataHandlerInfo(this, marker, false)).collect(Collectors.toList());
     }
 
     @Override
     public void newPage(Document document) {
-        this.indexCache.put(document.getOutputLocation(), new ArrayList<>());
-        this.cachedPageResets.add(document.getOutputLocation());
-        try {
-            this.currentLinkPage = relativizeRelativeResource(document.getOutputLocation(),
-                    this.document.getOutputLocation());
-        } catch (CheckedIllegalArgumentException e) {
-            throw new RuntimeException("Could not relativize '" + this.document.getOutputLocation()
-                    + "' against '" + document.getOutputLocation() + "': " + e.getMessage(), e);
+        if (this.finalizationStarted) {
+            return;
         }
-        this.currentAnchorNumber = 0;
+        for (IndexData indexData : this.indexData.values()) {
+            indexData.getIndexCache().put(document.getOutput(), new ArrayList<>());
+            indexData.getCachedPageResets().add(document.getOutput());
+            try {
+                indexData.setCurrentLinkPage(relativizeRelativeResource(document.getOutput(),
+                        indexData.getDocument().getOutput()));
+            } catch (CheckedIllegalArgumentException e) {
+                throw new RuntimeException("Could not relativize '" +
+                        indexData.getDocument().getOutput() + "' against '" +
+                        document.getOutput() + "': " + e.getMessage(), e);
+            }
+            indexData.setCurrentAnchorNumber(0);
+        }
     }
 
     @Override
@@ -130,50 +251,55 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     }
 
     @Override
-    public void initialize(ObjectNode argFileNode, CliOptions cliOptions,
-                List<Md2HtmlPlugin> plugins) {
-        argFileNode = argFileNode.deepCopy();
-        this.documentJson.put("input", "fictional.txt");
-        ArrayNode documents = new ArrayNode(NODE_FACTORY);
-        documents.add(this.documentJson);
-        argFileNode.set("documents", documents);
+    public void finalize(SessionOptions options, List<Md2HtmlPlugin> plugins) {
 
-        cliOptions = cliOptions.toBuilder().build(); // creating a copy
-        cliOptions.setInputFile(null);
-        cliOptions.setOutputFile(null);
+        this.finalizationStarted = true;
 
-        ArgFileOptions argFileOptions;
-        try {
-            argFileOptions = ArgFileParser.parse(argFileNode, cliOptions, false);
-        } catch (ArgFileParseException e) {
-            throw new RuntimeException("Error initializing plugin '"
-                    + this.getClass().getSimpleName() + "': " + e.getMessage(), e);
-        }
-        this.document = argFileOptions.getDocuments().get(0);
-        this.document.setInputLocation(null);
-
-        if (this.indexCacheRelative) {
-            this.indexCacheFile = Paths.get(this.document.getOutputLocation()).getParent()
-                    .resolve(this.indexCacheFile);
-        }
-        if (Files.exists(indexCacheFile)) {
-            try {
-                this.indexCache = MAPPER.readValue(indexCacheFile.toFile(),
-                        new TypeReference<Map<String, List<IndexEntry>>>() {});
-            } catch (IOException e) {
-                throw new RuntimeException("Error reading index cache file '" + indexCacheFile
-                        + "': " + e.getMessage(), e);
+        for (IndexData indexData : this.indexData.values()) {
+            if (indexData.getCachedPageResets().isEmpty()) {
+                if (indexData.getDocument().isVerbose()) {
+                    System.out.println("Index file is up-to-date. Skipping: "
+                            + indexData.getDocument().getOutput());
+                }
+                return;
             }
-        } else {
-            this.indexCache = new LinkedHashMap<>();
-        }
+            for (Md2HtmlPlugin plugin : plugins) {
+                plugin.newPage(indexData.getDocument());
+            }
 
-        this.plugins = plugins;
+            Map<String, Object> substitutions = new HashMap<>();
+            substitutions.put("content", generateIndexHtml(indexData.getIndexCache(),
+                    indexData.isAddLetters(), indexData.isAddLettersBlock()));
+
+            Md2Html.outputPage(indexData.getDocument(), plugins, substitutions, options);
+
+            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
+                    .withObjectIndenter(new DefaultIndenter("  ", "\n"));
+            try {
+                mapper.writer(printer).writeValue(indexData.getIndexCacheFile().toFile(),
+                        indexData.getIndexCache());
+            } catch (IOException e) {
+                throw new RuntimeException("Error opening index cache file for writing: "
+                        + indexData.getIndexCacheFile(), e);
+            }
+
+            if (indexData.getDocument().isVerbose()) {
+                System.out.println("Index file generated: " +
+                        indexData.getDocument().getOutput());
+            }
+            if (indexData.getDocument().isReport()) {
+                System.out.println(indexData.getDocument().getOutput());
+            }
+        }
     }
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
                                      String metadataSection) throws PageMetadataException {
+
+        IndexData indexData = this.indexData.get(marker.toUpperCase());
+        Map<String, List<IndexEntry>> indexCache = indexData.getIndexCache();
 
         metadata = metadata.trim();
         List<String> terms;
@@ -184,100 +310,21 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             terms = Collections.singletonList(metadata);
         }
 
-        List<IndexEntry> anchors = this.indexCache.get(document.getOutputLocation());
-        String anchorText = "<a name=\"" + INDEX_ENTRY_ANCHOR_PREFIX +
-                (++this.currentAnchorNumber) + "\"></a>";
+        List<IndexEntry> anchors = indexCache.get(document.getOutput());
+        int currentAnchorNumber = indexData.getCurrentAnchorNumber() + 1;
+        String anchorName = INDEX_ENTRY_ANCHOR_PREFIX + marker.toLowerCase() + "_" +
+                currentAnchorNumber;
+        String anchorText = "<a name=\"" + anchorName + "\"></a>";
+        indexData.setCurrentAnchorNumber(currentAnchorNumber);
 
         for (String term : terms) {
             String normalizedTerm = term.trim();
-            IndexEntry indexEntry = new IndexEntry(normalizedTerm, this.currentLinkPage + "#"
-                    + INDEX_ENTRY_ANCHOR_PREFIX + this.currentAnchorNumber, document.getTitle());
+            IndexEntry indexEntry = new IndexEntry(normalizedTerm,
+                    indexData.getCurrentLinkPage() + "#" + anchorName, document.getTitle());
             anchors.add(indexEntry);
         }
 
         return anchorText;
-    }
-
-    @Override
-    public List<FinalizationAction> finalizationActions() {
-        return this.finalizationActions;
-    }
-
-    @Override
-    public void finalizePlugin() {
-
-        if (this.cachedPageResets.isEmpty()) {
-            if (this.document.isVerbose()) {
-                System.out.println("Index file is up-to-date. Skipping: "
-                        + this.document.getOutputLocation());
-            }
-            return;
-        }
-
-        Path outputFile = Paths.get(this.document.getOutputLocation());
-        
-        this.plugins.stream().filter(p -> p != this)
-                .forEach(plugin -> plugin.newPage(this.document));
-
-        Map<String, Object> substitutions = new HashMap<>();
-        String title = this.document.getTitle();
-
-        if (title == null) {
-            title = "";
-        }
-
-        String htmlText = generateIndexHtml(this.indexCache, this.addLetters, this.addLettersBlock);
-
-        substitutions.put(TITLE_PLACEHOLDER, title);
-        substitutions.put(CONTENT_PLACEHOLDER, htmlText);
-
-        substitutions.put(STYLES_PLACEHOLDER, Md2HtmlUtils.generateDocumentStyles(this.document));
-
-        substitutions.put(EXEC_NAME_PLACEHOLDER, Constants.EXEC_NAME);
-        substitutions.put(EXEC_VERSION_PLACEHOLDER, Constants.EXEC_VERSION);
-
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.now(ZoneId.systemDefault());
-        substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
-        substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
-
-        for (Md2HtmlPlugin plugin : plugins) {
-            substitutions.putAll(plugin.variables(this.document));
-        }
-
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(outputFile.toFile()), StandardCharsets.UTF_8))) {
-            Mustache mustache;
-            try {
-                mustache = MustacheUtils.createCachedMustacheRenderer(this.document.getTemplate());
-            } catch (FileNotFoundException e) {
-                throw new UserError(String.format("Error reading template file '%s': %s: %s",
-                        this.document.getTemplate().toString(), e.getClass().getSimpleName(),
-                        e.getMessage()));
-            }
-            mustache.execute(writer, substitutions);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException("Error opening output file for writing: " + outputFile, e);
-        }
-
-        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
-                .withObjectIndenter(new DefaultIndenter("  ", "\n"));
-        try {
-            mapper.writer(printer).writeValue(this.indexCacheFile.toFile(), this.indexCache);
-        } catch (IOException e) {
-            throw new RuntimeException("Error opening index cache file for writing: "
-                    + this.indexCacheFile, e);
-        }
-
-        if (this.document.isVerbose()) {
-            System.out.println("Index file generated: " + this.document.getOutputLocation());
-        }
-        if (this.document.isReport()) {
-            System.out.println(this.document.getOutputLocation());
-        }
     }
 
     private static String generateIndexHtml(Map<String, List<IndexEntry>> indexCache,
@@ -332,7 +379,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                         .append(linksString).append("</p>\n");
             } else {
                 IndexEntry indexEntry = links.get(0);
-                content.append("<p class=\"" + INDEX_ENTRY_CLASS + "\"><a href=\"").append(indexEntry.getLink())
+                content.append("<p class=\"" + INDEX_ENTRY_CLASS + "\"><a href=\"")
+                        .append(indexEntry.getLink())
                         .append("\"").append(createTitleAttr(indexEntry.getTitle())).append(">")
                         .append(term).append("</a></p>\n");
             }
@@ -350,17 +398,17 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private ArrayNode parseAndValidateEntryJson(Document document, String metadata) {
         JsonNode metadataJsonNode;
         try {
-            metadataJsonNode = MAPPER.readTree(metadata);
+            metadataJsonNode = OBJECT_MAPPER.readTree(metadata);
         } catch (JsonProcessingException e) {
             throw new PageMetadataException("Incorrect JSON in index entry. Class '" +
-                    e.getClass().getSimpleName() + "', page '" + document.getInputLocation()
+                    e.getClass().getSimpleName() + "', page '" + document.getInput()
                     + "', error: " + e.getMessage());
         }
         try {
             validateJson(metadataJsonNode, this.metadataSchema);
         } catch (JsonValidationException e) {
             throw new PageMetadataException("Error validating index entry. Class '" +
-                    e.getClass().getSimpleName() + "', page '" + document.getInputLocation()
+                    e.getClass().getSimpleName() + "', page '" + document.getInput()
                     + "', error: " + e.getMessage());
         }
         return (ArrayNode) metadataJsonNode;
@@ -369,7 +417,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    @Setter
+//    @Setter
     static class IndexEntry {
         private String entry;
         private String link;

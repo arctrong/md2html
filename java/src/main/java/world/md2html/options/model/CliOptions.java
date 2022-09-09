@@ -1,32 +1,39 @@
 package world.md2html.options.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.nio.file.Path;
 import java.util.List;
 
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder(toBuilder = true)
+// TODO Move to package `world.md2html.options.cli`.
+
+@Value
+@Builder()
 public class CliOptions {
 
-    private Path argumentFile;
-    private String inputRoot;
-    private String outputRoot;
-    private String inputFile;
-    private String outputFile;
-    private String title;
-    private Path template;
-    private List<Path> includeCss;
-    private List<String> linkCss;
-    private boolean noCss;
-    private boolean force;
-    private boolean verbose;
-    private boolean report;
-    private boolean legacyMode;
+    String argumentFile;
+    String inputRoot;
+    String outputRoot;
+    String input;
+    String inputGlob;
+
+    String sortByVariable;
+    boolean sortByFilePath;
+    boolean sortByTitle;
+
+    String output;
+
+    String title;
+    String titleFromVariable;
+
+    String template;
+
+    List<String> includeCss;
+    List<String> linkCss;
+    boolean noCss;
+
+    boolean force;
+    boolean verbose;
+    boolean report;
+    boolean legacyMode;
 
 }
