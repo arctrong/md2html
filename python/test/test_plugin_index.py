@@ -1,12 +1,8 @@
-import sys
 import unittest
-from pathlib import Path
 
+from md2html import *
 from plugins.index_plugin import IndexPlugin
 from .utils_for_tests import find_single_instance_of_type
-
-sys.path.append(Path(__file__).resolve().parent.parent)
-from md2html import *
 
 
 def _find_single_plugin(plugins):
@@ -82,7 +78,3 @@ class IndexPluginTest(unittest.TestCase):
         plugin.new_page(doc)
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual(processed_page, page_text)
-
-
-if __name__ == '__main__':
-    unittest.main()

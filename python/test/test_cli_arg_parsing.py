@@ -1,9 +1,6 @@
 import contextlib
-import sys
 import unittest
-from pathlib import Path
 
-sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
 
 
@@ -139,7 +136,3 @@ class CliArgParseTest(unittest.TestCase):
     def test_argumentFile(self):
         md2html_args = parse_cli_arguments(['--argument-file', 'md2html_args.json'])
         self.assertEqual(Path('md2html_args.json'), md2html_args.argument_file)
-
-
-if __name__ == '__main__':
-    unittest.main()

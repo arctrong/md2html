@@ -1,9 +1,7 @@
-import sys
 import unittest
-from pathlib import Path
 
-sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
+from utils import UserError
 
 
 class ArgFileParseTest(unittest.TestCase):
@@ -22,7 +20,8 @@ class ArgFileParseTest(unittest.TestCase):
 
     def test_noDefaultElement_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": []}')
-        parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertEqual(0, len(args.documents))
 
     def test_fullDefaultElement_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
@@ -219,7 +218,3 @@ class ArgFileParseTest(unittest.TestCase):
         doc = args.documents[2]
         self.assertEqual('doc_src/txt/index.txt', doc.input_file)
         self.assertTrue('index.html' in doc.output_file)
-
-
-if __name__ == '__main__':
-    unittest.main()

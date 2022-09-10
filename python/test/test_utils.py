@@ -1,8 +1,5 @@
-import sys
 import unittest
-from pathlib import Path
 
-sys.path.append(Path(__file__).resolve().parent.parent)
 from utils import *
 
 
@@ -60,6 +57,7 @@ class UtilTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             relativize_relative_resource_path('doc/', 'path/')
         with self.assertRaises(ValueError):
+            #  noinspection PyTypeChecker
             relativize_relative_resource_path('doc/', None)
         with self.assertRaises(ValueError):
             relativize_relative_resource_path('doc', 'index.html')
@@ -132,7 +130,3 @@ class UtilTest(unittest.TestCase):
                          relativize_relative_resource('./logo.png', 'index.html'))
         self.assertEqual('../logo.png',
                          relativize_relative_resource('./logo.png', 'doc/index.html'))
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,8 +1,5 @@
-import sys
 import unittest
-from pathlib import Path
 
-sys.path.append(Path(__file__).resolve().parent.parent)
 from page_metadata_utils import *
 
 
@@ -95,7 +92,3 @@ class MetadataExtractionLegacyTest(unittest.TestCase):
     def test_severalBlocks(self):
         self.assertEqual('{payload}', self._extract_metadata_section_legacy(
             '<!--metadata{payload}-->line1\nline2<!-- something else -->')[0])
-
-
-if __name__ == '__main__':
-    unittest.main()

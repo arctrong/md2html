@@ -1,5 +1,5 @@
 import re
-from typing import Iterator, Dict
+from typing import Iterator
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin

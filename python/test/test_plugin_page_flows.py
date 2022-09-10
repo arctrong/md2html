@@ -1,12 +1,8 @@
-import sys
 import unittest
-from pathlib import Path
 
-from .utils_for_tests import find_single_instance_of_type
-
-sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
 from plugins.page_flows_plugin import *
+from .utils_for_tests import find_single_instance_of_type
 
 
 def _generate_arg_file_with_plugins_section(page_count):
@@ -161,10 +157,10 @@ class PageFlowsPluginTest(unittest.TestCase):
         page_flow = plugin.variables(doc)["other_links"]
         pages = [p for p in page_flow]
         self.assertEqual(2, len(pages))
-        self.assertDictEqual({"link": "other1.html", "title": "OtherLink1", "current": True, 
-            "external": False, "first": True, "last": False}, pages[0])
-        self.assertDictEqual({"link": "other2.html", "title": "OtherLink2", "current": False, 
-            "external": False, "first": False, "last": True}, pages[1])
+        self.assertDictEqual({"link": "other1.html", "title": "OtherLink1", "current": True,
+                              "external": False, "first": True, "last": False}, pages[0])
+        self.assertDictEqual({"link": "other2.html", "title": "OtherLink2", "current": False,
+                              "external": False, "first": False, "last": True}, pages[1])
         
     def test_sameDocumentInSeveralPageFlows(self):
         argument_file_dict = load_json_argument_file(
@@ -368,7 +364,3 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertEqual("../sub2.html", pages[3]["link"])
         self.assertEqual("sub-sub-1.html", pages[4]["link"])
         self.assertEqual("sub-sub-2.html", pages[5]["link"])
-
-
-if __name__ == '__main__':
-    unittest.main()

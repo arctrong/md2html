@@ -1,13 +1,9 @@
-import sys
 import unittest
-from pathlib import Path
 
-from md2html import parse_argument_file
-from .utils_for_tests import find_single_instance_of_type
-
-sys.path.append(Path(__file__).resolve().parent.parent)
 from argument_file_utils import *
+from md2html import parse_argument_file
 from plugins.page_variables_plugin import PageVariablesPlugin
+from .utils_for_tests import find_single_instance_of_type
 
 
 def _parse_metadata(metadata):
@@ -19,7 +15,7 @@ def _parse_metadata(metadata):
     metadata_handlers = register_page_metadata_handlers(args.plugins)
     page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
     plugin.new_page({})
-    apply_metadata_handlers(page_content, metadata_handlers, {})
+    apply_metadata_handlers(page_content, metadata_handlers, args.documents[0])
     return plugin.variables({})
 
 
@@ -73,7 +69,3 @@ class PageMetadataUtilsTest(unittest.TestCase):
     def test_customTemplatePlaceholders_correctItems(self):
         metadata = _parse_metadata('{ "placeholders": {"ph1": "val1", "ph2": "val2"} }')
         self.assertDictEqual({'placeholders': {'ph1': 'val1', 'ph2': 'val2'}}, metadata)
-
-
-if __name__ == '__main__':
-    unittest.main()

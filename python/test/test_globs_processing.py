@@ -1,12 +1,7 @@
-import sys
 import unittest
-from pathlib import Path
 
-from test.utils_for_tests import relative_to_current_dir
-
-sys.path.append(Path(__file__).resolve().parent.parent)
 from md2html import *
-
+from test.utils_for_tests import relative_to_current_dir
 
 # This is required to make it work when running from different directories
 THIS_DIR = relative_to_current_dir(Path(__file__).parent)
@@ -95,7 +90,3 @@ class GlobsProcessingTest(unittest.TestCase):
                                'dst_root/file01.html',
                                'dst_root/recursive/recursive_file01.html'],
                               output_files_to_check)
-
-
-if __name__ == '__main__':
-    unittest.main()

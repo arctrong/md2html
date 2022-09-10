@@ -1,8 +1,5 @@
-import sys
 import unittest
-from pathlib import Path
 
-sys.path.append(Path(__file__).resolve().parent.parent)
 from page_metadata_utils import *
 
 
@@ -36,7 +33,3 @@ class PageMetadataUtilsTest(unittest.TestCase):
             ' t2 ', 'm2', ' d2', '<!--m2 d2-->', 28), match_objects[1])
         self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
             ' t3 ', 'm3', ' d3', '<!--m3 d3-->', 44), match_objects[2])
-
-
-if __name__ == '__main__':
-    unittest.main()
