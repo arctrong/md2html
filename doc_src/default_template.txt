@@ -1,3 +1,5 @@
+<!--VARIABLES {"title": "Default template demo", "SORT_ORDER": "20"}-->
+
 # Default template demo
 
 This page is generated using default template.
@@ -10,4 +12,4 @@ CSS are included into the HTML document (try to press `Ctrl`+`U` to see the sour
 
 To go to the Home page click the image below.
 
-[![TO HOME PAGE](pict/home_black.svg)](../readme.html)
+[![TO HOME PAGE](../pict/home_black.svg)](../readme.html)

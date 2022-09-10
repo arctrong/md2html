@@ -1,3 +1,5 @@
+<!--VARIABLES {"title": "Development", "SORT_ORDER": "90"}-->
+
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
@@ -41,8 +43,9 @@ OK
 ````
 
 Arguments may be used like this `run_tests.bat -v` (that will give a verbose output). Run 
-`python -m unittest discover --help` for all possible parameters.
+`python -m unittest discover --help` for all possible arguments.
 
+A single test may be called like this: `python -m unittest test\test_arg_file_parsing.py`.
 
 ----------------------------------------------------------------------------------------------------
 # Java version

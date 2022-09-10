@@ -1,4 +1,4 @@
-<!--METADATA {"title": "md2html: Integral tests",
+<!--VARIABLES {"title": "md2html: Integral tests",
 "placeholders": {"home_path": "../", "doc_path": ""}} -->
 
 [TOC]

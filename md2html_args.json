@@ -10,28 +10,18 @@
         "verbose": true
     },
     "documents": [
-        { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", "page-flows": ["sections"] },
-        
-        { "input-glob": "*.txt", "page-flows": ["sections"], "title-from-variable": "title", "sort-by-variable": "SORT_ORDER" }
-        
-      
-        
- #       { "input": "installation.txt", "title": "Installation", "page-flows": ["sections"] },
- #       { "input": "usage.txt", "title": "Usage", "page-flows": ["sections"] },
- #       { "input": "page_content.txt", "title": "Page content", "page-flows": ["sections"] },
- #       { "input": "templates.txt", "title": "Templates", "page-flows": ["sections"] },
- #       { "input": "plugins.txt", "title": "Plugins", "page-flows": ["sections"] },
- #       { "input": "development.txt", "title": "Development", "page-flows": ["sections"] }
- 
- 
+        { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", 
+            "page-flows": ["sections"] },
+        { "input-glob": "sections/*.txt", "page-flows": ["sections"], 
+            "title-from-variable": "title", "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
         "relative-paths": { "resource_path": "doc/" },
         "page-flows": {
             "header": [
                 { "link": "readme.html", "title": "Home" },
-                { "link": "doc/installation.html", "title": "Installation" },
-                { "link": "doc/usage.html", "title": "Usage" },
+                { "link": "doc/sections/installation.html", "title": "Installation" },
+                { "link": "doc/sections/usage.html", "title": "Usage" },
                 { "link": "doc/index_page.html", "title": "Index" },
                 { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
             ],

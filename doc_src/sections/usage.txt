@@ -1,3 +1,5 @@
+<!--VARIABLES {"title": "Usage", "SORT_ORDER": "50"}-->
+
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
@@ -225,7 +227,7 @@ Name | Type | Required | Description
 <a name="options_section"></a>
 ## `options` section
 
-[![](pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 Properties:
 
@@ -238,7 +240,7 @@ legacy-mode | boolean | No | Activates [legacy mode](#legacy_mode)
 <a name="default_section"></a>
 ## `default` section
 
-[![](pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 These parameters will be applied to the document definitions if they are not defined explicitly.
 See the [`documents` section](#documents_section) for the details.
@@ -260,7 +262,7 @@ page-flows | array of strings | No |
 <a name="documents_section"></a>
 ## `documents` section
 
-[![](pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 Array of objects with properties:
 
@@ -286,7 +288,7 @@ report | boolean | No | The same meaning as the corresponding command line argum
 <a name="plugins_section"></a>
 ## `plugins` section
 
-[![](pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 May contain multiple properties:
 
@@ -337,7 +339,7 @@ the Python version for now) will be run.
 
 The program may be integrated into Windows Explorer context menu:
 
-![WINDOWS_EXPOLORER_CONTEXT_MENU](pict/windows_context_menu.png)
+![WINDOWS_EXPOLORER_CONTEXT_MENU](../pict/windows_context_menu.png)
 
 This may be a quick and convenient way to convert single documents.
 
@@ -368,7 +370,7 @@ and press `Enter`) and add the following keys and values:
 Here `@` stands for `(Default)` value name. `py` or `java` may be added before `-i` argument.
 The quotes must be set like this:
 
-![](pict/reg_value.png)
+![](../pict/reg_value.png)
 
 !!! note
     There's no such integration for Linux. The interested Linux users may use the scripts 

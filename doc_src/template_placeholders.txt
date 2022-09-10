@@ -1,3 +1,5 @@
+<!--VARIABLES {"title": "Placeholders"}-->
+
 <!--METADATA {"placeholders": {"Placeholder1": "Value1", "placeholder2": 150}} -->
 
 # Template placeholders usage demo

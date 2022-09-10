@@ -1,3 +1,5 @@
+<!--VARIABLES {"title": "Page content", "SORT_ORDER": "60"}-->
+
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
@@ -142,7 +144,7 @@ from the same or the other page.
 ----------------------------------------------------------------------------------------------------
 # Images
 
-<p><img src="pict/penrose.png" alt="Penrose" title="Penrose" style="float: right; margin: 0 0 25px 25px;" /></p>
+<p><img src="../pict/penrose.png" alt="Penrose" title="Penrose" style="float: right; margin: 0 0 25px 25px;" /></p>
 
 The standard Markdown image syntax is `![ALT](path/to/image.png "title")`, where `ALT` and
 `"title"` are not required.
@@ -154,7 +156,7 @@ This method uses direct HTML inclusions:
 <p style="clear: both;"></p>
 
 ````
-<p><img src="pict/target.png" style="float: right; margin: 0 0 25px 25px;" /></p>
+<p><img src="../pict/target.png" style="float: right; margin: 0 0 25px 25px;" /></p>
 ````
 
 !!! important
@@ -172,12 +174,12 @@ To stop the text float the following empty paragraph may be used:
 An image may be used as a link text like this:
 
 ````
-[![](pict/target.png)](page.html)
+[![](../pict/target.png)](page.html)
 ````
 
 Then we will get a clickable image that works as a link:
 
-[![](pict/penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
+[![](../pict/penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
 
 ----------------------------------------------------------------------------------------------------
 # Lists
@@ -228,7 +230,7 @@ Blockquotes are inserted by starting each line with `> `.
 > Links, images and some other Markdown elements may be used inside `blockquote`s:
 > 
 > - Here's a link with a clickable image:    
->   [![TARGET](pict/target-smaller.png)](#anchor_demo "How to add an anchor.")
+>   [![TARGET](../pict/target-smaller.png)](#anchor_demo "How to add an anchor.")
 > - Also a list inside this `blockquote` is used for demonstration.
 
 ----------------------------------------------------------------------------------------------------

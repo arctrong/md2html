@@ -1,4 +1,4 @@
-<!--METADATA {"title": "Text masking"} -->
+<!--VARIABLES {"title": "Text masking"} -->
 
 ----------------------------------------------------------------------------------------------------
 # Text masking
@@ -25,7 +25,7 @@ Click a picture above and use the text area below to check what was copied to cl
 
 To go to the Home page click the image below.
 
-[![TO HOME PAGE](pict/home_black.svg)](../readme.html)
+[![TO HOME PAGE](../pict/home_black.svg)](../readme.html)
 
 ----------------------------------------------------------------------------------------------------
 
