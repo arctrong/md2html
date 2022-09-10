@@ -23,7 +23,7 @@ import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
 import static world.md2html.testutils.PluginTestUtils.findSinglePlugin;
 
-public class ArgFileParsingHelperTest {
+public class ArgFileParsingTest {
 
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
     private static final CliParser cliParser = new CliParser("whatever");

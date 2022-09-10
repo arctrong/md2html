@@ -1,6 +1,7 @@
 package world.md2html.options.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
 
 import java.util.List;
 
