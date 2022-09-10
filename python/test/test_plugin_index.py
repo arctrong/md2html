@@ -78,3 +78,5 @@ class IndexPluginTest(unittest.TestCase):
         plugin.new_page(doc)
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual(processed_page, page_text)
+
+# TODO Also test page flows with index.

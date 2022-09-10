@@ -114,4 +114,6 @@ public class GlobsProcessingTest {
                 "dst_root/recursive/recursive_file01.html"));
     }
 
+    // TODO Also test page flows with GLOBs.
+
 }

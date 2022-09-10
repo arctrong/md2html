@@ -31,7 +31,7 @@ import static world.md2html.utils.Utils.*;
 public class ArgFileParsingHelper {
 
     private static final String DEFAULT_TEMPLATE_FILE = "doc_src/templates/default.html";
-    private static final String DEFAULT_CSS_FILE = "doc/styles.css";
+    private static final String DEFAULT_CSS_FILE = "doc/layout/styles.css";
 
     private ArgFileParsingHelper() {
     }

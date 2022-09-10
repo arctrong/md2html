@@ -85,6 +85,13 @@ public class Md2Html {
         }
 
         outputPage(document, plugins, substitutions, options);
+
+        if (document.isVerbose()) {
+            System.out.println("Output file generated: " + document.getOutput());
+        }
+        if (document.isReport()) {
+            System.out.println(document.getOutput());
+        }
     }
 
     public static void outputPage(Document document, List<Md2HtmlPlugin> plugins,
@@ -128,7 +135,7 @@ public class Md2Html {
         substitutions.putIfAbsent(TITLE_PLACEHOLDER, "");
 
         Path  outputDirPath = Paths.get((document.getOutput())).normalize().getParent();
-        if (!Files.exists(outputDirPath)) {
+        if (outputDirPath != null && !Files.exists(outputDirPath)) {
             try {
                 Files.createDirectories(outputDirPath);
             } catch (IOException e) {
@@ -154,13 +161,6 @@ public class Md2Html {
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-
-        if (document.isVerbose()) {
-            System.out.println("Output file generated: " + document.getOutput());
-        }
-        if (document.isReport()) {
-            System.out.println(document.getOutput());
         }
     }
 

@@ -90,3 +90,5 @@ class GlobsProcessingTest(unittest.TestCase):
                                'dst_root/file01.html',
                                'dst_root/recursive/recursive_file01.html'],
                               output_files_to_check)
+
+# TODO Also test page flows with GLOBs.

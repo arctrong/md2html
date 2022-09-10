@@ -166,7 +166,8 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
     cli_arg_data_object.include_css = args.include_css if args.include_css else []
 
     cli_arg_data_object.force = args.force
-    cli_arg_data_object.verbose = args.verbose
+    if bool(args.verbose):
+        cli_arg_data_object.verbose = args.verbose
     cli_arg_data_object.report = args.report
 
     if cli_arg_data_object.report and cli_arg_data_object.verbose:

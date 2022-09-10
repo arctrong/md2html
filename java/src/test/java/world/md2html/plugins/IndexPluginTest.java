@@ -100,4 +100,6 @@ class IndexPluginTest {
         assertEquals(processedPage, pageText);
     }
 
+    // TODO Also test page flows with index.
+
 }
