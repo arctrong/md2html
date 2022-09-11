@@ -232,6 +232,19 @@ div.admonition li {
     width: 838px;
 }
 
+li>div.admonition {
+    width: unset;
+    min-width: unset;
+}
+
+li>blockquote {
+    width: 827px;
+}
+
+li>pre>code {
+    width: 838px;
+}
+
 div.index-content {
     column-count: 4;
 }
