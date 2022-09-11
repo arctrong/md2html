@@ -6,7 +6,7 @@
 <!--index ["template", "Mustache"] -->
 # What is template?
 
-In this program [Mustache](https://mustache.github.io/) template language is used for the HTML
+In this program [Mustache](https://mustache.github.io/) template language is used for HTML
 templates processing. A simple template file may look like this:
 
 ````
@@ -42,6 +42,7 @@ Tag key | Description
 `{{exec_version}}` | The program version (meaning the numbers, not Python or Java)
 `{{generation_date}}` | The generation date (YYYY-MM-DD)
 `{{generation_time}}` | The generation time (hh:mm:ss)
+`{{source_file}}` | The source text file resolved relatively to the current HTML page
 
 The other tags may be provided by _plugins_ that are described in the
 [separate section](plugins.html).
@@ -56,7 +57,7 @@ The other tags may be provided by _plugins_ that are described in the
 This documentation is created using an extended template that contains some project specific 
 elements and is intended to be used with _plugins_. Anyway this template may be suitable for 
 other writing works with minimal or no modifications. It's recommended to copy this
-template to other projects in order to make them more independent of the further modifications
+template to other projects in order to make it independent of the further modifications
 of this program (as this documentation is the part of the program). The template itself, the
 corresponding CSS files and some images must be copied. This template location is 
 `doc_src/templates/custom.html`.

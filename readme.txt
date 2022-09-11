@@ -41,13 +41,13 @@ this:
 <!--index Markdown -->
 # Markdown
 
-[Markdown](https://daringfireball.net/projects/markdown/) is a formatting syntax whose main goal
-is making texts that are as readable as possible in plain text.
+[Markdown](https://daringfireball.net/projects/markdown/syntax) is a formatting syntax whose
+main goal is making texts that are as readable as possible in *plain text*.
 
 This syntax is very simple and allows writing very fast. It has enough features for writing
-a variety of document kinds. Though because of its simplicity it's quite restricted and contains
-just a very small subset of HTML features, it allows direct inclusions of HTML code that
-helps achieve more complex results when it's required.
+a variety of document kinds. Because of its simplicity it's quite restricted and contains
+just a very small subset of HTML features, but it allows direct inclusions of HTML code that
+helps achieve more complex result when it's required.
 
 
 # Features
@@ -61,8 +61,8 @@ and producing a self-contained static HTML documentation that needs only a brows
 In the end, this tool has a set of useful plugins that automate and simplify typical tasks and
 make the documentation look more professionally.
 
-**M<sub>2</sub>H** doesn't lay much restrictions on the documentation project organization and
-lets the user make their own configuration. There are recommendations on the project organization
+**M<sub>2</sub>H** doesn't lay much restrictions on the documentation project's organization and
+lets the users make their own configuration. There are recommendations on the project's organization
 described in this documentation and used for its creation.
 
 
@@ -72,8 +72,7 @@ described in this documentation and used for its creation.
 work mostly the same way, have the same command line syntax, process the same input, are shipped
 together as source code and share some common artifacts like templates and styles, command
 scripts, and this documentation. Despite this, the versions are independent and can be
-used separately. This documentation describes the both versions in the corresponding 
-sections.
+used separately. This documentation describes the both versions.
 
 
 

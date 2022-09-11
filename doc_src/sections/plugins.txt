@@ -11,10 +11,10 @@ to use.
 
 The main approach used by this program is no interference in the Markdown syntax. So the
 documentation content must be readable in plain text even without processing by this program.
-
 Plugins provide extra possibilities for the templates processing and visualization.
 
-See [this section](usage.html#using_argument_file) for some plugins definition examples.
+See [here](usage.html#argument_file_example) for an example of how plugins are defined in 
+the *argument file*.
 
 ----------------------------------------------------------------------------------------------------
 # "relative-paths" plugin
@@ -23,7 +23,7 @@ See [this section](usage.html#using_argument_file) for some plugins definition e
 
 The program generates static HTML pages that reference other pages and resources like CSS and
 pictures. The generated HTML pages may be located in different places of the project structure, 
-so the same resources may be referenced differently from different pages.
+so the same resources must be referenced differently from different pages.
 
 In the following example:
 
@@ -36,13 +36,13 @@ $ tree -L 2 --charset=ascii --dirsfirst
 `-- readme.html
 ````
 
-The reference to `styles.css` is:
+the reference to `styles.css` is:
 
 - `doc/styles.css` from the `readme.html` page;
 - and `styles.css` from the `about.html` page.
 
 This plugin automatically recalculates relative paths for certain pages depending on their location
-and avoids manual defining these paths for every page individually.
+and avoids manual definition of these paths for every page individually.
 
 
 ## Definition
@@ -89,7 +89,7 @@ the corresponding path.
 
 Sidebar provides quick access to different project pages. It's often very helpful to put a
 sequence of pages that are intended to be read in order. Doing it manually is pretty
-cumbersome and error prone.
+cumbersome and error-prone.
 
 This plugin defines such pages sequences and and provides them for easy manipulation in templates.
 
@@ -123,9 +123,9 @@ may be defined directly in the `"documents"` section:
 ````
 {
     "documents": [
-        { "input": "page1.txt", "output": "page1.html", "title": "Page 1", "page-flows": ["sidebar"] },
-        { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2", "page-flows": ["sidebar"] },
-        { "input": "page3.txt", "output": "doc/page3.html", "title": "Page 3", "page-flows": ["sidebar"] }
+        { "input": "page1.txt", "title": "Page 1", "page-flows": ["sidebar"] },
+        { "input": "page2.txt", "title": "Page 2", "page-flows": ["sidebar"] },
+        { "input": "page3.txt", "title": "Page 3", "page-flows": ["sidebar"] }
     ],
     "plugins": {
         "page-flows": {}
@@ -174,7 +174,7 @@ know the previous and the next pages and render the navigations. Here's a simple
 {{#sidebar.next}}<a href="{{link}}">[NEXT]</a>{{/sidebar.next}}
 ````
 
-!!! tip
+!!! tip "Explanation"
     `{{#sidebar.previous}}...{{/sidebar.previous}}` means that if `sidebar.previous` value 
     exists then the enclosed content is rendered. `sidebar.previous` value is a page and has
     attribute `link` that is used in the rendered block.
@@ -189,7 +189,7 @@ Here's a simplified example of how the sidebar items may be rendered:
 {{/sidebar}}</ul>
 ````
 
-!!! tip
+!!! tip "Explanation"
     `{{#sidebar}}...{{/sidebar}}` means that for each item in the `sidebar` value (that is 
     iterable) render the enclosed content. The items are pages and their attributes `link`,
     `title` and `current` are used in the rendered block.
@@ -273,19 +273,25 @@ this case three pairs of curly braces are used to avoid HTML-escaping on substit
 ## Motivation
 
 Some terms, abbreviations and other kind of keywords may be defined, described and mentioned
-in different documents within the documentation project. Searching such keywords may be hard,
+in different pages within the documentation. Searching such keywords may be hard,
 especially if the documentation is large. This plugin allows marking such points on the pages
 as _index entries_ and then collects these entries and put them together on a separate 
-_index page_. See the [index page](index_page.html) of this documentation as an example of what 
-it may look like.
+_index page_. See the [index page](index_page.html) of this documentation as an example.
 
 ## Definition
 
-````wrapped
-"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", "index-cache-relative": true }
+````
+"plugins": {
+    "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
+                        "index-cache-relative": true, "letters": true, "letters-block": true }
+            }
+}
 ````
 
-The all possible properties are listed in the table below. They are mostly the same as those 
+This example defines one index with marker `index`. It's possible to define several indexes with
+different markers.
+
+All possible properties are listed in the table below. They are mostly the same as those 
 of the [`documents` section](usage.html#documents_section) so see that section for the
 absent descriptions.
 
@@ -319,6 +325,9 @@ letters-block | boolean | No | false | `true` means that all terms first letters
     In some cases a forceful full regeneration (with `-f` flag or `"force": true` option, 
     see [here](usage.html) for more details) is required, for example, if the "index" plugin is
     activated on an existing project or if the index cache file is deleted. 
+    
+    Index cache file is a generated artifact so in case of any problem it may be manually deleted
+    and the further forceful full documents regeneration may resolve the problem.
 
 
 ## Usage
@@ -326,8 +335,8 @@ letters-block | boolean | No | false | `true` means that all terms first letters
 Index entries may be added in two different ways:
 <a name="escaped_code_text_example"></a>
 
-- using a single term entry like <span class="code">&lt;!--index Term 2 --></span>;
-- using a multiple term entry like <span class="code">&lt;!--INDEX ["term 1", "term 3"]--></span>.
+- using a single-term entry like <span class="code">&lt;!--index Term 2 --></span>;
+- using a multiple-term entry like <span class="code">&lt;!--INDEX ["term 1", "term 3"]--></span>.
 
 The `index` marker is case-insensitive. If the above two entries are added then the index page
 will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.

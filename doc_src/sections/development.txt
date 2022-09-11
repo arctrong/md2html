@@ -35,15 +35,12 @@ To run unit tests execute:
 The output must be something like this:
 
 ````shell
-......................................................................................
+..................................................................................................
 ----------------------------------------------------------------------
-Ran 86 tests in 0.307s
+Ran 98 tests in 0.228s
 
 OK
 ````
-
-Arguments may be used like this `run_tests.bat -v` (that will give a verbose output). Run 
-`python -m unittest discover --help` for all possible arguments.
 
 A single test may be called like this: `python -m unittest test\test_arg_file_parsing.py`.
 
@@ -64,8 +61,8 @@ more details.
 <!--index integral tests-->
 # Integral tests
 
-The integral tests test the built and ready-to-use program's artifacts. These tests are the same
-for the Python and the Java versions.
+The integral tests are used for testing the built and ready-to-use program's artifacts. These
+tests are the same for the Python and the Java versions.
 
 
 ## Implementation
@@ -107,16 +104,16 @@ The result must look like this:
 
 ````shell
 ===== py implementation integral tests =====
-............................
+................................
 ----------------------------------------------------------------------
-Ran 28 tests in 11.669s
+Ran 32 tests in 7.686s
 
 OK
 
 ===== java implementation integral tests =====
-............................
+................................
 ----------------------------------------------------------------------
-Ran 28 tests in 18.427s
+Ran 32 tests in 12.605s
 
 OK
 ````

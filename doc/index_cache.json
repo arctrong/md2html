@@ -9,33 +9,43 @@
   "doc/sections/installation.html": [],
   "doc/sections/usage.html": [
     {
-      "entry": "argument file",
+      "entry": "Linux",
       "link": "sections/usage.html#index_entry_index_1",
       "title": "Usage"
     },
     {
-      "entry": "command scripts",
+      "entry": "GLOB",
       "link": "sections/usage.html#index_entry_index_2",
       "title": "Usage"
     },
     {
-      "entry": "context menu items",
+      "entry": "argument file",
       "link": "sections/usage.html#index_entry_index_3",
       "title": "Usage"
     },
     {
-      "entry": "quick start",
+      "entry": "command scripts",
       "link": "sections/usage.html#index_entry_index_4",
       "title": "Usage"
     },
     {
-      "entry": "legacy mode",
+      "entry": "context menu items",
       "link": "sections/usage.html#index_entry_index_5",
       "title": "Usage"
     },
     {
-      "entry": "legacy mode",
+      "entry": "quick start",
       "link": "sections/usage.html#index_entry_index_6",
+      "title": "Usage"
+    },
+    {
+      "entry": "legacy mode",
+      "link": "sections/usage.html#index_entry_index_7",
+      "title": "Usage"
+    },
+    {
+      "entry": "legacy mode",
+      "link": "sections/usage.html#index_entry_index_8",
       "title": "Usage"
     }
   ],
