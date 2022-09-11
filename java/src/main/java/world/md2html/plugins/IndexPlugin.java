@@ -47,7 +47,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private static class IndexData {
         private Path indexCacheFile;
         private boolean indexCacheRelative;
+        // TODO Test this parameter
         private boolean addLetters;
+        // TODO Test this parameter
         private boolean addLettersBlock;
         private ObjectNode documentJson;
         private Document document;
@@ -100,7 +102,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             }
             ValueNode lettersBlock = (ValueNode) indexData.get("letters-block");
             if (lettersBlock != null) {
-                indexDataBuilder.addLetters(lettersBlock.asBoolean());
+                indexDataBuilder.addLettersBlock(lettersBlock.asBoolean());
             }
 
             indexDataMap.put(marker.toUpperCase(), indexDataBuilder.build());
