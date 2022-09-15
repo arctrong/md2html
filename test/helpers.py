@@ -48,7 +48,7 @@ def execute_simple(input_file, output_file, template, *args):
 
 IMPLEMENTATION = os.environ['IMPLEMENTATION']
 if IMPLEMENTATION == 'py':
-    EXEC = ['python' if os.name == 'nt' else 'python3', 
+    EXEC = ['py' if os.name == 'nt' else 'python3', 
             os.environ['MD2HTML_HOME'] + '/python/md2html.py']
 elif IMPLEMENTATION == 'java':
     EXEC = ['java', '-jar', os.environ['MD2HTML_HOME'] + '/java/target/md2html-bin.jar']

@@ -13,5 +13,5 @@ exit /b
 echo.
 echo ===== %1 implementation integral tests =====
 set IMPLEMENTATION=%1
-python -m unittest discover %ARGS% --start-directory=%~dp0
+py -m unittest discover %ARGS% --start-directory=%~dp0
 exit /b

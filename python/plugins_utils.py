@@ -20,7 +20,10 @@ PLUGIN_PROVIDERS = {
 def instantiate_plugins(plugins_item) -> dict:
     plugins = {}
     for k, v in plugins_item.items():
-        plugin = PLUGIN_PROVIDERS.get(k)()
+        plugin_provider = PLUGIN_PROVIDERS.get(k)
+        if plugin_provider is None:
+            raise UserError(f"Unknown plugin: {k}")
+        plugin = plugin_provider()
         if plugin:
             try:
                 plugin.accept_data(v)

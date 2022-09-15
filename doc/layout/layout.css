@@ -49,6 +49,7 @@ table.sidebarAligner td {
     font-size: smaller;
     color: dimgray;
     padding-top: 40px;
+    vertical-align: bottom;
 }
 
 a[name], a[id] {
