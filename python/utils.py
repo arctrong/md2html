@@ -111,6 +111,9 @@ def first_not_none(*values):
 
 
 def read_lines_from_cached_file(file):
+
+    # TODO Consider adding `encoding` parameter.
+
     lines = CACHED_FILES.get(file)
     if lines is None:
         lines = read_lines_from_file(file)

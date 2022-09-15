@@ -1,4 +1,0 @@
-#!/bin/bash
-
-"$MD2HTML_HOME/bin/md2html_batch" $* || read -p "Errors occurred, press enter to exit..."
-
