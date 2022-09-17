@@ -14,20 +14,6 @@ class PluginDataUserError(UserError):
     pass
 
 
-def validate_data_with_file(data, schema_file):
-    with open(schema_file, 'r') as schema_file:
-        schema = json.load(schema_file)
-    validate_data_with_schema(data, schema)
-
-
-def validate_data_with_schema(data, schema):
-    try:
-        validate(instance=data, schema=schema)
-    except ValidationError as e:
-        raise UserError(f"Error validating plugin data: {type(e).__name__}: " +
-                        reduce_json_validation_error_message(str(e)))
-
-
 class Md2HtmlPlugin(ABC):
 
     def __init__(self):
@@ -38,13 +24,6 @@ class Md2HtmlPlugin(ABC):
         Accepts plugin configuration data. Some plugins may be able to accept data several times.
         """
         pass
-
-    def is_blank(self) -> bool:
-        """
-        If a plugin is blank its usage will have no effect. This method allows removing such
-        plugins from consideration.
-        """
-        return True
 
     def pre_initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
                        plugins: dict) -> dict[str, Any]:
@@ -60,7 +39,22 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
+    def accept_document_list(self, docs: list[Document]):
+        """
+        This method is called after all plugins are initialized and all documents are defined.
+        The list of all documents is sent to the method.
+        """
+        pass
+
+    def is_blank(self) -> bool:
+        """
+        If a plugin is blank its usage will have no effect. This method allows removing such
+        plugins from consideration.
+        """
+        return True
+
     def page_metadata_handlers(self) -> list:
+        # TODO Consider returning an object
         """
         Returns a list of tuples:
         - page metadata handler that must have the method `accept_page_metadata`;
@@ -102,3 +96,15 @@ class Md2HtmlPlugin(ABC):
         if self.data_accepted:
             raise Exception("Trying to accept data again.")
         self.data_accepted = True
+
+    def validate_data_with_file(self, data, schema_file):
+        with open(schema_file, 'r') as schema_file:
+            schema = json.load(schema_file)
+        self.validate_data_with_schema(data, schema)
+
+    def validate_data_with_schema(self, data, schema):
+        try:
+            validate(instance=data, schema=schema)
+        except ValidationError as e:
+            raise UserError(f"Error validating plugin data: {type(self).__name__}: "
+                            f"{type(e).__name__}: " + reduce_json_validation_error_message(str(e)))

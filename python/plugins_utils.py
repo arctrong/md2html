@@ -1,8 +1,10 @@
 from typing import Dict
 
+from models.document import Document
 from plugins.index_plugin import IndexPlugin
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.page_flows_plugin import PageFlowsPlugin
+from plugins.page_links_plugin import PageLinksPlugin
 from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
 from plugins.variables_plugin import VariablesPlugin
@@ -13,7 +15,8 @@ PLUGIN_PROVIDERS = {
     "page-flows": lambda: PageFlowsPlugin(),
     'page-variables': lambda: PageVariablesPlugin(),
     "variables": lambda: VariablesPlugin(),
-    'index': lambda: IndexPlugin()
+    'index': lambda: IndexPlugin(),
+    'page-links': lambda: PageLinksPlugin(),
 }
 
 
@@ -59,3 +62,8 @@ def complete_plugins_initialization(argument_file_dict, cli_args, plugins):
         data_for_plugin = extra_plugin_data_dict.get(name, [None])
         for data in data_for_plugin:
             plugin.initialize(data)
+
+
+def feed_plugins_with_documents(plugins: dict[str, Md2HtmlPlugin], documents: list[Document]):
+    for plugin in plugins.values():
+        plugin.accept_document_list(documents)

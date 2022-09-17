@@ -1,0 +1,10 @@
+
+[Page 1](page1_single.html)
+
+[Page 2](<!--page page02-->) --- self
+
+[Page 3](subdir/page3_glob.html)
+
+[Page 4](<!--page page04-->)
+
+This page has a `code` and may be referenced by this code.

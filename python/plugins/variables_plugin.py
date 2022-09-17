@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
+from plugins.md2html_plugin import Md2HtmlPlugin
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -16,7 +16,7 @@ class VariablesPlugin(Md2HtmlPlugin):
     def accept_data(self, data):
         self.assure_accept_data_once()
         # Yes, this plugin uses JSON schema of the other plugin as they are the same.
-        validate_data_with_file(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
+        self.validate_data_with_file(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
         self.data = data
 
     def is_blank(self) -> bool:

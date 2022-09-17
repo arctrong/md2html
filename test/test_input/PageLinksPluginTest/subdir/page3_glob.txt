@@ -1,0 +1,10 @@
+
+[Page 1](../page1_single.html)
+
+[Page 2](<!--page page02-->)
+
+[Page 3](page3_glob.html) --- self
+
+[Page 4](<!--page page04-->)
+
+Page with no metadata. Must be correctly processed with GLOB processing.

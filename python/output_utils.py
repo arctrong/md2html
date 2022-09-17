@@ -71,8 +71,6 @@ def output_page(document, plugins: list, substitutions: dict, options):
     if not output_dir_path.exists():
         os.makedirs(output_dir_path)
 
+    # TODO Consider adding `encoding` parameter.
     with open(document.output_file, 'w') as result_file:
-
-        # TODO Consider adding `encoding` parameter.
-
         result_file.write(result)

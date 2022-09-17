@@ -1,0 +1,19 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/PageLinksPluginTest/template.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/styles.css"]
+    },
+    "documents": [
+        { "input": "page1_single.txt", "title": "Page 1" },
+        { "input": "page2_single.txt", "title": "Page 2", "code": "page02" },
+        { "input-glob": "subdir/*.txt", "title-from-variable": "title", "code-from-variable": "code" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "page-links": {}
+    }
+}

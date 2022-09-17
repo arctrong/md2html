@@ -91,4 +91,17 @@ class GlobsProcessingTest(unittest.TestCase):
                                'dst_root/recursive/recursive_file01.html'],
                               output_files_to_check)
 
+    def test_parameters_from_variables(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input-glob": "' + THIS_DIR + 'for_globs_processing_test/*.txt", \n'
+            '    "title-from-variable": "title", "code-from-variable": "code", \n'
+            '    "sort-by-variable": "SORTORDER"}], \n'
+            '"plugins": {"page-variables": {}} \n'
+            '}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertEqual("title 1", args.documents[0].title)
+        self.assertEqual("title 3", args.documents[1].title)
+        self.assertEqual("code02", args.documents[0].code)
+        self.assertEqual("code01", args.documents[1].code)
+
 # TODO Also test page flows with GLOBs.

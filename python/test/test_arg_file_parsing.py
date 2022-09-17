@@ -92,7 +92,8 @@ class ArgFileParseTest(unittest.TestCase):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input-root": "doc_src", "output-root": "doc", '
             '"input": "index.txt", "output": "index.html", '
-            '"title": "some title", "template": "path/templates/custom.html", '
+            '"title": "some title", "code": "some_code", '
+            '"template": "path/templates/custom.html", '
             '"link-css": ["link1.css", "link2.css"], "add-link-css": ["add_link.css"], '
             '"include-css": ["include.css"], '
             '"add-include-css": ["add_include1.css", "add_include1.css"], '
@@ -102,9 +103,9 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertEqual('doc_src/index.txt', doc.input_file)
         self.assertEqual('doc/index.html', doc.output_file)
         self.assertEqual('some title', doc.title)
+        self.assertEqual('some_code', doc.code)
         self.assertEqual('path/templates/custom.html', doc.template)
         self.assertFalse(doc.no_css)
-        self.assertEqual('some title', doc.title)
         self.assertListEqual(["link1.css", "link2.css", "add_link.css"], doc.link_css)
         self.assertListEqual(["include.css", "add_include1.css", "add_include1.css"],
                              doc.include_css)
@@ -165,6 +166,27 @@ class ArgFileParseTest(unittest.TestCase):
         self.assertTrue(doc.force)
         self.assertTrue(doc.verbose)
 
+    def test_nonUniqueDocumentCode_NegativeScenario(self):
+        with self.assertRaises(UserError) as cm:
+            argument_file_dict = load_json_argument_file(
+                '{"documents": [ \n'
+                '    {"input": "page1.txt", "code": "page1"}, \n'
+                '    {"input": "page2.txt", "code": "page1"}] \n'
+                '}')
+            parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertTrue('duplicate' in str(cm.exception).lower())
+        self.assertTrue('page1' in str(cm.exception))
+
+    def test_caseSensitiveCodes_PositiveScenario(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [ \n'
+            '    {"input": "page1.txt", "code": "page1"}, \n'
+            '    {"input": "page2.txt", "code": "paGe1"}] \n'
+            '}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        self.assertEqual("page1", args.documents[0].code)
+        self.assertEqual("paGe1", args.documents[1].code)
+
     def test_defaultOptions_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
@@ -190,16 +212,17 @@ class ArgFileParseTest(unittest.TestCase):
         # Adding minimum plugin data to make the plugins declare themselves activated.
         # The specific plugins behavior is going to be tested in separate tests.
         argument_file_dict = load_json_argument_file(
-            '{"documents": [{"input": "index.txt"}], '
+            '{"documents": [{"input": "index.txt", "code": "index"}], '
             '"plugins": {'
             '"relative-paths": {"rel_path": "/doc"}, '
             '"page-flows": {"sections": [{"link": "doc/about.html", "title": "About"}]}, '
             '"page-variables":{"v": {}}, '
             '"variables": {"logo": "THE GREATEST SITE EVER!"}, '
-            '"index": {"index": {"output": "o.html", "index-cache": "ic.json"}} '
+            '"index": {"index": {"output": "o.html", "index-cache": "ic.json"}}, '
+            '"page-links": {} '
             '}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
-        self.assertEqual(5, len(args.plugins))
+        self.assertEqual(6, len(args.plugins))
         
     def test_auto_output_file_with_root_dirs_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(

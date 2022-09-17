@@ -146,10 +146,14 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
     canonized_document_item['title'] = first_not_none(cli_args.title,
                                                       document_item.get('title'),
                                                       defaults_item.get('title'))
+    canonized_document_item['code'] = document_item.get('code')
     canonized_document_item['title-from-variable'] = first_not_none(
         cli_args.title_from_variable,
         document_item.get('title-from-variable'),
         defaults_item.get('title-from-variable'))
+    canonized_document_item['code-from-variable'] = first_not_none(
+        document_item.get('code-from-variable'),
+        defaults_item.get('code-from-variable'))
     canonized_document_item['template'] = first_not_none(cli_args.template,
                                                          document_item.get('template'),
                                                          defaults_item.get('template'))
@@ -220,10 +224,14 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
 
 
 def expand_document_globs(documents_item, plugins) -> list:
+
+    # TODO Test the case when page metadata is absent. Check the same in the Java version.
+
     expanded_documents_item = []
     for document_item in documents_item:
         input_file_glob = document_item.get("input-glob")
         title_from_variable = document_item.get("title-from-variable")
+        code_from_variable = document_item.get("code-from-variable")
         input_root = document_item.get("input-root")
 
         if input_file_glob:
@@ -244,7 +252,7 @@ def expand_document_globs(documents_item, plugins) -> list:
                 glob_document_item = {k: v for k, v in document_item.items() if k != "input-glob"}
                 glob_document_item["input"] = file
 
-                if title_from_variable or sort_by_variable:
+                if title_from_variable or code_from_variable or sort_by_variable:
                     page_variables_plugin = plugins.get("page-variables")
                     if page_variables_plugin:
                         page_variables_plugin.new_page(None)
@@ -256,6 +264,7 @@ def expand_document_globs(documents_item, plugins) -> list:
                             input_file=glob_document_item.get("input"),
                             output_file=glob_document_item.get("output"),
                             title=glob_document_item.get("title"),
+                            code=glob_document_item.get("code"),
                             template=glob_document_item.get("template"),
                             link_css=glob_document_item.get("link-css"),
                             include_css=glob_document_item.get("include-css"),
@@ -271,6 +280,10 @@ def expand_document_globs(documents_item, plugins) -> list:
                             title = page_variables.get(title_from_variable)
                             if title:
                                 glob_document_item["title"] = title
+                        if code_from_variable:
+                            code = page_variables.get(code_from_variable)
+                            if code:
+                                glob_document_item["code"] = code
                         if sort_by_variable:
                             glob_document_item["SORT_ORDER"] = page_variables.get(sort_by_variable)
 
@@ -313,14 +326,10 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
 
         _enrich_document(document_item)
 
-        for page_flow in first_not_none(document_item.get('page-flows'), []):
-            page_flow_list = documents_page_flows_plugin.setdefault(page_flow, [])
-            page_flow_list.append({"link": document_item["output"],
-                                   "title": document_item["title"]})
-
         document_object = Document(input_file=document_item.get("input").replace("\\", "/"),
                                    output_file=document_item.get("output").replace("\\", "/"),
-                                   title=document_item.get('title'),
+                                   title=first_not_none(document_item.get('title'), ""),
+                                   code=document_item.get('code'),
                                    template=document_item.get('template'),
                                    link_css=document_item.get('link-css'),
                                    include_css=document_item.get('include-css'),
@@ -330,6 +339,18 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
                                    report=document_item.get('report'),
                                    )
         documents.append(document_object)
+
+        codes = set()
+        for doc in documents:
+            if doc.code in codes:
+                raise UserError(f"Duplicated document code: {doc.code}")
+            if doc.code:
+                codes.add(doc.code)
+
+        for page_flow in first_not_none(document_item.get('page-flows'), []):
+            page_flow_list = documents_page_flows_plugin.setdefault(page_flow, [])
+            page_flow_list.append({"link": document_object.output_file,
+                                   "title": document_object.title})
 
     return Arguments(options, documents, []), extra_plugin_items
 

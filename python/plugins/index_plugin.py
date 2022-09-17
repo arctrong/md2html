@@ -12,7 +12,7 @@ from cli_arguments_utils import CliArgDataObject
 from models.document import Document
 from models.options import Options
 from output_utils import output_page
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
+from plugins.md2html_plugin import Md2HtmlPlugin
 from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -101,7 +101,7 @@ class IndexPlugin(Md2HtmlPlugin):
 
     def accept_data(self, data):
         self.assure_accept_data_once()
-        validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
+        self.validate_data_with_file(data, MODULE_DIR.joinpath('index_schema.json'))
         for marker, data_dict in data.items():
             index_data = IndexData()
             index_data.document_dict = {k: v for k, v in data_dict.items()}

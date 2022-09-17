@@ -5,7 +5,7 @@ from pathlib import Path
 from jsonschema import validate, ValidationError
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_file
+from plugins.md2html_plugin import Md2HtmlPlugin
 from utils import UserError, reduce_json_validation_error_message, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -19,7 +19,7 @@ class PageVariablesPlugin(Md2HtmlPlugin):
 
     def accept_data(self, data):
         self.assure_accept_data_once()
-        validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
+        self.validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
         if data:
             self.data.update({k.upper(): v for k, v in data.items()})
         if not self.data:
@@ -29,7 +29,7 @@ class PageVariablesPlugin(Md2HtmlPlugin):
         return not bool(self.data)
 
     def add_if_not_present(self, data):
-        validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
+        self.validate_data_with_file(data, MODULE_DIR.joinpath('page_variables_schema.json'))
         for k, v in data:
             self.data.setdefault(k, v)
 

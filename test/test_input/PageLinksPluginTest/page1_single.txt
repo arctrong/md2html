@@ -1,0 +1,10 @@
+
+[Page 1](page1_single.html) --- self
+
+[Page 2](<!--page page02-->)
+
+[Page 3](subdir/page3_glob.html)
+
+[Page 4](<!--page page04-->)
+
+Page with no `code`. Must be correctly processed.

@@ -3,7 +3,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin, validate_data_with_schema
+from plugins.md2html_plugin import Md2HtmlPlugin
 from utils import relativize_relative_resource, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -68,7 +68,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
             self.data_schema = json.load(schema_file)
 
     def accept_data(self, data):
-        validate_data_with_schema(data, self.data_schema)
+        self.validate_data_with_schema(data, self.data_schema)
         if self.raw_data:
             self.add_to_start(data)
         else:
@@ -114,7 +114,7 @@ class PageFlowsPlugin(Md2HtmlPlugin):
     def initialize(self, extra_plugin_data):
         self.assure_initialize_once()
         if bool(extra_plugin_data):
-            validate_data_with_schema(extra_plugin_data, self.data_schema)
+            self.validate_data_with_schema(extra_plugin_data, self.data_schema)
             self.add_to_end(extra_plugin_data)
         self.data = self.initialize_data()
 

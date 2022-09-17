@@ -1,0 +1,11 @@
+<!--VARIABLES {"title": "Page 4", "code": "page04"}-->
+
+[Page 1](../page1_single.html)
+
+[Page 2](<!--page page02-->)
+
+[Page 3](page3_glob.html)
+
+[Page 4](<!--page page04-->) --- self
+
+This page has a `code` and may be referenced by this code.
