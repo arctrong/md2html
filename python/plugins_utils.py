@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from models.document import Document
 from plugins.index_plugin import IndexPlugin
@@ -64,6 +64,6 @@ def complete_plugins_initialization(argument_file_dict, cli_args, plugins):
             plugin.initialize(data)
 
 
-def feed_plugins_with_documents(plugins: dict[str, Md2HtmlPlugin], documents: list[Document]):
+def feed_plugins_with_documents(plugins: Dict[str, Md2HtmlPlugin], documents: List[Document]):
     for plugin in plugins.values():
         plugin.accept_document_list(documents)

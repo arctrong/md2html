@@ -1,6 +1,6 @@
 import json
 from abc import ABC
-from typing import Any
+from typing import Any, Dict, List
 
 from jsonschema import validate, ValidationError
 
@@ -26,7 +26,7 @@ class Md2HtmlPlugin(ABC):
         pass
 
     def pre_initialize(self, argument_file_dict: dict, cli_args: CliArgDataObject,
-                       plugins: dict) -> dict[str, Any]:
+                       plugins: dict) -> Dict[str, Any]:
         """
         Returns extra plugins data.
         """
@@ -39,7 +39,7 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def accept_document_list(self, docs: list[Document]):
+    def accept_document_list(self, docs: List[Document]):
         """
         This method is called after all plugins are initialized and all documents are defined.
         The list of all documents is sent to the method.

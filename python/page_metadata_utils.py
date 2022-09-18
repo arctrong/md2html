@@ -1,5 +1,5 @@
 import re
-from typing import Iterator
+from typing import Iterator, List
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
@@ -13,7 +13,7 @@ class PageMetadataHandlers:
         self.all_only_at_page_start = all_only_at_page_start
 
 
-def register_page_metadata_handlers(plugins: list[Md2HtmlPlugin]) -> PageMetadataHandlers:
+def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadataHandlers:
     marker_handlers = {}
     all_only_at_page_start = True
     for plugin in plugins:

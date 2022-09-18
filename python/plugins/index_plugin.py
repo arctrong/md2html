@@ -3,7 +3,7 @@ from html import escape
 from io import StringIO
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 from jsonschema import validate, ValidationError
 
@@ -121,7 +121,7 @@ class IndexPlugin(Md2HtmlPlugin):
         return not bool(self.index_data)
 
     def pre_initialize(self, argument_file: dict, cli_args: CliArgDataObject,
-                       plugins: list) -> dict[str, Any]:
+                       plugins: list) -> Dict[str, Any]:
         argument_file = argument_file.copy()
         document_dicts = []
         for index_data in self.index_data.values():

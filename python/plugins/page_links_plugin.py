@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Dict
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
@@ -10,8 +11,8 @@ MODULE_DIR = Path(__file__).resolve().parent
 class PageLinksPlugin(Md2HtmlPlugin):
     def __init__(self):
         super().__init__()
-        self.markers: list[str] = []
-        self.page_links_handlers: list[PageLinkMetadataHandler] = []
+        self.markers: List[str] = []
+        self.page_links_handlers: List[PageLinkMetadataHandler] = []
 
     def accept_data(self, data):
         self.assure_accept_data_once()
@@ -19,7 +20,7 @@ class PageLinksPlugin(Md2HtmlPlugin):
         markers = data.get("markers")
         self.markers = markers if markers else ["page"]
 
-    def accept_document_list(self, docs: list[Document]):
+    def accept_document_list(self, docs: List[Document]):
         if not self.markers:
             return
         documents = {d.code: d.output_file for d in docs if d.code}
@@ -35,7 +36,7 @@ class PageLinksPlugin(Md2HtmlPlugin):
 
 
 class PageLinkMetadataHandler:
-    def __init__(self, pages: dict[str, str]):
+    def __init__(self, pages: Dict[str, str]):
         self.pages = pages
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section):
