@@ -1,3 +1,3 @@
 @echo off
 
-py -m unittest discover %* --start-directory=%~dp0
+python -m unittest discover %* --start-directory=%~dp0
