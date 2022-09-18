@@ -13,9 +13,11 @@
         { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", 
             "page-flows": ["sections"] },
         { "input-glob": "sections/*.txt", "page-flows": ["sections"], 
-            "title-from-variable": "title", "sort-by-variable": "SORT_ORDER" }
+            "title-from-variable": "title", "code-from-variable": "code", 
+            "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
+        "page-variables": {},
         "relative-paths": { "resource_path": "doc/" },
         "page-flows": {
             "header": [
@@ -33,9 +35,9 @@
             ]
         },
         "variables": {"logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:dimgray;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>" },
-        "page-variables": {},
         "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                     "index-cache-relative": true, "letters": true, "letters-block": true }
-        }
+        },
+        "page-links": { "markers": ["page"] }
     }
 }

@@ -94,7 +94,8 @@ class IndexPlugin(Md2HtmlPlugin):
 
     def __init__(self):
         super().__init__()
-        with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r') as schema_file:
+        with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r',
+                  encoding="utf-8") as schema_file:
             self.metadata_schema = json.load(schema_file)
         self.index_data = {}
         self.finalization_started = False
@@ -143,7 +144,7 @@ class IndexPlugin(Md2HtmlPlugin):
                                                   .joinpath(index_data.index_cache_file))
             index_cache_file = Path(index_data.index_cache_file)
             if index_cache_file.exists():
-                with open(index_cache_file, 'r') as file:
+                with open(index_cache_file, 'r', encoding="utf-8") as file:
                     index_data.index_cache = json.load(file)
             else:
                 index_data.index_cache = {}
@@ -211,7 +212,7 @@ class IndexPlugin(Md2HtmlPlugin):
 
             output_page(index_data.document, plugins, substitutions, options)
 
-            with open(index_data.index_cache_file, 'w') as cache_file:
+            with open(index_data.index_cache_file, 'w', encoding="utf-8") as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)
 
             if index_data.document.verbose:

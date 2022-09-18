@@ -98,7 +98,7 @@ class Md2HtmlPlugin(ABC):
         self.data_accepted = True
 
     def validate_data_with_file(self, data, schema_file):
-        with open(schema_file, 'r') as schema_file:
+        with open(schema_file, 'r', encoding="utf-8") as schema_file:
             schema = json.load(schema_file)
         self.validate_data_with_schema(data, schema)
 

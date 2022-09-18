@@ -74,7 +74,7 @@ def relativize_relative_resource(resource, page):
 
 
 def read_lines_from_file(file):
-    with open(file, 'r') as file_handler:
+    with open(file, 'r', encoding="utf-8") as file_handler:
         return file_handler.read()
 
 
@@ -96,7 +96,7 @@ def read_lines_from_commented_json_file(file, comment_char='#'):
     for convenience.
     """
     lines = []
-    with open(file, 'r') as file_handler:
+    with open(file, 'r', encoding="utf-8") as file_handler:
         for line in file_handler:
             lines.append(blank_comment_line(line, comment_char))
     return ''.join(lines)

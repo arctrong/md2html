@@ -72,5 +72,5 @@ def output_page(document, plugins: list, substitutions: dict, options):
         os.makedirs(output_dir_path)
 
     # TODO Consider adding `encoding` parameter.
-    with open(document.output_file, 'w') as result_file:
+    with open(document.output_file, 'w', encoding="utf-8") as result_file:
         result_file.write(result)

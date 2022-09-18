@@ -64,7 +64,8 @@ class PageFlowsPlugin(Md2HtmlPlugin):
         self.initialize_done = False
         self.raw_data: dict = {}
         self.data: dict = {}
-        with open(MODULE_DIR.joinpath('page_flows_schema.json'), 'r') as schema_file:
+        with open(MODULE_DIR.joinpath('page_flows_schema.json'), 'r',
+                  encoding="utf-8") as schema_file:
             self.data_schema = json.load(schema_file)
 
     def accept_data(self, data):

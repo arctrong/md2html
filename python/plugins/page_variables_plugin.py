@@ -50,7 +50,8 @@ class PageVariablesPlugin(Md2HtmlPlugin):
 class PageVariablesCollectingMetadataHandler:
     def __init__(self):
         self.page_variables = {}
-        with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r') as schema_file:
+        with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r',
+                  encoding="utf-8") as schema_file:
             self.metadata_schema = json.load(schema_file)
 
     def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section):
