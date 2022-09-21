@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Usage", "SORT_ORDER": "50"}-->
+<!--VARIABLES {"title": "Usage", "SORT_ORDER": "50", "code": "usage"}-->
 
 [TOC]
 
@@ -346,7 +346,7 @@ Name | Type | Required | Description
 ---- | ---- | :----: | ----
 _plugin name_ | _defined by plugin_ | No | Plugin data
 
-The plugins data and the plugins themselves are described in the [separate sections](plugins.html).
+The plugins data and the plugins themselves are described in the [separate sections](<!--page plugins-->).
 
 ----------------------------------------------------------------------------------------------------
 <a name="command_scripts"></a><!--index command scripts -->
@@ -557,9 +557,9 @@ This process consists of several steps.
 The `--legacy-mode` command line argument or the `"legacy-mode: true` property in the
 _argument file_ `"options"` section may make this program process the legacy projects.
 
-The command script `generate_html_legacy.bat` is the version of the former script
-`generate_html.bat` with the legacy mode activated. Put it to the documentation project's
-directory and... hopefully... this must be enough.
+The command script `generate_html_legacy.bat` in the directory `legacy_scripts` is the version of
+the former script `generate_html.bat` with the legacy mode activated. Put it to the documentation
+project's directory and... hopefully... this must be enough.
 
 In this mode the following processing changes will be done:
 

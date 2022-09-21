@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Development", "SORT_ORDER": "90"}-->
+<!--VARIABLES {"title": "Development", "SORT_ORDER": "90", "code": "development"}-->
 
 [TOC]
 
@@ -54,7 +54,7 @@ for converting Markdown text to HTML.
 ## Packaging
 
 The packaging and the tests are defined in the source code and run automatically when the
-project is built. See the [installation instructions](installation.html#installation_java) for
+project is built. See the [installation instructions](<!--page installation-->#installation_java) for
 more details.
 
 ----------------------------------------------------------------------------------------------------

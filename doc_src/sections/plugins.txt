@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Plugins", "SORT_ORDER": "80"}-->
+<!--VARIABLES {"title": "Plugins", "SORT_ORDER": "80", "code": "plugins"}-->
 
 [TOC]
 
@@ -13,7 +13,7 @@ The main approach used by this program is no interference in the Markdown syntax
 documentation content must be readable in plain text even without processing by this program.
 Plugins provide extra possibilities for the templates processing and visualization.
 
-See [here](usage.html#argument_file_example) for an example of how plugins are defined in 
+See [here](<!--page usage-->#argument_file_example) for an example of how plugins are defined in 
 the *argument file*.
 
 ----------------------------------------------------------------------------------------------------
@@ -292,7 +292,7 @@ This example defines one index with marker `index`. It's possible to define seve
 different markers.
 
 All possible properties are listed in the table below. They are mostly the same as those 
-of the [`documents` section](usage.html#documents_section) so see that section for the
+of the [`documents` section](<!--page usage-->#documents_section) so see that section for the
 absent descriptions.
 
 Name | Type | Required | Default | Description
@@ -323,7 +323,7 @@ letters-block | boolean | No | false | `true` means that all terms first letters
     that keeps the collected index entries between the runs.
     
     In some cases a forceful full regeneration (with `-f` flag or `"force": true` option, 
-    see [here](usage.html) for more details) is required, for example, if the "index" plugin is
+    see [here](<!--page usage-->) for more details) is required, for example, if the "index" plugin is
     activated on an existing project or if the index cache file is deleted. 
     
     Index cache file is a generated artifact so in case of any problem it may be manually deleted

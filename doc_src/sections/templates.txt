@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Templates", "SORT_ORDER": "70"}-->
+<!--VARIABLES {"title": "Templates", "SORT_ORDER": "70", "code": "templates"}-->
 
 [TOC]
 
@@ -45,7 +45,7 @@ Tag key | Description
 `{{source_file}}` | The source text file resolved relatively to the current HTML page
 
 The other tags may be provided by _plugins_ that are described in the
-[separate section](plugins.html).
+[separate section](<!--page plugins-->).
 
 !!! important
     The number of curly braces pairs (two or three) is meaningful. Use them for the certain tags
