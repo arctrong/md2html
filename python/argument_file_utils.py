@@ -319,6 +319,7 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
 
     documents_item = expand_document_globs(canonized_argument_file['documents'], plugins)
     documents = []
+    unique_codes = set()
     for document_item in documents_item:
         # Such check was probably done before but let it stay here as a safeguard.
         if document_item.get("input") is None:
@@ -340,12 +341,10 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
                                    )
         documents.append(document_object)
 
-        codes = set()
-        for doc in documents:
-            if doc.code in codes:
-                raise UserError(f"Duplicated document code: {doc.code}")
-            if doc.code:
-                codes.add(doc.code)
+        if document_object.code in unique_codes:
+            raise UserError(f"Duplicated document code: {document_object.code}")
+        if document_object.code:
+            unique_codes.add(document_object.code)
 
         for page_flow in first_not_none(document_item.get('page-flows'), []):
             page_flow_list = documents_page_flows_plugin.setdefault(page_flow, [])
