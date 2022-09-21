@@ -1,5 +1,6 @@
 package world.md2html.options.argfile;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
@@ -59,7 +61,7 @@ public class ArgFileParsingTest {
         Document doc = argFile.getDocuments().get(0);
         assertEquals("index.txt", doc.getInput());
         assertEquals("index.html", doc.getOutput());
-        assertNull(doc.getTitle());
+        assertEquals("", doc.getTitle());
         // Template path depends on the environment and is not checked here.
         assertFalse(doc.isNoCss());
         assertEquals(0, doc.getLinkCss().size());
@@ -150,7 +152,8 @@ public class ArgFileParsingTest {
         ArgFile argFile = parseArgumentFile(
                 "{\"documents\": [{\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +
                         "\"input\": \"index.txt\", \"output\": \"index.html\", " +
-                        "\"title\": \"some title\", \"template\": \"path/templates/custom.html\", " +
+                        "\"title\": \"some title\", \"code\": \"some_code\", " +
+                        "\"template\": \"path/templates/custom.html\", " +
                         "\"link-css\": [\"link1.css\", \"link2.css\"], " +
                         "\"add-link-css\": [\"add_link.css\"], " +
                         "\"include-css\": [\"include.css\"], " +
@@ -160,6 +163,7 @@ public class ArgFileParsingTest {
         assertEquals("doc_src/index.txt", doc.getInput());
         assertEquals("doc/index.html", doc.getOutput());
         assertEquals("some title", doc.getTitle());
+        assertEquals("some_code", doc.getCode());
         assertEquals("path/templates/custom.html", doc.getTemplate());
         assertFalse(doc.isNoCss());
         assertEquals("some title", doc.getTitle());
@@ -234,6 +238,28 @@ public class ArgFileParsingTest {
     }
 
     @Test
+    public void nonUniqueDocumentCode_NegativeScenario() {
+        UserError e = assertThrows(UserError.class, () ->
+                parseArgumentFile("{\"documents\": [ \n" +
+                        "    {\"input\": \"page1.txt\", \"code\": \"page1\"}, \n" +
+                        "    {\"input\": \"page2.txt\", \"code\": \"page1\"}] \n" +
+                        "}", DUMMY_CLI_OPTIONS));
+        assertThat(e.getMessage(), Matchers.containsStringIgnoringCase("duplicate"));
+        assertThat(e.getMessage(), Matchers.containsStringIgnoringCase("page1"));
+    }
+
+    @Test
+    public void caseSensitiveCodes_PositiveScenario() throws Exception {
+        ArgFile argFile = parseArgumentFile("{\"documents\": [ \n" +
+            "    {\"input\": \"page1.txt\", \"code\": \"page1\"}, \n" +
+            "    {\"input\": \"page2.txt\", \"code\": \"paGe1\"}] \n" +
+            "}", DUMMY_CLI_OPTIONS);
+        List<Document> docs = argFile.getDocuments();
+        assertEquals("page1", docs.get(0).getCode());
+        assertEquals("paGe1", docs.get(1).getCode());
+    }
+
+    @Test
     public void defaultOptions_PositiveScenario() throws Exception {
         ArgFile argFile = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", DUMMY_CLI_OPTIONS);
@@ -287,15 +313,16 @@ public class ArgFileParsingTest {
         // Adding minimum plugin data to make the plugins declare themselves activated.
         // The specific plugins behavior is going to be tested in separate tests.
         List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": " +
-                "[{\"input\": \"index.txt\"}], \"plugins\": " +
+                "[{\"input\": \"index.txt\", \"code\": \"index\"}], \"plugins\": " +
                 "{\"relative-paths\": {\"rel_path\": \"/doc\"}, " +
                 "\"page-flows\": {\"sections\": [{\"link\": \"doc/about.html\", " +
                 "\"title\": \"About\"}]}, " +
                 "\"page-variables\":{\"v\": {}}, " +
                 "\"variables\": {\"logo\": \"THE GREATEST SITE EVER!\"}, " +
-                "\"index\": {\"index\": {\"output\": \"o.html\", \"index-cache\": \"ic.json\"}} \n" +
+                "\"index\": {\"index\": {\"output\": \"o.html\", \"index-cache\": \"ic.json\"}}, \n" +
+                "\"page-links\": {} \n" +
                 "}}", DUMMY_CLI_OPTIONS).getPlugins();
-        assertEquals(5, plugins.size());
+        assertEquals(6, plugins.size());
     }
 
     @Test

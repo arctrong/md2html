@@ -204,10 +204,14 @@ public class ArgFileParsingHelper {
         String title = firstNotNull(cliOptions.getTitle(), documentRaw.getTitle(),
                 defaults.getTitle());
         argFileDocumentRawBuilder.title(title);
+        String code = firstNotNull(documentRaw.getCode(), defaults.getCode());
+        argFileDocumentRawBuilder.code(code);
         String titleFromVariable = firstNotNull(cliOptions.getTitleFromVariable(),
                 documentRaw.getTitleFromVariable(), defaults.getTitleFromVariable());
         argFileDocumentRawBuilder.titleFromVariable(titleFromVariable);
-
+        String codeFromVariable = firstNotNull(documentRaw.getCodeFromVariable(),
+                defaults.getCodeFromVariable());
+        argFileDocumentRawBuilder.codeFromVariable(codeFromVariable);
         String templateFile = firstNotNull(cliOptions.getTemplate(), documentRaw.getTemplate(),
                 defaults.getTemplate());
         argFileDocumentRawBuilder.template(templateFile);
@@ -326,6 +330,7 @@ public class ArgFileParsingHelper {
 
         List<Document> documents = new ArrayList<>(documentsRaw.size());
 
+        Set<String> uniqueCodes = new HashSet<>();
         for (ArgFileDocumentRaw documentRaw : documentsRaw) {
             // Such check was probably done before but let it stay here as a safeguard.
             if (documentRaw.getInput() == null) {
@@ -334,6 +339,26 @@ public class ArgFileParsingHelper {
             }
 
             ArgFileDocumentRaw enrichedDocumentRaw = enrichDocument(documentRaw);
+
+            Document document = Document.builder()
+                    .input(enrichedDocumentRaw.getInput())
+                    .output(enrichedDocumentRaw.getOutput())
+                    .title(firstNotNull(enrichedDocumentRaw.getTitle(), ""))
+                    .code(enrichedDocumentRaw.getCode())
+                    .template(enrichedDocumentRaw.getTemplate())
+                    .linkCss(enrichedDocumentRaw.getLinkCss())
+                    .includeCss(enrichedDocumentRaw.getIncludeCss())
+                    .noCss(enrichedDocumentRaw.isNoCss())
+                    .force(enrichedDocumentRaw.isForce())
+                    .verbose(enrichedDocumentRaw.isVerbose())
+                    .report(enrichedDocumentRaw.isReport())
+                    .build();
+
+            if (uniqueCodes.contains(document.getCode())) {
+                throw new UserError("Duplicated document code: " + document.getCode());
+            } else if (document.getCode() != null) {
+                uniqueCodes.add(document.getCode());
+            }
 
             List<String> pageFlows = enrichedDocumentRaw.getPageFlows();
             if (pageFlows != null) {
@@ -344,24 +369,13 @@ public class ArgFileParsingHelper {
                         documentsPageFlowsPlugin.set(pageFlow, pageFlowList);
                     }
                     ObjectNode pageFlowNode = new ObjectNode(NODE_FACTORY);
-                    pageFlowNode.put("link", enrichedDocumentRaw.getOutput());
-                    pageFlowNode.put("title", enrichedDocumentRaw.getTitle());
+                    pageFlowNode.put("link", document.getOutput());
+                    pageFlowNode.put("title", document.getTitle());
                     pageFlowList.add(pageFlowNode);
                 }
             }
 
-            documents.add(Document.builder()
-                    .input(enrichedDocumentRaw.getInput())
-                    .output(enrichedDocumentRaw.getOutput())
-                    .title(enrichedDocumentRaw.getTitle())
-                    .template(enrichedDocumentRaw.getTemplate())
-                    .linkCss(enrichedDocumentRaw.getLinkCss())
-                    .includeCss(enrichedDocumentRaw.getIncludeCss())
-                    .noCss(enrichedDocumentRaw.isNoCss())
-                    .force(enrichedDocumentRaw.isForce())
-                    .verbose(enrichedDocumentRaw.isVerbose())
-                    .report(enrichedDocumentRaw.isReport())
-                    .build());
+            documents.add(document);
         }
 
         ArgFile argFile = ArgFile.builder()
@@ -378,6 +392,8 @@ public class ArgFileParsingHelper {
     private static List<ArgFileDocumentRaw> expandDocumentGlobs(
             List<ArgFileDocumentRaw> documentsRaw, Map<String, Md2HtmlPlugin> plugins)
             throws IOException {
+
+        // TODO Test the case when page metadata is absent. Must work correctly.
 
         List<ArgFileDocumentRaw> expandedDocumentRawList = new ArrayList<>();
 
@@ -406,6 +422,7 @@ public class ArgFileParsingHelper {
                             .relativize(globPath.toAbsolutePath()).toString());
 
                     if (documentRaw.getTitleFromVariable() != null ||
+                            documentRaw.getCodeFromVariable() != null ||
                             documentRaw.getSortByVariable() != null) {
 
                         Md2HtmlPlugin pageVariablesPlugin = plugins.get("page-variables");
@@ -426,6 +443,12 @@ public class ArgFileParsingHelper {
                                             Optional.ofNullable(pageVariables.get(titleVar)))
                                     .ifPresent(title ->
                                             globDocumentRawBuilder.title((String) title));
+
+                            Optional.ofNullable(documentRaw.getCodeFromVariable())
+                                    .flatMap(codeVar ->
+                                            Optional.ofNullable(pageVariables.get(codeVar)))
+                                    .ifPresent(code ->
+                                            globDocumentRawBuilder.code((String) code));
 
                             Optional.ofNullable(documentRaw.getSortByVariable())
                                     .ifPresent(sortVar ->

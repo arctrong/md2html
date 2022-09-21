@@ -12,6 +12,7 @@ public class Document {
     String input;
     String output;
     String title;
+    String code;
     String template;
     List<String> includeCss;
     List<String> linkCss;

@@ -35,6 +35,7 @@ public class ArgumentsHelper {
 
         addExtraPluginData(extraPluginData, plugins);
         completePluginsInitialization(argFileRaw, cliOptions, plugins);
+        feedPluginsWithDocuments(plugins, arguments.getDocuments());
         plugins = filterNonBlankPlugins(plugins);
 
         return arguments.toBuilder().plugins(new ArrayList<>(plugins.values())).build();

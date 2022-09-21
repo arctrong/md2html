@@ -30,6 +30,9 @@ public class ArgFileDocumentRaw {
     String title;
     @JsonProperty("title-from-variable")
     String titleFromVariable;
+    String code;
+    @JsonProperty("code-from-variable")
+    String codeFromVariable;
     @JsonProperty("no-css")
     boolean noCss;
     @JsonProperty("link-css")
@@ -47,7 +50,6 @@ public class ArgFileDocumentRaw {
     boolean verbose;
     boolean force;
     boolean report;
-    // TODO Check how `@JsonIgnore` annotation works.
     @JsonIgnore
     String techSortBy;
 }

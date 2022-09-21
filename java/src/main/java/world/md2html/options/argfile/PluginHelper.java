@@ -3,6 +3,7 @@ package world.md2html.options.argfile;
 import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.Constants;
 import world.md2html.options.model.CliOptions;
+import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.plugins.Md2HtmlPlugin;
 
@@ -70,6 +71,13 @@ public class PluginHelper {
             for (JsonNode data : dataForPlugin) {
                 plugin.getValue().initialize(data);
             }
+        }
+    }
+
+    public static void feedPluginsWithDocuments(Map<String, Md2HtmlPlugin> plugins,
+            List<Document> documents) {
+        for (Md2HtmlPlugin plugin : plugins.values()) {
+            plugin.acceptDocumentList(documents);
         }
     }
 

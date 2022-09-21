@@ -39,6 +39,13 @@ public interface Md2HtmlPlugin {
     default void initialize(JsonNode extraPluginData) throws ArgFileParseException {
     }
 
+    /**
+     * This method is called after all plugins are initialized and all documents are defined.
+     * The list of all documents is sent to the method.
+     */
+    default void acceptDocumentList(List<Document> documents) {
+    }
+
     default List<PageMetadataHandlerInfo> pageMetadataHandlers() {
         return Collections.emptyList();
     }

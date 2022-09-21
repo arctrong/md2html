@@ -27,6 +27,7 @@ public final class Constants {
         PLUGIN_PROVIDERS.put("page-variables", PageVariablesPlugin::new);
         PLUGIN_PROVIDERS.put("variables", VariablesPlugin::new);
         PLUGIN_PROVIDERS.put("index", IndexPlugin::new);
+        PLUGIN_PROVIDERS.put("page-links", PageLinksPlugin::new);
     }
 
     static {

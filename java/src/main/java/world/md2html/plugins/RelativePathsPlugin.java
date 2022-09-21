@@ -13,6 +13,10 @@ import static world.md2html.utils.Utils.relativizeRelativePath;
 
 public class RelativePathsPlugin extends AbstractMd2HtmlPlugin {
 
+    // TODO Consider extending this plugin for substitution of the paths inside documents.
+    //  Like what `PageLinksPlugin` does. Probably need to add parameter `marker` the the
+    //  `path` definition.
+
     private Map<String, String> data = null;
 
     @Override
