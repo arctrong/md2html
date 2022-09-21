@@ -165,19 +165,22 @@ public class Md2Html {
     }
 
     private static String generateHtml(String mdText) {
-
-        MutableDataSet options = new MutableDataSet();
-        options.set(
-                Parser.EXTENSIONS,
-                Arrays.asList(
-                        TablesExtension.create(),
-                        //StrikethroughExtension.create(),
-                        TocExtension.create(),
-                        //InsExtension.create(),
-                        TypographicExtension.create(),
-                        PythonMarkdownCompatibleAdmonitionExtension.create()
-                ));
-        options.set(TocExtension.LEVELS, 126); // generate ToC for all header levels
+        MutableDataSet options = new MutableDataSet()
+                .set(
+                        Parser.EXTENSIONS,
+                        Arrays.asList(
+                                TablesExtension.create(),
+                                //StrikethroughExtension.create(),
+                                TocExtension.create(),
+                                //InsExtension.create(),
+                                TypographicExtension.create(),
+                                PythonMarkdownCompatibleAdmonitionExtension.create()
+                        ))
+                .set(TocExtension.LEVELS, 126) // generate ToC for all header levels
+                // TODO looks like the following option doesn't work. Probably need to
+                //  rewrite to `TypographicExtension` in order to use only `EM_DASH`.
+                .set(TypographicExtension.EN_DASH, "--")
+                .set(TypographicExtension.ENABLE_QUOTES, false); // disable &ndash;
 
         // TODO Try to wrap table of contents into a `div` block.
         //  It's really unclear how to do it.
