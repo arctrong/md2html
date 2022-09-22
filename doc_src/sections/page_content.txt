@@ -27,15 +27,15 @@ the possible result that may be obtained. The source Markdown text files may be 
 
 Text effect | Markdown/HTML syntax | Comments
 ---|---|:---:
-**bold** | `__bold__` or `**bold**` | 
-*italic* | `_italic_` or `*italic*` | 
-`in-line <code> fragment` | `` `in-line <code> fragment` `` | 
+**bold** | `__bold__` or `**bold**` |  |
+*italic* | `_italic_` or `*italic*` |  | 
+`in-line <code> fragment` | `` `in-line <code> fragment` `` |   |
 <span class="code">escaped &lt;code&gt; fragment</span> | `<span class="code">escaped &lt;code&gt; fragment</span>` | 1
 <del>deleted</del> | `<del>deleted</del>` | 2
 <ins>inserted</ins> | `<ins>inserted</ins>` | 2
 Normal text<sub>subscript</sub> | `Normal text<sub>subscript</sub>` | 3
 Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>` | 3
---- (em-dash, `&mdash;`) | `---` | 
+--- (em-dash, `&mdash;`) | `---` |   |
 
 !!! note "Comments"
     1. Sometimes it's required to show HTML entities inside a code block, but the standard Markdown

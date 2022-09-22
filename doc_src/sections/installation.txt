@@ -21,17 +21,28 @@ _unpack-and-run_:
 
 ## Prerequisites
 
-This program requires [Python 3](https://www.python.org/). The following command may be used to
-check whether Python is installed.
+This program requires [Python 3](https://www.python.org/) runtime that can be installed in 
+different ways. Here is a short instruction for a typical installation on Windows. The installer
+file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your platform). 
+Only the following option must be changed:
+
+![](../pict/install_python_3_8.png)
+
+Nothing else should be changed in this and the subsequent dialogues.
+
+The following command may be used to check whether Python is installed.
 
 ````shell
 >python --version
-Python 3.8.6
+Python 3.8.7
 ````
 
-!!! note
-    In Linux the `python` command is probably used for running Python 2 that does not suffice for 
-    this program. Python 3 may need to be installed separately and called with command `python3`.
+!!! note "Notes"
+    1. Later versions of Python will very probably be suitable too but they were not completely
+        checked.
+    2. In Linux the `python` command is probably used for running Python 2 that does not suffice 
+        for this program. Python 3 may need to be installed separately and called with 
+        command `python3`.
 
 The following Python packages must be installed:
 
@@ -39,7 +50,7 @@ The following Python packages must be installed:
 >python -m pip install markdown==3.3.4 markdown-emdash==0.1.0 pymdown-extensions==8.2 jsonschema==3.2.0 chevron==0.14.0
 ````
 
-!!! note "Notes"
+!!! note
     The packages are specified with their versions for stability reason. Future versions of the
     packages may have changes that noticeably affect the program work.
 

@@ -199,6 +199,7 @@ This documentation demonstrates pretty typical usage of this plugin. Also see th
 understanding of correspondence between the plugin's definition and usage.
 
 ----------------------------------------------------------------------------------------------------
+<a name="page_variables_plugin"></a>
 # "page-variables" plugin
 
 ## Motivation
@@ -335,8 +336,8 @@ letters-block | boolean | No | false | `true` means that all terms first letters
 Index entries may be added in two different ways:
 <a name="escaped_code_text_example"></a>
 
-- using a single-term entry like <span class="code">&lt;!--index Term 2 --></span>;
-- using a multiple-term entry like <span class="code">&lt;!--INDEX ["term 1", "term 3"]--></span>.
+- using a single-term entry like <span class="code">&lt;!&#45;-index Term 2 -&#45;></span>;
+- using a multiple-term entry like <span class="code">&lt;!&#45;-INDEX ["term 1", "term 3"]-&#45;></span>.
 
 The `index` marker is case-insensitive. If the above two entries are added then the index page
 will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.
@@ -366,5 +367,54 @@ The first letter link block will look like this:
 
 The above information allows define desirable styling with CSS.
 
+----------------------------------------------------------------------------------------------------
+# "page-links" plugin
+
+## Motivation
+
+HTML pages inside documentation usually reference each other using links. A link specifies its 
+target relative to the page where it's placed. When the target page is moved or renamed the link
+need to be modified accordingly, otherwise it won't work. And what's worse, all pages that
+reference the relocated page need to be found and modified. This plugin automatically calculates 
+link target pages location thus eliminating the need of specifying them manually.
+
+## Definition
+
+To make this plugin work the target document must have a `code`. Here is an example of an argument
+file that uses this plugin:
+
+````
+{
+    "documents": [
+        { "input": "page1.txt", "code": "p1" },
+        { "input": "subdir/page2.txt", "code-from-variable": "code" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "page-links": { "markers": ["page"] }
+    }
+}
+````
+
+The first page has a code `p1` specified in the document definition. The second page has a code
+(let's say `p2`) specified in the page _metadata_ (see the 
+["page-variables" plugin](#page_variables_plugin)), variable `code`. If page _metadata_ is used
+then "page-variables" plugin must be activated.
+
+_Marker_ `page` is defined for in the "page-links" plugin. There may be several markers.
+
+
+## Usage
+
+On the page `page1.txt` the following link to the page `subdir/page2.txt` may be added: 
+`[](<!--page p2-->#some_anchor)` and the plugin will convert it to 
+`[](subdir/page2.html#some_anchor)`. Consequently link `[](<!--page p1-->)` on the second page will
+become `[](../page1.html)`.
+
+!!! attention
+    1. If a page is moved or renamed, some other pages may need to be regenerated to reflected this
+        change. But those pages may be up-to-date, so a forceful full regeneration may be required
+        (with `-f` flag or `"force": true` option, see [here](<!--page usage-->) for more details).
+    2. Changing a page's `code` will invalidate all links that reference this page by its `code`.
 
 

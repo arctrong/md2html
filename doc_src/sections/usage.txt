@@ -260,7 +260,7 @@ Name | Type | Required | Description
 [options](#options_section) | object | No | Options for the whole program run
 [default](#default_section) | object | No | Default options for the documents
 [documents](#documents_section) | array of objects | Yes | Documents that will be processed
-[plugins](#plugins_section) | object | No | Plugins that will be used for the documents procession
+[plugins](#plugins_section) | object | No | Plugins that will be used for the documents processing
 
 
 <a name="options_section"></a>
@@ -298,6 +298,7 @@ output-root | string | No |
 template | string | No | 
 title | string | No | 
 title-from-variable | string | No | 
+code-from-variable | string | No | 
 verbose | boolean | No | 
 link-css | array of strings | No | 
 include-css | array of strings | No | 
@@ -322,7 +323,9 @@ sort-by-title | boolean | No | If `input-glob` is used, the documents will be so
 output-root | string | No | Root directory for output HTML files
 output | string | No | Output HTML file: absolute or relative to the `output-root` property value
 title | string | No | Page title
+code | string | No | Unique page code, may be used by plugins
 title-from-variable | string | No | Take the title from the page metadata
+code-from-variable | string | No | Take the code from the page metadata
 template | string | No | [Template](templates.html) that will wrap the generated HTML content
 link-css | array of strings | No | List of CSS resources that will be linked to the page
 include-css | array of strings | No | List of CSS files that will be included into the page
