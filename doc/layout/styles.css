@@ -61,6 +61,7 @@ pre>code {
 
 pre>code.language-wrapped {
     white-space: pre-wrap;
+    word-break: break-word;
     min-width: unset;
 }
 
@@ -82,6 +83,7 @@ pre>code.language-wrapped-shell {
     color: floralwhite;
     border: solid 1px darkslategray;
     white-space: pre-wrap;
+    word-break: break-word;
     min-width: unset;
 }
 
@@ -96,6 +98,7 @@ pre>code.language-wrapped-code {
     border: solid 1px darkred;
     background-color: beige;
     white-space: pre-wrap;
+    word-break: break-word;
     min-width: unset;
 }
 

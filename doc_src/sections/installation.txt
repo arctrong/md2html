@@ -24,7 +24,7 @@ _unpack-and-run_:
 This program requires [Python 3](https://www.python.org/) runtime that can be installed in 
 different ways. Here is a short instruction for a typical installation on Windows. The installer
 file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your platform). 
-Only the following option must be changed:
+Only the following option (1) must be changed:
 
 ![](../pict/install_python_3_8.png)
 

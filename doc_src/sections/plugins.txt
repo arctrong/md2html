@@ -336,8 +336,8 @@ letters-block | boolean | No | false | `true` means that all terms first letters
 Index entries may be added in two different ways:
 <a name="escaped_code_text_example"></a>
 
-- using a single-term entry like <span class="code">&lt;!&#45;-index Term 2 -&#45;></span>;
-- using a multiple-term entry like <span class="code">&lt;!&#45;-INDEX ["term 1", "term 3"]-&#45;></span>.
+- using a single-term entry like <span class="code">&lt;!-\-index Term 2 -\-></span>;
+- using a multiple-term entry like <span class="code">&lt;!-\-INDEX ["term 1", "term 3"]-\-></span>.
 
 The `index` marker is case-insensitive. If the above two entries are added then the index page
 will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.
