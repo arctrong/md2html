@@ -251,7 +251,7 @@ Item No | Name  | Description   | Price
 Markdown doesn't have syntax for different table styles, but some trick may be used to achieve 
 this. We can add an invisible element (an empty `<div>` in this case) right before the
 table and then define the appearance using some simple CSS magic. So the following invisible
-element:
+element right before a table:
 
 ````
 <div class="tableLight"></div>
@@ -270,7 +270,7 @@ Will give the following table stile:
 If we want to just align text we can use a table without a header:
 
 ````
-<div class="tableLight"></div>
+<div class="tableHederless"></div>
 
 | | | | |
 |---:|---: |---: |---: |
@@ -281,7 +281,7 @@ If we want to just align text we can use a table without a header:
 
 This will give:
 
-<div class="tableLight"></div>
+<div class="tableHederless"></div>
 
 | | | | |
 |---:|---: |---: |---: |
@@ -289,8 +289,19 @@ This will give:
 | 50 | 60  | 70  | 80  |
 | 90 | 100 | 110 | 120 |
 
-!!! note
-    Small extra gap appears above "header-less" tables that is not avoidable as for now.
+We also can combine the CSS classes like this:
+
+````
+<div class="tableLight tableHederless"></div>
+````
+
+<div class="tableLight tableHederless"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
 
 ----------------------------------------------------------------------------------------------------
 <!--index fenced code blocks -->
@@ -401,7 +412,7 @@ This is a long line that doesn't contain line breaks inside itself and that we w
     add special formatting for this admonitions, otherwise the default formatting is used.
  
 !!! warning "Don't overuse!"
-    This highlighting method should not be overused. When there are a lot of such blocks
+    This highlighting method should not be overused. If there are a lot of such blocks then 
     important information may be easily missed by the reader.
  
     BTW, in this block a custom title is used.
