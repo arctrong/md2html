@@ -401,7 +401,7 @@ The first page has a code `p1` specified in the document definition. The second 
 ["page-variables" plugin](#page_variables_plugin)), variable `code`. If page _metadata_ is used
 then "page-variables" plugin must be activated.
 
-_Marker_ `page` is defined for in the "page-links" plugin. There may be several markers.
+_Marker_ `page` is defined in the "page-links" plugin. There may be several markers.
 
 
 ## Usage

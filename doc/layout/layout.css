@@ -66,13 +66,12 @@ h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
 }
 
 div.sidebar_item { 
-    padding: 4px 20px 6px 20px; 
+    padding: 0 20px 0 20px; 
     margin-left: -20px; 
     margin-right: -20px;
 }
 
 div.sidebar_item.selected {
-    /* background-color: #f4f9f9;  */
     border-right: solid 5px cadetblue; 
     padding-right: 15px;
     font-weight: bold;
@@ -80,6 +79,8 @@ div.sidebar_item.selected {
 
 div.sidebar h3 {
     color: darkslategray;
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 
 .header>a:link, .header>a:visited, .header>a:hover, .header>a:active {

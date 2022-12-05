@@ -212,7 +212,7 @@ gives the following output:
         3. This is another __third-level__ _ordered_ list sub-item.
     - This is another __second-level__ _unordered_ list sub-item.
 
-1. This is another __first-level__ _unordered_ list item. Though `1.` is used as the
+1. This is another __first-level__ _ordered_ list item. Though `1.` is used as the
     item number this item marker will be "2.".
 
 ----------------------------------------------------------------------------------------------------
