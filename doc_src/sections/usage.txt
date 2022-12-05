@@ -480,9 +480,21 @@ some other certain structure to be used.
 <!--index quick start-->
 # Documentation project startup
 
-This section provides the steps for starting up the project with the described
-[recommended structure](#typical_project_structure). Assume we have a directory where we want
-to start our documentation project. So in this directory:
+There's a simple way for creating a new project with some sample content. As for now it's
+implemented for Windows only. Create an empty directory where the documentation must be set up,
+then switch to there in the command line terminal and execute:
+
+````shell
+>cd C:\your\path\your_project
+
+>%MD2HTML_HOME%\bin\new_project\new_project.bat
+````
+
+All necessary project files will be created in the directory `your_project`. Just generate 
+the documentation by double-clicking the command file `generate_doc.bat`.
+
+The following description provides the steps for getting the same result manually. Assume we have
+a directory where we want to start our documentation project. So in this directory:
 
 1. Create the directories `doc_src/templates` and put there the template(s) that will be used.
     This template(s) may be created anew or copied from this program's directory with possible

@@ -1,0 +1,38 @@
+{
+    "options": {
+        "verbose": true
+    },
+    "default": {
+        "input-root": "doc_src",
+        "output-root": "doc",
+        "template": "doc_src/templates/multipage.html",
+        "no-css": true,
+        "verbose": true
+    },
+    "documents": [
+        { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", 
+            "page-flows": ["sections"] },
+        { "input-glob": "sections/*.txt", "page-flows": ["sections"], 
+            "title-from-variable": "title", "code-from-variable": "code", 
+            "sort-by-variable": "SORT_ORDER" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "relative-paths": { "resource_path": "doc/" },
+        "page-flows": {
+            "header": [
+                { "link": "readme.html", "title": "Home" },
+                { "link": "doc/index_page.html", "title": "Index" }
+            ],
+            "useful_links": [
+                { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },
+                { "link": "https://github.com/arctrong/md2html", "title": "md2html", "external": true }
+            ]
+        },
+        "variables": {"logo": "<b><span style=\"color:#59f;margin-right:7px;\">Logo</span></b>" },
+        "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
+                    "index-cache-relative": true, "letters": true, "letters-block": true }
+        },
+        "page-links": { "markers": ["page"] }
+    }
+}
