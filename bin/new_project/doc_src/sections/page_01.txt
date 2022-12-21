@@ -12,10 +12,10 @@ This is a [link](<!--page page_02-->) to the second page.
 ----------------------------------------------------------------------------------------------------
 # Chapter 1
 
-This the first chapter.
+This is the first chapter.
 
 ----------------------------------------------------------------------------------------------------
 <!--index chapter 2 -->
 # Chapter 2
 
-This the second chapter.
+This is the second chapter.

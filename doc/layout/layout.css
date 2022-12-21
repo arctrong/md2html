@@ -77,6 +77,10 @@ div.sidebar_item.selected {
     font-weight: bold;
 }
 
+div.sidebar_item:hover { 
+    background-color: gainsboro; 
+}
+
 div.sidebar h3 {
     color: darkslategray;
     margin-top: 10px;
