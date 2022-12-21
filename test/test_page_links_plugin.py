@@ -4,6 +4,7 @@ from pathlib import Path
 
 import helpers as h
 
+
 class Md2htmlPageLinksPluginIntegralTest(unittest.TestCase):
 
     @classmethod
