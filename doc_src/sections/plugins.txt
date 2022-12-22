@@ -19,7 +19,7 @@ the *argument file*.
 ----------------------------------------------------------------------------------------------------
 # "relative-paths" plugin
 
-## Motivation
+**Motivation**
 
 The program generates static HTML pages that reference other pages and resources like CSS and
 pictures. The generated HTML pages may be located in different places of the project structure, 
@@ -33,6 +33,8 @@ $ tree -L 2 --charset=ascii --dirsfirst
 |-- doc
 |   |-- about.html
 |   `-- styles.css
+|-- pict
+|   `-- logo.png
 `-- readme.html
 ````
 
@@ -42,10 +44,11 @@ the reference to `styles.css` is:
 - and `styles.css` from the `about.html` page.
 
 This plugin automatically recalculates relative paths for certain pages depending on their location
-and avoids manual definition of these paths for every page individually.
+and avoids manual definition of these paths for every page individually. It also allows 
+substitution of such paths inside the documents.
 
 
-## Definition
+**Definition**
 
 Here's an example of the plugin definition:
 
@@ -56,21 +59,37 @@ Here's an example of the plugin definition:
         { "input": "doc_src/about.txt", "output": "doc/about.html", "title": "About" }
     ],
     "plugins": {
-        "relative-paths": { "resource_path": "doc/" }
+        "relative-paths": {
+            "markers": ["path"],
+            "paths": {
+                "resource_path": "doc/",
+                "pict": "doc/pict/"
+            }
+        }
     }
 }
 ````
 
-The plugin considers the `"resource_path"` and the current page location being relative to the
+This is the new syntax. The previous syntax (that doesn't support substitution inside documents)
+is also supported:
+
+````
+        "relative-paths": { "resource_path": "doc/" }
+````
+
+In this example, `resource_path` and `pict` are path *codes*, and the corresponding values are 
+paths themselves.
+
+The plugin considers the paths and the current page location being relative to the
 same location, that is the program invocation current directory in this case. When it
-calculates the path then:
+calculates the path with the code `resource_path` then:
 
 - for the page `readme.html`, it'll return `doc/`;
 - for the page `doc/about.html` it'll return `""` (empty path, as they are located in the same
     directory).
 
 
-## Usage
+**Usage**
 
 Include the following _tag_ to the template:
 
@@ -79,13 +98,23 @@ Include the following _tag_ to the template:
 ````
 
 That's it. When a document using this template is generated, this tag will be replaced with
-the corresponding path.
+the desired path.
+
+For substitution inside a document insert the text like this:
+
+<div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
+
+After the page is generated this fragment will look like this:
+
+For page `readme.html`  | For page `doc/about.html`
+------------------------|--------------------------
+`![](pict/logo.png)`    | `![](../pict/logo.png)`
 
 ----------------------------------------------------------------------------------------------------
 <!--index page flows -->    
 # "page-flows" plugin
 
-## Motivation
+**Motivation**
 
 Sidebar provides quick access to different project pages. It's often very helpful to put a
 sequence of pages that are intended to be read in order. Doing it manually is pretty
@@ -93,7 +122,7 @@ cumbersome and error-prone.
 
 This plugin defines such pages sequences and and provides them for easy manipulation in templates.
 
-## Definition
+**Definition**
 
 In the `"plugins"` sections:
 
@@ -141,7 +170,7 @@ The `"page-flows"` document definition may be carried out to the `"default"` sec
 demonstrated here). Several page flows may be defined and a single page may be a part of several
 page flows.
 
-## Usage
+**Usage**
 
 In a template, each page flow is accessible by its name (`sidebar` in the above example) and
 provides the following structured data:
@@ -202,12 +231,12 @@ understanding of correspondence between the plugin's definition and usage.
 <a name="page_variables_plugin"></a>
 # "page-variables" plugin
 
-## Motivation
+**Motivation**
 
 This plugin extracts variables from documents source text and provides these variables to be
 used in the template.
 
-## Definition
+**Definition**
 
 ````
     "plugins": {
@@ -221,7 +250,7 @@ This means that variables will be extracted from the _page metadata_ blocks with
 This is the definition of the default marker so it may be simplified to `"page-variables": {}`,
 and this is the recommended form.
 
-## Usage
+**Usage**
 
 For the above plugin definition the metadata blocks may look like:
 
@@ -249,20 +278,20 @@ The metadata content must be a valid [JSON](https://json.org/).
 ----------------------------------------------------------------------------------------------------
 # "variables" plugin
 
-## Motivation
+**Motivation**
 
 This plugin defines variables that are not bound to certain pages. Actually such values may be
 included directly into the template with no need of using this plugin. But when the same template
 is used by several projects it may be convenient to define some template variable parts that
 different projects may substitute using their _argument files_.
 
-## Definition
+**Definition**
 
 ````
 "variables": {"logo": "<img src=\"logo.png\" />" }
 ````
 
-## Usage
+**Usage**
 
 Tag (or tags) `{{{logo}}}` in the template will be substituted in the template. (Note that in
 this case three pairs of curly braces are used to avoid HTML-escaping on substitution.)
@@ -271,7 +300,7 @@ this case three pairs of curly braces are used to avoid HTML-escaping on substit
 <!--index index-->
 # "index" plugin
 
-## Motivation
+**Motivation**
 
 Some terms, abbreviations and other kind of keywords may be defined, described and mentioned
 in different pages within the documentation. Searching such keywords may be hard,
@@ -279,7 +308,7 @@ especially if the documentation is large. This plugin allows marking such points
 as _index entries_ and then collects these entries and put them together on a separate 
 _index page_. See the [index page](index_page.html) of this documentation as an example.
 
-## Definition
+**Definition**
 
 ````
 "plugins": {
@@ -331,7 +360,7 @@ letters-block | boolean | No | false | `true` means that all terms first letters
     and the further forceful full documents regeneration may resolve the problem.
 
 
-## Usage
+**Usage**
 
 Index entries may be added in two different ways:
 <a name="escaped_code_text_example"></a>
@@ -370,7 +399,7 @@ The above information allows define desirable styling with CSS.
 ----------------------------------------------------------------------------------------------------
 # "page-links" plugin
 
-## Motivation
+**Motivation**
 
 HTML pages inside documentation usually reference each other using links. A link specifies its 
 target relative to the page where it's placed. When the target page is moved or renamed the link
@@ -378,7 +407,7 @@ need to be modified accordingly, otherwise it won't work. And what's worse, all 
 reference the relocated page need to be found and modified. This plugin automatically calculates 
 link target pages location thus eliminating the need of specifying them manually.
 
-## Definition
+**Definition**
 
 To make this plugin work the target document must have a `code`. Here is an example of an argument
 file that uses this plugin:
@@ -404,7 +433,7 @@ then "page-variables" plugin must be activated.
 _Marker_ `page` is defined in the "page-links" plugin. There may be several markers.
 
 
-## Usage
+**Usage**
 
 On the page `page1.txt` the following link to the page `subdir/page2.txt` may be added: 
 `[](<!--page p2-->#some_anchor)` and the plugin will convert it to 

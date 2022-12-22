@@ -288,22 +288,22 @@ Properties:
 
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
-input-root | string | No | 
-input-glob | string | No | 
-sort-by-file-path | boolean | No | 
-sort-by-variable | string | No | 
-sort-by-title | boolean | No | 
-output | string | No | 
-output-root | string | No | 
-template | string | No | 
-title | string | No | 
-title-from-variable | string | No | 
-code-from-variable | string | No | 
-verbose | boolean | No | 
-link-css | array of strings | No | 
-include-css | array of strings | No | 
-no-css | boolean | No | 
-page-flows | array of strings | No | 
+input-root | string | No |  |
+input-glob | string | No |  | 
+sort-by-file-path | boolean | No |   |
+sort-by-variable | string | No |   |
+sort-by-title | boolean | No |   |
+output | string | No |   |
+output-root | string | No |   |
+template | string | No |   |
+title | string | No |   |
+title-from-variable | string | No |   |
+code-from-variable | string | No |   |
+verbose | boolean | No |   |
+link-css | array of strings | No |   |
+include-css | array of strings | No |   |
+no-css | boolean | No |   |
+page-flows | array of strings | No |   |
 
 <a name="documents_section"></a>
 ## `documents` section
@@ -477,7 +477,7 @@ This is just a recommended structure. The program doesn't set any requirements f
 some other certain structure to be used.
 
 ----------------------------------------------------------------------------------------------------
-<!--index quick start-->
+<!--index quick start--><a name="quick_project_startup"></a>
 # Documentation project startup
 
 There's a simple way for creating a new project with some sample content. As for now it's

@@ -48,7 +48,7 @@ code, .code {
     white-space: nowrap;
 }
 
-pre>code {
+pre>code, div.code {
     font-size: 16px;
     display: block;
     width: 878px;

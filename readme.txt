@@ -1,6 +1,6 @@
 <!--VARIABLES {"noPageTitle": true}--> 
 
-<p><img src="doc/pict/logo.png" title="md2html" style="float: right; margin: 0 0 25px 25px;" /></p>
+<p><img src="<!--path pict-->logo.png" title="md2html" style="float: right; margin: 0 0 25px 25px;" /></p>
 
 **M<sub>2</sub>H** creates structured well formatted HTML documentation with minimal effort and may be
 used for different types of writing works.

@@ -18,10 +18,10 @@ class="header_item{{#current}} selected{{/current}}" href="{{link}}">{{title}}</
 {{#source_file}}<a href="{{.}} " class="header_item_source" title="Source text">&lt;/&gt;</a>{{/source_file}}
 {{^source_file}}<span class="header_item_source inactive">&lt;/&gt;</span>{{/source_file}}
 
-{{#sections.previous}}<a href="{{link}}" title="Previous: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h18px.png"/></a>{{/sections.previous}}
-{{^sections.previous}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h18px_inactive.png"/>{{/sections.previous}}
-{{#sections.next}}<a href="{{link}}" title="Next: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h18px.png"/></a>{{/sections.next}}
-{{^sections.next}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h18px_inactive.png"/>{{/sections.next}}
+{{#nav.previous}}<a href="{{link}}" title="Previous: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h18px.png"/></a>{{/nav.previous}}
+{{^nav.previous}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h18px_inactive.png"/>{{/nav.previous}}
+{{#nav.next}}<a href="{{link}}" title="Next: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h18px.png"/></a>{{/nav.next}}
+{{^nav.next}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h18px_inactive.png"/>{{/nav.next}}
 
 <span class="headerTitle">{{title}}</span>
 
@@ -49,14 +49,14 @@ class="header_item{{#current}} selected{{/current}}" href="{{link}}">{{title}}</
 <p>&nbsp;</p>
 <hr />
 
-{{#sections.has_navigation}}
-<p style="margin-top:0px;margin-bottom:0px;text-align:right;">{{#sections.previous}}<a href="{{link}}" 
-title="Previous: {{title}}"><img src="{{resource_path}}layout/pict/previous_page.png"/></a>{{/sections.previous}}
-{{^sections.previous}}<img src="{{resource_path}}layout/pict/previous_page_inactive.png"/>{{/sections.previous}}
-{{#sections.next}}<a href="{{link}}" title="Next: {{title}}"><img 
-src="{{resource_path}}layout/pict/next_page.png"/></a>{{/sections.next}}
-{{^sections.next}}<img src="{{resource_path}}layout/pict/next_page_inactive.png"/>{{/sections.next}}</p>
-{{/sections.has_navigation}}
+{{#nav.has_navigation}}
+<p style="margin-top:0px;margin-bottom:0px;text-align:right;">{{#nav.previous}}<a href="{{link}}" 
+title="Previous: {{title}}"><img src="{{resource_path}}layout/pict/previous_page.png"/></a>{{/nav.previous}}
+{{^nav.previous}}<img src="{{resource_path}}layout/pict/previous_page_inactive.png"/>{{/nav.previous}}
+{{#nav.next}}<a href="{{link}}" title="Next: {{title}}"><img 
+src="{{resource_path}}layout/pict/next_page.png"/></a>{{/nav.next}}
+{{^nav.next}}<img src="{{resource_path}}layout/pict/next_page_inactive.png"/>{{/nav.next}}</p>
+{{/nav.has_navigation}}
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>

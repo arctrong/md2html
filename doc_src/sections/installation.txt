@@ -15,6 +15,10 @@ _unpack-and-run_:
     - [Python version](#installation_python) and
     - [Java version](#installation_java)
 
+!!! tip
+    Go [here](<!--page usage-->#quick_project_startup) for a quick instruction on creation a 
+    simple project.
+
 ----------------------------------------------------------------------------------------------------
 <a id="installation_python"></a>
 # Python version
