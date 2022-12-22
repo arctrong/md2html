@@ -1,0 +1,25 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/RelativePathsPluginTest/template.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/styles.css"]
+    },
+    "documents": [
+        { "input": "page1.txt", "title": "Page 1 - relative-paths" },
+        { "input-glob": "subdir/*.txt", "title-from-variable": "title" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "relative-paths": { 
+            "markers": ["p1", "p2"],
+            "paths": { 
+                "pict1": "test_input/RelativePathsPluginTest/pict1/",
+                "pict2": "test_input/RelativePathsPluginTest/pict2/",
+                "subdir": "test_input/RelativePathsPluginTest/subdir/"
+            }
+         }
+    }
+}

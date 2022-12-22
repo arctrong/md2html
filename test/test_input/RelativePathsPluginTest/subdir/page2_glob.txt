@@ -1,0 +1,9 @@
+
+![](<!--p1 pict1-->image1.png)
+
+![](<!--p1 pict2-->image2.jpg)
+
+
+![](<!--p2 pict1-->image1.png)
+
+![](<!--p2 pict2-->image2.jpg)
