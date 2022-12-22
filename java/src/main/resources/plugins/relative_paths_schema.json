@@ -1,8 +1,25 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "patternProperties": {
-        "^[\\w_][\\w\\d_]*$": { "type": "string" }
+    "definitions": {
+        "singlePath": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": { "^[\\w_][\\w\\d_]*$": { "type": "string" } }
+        }
     },
-    "additionalProperties": false
+    "oneOf": [
+        { "$ref": "#/definitions/singlePath" },
+        {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "markers": {
+                    "type": "array",
+                    "items": { "type": "string", "pattern": "^[\\w\\d_]+$" }
+                },
+                "paths": { "$ref": "#/definitions/singlePath" }
+            },
+            "required": ["markers", "paths"]
+        }
+    ]
 }
