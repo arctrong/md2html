@@ -13,11 +13,13 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
+                "markers": { 
+                    "type": "array",
+                    "items": { "type": "string", "pattern": "^[\\w\\d_]+$" }
+                },
                 "paths": { "$ref": "#/definitions/singlePath" }
             },
             "required": ["markers", "paths"]
         }
-
     ]
 }
