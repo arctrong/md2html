@@ -137,26 +137,30 @@ from the same or the other page.
 ----------------------------------------------------------------------------------------------------
 # Images
 
-<p><img src="../pict/penrose.png" alt="Penrose" title="Penrose" style="float: right; margin: 0 0 25px 25px;" /></p>
+<p><img src="<!--path pict-->penrose.png" alt="Penrose" title="Penrose" class="floatRight" /></p>
 
-The standard Markdown image syntax is `![ALT](path/to/image.png "title")`, where `ALT` and
-`"title"` are not required.
+A picture is inserted the following ways:
 
-Here, nonetheless, the example demonstrates the other method that allows placing images
+- `![](path/to/image.png)` --- the simplest form;
+- `![ALT](path/to/image.png "title")` --- with optional alternative text and hint;
+
+In this example the other method is used that allows placing images
 on the page side with the text floating around, that may be very useful with small images. 
-This method uses direct HTML inclusions:
+This method uses direct HTML inclusion:
 
 <p style="clear: both;"></p>
 
-````
-<p><img src="../pict/target.png" style="float: right; margin: 0 0 25px 25px;" /></p>
-````
+<div class="code">&lt;p>&lt;img src="&lt;!--path pict-->target.png" class="floatRight" />&lt;/p></div>
 
 !!! important
     The image tag is enclosed by a paragraph that is required for the currently used styles.
     The Python version does this enclosing itself, but the Java version does not. Though the
     Python version does not do extra enclosing if it's already done. So it's better to always
     add the paragraph.
+    
+!!! note
+    This example also uses a path substitution <span class="code">&lt;!-\-path pict--></span>.
+    See ["relative-paths" plugin](<!--page plugins-->#relative_paths_plugin) for more details.
 
 To stop the text float the following empty paragraph may be used:
 
@@ -167,12 +171,12 @@ To stop the text float the following empty paragraph may be used:
 An image may be used as a link text like this:
 
 ````
-[![](../pict/target.png)](page.html)
+[![](<!--path pict-->target.png)](page.html)
 ````
 
 Then we will get a clickable image that works as a link:
 
-[![](../pict/penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
+[![](<!--path pict-->penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
 
 ----------------------------------------------------------------------------------------------------
 # Lists
@@ -223,7 +227,7 @@ Blockquotes are inserted by starting each line with `> `.
 > Links, images and some other Markdown elements may be used inside `blockquote`s:
 > 
 > - Here's a link with a clickable image:    
->   [![TARGET](../pict/target-smaller.png)](#anchor_demo "How to add an anchor.")
+>   [![TARGET](<!--path pict-->target-smaller.png)](#anchor_demo "How to add an anchor.")
 > - Also a list inside this `blockquote` is used for demonstration.
 
 ----------------------------------------------------------------------------------------------------
@@ -384,6 +388,19 @@ may make the content inconvenient for copy-pasting. To address this cases, addit
 ````wrapped-code
 This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
 ````
+
+
+## Using HTML
+
+The following code may be used in order to avoid plugin substitutions:
+
+````
+<div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
+````
+
+The result will be like this:
+
+<div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
 
 ----------------------------------------------------------------------------------------------------
 <!--index admonitions -->

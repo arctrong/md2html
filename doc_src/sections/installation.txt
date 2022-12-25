@@ -30,7 +30,7 @@ different ways. Here is a short instruction for a typical installation on Window
 file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your platform). 
 Only the following option (1) must be changed:
 
-![](../pict/install_python_3_8.png)
+![](<!--path pict-->install_python_3_8.png)
 
 Nothing else should be changed in this and the subsequent dialogues.
 

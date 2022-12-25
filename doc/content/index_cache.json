@@ -2,12 +2,12 @@
   "readme.html": [
     {
       "entry": "Markdown",
-      "link": "../readme.html#index_entry_index_1",
+      "link": "../../readme.html#index_entry_index_1",
       "title": "Home"
     }
   ],
-  "doc/sections/installation.html": [],
-  "doc/sections/usage.html": [
+  "doc/content/sections/installation.html": [],
+  "doc/content/sections/usage.html": [
     {
       "entry": "Linux",
       "link": "sections/usage.html#index_entry_index_1",
@@ -49,7 +49,7 @@
       "title": "Usage"
     }
   ],
-  "doc/sections/page_content.html": [
+  "doc/content/sections/page_content.html": [
     {
       "entry": "tables",
       "link": "sections/page_content.html#index_entry_index_1",
@@ -66,7 +66,7 @@
       "title": "Page content"
     }
   ],
-  "doc/sections/templates.html": [
+  "doc/content/sections/templates.html": [
     {
       "entry": "template",
       "link": "sections/templates.html#index_entry_index_1",
@@ -83,7 +83,7 @@
       "title": "Templates"
     }
   ],
-  "doc/sections/plugins.html": [
+  "doc/content/sections/plugins.html": [
     {
       "entry": "plugins",
       "link": "sections/plugins.html#index_entry_index_1",
@@ -105,7 +105,7 @@
       "title": "Plugins"
     }
   ],
-  "doc/sections/development.html": [
+  "doc/content/sections/development.html": [
     {
       "entry": "integral tests",
       "link": "sections/development.html#index_entry_index_1",

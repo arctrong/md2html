@@ -17,6 +17,7 @@ See [here](<!--page usage-->#argument_file_example) for an example of how plugin
 the *argument file*.
 
 ----------------------------------------------------------------------------------------------------
+<a name="relative_paths_plugin"></a>
 # "relative-paths" plugin
 
 **Motivation**

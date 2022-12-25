@@ -266,7 +266,7 @@ Name | Type | Required | Description
 <a name="options_section"></a>
 ## `options` section
 
-[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 Properties:
 
@@ -279,7 +279,7 @@ legacy-mode | boolean | No | Activates [legacy mode](#legacy_mode)
 <a name="default_section"></a>
 ## `default` section
 
-[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 These parameters will be applied to the document definitions if they are not defined explicitly.
 See the [`documents` section](#documents_section) for the details.
@@ -308,7 +308,7 @@ page-flows | array of strings | No |   |
 <a name="documents_section"></a>
 ## `documents` section
 
-[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 Array of objects with properties:
 
@@ -341,7 +341,7 @@ report | boolean | No | The same meaning as the corresponding command line argum
 <a name="plugins_section"></a>
 ## `plugins` section
 
-[![](../pict/triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
 
 May contain multiple properties:
 
@@ -392,7 +392,7 @@ run (that is the Python version for now).
 
 The program may be integrated into Windows Explorer context menu:
 
-![WINDOWS_EXPOLORER_CONTEXT_MENU](../pict/windows_context_menu.png)
+![WINDOWS_EXPOLORER_CONTEXT_MENU](<!--path pict-->windows_context_menu.png)
 
 This may be a quick and convenient way to convert single documents.
 
@@ -423,7 +423,7 @@ and press `Enter`) and add the following keys and values:
 Here `@` stands for `(Default)` value name. `py` or `java` may be added before `-i` argument.
 The quotes must be set like this:
 
-![](../pict/reg_value.png)
+![](<!--path pict-->reg_value.png)
 
 !!! note
     There's no such integration for Linux. The interested Linux users may use the scripts 
@@ -477,8 +477,10 @@ This is just a recommended structure. The program doesn't set any requirements f
 some other certain structure to be used.
 
 ----------------------------------------------------------------------------------------------------
-<!--index quick start--><a name="quick_project_startup"></a>
 # Documentation project startup
+
+<!--index quick start--><a name="quick_project_startup"></a>
+## Quick start
 
 There's a simple way for creating a new project with some sample content. As for now it's
 implemented for Windows only. Create an empty directory where the documentation must be set up,
@@ -493,7 +495,10 @@ then switch to there in the command line terminal and execute:
 All necessary project files will be created in the directory `your_project`. Just generate 
 the documentation by double-clicking the command file `generate_doc.bat`.
 
-The following description provides the steps for getting the same result manually. Assume we have
+
+## Manual project creation
+
+The following description provides the steps for getting the above result manually. Assume we have
 a directory where we want to start our documentation project. So in this directory:
 
 1. Create the directories `doc_src/templates` and put there the template(s) that will be used.

@@ -4,7 +4,7 @@
     },
     "default": {
         "input-root": "doc_src",
-        "output-root": "doc",
+        "output-root": "doc/content",
         "template": "doc_src/templates/multipage.html",
         "no-css": true,
         "verbose": true
@@ -28,9 +28,9 @@
         "page-flows": {
             "header": [
                 { "link": "readme.html", "title": "Home" },
-                { "link": "doc/sections/installation.html", "title": "Installation" },
-                { "link": "doc/sections/usage.html", "title": "Usage" },
-                { "link": "doc/index_page.html", "title": "Index" },
+                { "link": "doc/content/sections/installation.html", "title": "Installation" },
+                { "link": "doc/content/sections/usage.html", "title": "Usage" },
+                { "link": "doc/content/index_page.html", "title": "Index" },
                 { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
             ],
             "useful_links": [

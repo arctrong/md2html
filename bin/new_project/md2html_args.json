@@ -18,7 +18,13 @@
     ],
     "plugins": {
         "page-variables": {},
-        "relative-paths": { "resource_path": "doc/" },
+        "relative-paths": {
+            "markers": ["path"],
+            "paths": {
+                "resource_path": "doc/",
+                "pict": "doc/pict/"
+            }
+        },
         "page-flows": {
             "header": [
                 { "link": "readme.html", "title": "Home" },
