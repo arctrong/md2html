@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from models.document import Document
+from plugins.ignore_plugin import IgnorePlugin
 from plugins.index_plugin import IndexPlugin
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.page_flows_plugin import PageFlowsPlugin
@@ -17,6 +18,7 @@ PLUGIN_PROVIDERS = {
     "variables": lambda: VariablesPlugin(),
     'index': lambda: IndexPlugin(),
     'page-links': lambda: PageLinksPlugin(),
+    'ignore': lambda: IgnorePlugin(),
 }
 
 

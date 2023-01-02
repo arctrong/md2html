@@ -66,7 +66,7 @@ class Md2HtmlPlugin(ABC):
         return []
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata,
-                             metadata_section) -> str:
+                             metadata_section: str) -> str:
         """
         Accepts document `doc` where the `metadata` was found, the metadata marker, the
         `metadata` itself (as a string) and the whole section `metadata_section` from
