@@ -1,0 +1,19 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/IgnorePluginTest/template.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/styles.css"]
+    },
+    "documents": [
+        { "input": "page1.txt", "title": "IgnorePlugin" },
+        { "input": "page2.txt", "title": "IgnorePlugin2", "code": "page2" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "page-links": {},
+        "ignore": {}
+    }
+}
