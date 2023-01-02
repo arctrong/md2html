@@ -103,7 +103,9 @@ the desired path.
 
 For substitution inside a document insert the text like this:
 
-<div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
+````
+![](<!--ignore path pict-->logo.png) 
+````
 
 After the page is generated this fragment will look like this:
 
@@ -366,8 +368,8 @@ letters-block | boolean | No | false | `true` means that all terms first letters
 Index entries may be added in two different ways:
 <a name="escaped_code_text_example"></a>
 
-- using a single-term entry like <span class="code">&lt;!-\-index Term 2 -\-></span>;
-- using a multiple-term entry like <span class="code">&lt;!-\-INDEX ["term 1", "term 3"]-\-></span>.
+- using a single-term entry like `<!--ignore index Term 2 -->`;
+- using a multiple-term entry like `<!--ignore INDEX ["term 1", "term 3"]-->`.
 
 The `index` marker is case-insensitive. If the above two entries are added then the index page
 will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.
@@ -446,5 +448,51 @@ become `[](../page1.html)`.
         change. But those pages may be up-to-date, so a forceful full regeneration may be required
         (with `-f` flag or `"force": true` option, see [here](<!--page usage-->) for more details).
     2. Changing a page's `code` will invalidate all links that reference this page by its `code`.
+
+----------------------------------------------------------------------------------------------------
+# "ignore" plugin
+
+**Motivation**
+
+Different plugins fulfill page metadata substitution. But sometimes it's required to show a
+metadata block without substitutions. To achieve that, there are methods that use direct HTML
+inclusions and masking, but they are quite tedious and cumbersome. This plugin gives an easy
+way of doing that.
+
+**Definition**
+
+Here is an example of an *argument file* that uses this plugin:
+
+````
+{
+    "documents": [
+        { "input": "page1.txt" }
+    ],
+    "plugins": {
+        "ignore": { "markers": ["ignore"] }
+    }
+}
+````
+
+The example shows the default *marker* usage, so the other, and recommended, way is the following 
+definition: `"ignore": { }`. There may be several markers if required.
+
+**Usage**
+
+Let's consider two different code blocks:
+
+````
+![](<!--path pict-->logo.png)
+````
+
+and 
+
+````
+![](<!--ignore path pict-->logo.png)
+````
+
+In the first block the source text is `![](<!--ignore path pict-->logo.png)` and substitution
+is fulfilled, while in the second block the source text is 
+`![](<!--ignore ignore path pict-->logo.png)` so substitution is omitted.
 
 

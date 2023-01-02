@@ -159,7 +159,7 @@ This method uses direct HTML inclusion:
     add the paragraph.
     
 !!! note
-    This example also uses a path substitution <span class="code">&lt;!-\-path pict--></span>.
+    This example also uses a path substitution `<!--ignore path pict-->`.
     See ["relative-paths" plugin](<!--page plugins-->#relative_paths_plugin) for more details.
 
 To stop the text float the following empty paragraph may be used:

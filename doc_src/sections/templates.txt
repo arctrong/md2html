@@ -6,7 +6,7 @@
 <!--index ["template", "Mustache"] -->
 # What is template?
 
-In this program [Mustache](https://mustache.github.io/) template language is used for HTML
+In this program [Mustache](https://mustache.github.io/) template engine is used for HTML
 templates processing. A simple template file may look like this:
 
 ````
@@ -60,7 +60,7 @@ other writing works with minimal or no modifications. It's recommended to copy t
 template to other projects in order to make it independent of the further modifications
 of this program (as this documentation is the part of the program). The template itself, the
 corresponding CSS files and some images must be copied. This template location is 
-`doc_src/templates/custom.html`.
+`doc_src/templates/multipage.html`.
 
 There's also a simpler template, `doc_src/templates/default.html`, that is used as the default
 in some cases. This template may also be used in other projects, probably in simpler and smaller
