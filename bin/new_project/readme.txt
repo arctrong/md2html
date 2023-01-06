@@ -5,8 +5,6 @@
 <!--index Home page -->
 This is an automatically created documentation template.
 
-This home page uses a metadata variable to remove the page title.
-
 [TOC]
 
 <p style="clear: both;"></p>
@@ -20,8 +18,28 @@ This sample documentation contains several simple pages rendered using a typical
 <!--index usage -->
 # How to use it?
 
-- Add your own content.
-- Remove unnecessary elements.
-- Redefine the settings if required:
-    - Take a look at the file `doc/theme.css` that allows custom styling redefinition.
+The following steps may be done for customization. 
 
+- Edit this home page, or delete it if it's not required. In case of deletion:
+
+    - also delete it from the `documents` section in the file `md2html_args.json`.
+
+- The picture in this page is added just for demonstration. If it's removed then the image
+    file must probably be deleted from the folder `doc/pict`.
+    
+- If required create your own `doc/favicon.png` image and replace the existing one.
+    
+- If required add custom styles to the file `doc/theme.css`. It's not recommended to modify
+    the content of the directory `doc/layout`. If improvements are done in the `md2html`
+    program then the directory `doc/layout` may be entirely copied from there with replacement
+    while the custom stiles will remain in the file `doc/theme.css`.
+
+- Write your own pages using the existing sample pages as examples.
+
+- Look into the file `md2html_args.json`. Particularly "Useful links" section items may be
+    redefined there.
+    
+- Look into the template `doc_src/templates/multipage.html`. If required remove the
+    "Useful links" section and add your own sections.
+
+Consult the [instructions](https://arctrong.github.io/md2html/readme.html) if any questions.
