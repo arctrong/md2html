@@ -12,7 +12,7 @@ body {
     height: 30px;
     margin: 0;
     padding: 5px 20px;
-    background-color: papayawhip;
+    background-color: black;
     overflow: hidden;
     white-space: nowrap;
     font-size: 20px;
@@ -29,7 +29,7 @@ body {
     width: 210px;
     overflow-y: auto;
     border-right: solid 1px cadetblue;
-    background-color: white;
+    background-color: powderblue;
 }
 
 table.sidebarAligner {
@@ -72,13 +72,13 @@ div.sidebar_item {
 }
 
 div.sidebar_item.selected {
-    border-right: solid 5px cadetblue; 
+    border-right: solid 5px firebrick; 
     padding-right: 15px;
     font-weight: bold;
 }
 
 div.sidebar_item:hover { 
-    background-color: gainsboro; 
+    background-color: skyblue; 
 }
 
 div.sidebar h3 {
@@ -95,7 +95,7 @@ div.sidebar h3 {
 
 div.sidebar a:link, div.sidebar a:visited, div.sidebar a:hover, div.sidebar a:active {
     text-decoration: none;
-    color: teal;
+    color: firebrick;
 }
 
 .header_item {
@@ -105,20 +105,21 @@ div.sidebar a:link, div.sidebar a:visited, div.sidebar a:hover, div.sidebar a:ac
 }
 
 .header_item.selected {
-    color: maroon;
+    color: darksalmon;
+    border-bottom: solid dodgerblue 3px;
 }
 
 .headerTitle {
     font-weight: bold; 
-    color: dimgray;
+    color: antiquewhite;
     margin: 0 7px 0 7px;
 }
 
 .header_item_source {
-    color: mediumblue;
+    color: darksalmon;
     margin: 0 7px 0 7px;
 }
 
 .header_item_source.inactive {
-    color: burlywood;
+    color: darkgray;
 }

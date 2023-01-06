@@ -117,6 +117,10 @@ blockquote *, div.admonition * {
     max-width: 868px;
 }
 
+blockquote, div.admonition {
+    overflow: hidden;
+}
+
 blockquote pre>code {
     width: 847px;
 }
@@ -254,7 +258,7 @@ li>pre>code {
 }
 
 div.index-content {
-    column-count: 4;
+    column-count: 3;
 }
 
 p.index-letter {
@@ -267,6 +271,8 @@ p.index-letter {
 p.index-entry {
     margin-top: 0px;
     margin-bottom: 8px;
+    page-break-inside: avoid;
+    break-inside: avoid-column;
 }
 
 img.floatRight {
