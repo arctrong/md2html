@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Templates", "SORT_ORDER": "70", "code": "templates"}-->
+<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates"}-->
 
 [TOC]
 
@@ -58,9 +58,8 @@ This documentation is created using an extended template that contains some proj
 elements and is intended to be used with _plugins_. Anyway this template may be suitable for 
 other writing works with minimal or no modifications. It's recommended to copy this
 template to other projects in order to make it independent of the further modifications
-of this program (as this documentation is the part of the program). The template itself, the
-corresponding CSS files and some images must be copied. This template location is 
-`doc_src/templates/multipage.html`.
+of this program. The template itself, the corresponding CSS files and some images must be copied.
+This template location is `doc_src/templates/multipage.html`.
 
 There's also a simpler template, `doc_src/templates/default.html`, that is used as the default
 in some cases. This template may also be used in other projects, probably in simpler and smaller

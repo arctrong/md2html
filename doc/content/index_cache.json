@@ -1,11 +1,4 @@
 {
-  "readme.html": [
-    {
-      "entry": "Markdown",
-      "link": "../../readme.html#index_entry_index_1",
-      "title": "Home"
-    }
-  ],
   "doc/content/sections/installation.html": [],
   "doc/content/sections/usage.html": [
     {
@@ -14,7 +7,7 @@
       "title": "Usage"
     },
     {
-      "entry": "GLOB",
+      "entry": "quick start",
       "link": "sections/usage.html#index_entry_index_2",
       "title": "Usage"
     },
@@ -34,18 +27,13 @@
       "title": "Usage"
     },
     {
-      "entry": "quick start",
+      "entry": "legacy mode",
       "link": "sections/usage.html#index_entry_index_6",
       "title": "Usage"
     },
     {
       "entry": "legacy mode",
       "link": "sections/usage.html#index_entry_index_7",
-      "title": "Usage"
-    },
-    {
-      "entry": "legacy mode",
-      "link": "sections/usage.html#index_entry_index_8",
       "title": "Usage"
     }
   ],
@@ -105,11 +93,25 @@
       "title": "Plugins"
     }
   ],
+  "doc/content/sections/reference.html": [
+    {
+      "entry": "GLOB",
+      "link": "sections/reference.html#index_entry_index_1",
+      "title": "Reference"
+    }
+  ],
   "doc/content/sections/development.html": [
     {
       "entry": "integral tests",
       "link": "sections/development.html#index_entry_index_1",
       "title": "Development"
+    }
+  ],
+  "readme.html": [
+    {
+      "entry": "Markdown",
+      "link": "../../readme.html#index_entry_index_1",
+      "title": "Home"
     }
   ]
 }

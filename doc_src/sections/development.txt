@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Development", "SORT_ORDER": "90", "code": "development"}-->
+<!--VARIABLES {"title": "Development", "SORT_ORDER": "100", "code": "development"}-->
 
 [TOC]
 
@@ -34,10 +34,10 @@ To run unit tests execute:
 
 The output must be something like this:
 
-````shell
-..................................................................................................
+````wrapped-shell
+.......................................................................................................................
 ----------------------------------------------------------------------
-Ran 98 tests in 0.228s
+Ran 119 tests in 0.516s
 
 OK
 ````
@@ -51,11 +51,11 @@ This implementation uses module [vsch/flexmark-java](https://github.com/vsch/fle
 for converting Markdown text to HTML.
 
 
-## Packaging
+## Packaging and tests
 
 The packaging and the tests are defined in the source code and run automatically when the
-project is built. See the [installation instructions](<!--page installation-->#installation_java) for
-more details.
+project is built. See the [installation instructions](<!--page installation-->#installation_java)
+for more details.
 
 ----------------------------------------------------------------------------------------------------
 <!--index integral tests-->
@@ -100,20 +100,20 @@ $ cd $MD2HTML_HOME/test
 $ ./run_tests
 ````
 
-The result must look like this:
+The output must look like this:
 
 ````shell
 ===== py implementation integral tests =====
-................................
+...................................
 ----------------------------------------------------------------------
-Ran 32 tests in 7.686s
+Ran 35 tests in 8.932s
 
 OK
 
 ===== java implementation integral tests =====
-................................
+...................................
 ----------------------------------------------------------------------
-Ran 32 tests in 12.605s
+Ran 35 tests in 26.560s
 
 OK
 ````

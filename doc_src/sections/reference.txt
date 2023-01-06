@@ -1,0 +1,290 @@
+<!--VARIABLES {"title": "Reference", "SORT_ORDER": "090", "code": "reference"}-->
+
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About this page
+
+This page contains reference information like factual technical details and descriptions that
+are usually long and would unnecessarily overload the other pages if placed there.
+
+----------------------------------------------------------------------------------------------------
+<a name="command_line_syntax"></a>
+# Command line syntax
+
+Here is the program's help (the Python example, the Java version will give a similar output):
+
+````shell
+>python %MD2HTML_HOME%/python/md2html.py -h
+usage: md2html.py [-h] [--input-root INPUT_ROOT] [-i INPUT]
+                  [--input-glob INPUT_GLOB] [--sort-by-file-path]
+                  [--sort-by-variable SORT_BY_VARIABLE] [--sort-by-title]
+                  [--output-root OUTPUT_ROOT] [-o OUTPUT]
+                  [--argument-file ARGUMENT_FILE] [-t TITLE]
+                  [--title-from-variable TITLE_FROM_VARIABLE]
+                  [--template TEMPLATE] [--link-css LINK_CSS]
+                  [--include-css INCLUDE_CSS] [--no-css] [-f] [-v] [-r]
+                  [--legacy-mode]
+
+Creates HTML documentation out of Markdown texts.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input-root INPUT_ROOT
+                        root directory for input Markdown files. Defaults to
+                        current directory
+  -i INPUT, --input INPUT
+                        input Markdown file name: absolute or relative to the '
+                        --input-root' argument value
+  --input-glob INPUT_GLOB
+                        input Markdown file name pattern: absolute or relative
+                        to the '--input-root' argument value
+  --sort-by-file-path   If '--input-glob' is used, the documents will be sorted
+                        by the input file path
+  --sort-by-variable SORT_BY_VARIABLE
+                        If '--input-glob' is used, the documents will be sorted
+                        by the value of the specified page variable
+  --sort-by-title       If '--input-glob' is used, the documents will be sorted
+                        by their titles
+  --output-root OUTPUT_ROOT
+                        root directory for output HTML files. Defaults to
+                        current directory
+  -o OUTPUT, --output OUTPUT
+                        output HTML file name: absolute or relative to '--
+                        output-root' argument value. Defaults to input file name
+                        with '.html' extension
+  --argument-file ARGUMENT_FILE
+                        argument file. Allows processing multiple documents with
+                        a single run. Also provides different adjustment
+                        possibilities and automations. If omitted, the single
+                        file will be processed
+  -t TITLE, --title TITLE
+                        the HTML page title
+  --title-from-variable TITLE_FROM_VARIABLE
+                        If specified then the program will take the title from
+                        the page metadata at the step of making up the input
+                        file list
+  --template TEMPLATE   template that will be used for HTML documents generation
+  --link-css LINK_CSS   links CSS file, multiple entries allowed
+  --include-css INCLUDE_CSS
+                        includes content of the CSS file into HTML, multiple
+                        entries allowed
+  --no-css              creates HTML with no CSS. If no CSS-related arguments is
+                        specified, the default CSS will be included
+  -f, --force           rewrites HTML output file even if it was modified later
+                        than the input file
+  -v, --verbose         outputs human readable information messages
+  -r, --report          turns on formalized output that may be further
+                        automatically processed. Only if HTML file is generated,
+                        the path of this file will be output. Incompatible with
+                        -v
+  --legacy-mode         Allows processing documentation projects prepared for
+                        version of the program prior to 1.0.0. It's still
+                        recommended to migrate the documentation projects to the
+                        newer version
+````
+
+Here are some additional explanations:
+
+- The **`--output`** argument. The program expects it to be defined as location relative to the
+    program invocation current directory. This is required for possible further relative paths
+    recalculations. The **`--input`** and the **`--template`** arguments are recommended to be 
+    defined the same way. Other variations were not tested so try them first if they are really
+    required. See the [recommended project structure](#typical_project_structure) for the
+    example.
+    
+- <!--index GLOB--><a name="input_glob"></a>The `--input-glob` argument. See the 
+    [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming)) Wikipedia article.
+    This syntax helps defining input file set like this: `doc_src/*.txt` that means "all files 
+    with `txt` extension in directory `doc_src`". `doc_src/**/*.txt` will mean the same but also
+    subdirectories of directory `doc_src` will be scanned recursively.
+
+- The **`--force`** argument. If it's not specified then only the input files that were changed 
+    since their previous processing will be processed. Specify this argument to forcibly regenerate
+    all output files.
+    
+    !!! note
+        Processing only changed files is faster but needs some caution. Changes in the _template_
+        or _page flows_ must be reflected in all output files that use this template, but if the
+        input files are unchanged they will not be processed. This also applies to usage of GLOBs
+        if _page flows_ are used as well. If a new file is added to the folder or deleted from it
+        the corresponding _page flows_ will be changed and these changes must be reflected in all
+        corresponding output files.
+        
+        So use `-f` option in any cases when there's a risk of breaking the documentation
+        consistency.
+    
+- The **`--no-css`** argument. If nether `--link-css` nor `--include-css` is specified then the
+    default CSS is included into the page. To avoid this, use `--no-css` argument; then no CSS
+    will be used on the template resolution.
+
+----------------------------------------------------------------------------------------------------
+<a name="argument_file_structure"></a>
+# Argument file structure
+
+Here is a very simple example of an _argument file_ content:
+
+````
+{
+    "documents": [
+        { "input": "index.txt", "title": "Home" },
+        { "input": "about.txt", "output": "about.html", "title": "Home" }
+    ]
+}
+````
+
+Here is a quite complex example of an _argument file_ content:
+
+<a name="argument_file_example"></a>
+````
+{
+    "options": {
+        # This only affects the whole run verbosity, for now only printing execution duration.
+        "verbose": true,
+        "legacy-mode": false
+    },
+    "default": {
+        # These are the default options for all documents.
+        "input-root": "doc_src",
+        "output-root": "doc",
+        "template": "doc_src/templates/custom.html",
+        "no-css": true,
+        "page-flows": ["sections"]
+    },
+    "documents": [
+        { "input-root": "", "output-root": "", "input": "index.txt", "title": "Home" },
+        { "input": "about.txt", "title": "About" },
+        { "input-root": "tech_src", "output-root": "tech", 
+            "input": "debug.txt", "output": "debugging.html", 
+            "title": "Debug", "page-flows": [] }
+    ],
+    "plugins": {
+        "relative-paths": { "resource_path": "doc/" },
+        "page-flows": {
+            "otherLinks": [
+                { "link": "https://daringfireball.net/projects/markdown/", 
+                    "title": "Markdown Home", "external": true },
+                { "link": "https://en.wikipedia.org/wiki/Markdown", 
+                    "title": "Markdown Wiki", "external": true }
+            ]
+        },
+        "page-variables": {},
+        "variables": {"logo": "<img src=\"logo.png\" />" },
+        "index": {"index": {"output": "index_page.html", "title": "Index", 
+            "index-cache": "index_cache.json" }
+    }
+}
+````
+
+_Argument file_ format is JSON ([home page](https://json.org/), 
+[Wikipedia](https://en.wikipedia.org/wiki/JSON)).
+
+!!! note
+    Comments are not allowed in JSON syntax, but in this program, whole-line comments may be added
+    with `#` as the first non-blank symbol of the line; such lines will be ignored. 
+    
+    Also the program ignores unknown keys that may be used for temporarily removing parameters. 
+    For example, if `"plugins"` is replaced with `"plugins1"` then all plugins will be disabled.
+    Still the _argument file_ format defines necessary elements and other rules that will
+    be checked before processing.
+    
+<a name="section_list"></a>
+The following is the detailed _argument file_ format description by sections:
+
+Name | Type | Required | Description
+---- | ---- | :----: | ----
+[options](#options_section) | object | No | Options for the whole program run
+[default](#default_section) | object | No | Default options for the documents
+[documents](#documents_section) | array of objects | Yes | Documents that will be processed
+[plugins](#plugins_section) | object | No | Plugins that will be used for the documents processing
+
+
+<a name="options_section"></a>
+## `options` section
+
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+
+Properties:
+
+Name | Type | Required | Description
+---- | ---- | :----: | ----
+verbose | boolean | No | The whole run verbosity, for now, only printing execution duration on finish
+legacy-mode | boolean | No | Activates [legacy mode](#legacy_mode)
+
+
+<a name="default_section"></a>
+## `default` section
+
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+
+These parameters will be applied to the document definitions if they are not defined explicitly.
+See the [`documents` section](#documents_section) for the details.
+
+Properties:
+
+Name | Type | Required | Description
+---- | ---- | :----: | ----
+input-root | string | No |  |
+input-glob | string | No |  | 
+sort-by-file-path | boolean | No |   |
+sort-by-variable | string | No |   |
+sort-by-title | boolean | No |   |
+output | string | No |   |
+output-root | string | No |   |
+template | string | No |   |
+title | string | No |   |
+title-from-variable | string | No |   |
+code-from-variable | string | No |   |
+verbose | boolean | No |   |
+link-css | array of strings | No |   |
+include-css | array of strings | No |   |
+no-css | boolean | No |   |
+page-flows | array of strings | No |   |
+
+<a name="documents_section"></a>
+## `documents` section
+
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+
+Array of objects with properties:
+
+Name | Type | Required | Description
+---- | ---- | :----: | ----
+input-root | string | No | Root directory for input Markdown files
+input | string | No | Input Markdown file: absolute or relative to the `input-root` property value
+input-glob | string | No | Input Markdown file name pattern, absolute or relative to the input-root' property value
+sort-by-file-path | boolean | No | If `input-glob` is used, the documents will be sorted by the input file path
+sort-by-variable | string | No | If `input-glob` is used, the documents will be sorted by the value of the specified page variable
+sort-by-title | boolean | No | If `input-glob` is used, the documents will be sorted by their titles
+output-root | string | No | Root directory for output HTML files
+output | string | No | Output HTML file: absolute or relative to the `output-root` property value
+title | string | No | Page title
+code | string | No | Unique page code, may be used by plugins
+title-from-variable | string | No | Take the title from the page metadata
+code-from-variable | string | No | Take the code from the page metadata
+template | string | No | [Template](templates.html) that will wrap the generated HTML content
+link-css | array of strings | No | List of CSS resources that will be linked to the page
+include-css | array of strings | No | List of CSS files that will be included into the page
+no-css | boolean | No | Defines no CSS to be linked or included
+add-link-css | array of strings | No | Adds linked CSS to the previously defined list
+add-include-css | array of strings | No | Adds included CSS to the previously defined list
+page-flows | array of strings | No | Names of the page flows the page belongs to
+add-page-flows | array of strings | No | Adds page flow names to the previously defined list
+verbose | boolean | No | Outputs human readable information about this document generation
+report | boolean | No | The same meaning as the corresponding command line argument
+
+
+<a name="plugins_section"></a>
+## `plugins` section
+
+[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
+
+May contain multiple properties:
+
+Name | Type | Required | Description
+---- | ---- | :----: | ----
+_plugin name_ | _defined by plugin_ | No | Plugin data
+
+The plugins data and the plugins themselves are described in the [separate sections](<!--page plugins-->).
+
+

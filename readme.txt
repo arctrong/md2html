@@ -31,8 +31,8 @@ You write a text like this:
 </div>
 ````
 
-includes this code into a specially prepared HTML template and produces the page that looks like 
-this:
+Then it includes this code into a specially prepared HTML template and produces the page that
+looks like this:
 
 !!! note
     A **monad** is just a _monoid_ in the category of `endofunctors`.

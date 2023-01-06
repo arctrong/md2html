@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Installation", "SORT_ORDER": "40", "code": "installation"}--> 
+<!--VARIABLES {"title": "Installation", "SORT_ORDER": "040", "code": "installation"}--> 
 
 [TOC]
 
@@ -16,8 +16,8 @@ _unpack-and-run_:
     - [Java version](#installation_java)
 
 !!! tip
-    Go [here](<!--page usage-->#quick_project_startup) for a quick instruction on creation a 
-    simple project.
+    After the program is installed go [here](<!--page usage-->#quick_project_startup) for a quick
+    instruction on a simple project creation.
 
 ----------------------------------------------------------------------------------------------------
 <a id="installation_python"></a>

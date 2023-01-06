@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Plugins", "SORT_ORDER": "80", "code": "plugins"}-->
+<!--VARIABLES {"title": "Plugins", "SORT_ORDER": "080", "code": "plugins"}-->
 
 [TOC]
 
@@ -13,7 +13,7 @@ The main approach used by this program is no interference in the Markdown syntax
 documentation content must be readable in plain text even without processing by this program.
 Plugins provide extra possibilities for the templates processing and visualization.
 
-See [here](<!--page usage-->#argument_file_example) for an example of how plugins are defined in 
+See [here](<!--page reference-->#argument_file_example) for an example of how plugins are defined in 
 the *argument file*.
 
 ----------------------------------------------------------------------------------------------------
@@ -309,7 +309,7 @@ Some terms, abbreviations and other kind of keywords may be defined, described a
 in different pages within the documentation. Searching such keywords may be hard,
 especially if the documentation is large. This plugin allows marking such points on the pages
 as _index entries_ and then collects these entries and put them together on a separate 
-_index page_. See the [index page](index_page.html) of this documentation as an example.
+_index page_. See the [index page](../index_page.html) of this documentation as an example.
 
 **Definition**
 
@@ -325,7 +325,7 @@ This example defines one index with marker `index`. It's possible to define seve
 different markers.
 
 All possible properties are listed in the table below. They are mostly the same as those 
-of the [`documents` section](<!--page usage-->#documents_section) so see that section for the
+of the [`documents` section](<!--page reference-->#documents_section) so see that section for the
 absent descriptions.
 
 Name | Type | Required | Default | Description

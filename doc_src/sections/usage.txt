@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Usage", "SORT_ORDER": "50", "code": "usage"}-->
+<!--VARIABLES {"title": "Usage", "SORT_ORDER": "050", "code": "usage"}-->
 
 [TOC]
 
@@ -19,6 +19,29 @@ Windows, but they may be easily adapted for Linux. Some Linux specific notes are
 required.
 
 ----------------------------------------------------------------------------------------------------
+<!--index quick start--><a name="quick_project_startup"></a>
+# Documentation project quick start
+
+The following sections give the program's usage detailed description that is probably not 
+necessary for just trying the program. The following method lets quickly create a simple new
+project with a [typical structure](#) and with some sample content. The other sections may be
+read further if required.
+
+As for now the quick start script is implemented for Windows only.
+
+So create an empty directory where the documentation must be set up, then switch to there in the
+command line terminal and execute:
+
+````shell
+>cd C:\your\path\your_project
+
+>%MD2HTML_HOME%\bin\new_project\new_project.bat
+````
+
+All necessary project files will be created in the directory `your_project`. Just generate 
+the documentation by double-clicking the command file `generate_doc.bat`.
+
+----------------------------------------------------------------------------------------------------
 # Command line syntax
 
 A simple usage example for the Python version is:
@@ -36,115 +59,11 @@ and for the Java version is:
 These both will convert file `test.txt` into file `test.html` using default parameters.
 
 !!! note
-    The above commands are very good for explaining the main idea of the program usage but 
+    The above commands very well explain the main idea of the program usage but 
     there are more convenient ways described below in this section.
 
-The other options are (here the Python example is used, the Java version will give a 
-similar output):
-
-````shell
->python %MD2HTML_HOME%/python/md2html.py -h
-usage: md2html.py [-h] [--input-root INPUT_ROOT] [-i INPUT]
-                  [--input-glob INPUT_GLOB] [--sort-by-file-path]
-                  [--sort-by-variable SORT_BY_VARIABLE] [--sort-by-title]
-                  [--output-root OUTPUT_ROOT] [-o OUTPUT]
-                  [--argument-file ARGUMENT_FILE] [-t TITLE]
-                  [--title-from-variable TITLE_FROM_VARIABLE]
-                  [--template TEMPLATE] [--link-css LINK_CSS]
-                  [--include-css INCLUDE_CSS] [--no-css] [-f] [-v] [-r]
-                  [--legacy-mode]
-
-Creates HTML documentation out of Markdown texts.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --input-root INPUT_ROOT
-                        root directory for input Markdown files. Defaults to
-                        current directory
-  -i INPUT, --input INPUT
-                        input Markdown file name: absolute or relative to the '
-                        --input-root' argument value
-  --input-glob INPUT_GLOB
-                        input Markdown file name pattern: absolute or relative
-                        to the '--input-root' argument value
-  --sort-by-file-path   If '--input-glob' is used, the documents will be sorted
-                        by the input file path
-  --sort-by-variable SORT_BY_VARIABLE
-                        If '--input-glob' is used, the documents will be sorted
-                        by the value of the specified page variable
-  --sort-by-title       If '--input-glob' is used, the documents will be sorted
-                        by their titles
-  --output-root OUTPUT_ROOT
-                        root directory for output HTML files. Defaults to
-                        current directory
-  -o OUTPUT, --output OUTPUT
-                        output HTML file name: absolute or relative to '--
-                        output-root' argument value. Defaults to input file name
-                        with '.html' extension
-  --argument-file ARGUMENT_FILE
-                        argument file. Allows processing multiple documents with
-                        a single run. Also provides different adjustment
-                        possibilities and automations. If omitted, the single
-                        file will be processed
-  -t TITLE, --title TITLE
-                        the HTML page title
-  --title-from-variable TITLE_FROM_VARIABLE
-                        If specified then the program will take the title from
-                        the page metadata at the step of making up the input
-                        file list
-  --template TEMPLATE   template that will be used for HTML documents generation
-  --link-css LINK_CSS   links CSS file, multiple entries allowed
-  --include-css INCLUDE_CSS
-                        includes content of the CSS file into HTML, multiple
-                        entries allowed
-  --no-css              creates HTML with no CSS. If no CSS-related arguments is
-                        specified, the default CSS will be included
-  -f, --force           rewrites HTML output file even if it was modified later
-                        than the input file
-  -v, --verbose         outputs human readable information messages
-  -r, --report          turns on formalized output that may be further
-                        automatically processed. Only if HTML file is generated,
-                        the path of this file will be output. Incompatible with
-                        -v
-  --legacy-mode         Allows processing documentation projects prepared for
-                        version of the program prior to 1.0.0. It's still
-                        recommended to migrate the documentation projects to the
-                        newer version
-````
-
-Here are some additional explanations:
-
-- The **`--output`** argument. The program expects it to be defined as location relative to the
-    program invocation current directory. This is required for possible further relative paths
-    recalculations. The **`--input`** and the **`--template`** arguments are recommended to be 
-    defined the same way. Other variations were not tested so try them first if they are really
-    required. See the [recommended project structure](#typical_project_structure) for the
-    example.
-    
-- <!--index GLOB-->The `--input-glob` argument. See the 
-    [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming)) Wikipedia article.
-    This syntax helps defining input file set like this: `doc_src/*.txt` that means "all files 
-    with `txt` extension in directory `doc_src`". `doc_src/**/*.txt` will mean the same but also
-    subdirectories of directory `doc_src` will be scanned recursively.
-
-- The **`--force`** argument. If it's not specified then only the input files that were changed 
-    since their previous processing will be processed. Specify this argument to forcibly regenerate
-    all output files.
-    
-    !!! note
-        Processing only changed files is faster but needs some caution. Changes in the _template_
-        or _page flows_ must be reflected in all output files that use this template, but if the
-        input files are unchanged they will not be processed. This also applies to usage of GLOBs
-        if _page flows_ are used as well. If a new file is added to the folder or deleted from it
-        the corresponding _page flows_ will be changed and these changes must be reflected in all
-        corresponding output files.
-        
-        So use `-f` option in any cases when there's a risk of breaking the documentation
-        consistency.
-    
-- The **`--no-css`** argument. If nether `--link-css` nor `--include-css` is specified then the
-    default CSS is included into the page. To avoid this, use `--no-css` argument; then no CSS
-    will be used on the template resolution.
+The program has much more command line options that are listed and described in the
+[reference page](<!--page reference-->#command_line_syntax).
 
 There are two ways of the program usage:
 
@@ -156,8 +75,8 @@ There are two ways of the program usage:
 # Using command line arguments
 
 This mode accepts all required parameters in the command line and allows processing one document
-per one run (unless GLOB argument is used). It's selected if the `--argument-file` argument
-is not specified.
+per one run (unless [GLOB](<!--page reference-->#input_glob) argument is used). It's selected 
+if the `--argument-file` argument is not specified.
 
 ----------------------------------------------------------------------------------------------------
 <a name="using_argument_file"></a><!--index argument file -->
@@ -177,7 +96,8 @@ The _argument file_ allows to define:
 - multiple files to be processed;
 - the same parameters that can be specified in the command line;
 - some additional parameters;
-- extended processing using plugins.
+- extended processing using *plugins*.
+
 
 Here is a simplest example of an _argument file_:
 
@@ -191,48 +111,9 @@ Here is a simplest example of an _argument file_:
 ````
 
 It's similar to using command line arguments, except it defines several documents to process.
-Here is a more complex example:
 
-<a name="argument_file_example"></a>
-````
-{
-    "options": {
-        # This only affects the whole run verbosity, for now only printing execution duration.
-        "verbose": true,
-        "legacy-mode": false
-    },
-    "default": {
-        # These are the default options for all documents.
-        "input-root": "doc_src",
-        "output-root": "doc",
-        "template": "doc_src/templates/custom.html",
-        "no-css": true,
-        "page-flows": ["sections"]
-    },
-    "documents": [
-        { "input-root": "", "output-root": "", "input": "index.txt", "title": "Home" },
-        { "input": "about.txt", "title": "About" },
-        { "input-root": "tech_src", "output-root": "tech", 
-            "input": "debug.txt", "output": "debugging.html", 
-            "title": "Debug", "page-flows": [] }
-    ],
-    "plugins": {
-        "relative-paths": { "resource_path": "doc/" },
-        "page-flows": {
-            "otherLinks": [
-                { "link": "https://daringfireball.net/projects/markdown/", 
-                    "title": "Markdown Home", "external": true },
-                { "link": "https://en.wikipedia.org/wiki/Markdown", 
-                    "title": "Markdown Wiki", "external": true }
-            ]
-        },
-        "page-variables": {},
-        "variables": {"logo": "<img src=\"logo.png\" />" },
-        "index": {"index": {"output": "index_page.html", "title": "Index", 
-            "index-cache": "index_cache.json" }
-    }
-}
-````
+A more complex example and the _argument file_ structure are described in the
+[reference page](<!--page reference-->#argument_file_structure).
 
 To execute an _argument file_ `md2html_args.json` the following command may be used:
 
@@ -240,125 +121,14 @@ To execute an _argument file_ `md2html_args.json` the following command may be u
 >python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json
 ````
 
-_Argument file_ format is JSON ([home page](https://json.org/), 
-[Wikipedia](https://en.wikipedia.org/wiki/JSON)). 
-
-!!! note
-    Comments are not allowed in JSON syntax, but in this program, whole-line comments may be added
-    with `#` as the first non-blank symbol of the line; such lines will be ignored. 
-    
-    Also the program ignores unknown keys that may be used for temporarily removing parameters. 
-    For example, if `"plugins"` is replaced with `"plugins1"` then all plugins will be disabled.
-    Still the _argument file_ format defines necessary elements and other rules that will
-    be checked before processing.
-    
-<a name="section_list"></a>
-The following is the detailed _argument file_ format description by sections:
-
-Name | Type | Required | Description
----- | ---- | :----: | ----
-[options](#options_section) | object | No | Options for the whole program run
-[default](#default_section) | object | No | Default options for the documents
-[documents](#documents_section) | array of objects | Yes | Documents that will be processed
-[plugins](#plugins_section) | object | No | Plugins that will be used for the documents processing
-
-
-<a name="options_section"></a>
-## `options` section
-
-[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
-
-Properties:
-
-Name | Type | Required | Description
----- | ---- | :----: | ----
-verbose | boolean | No | The whole run verbosity, for now, only printing execution duration on finish
-legacy-mode | boolean | No | Activates [legacy mode](#legacy_mode)
-
-
-<a name="default_section"></a>
-## `default` section
-
-[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
-
-These parameters will be applied to the document definitions if they are not defined explicitly.
-See the [`documents` section](#documents_section) for the details.
-
-Properties:
-
-Name | Type | Required | Description
----- | ---- | :----: | ----
-input-root | string | No |  |
-input-glob | string | No |  | 
-sort-by-file-path | boolean | No |   |
-sort-by-variable | string | No |   |
-sort-by-title | boolean | No |   |
-output | string | No |   |
-output-root | string | No |   |
-template | string | No |   |
-title | string | No |   |
-title-from-variable | string | No |   |
-code-from-variable | string | No |   |
-verbose | boolean | No |   |
-link-css | array of strings | No |   |
-include-css | array of strings | No |   |
-no-css | boolean | No |   |
-page-flows | array of strings | No |   |
-
-<a name="documents_section"></a>
-## `documents` section
-
-[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
-
-Array of objects with properties:
-
-Name | Type | Required | Description
----- | ---- | :----: | ----
-input-root | string | No | Root directory for input Markdown files
-input | string | No | Input Markdown file: absolute or relative to the `input-root` property value
-input-glob | string | No | Input Markdown file name pattern, absolute or relative to the input-root' property value
-sort-by-file-path | boolean | No | If `input-glob` is used, the documents will be sorted by the input file path
-sort-by-variable | string | No | If `input-glob` is used, the documents will be sorted by the value of the specified page variable
-sort-by-title | boolean | No | If `input-glob` is used, the documents will be sorted by their titles
-output-root | string | No | Root directory for output HTML files
-output | string | No | Output HTML file: absolute or relative to the `output-root` property value
-title | string | No | Page title
-code | string | No | Unique page code, may be used by plugins
-title-from-variable | string | No | Take the title from the page metadata
-code-from-variable | string | No | Take the code from the page metadata
-template | string | No | [Template](templates.html) that will wrap the generated HTML content
-link-css | array of strings | No | List of CSS resources that will be linked to the page
-include-css | array of strings | No | List of CSS files that will be included into the page
-no-css | boolean | No | Defines no CSS to be linked or included
-add-link-css | array of strings | No | Adds linked CSS to the previously defined list
-add-include-css | array of strings | No | Adds included CSS to the previously defined list
-page-flows | array of strings | No | Names of the page flows the page belongs to
-add-page-flows | array of strings | No | Adds page flow names to the previously defined list
-verbose | boolean | No | Outputs human readable information about this document generation
-report | boolean | No | The same meaning as the corresponding command line argument
-
-
-<a name="plugins_section"></a>
-## `plugins` section
-
-[![](<!--path pict-->triangle_up_h18px.png)](#section_list) [to section list](#section_list)
-
-May contain multiple properties:
-
-Name | Type | Required | Description
----- | ---- | :----: | ----
-_plugin name_ | _defined by plugin_ | No | Plugin data
-
-The plugins data and the plugins themselves are described in the [separate sections](<!--page plugins-->).
-
 ----------------------------------------------------------------------------------------------------
 <a name="command_scripts"></a><!--index command scripts -->
 # Command scripts
 
 The following convenience command scripts are provided:
 
-For Windows | For Linux | Description
----- | ---- | ----
+For Windows             | For Linux           | Description
+------------------------|---------------------|--------------------------------
 `generate_doc_py.bat`   | `generate_doc_py`   | Uses the Python version
 `generate_doc_java.bat` | `generate_doc_java` | Uses the Java version
 `generate_doc.bat`      | `generate_doc`      | Uses the executor selector
@@ -377,8 +147,8 @@ These scripts are very small and intended to be copied to a project's directory 
 they will process the project's _argument file_ (see the 
 [recommended project structure](#typical_project_structure)).
 
-The scripts `generate_doc.bat` and `generate_doc` use intermediate scripts with the executor
-selector. These scripts accept their first argument `py`, or `java` and runs the corresponding
+The scripts `generate_doc.bat` and `generate_doc` use intermediate scripts with the _executor
+selector_. These scripts accept their first argument `py`, or `java` and run the corresponding
 version of the program. If nether of these arguments are specified the default executor will be
 run (that is the Python version for now).
 
@@ -425,6 +195,17 @@ The quotes must be set like this:
 
 ![](<!--path pict-->reg_value.png)
 
+There is a Windows command line script that automates this operation. Open Windows console and
+execute:
+
+````shell
+>%MD2HTML_HOME%\bin\context_menu\generate_reg_file.bat
+The output file is: C:\Users\user1\md2html_context_menu_integration.reg
+````
+
+Find the generated file in the user's profile directory, check and execute it (by double-click).
+Read the popped up message and confirm the operation.
+
 !!! note
     There's no such integration for Linux. The interested Linux users may use the scripts 
     `md2html_prompt.bat` and `md2html_prompt_fast.bat` in the directory `bin/context_menu/` as
@@ -434,25 +215,34 @@ The quotes must be set like this:
 <a name="typical_project_structure"></a>
 # Typical project structure
 
-The following structure may be suggested for a documentation project:
+The program doesn't set restrictions on the documentation project structure. The following 
+structure is just a suggested approach that is used in this documentation.
+
+Note that there's a quick start script described [here](#quick_project_startup) that creates
+a simple project with a structure like this. The following description may be used for manual
+project setup.
 
 ````shell
 $ tree -L 2 --charset=ascii --dirsfirst
 .
 |-- doc
+|   |-- content
+|   |   |-- doc1.html
+|   |   `-- doc2.html
 |   |-- layout
 |   |   |-- pict
-|   |   |   `-- favicon.png
+|   |   |   |-- layout_image1.png
+|   |   |   `-- layout_image2.png
 |   |   |-- styles.css
 |   |   `-- scripts.js
 |   |-- pict
 |   |   |-- image1.png
 |   |   `-- image2.png
-|   |-- doc1.html
-|   `-- doc2.html
+|   |-- favicon.png
+|   `-- theme.css
 |-- doc_src
 |   |-- templates
-|   |   `-- template.html
+|   |   `-- multipage.html
 |   |-- doc1.txt
 |   `-- doc2.txt
 |-- doc0.html
@@ -462,76 +252,43 @@ $ tree -L 2 --charset=ascii --dirsfirst
 ````
 
 - `doc0.txt` and `doc0.html` are the Markdown document and its corresponding generated HTML
-    page that we want to have in the project's root (it is not necessary);
-- the `doc` directory along with the file `doc0.html` contain the whole project's documentation.
+    page that we want to have in the project's root.
+    
+    !!! hint
+        It may be convenient to have a documentation starting page in the project's root directory
+        but this page, on the other hand, requires special manipulation, so this decision is a kind
+        of a trade-off.
+
+- the `doc` directory along with the file `doc0.html` contain the whole project's HTML 
+    documentation with all required resources like images and CSS files.
     This directory may be used and distributed autonomously (with additional file `doc0.html`
-    if it's used);
+    if it's used).
+
+    Please note that as for now it's possible on the HTML pages to place links to their source
+    Markdown texts. In this case, if we want these links to work, we need to preserve the
+    source texts location.
+    
+- the `doc/content` directory is intended to contain the **generated artifacts only**. I case of 
+    problems with document generation, this directory may be safely deleted (or, maybe, better
+    first renamed and then deleted). On the next project regeneration this directory and its 
+    content will be recreated.
+    
 - the `doc_src` directory contains all source files required for producing the project's
     documentation (except the file `doc0.txt` if we want to use it);
+    
 - `generate_doc.bat` --- the double-click script for the whole HTML documentation regeneration;
+
 - `md2html_args.json` --- the project's _argument file_;
-- `doc/layout` directory is a convenient way for separating the resources that are used for the 
-    documentation content from those ones that are used for the template itself.
 
-This is just a recommended structure. The program doesn't set any requirements for this or 
-some other certain structure to be used.
+- `doc/layout` directory contains the resources that are used by the template itself. It's a 
+    convenient way to separate those resources from the ones that are used by the documentation
+    content. This directory may be copy-pasted to a new project and it will most likely work;
 
-----------------------------------------------------------------------------------------------------
-# Documentation project startup
-
-<!--index quick start--><a name="quick_project_startup"></a>
-## Quick start
-
-There's a simple way for creating a new project with some sample content. As for now it's
-implemented for Windows only. Create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal and execute:
-
-````shell
->cd C:\your\path\your_project
-
->%MD2HTML_HOME%\bin\new_project\new_project.bat
-````
-
-All necessary project files will be created in the directory `your_project`. Just generate 
-the documentation by double-clicking the command file `generate_doc.bat`.
-
-
-## Manual project creation
-
-The following description provides the steps for getting the above result manually. Assume we have
-a directory where we want to start our documentation project. So in this directory:
-
-1. Create the directories `doc_src/templates` and put there the template(s) that will be used.
-    This template(s) may be created anew or copied from this program's directory with possible
-    adaptation.
+- `favicon.png` file was placed here as it's treated as rather a project's artifact than an 
+    artifact belonging to the template;
     
-1. Create the directory `doc` and put add there the necessary resources like styles, and pictures.
-    Pictures are recommended to be placed in the separate directory `pict` as their number tends
-    to grow pretty fast. If required, subdirectories may be created in the `pict` directory for
-    further pictures separation.
-    
-1. Create the `md2html_args.json` [_argument file_](#using_argument_file). It may be copied from
-    this program's directory and adapted accordingly.
-    
-1. Add a [double-click script](#command_scripts) `generate_doc.bat`. In most of the cases it may
-    be just copy-pasted from this program's directory.
-    
-1. Write the necessary document source files in the directory `doc_src` (and/or in the project's
-    root directory if this is desired). The source files may be additionally separated by
-    subdirectories in the directory `doc_src`; this may be reflected in the _argument file_ to
-    separate the generated HTML pages the same way.
-    
-1. Run the _double-click script_ to generate the documentation. After massive changes (and in case 
-    of any doubt) run the _double-click script_ like this to forcibly regenerate all the documents:
-    
-    ````shell
-    >generate_doc.bat -fv
-    Output file generated: readme.html
-    Output file generated: doc/installation.html
-    .  .  .
-    Index file generated: doc/index_page.html
-    Finished in: 0:00:00.181000
-    ````
+- `theme.css` is intended to contain the styles specific to the other project that is created
+    by copy-pasting the current documentation structure and its artifacts.
 
 ----------------------------------------------------------------------------------------------------
 <a name="legacy_compatibility"></a><!--index legacy mode -->

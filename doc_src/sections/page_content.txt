@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Page content", "SORT_ORDER": "60", "code": "page_content"}-->
+<!--VARIABLES {"title": "Page content", "SORT_ORDER": "060", "code": "page_content"}-->
 
 [TOC]
 
@@ -40,9 +40,7 @@ Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>` | 3
 !!! note "Comments"
     1. Sometimes it's required to show HTML entities inside a code block, but the standard Markdown
         syntax (with backticks) will show the content as is. For this purpose the CSS class `code`
-        was defined, so direct HTML inclusions may be a suitable workaround. For example, 
-        [here](<!--page plugins-->#escaped_code_text_example) we wanted to avoid processing the code text
-        by the `index` plugin.
+        was defined, so direct HTML inclusions may be a suitable workaround.
     2. Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
         text is not implemented in this program. First, these effects must not be required very
         often. Second, such markup may cause problems if we write text like "C++", or `++i`.
