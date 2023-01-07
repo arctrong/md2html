@@ -15,7 +15,7 @@ tool.
 
 # How it works?
 
-You write a text like this:
+You write a Markdown text like this:
 
 ````
 !!! note
@@ -36,6 +36,8 @@ looks like this:
 
 !!! note
     A **monad** is just a _monoid_ in the category of `endofunctors`.
+    
+There are more details described in the [Overview section](<!--page overview-->).
 
 
 <!--index Markdown -->

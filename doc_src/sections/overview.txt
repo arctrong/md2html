@@ -1,0 +1,57 @@
+<!--VARIABLES {"title": "Overview", "SORT_ORDER": "035", "code": "overview"}--> 
+
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# Common schema
+
+<p><img src="<!--path pict-->md2html_schema.png" title="md2html" class="floatRight" /></p>
+
+The program accepts the following artifacts as the input:
+
+- source Markdown texts;
+- one or several HTML templates;
+- one argument file;
+- HTML page resources.
+
+The program processes these artifacts and generates a set of static HTML pages that may 
+represent a logically related documentation with a sidebar menu, navigation, index and some
+other features.
+
+The following sections describe the above artifacts in more details.
+
+<p style="clear: both;"></p>
+
+----------------------------------------------------------------------------------------------------
+# Source Markdown texts
+
+These texts comprise the main documentation content written by the author. They are written in 
+the [Markdown](https://daringfireball.net/projects/markdown/syntax) markup language. The 
+[Page content section](<!--page page_content-->) describes the methods, tricks and elements that
+may be used in process of the content creation.
+
+----------------------------------------------------------------------------------------------------
+# HTML templates
+
+An HTML artifact that is generated out of a markdown page is not a complete HTML page. It's
+just a fragment that must be put inside the `<body>...</body>` HTML element. A _template_ may be
+considered as an HTML page that doesn't have the main content but just specifies the place
+where this content must be inserted. See [here](<!--page templates-->) for more details about 
+templates.
+
+----------------------------------------------------------------------------------------------------
+# Argument file
+
+The _argument file_ defines the set of input source files and different parameters for the 
+following HTML documents generation. See [here](<!--page usage-->#using_argument_file) 
+for more details.
+    
+----------------------------------------------------------------------------------------------------
+# HTML page resources
+
+Different resources, like CSS and images are not processed by the program. The program may just
+adjust the location of these resources while putting link on them to the certain pages. 
+These are usually [plugins](<!--page plugins-->) that perform these adjustments.
+    
+
+
