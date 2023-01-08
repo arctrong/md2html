@@ -15,43 +15,66 @@ The program accepts the following artifacts as the input:
 - HTML page resources.
 
 The program processes these artifacts and generates a set of static HTML pages that may 
-represent a logically related documentation with a sidebar menu, navigation, index and some
+represent a logically related documentation with a sidebar menu, navigation, index and 
 other features.
 
-The following sections describe the above artifacts in more details.
+The following subsections describe the above artifacts in more details.
 
 <p style="clear: both;"></p>
 
-----------------------------------------------------------------------------------------------------
-# Source Markdown texts
+
+## Source Markdown texts
 
 These texts comprise the main documentation content written by the author. They are written in 
 the [Markdown](https://daringfireball.net/projects/markdown/syntax) markup language. The 
 [Page content section](<!--page page_content-->) describes the methods, tricks and elements that
-may be used in process of the content creation.
+may be used in process of the content writing.
 
-----------------------------------------------------------------------------------------------------
-# HTML templates
 
-An HTML artifact that is generated out of a markdown page is not a complete HTML page. It's
-just a fragment that must be put inside the `<body>...</body>` HTML element. A _template_ may be
-considered as an HTML page that doesn't have the main content but just specifies the place
-where this content must be inserted. See [here](<!--page templates-->) for more details about 
-templates.
+## HTML templates
 
-----------------------------------------------------------------------------------------------------
-# Argument file
+An HTML artifact that is generated out of a markdown text is not a complete HTML page. It's
+just a fragment that must be put inside the `<body>...</body>` HTML element. A _template_ may
+be considered as an HTML page that doesn't have the main content but just specifies the place
+(placeholder) where this content must be inserted. 
+
+See [here](<!--page templates-->) for more details about templates and other placeholders that 
+may be used in templates.
+
+
+## Argument file
 
 The _argument file_ defines the set of input source files and different parameters for the 
 following HTML documents generation. See [here](<!--page usage-->#using_argument_file) 
 for more details.
-    
-----------------------------------------------------------------------------------------------------
-# HTML page resources
+
+
+## HTML page resources
 
 Different resources, like CSS and images are not processed by the program. The program may just
 adjust the location of these resources while putting link on them to the certain pages. 
 These are usually [plugins](<!--page plugins-->) that perform these adjustments.
-    
+
+----------------------------------------------------------------------------------------------------
+# Restrictions
+
+The program doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
+may contain JavaScript that will be translated unchanged into the generated HTML page. This
+must not be a problem for personal use but may be a security issue when converting and
+publishing source texts from untrusted third-parties. Click the image below to see how it may
+look like.
+
+!!! tip
+    In case of worry first have a look at the source text by clicking at the "Source text"
+    link ("&lt;/&gt;") at the page top.
+
+<img src="<!--path pict-->box.png" style="cursor: pointer;" onclick="alert(
+'This is just a message but might be any JavaScript code.');return false;" />
+
+
+
+
+
+
 
 
