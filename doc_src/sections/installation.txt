@@ -16,8 +16,8 @@ _unpack-and-run_:
     - [Java version](#installation_java)
 
 !!! tip
-    After the program is installed go [here](<!--page usage-->#quick_project_startup) for a quick
-    instruction on a simple project creation.
+    After the program is installed, before further reading, you may go
+    [here](<!--page quick_start-->) for a quick instruction on a simple project creation.
 
 ----------------------------------------------------------------------------------------------------
 <a id="installation_python"></a>

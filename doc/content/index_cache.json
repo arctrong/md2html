@@ -1,5 +1,19 @@
 {
+  "readme.html": [
+    {
+      "entry": "Markdown",
+      "link": "../../readme.html#index_entry_index_1",
+      "title": "Home"
+    }
+  ],
   "doc/content/sections/overview.html": [],
+  "doc/content/sections/quick_start.html": [
+    {
+      "entry": "quick start",
+      "link": "sections/quick_start.html#index_entry_index_1",
+      "title": "Quick start"
+    }
+  ],
   "doc/content/sections/installation.html": [],
   "doc/content/sections/usage.html": [
     {
@@ -8,33 +22,28 @@
       "title": "Usage"
     },
     {
-      "entry": "quick start",
+      "entry": "argument file",
       "link": "sections/usage.html#index_entry_index_2",
       "title": "Usage"
     },
     {
-      "entry": "argument file",
+      "entry": "command scripts",
       "link": "sections/usage.html#index_entry_index_3",
       "title": "Usage"
     },
     {
-      "entry": "command scripts",
+      "entry": "context menu items",
       "link": "sections/usage.html#index_entry_index_4",
       "title": "Usage"
     },
     {
-      "entry": "context menu items",
+      "entry": "legacy mode",
       "link": "sections/usage.html#index_entry_index_5",
       "title": "Usage"
     },
     {
       "entry": "legacy mode",
       "link": "sections/usage.html#index_entry_index_6",
-      "title": "Usage"
-    },
-    {
-      "entry": "legacy mode",
-      "link": "sections/usage.html#index_entry_index_7",
       "title": "Usage"
     }
   ],
@@ -106,13 +115,6 @@
       "entry": "integral tests",
       "link": "sections/development.html#index_entry_index_1",
       "title": "Development"
-    }
-  ],
-  "readme.html": [
-    {
-      "entry": "Markdown",
-      "link": "../../readme.html#index_entry_index_1",
-      "title": "Home"
     }
   ]
 }

@@ -1,0 +1,36 @@
+<!--VARIABLES {"title": "Quick start", "SORT_ORDER": "030", "code": "quick_start"}-->
+
+<!--index quick start-->
+This documentation gives the program's [usage](<!--page usage-->) detailed description 
+as well as the [page content](<!--page page_content-->) writing methods and tricks. But this 
+information is probably not necessary for just trying the program out. The program provides 
+a quick-start script that creates a simple new project with a 
+[typical structure](<!--page usage-->#typical_project_structure) 
+and with some sample content.
+
+!!! note
+    As for now the quick start script is implemented for Windows only.
+
+Before using this script the program must be installed, see the 
+[Installation section](<!--page installation-->).
+
+As the program is installed, create an empty directory where the documentation must be set up,
+then switch to there in the command line terminal and execute:
+
+````shell
+>cd C:\your\path\your_project
+
+>%MD2HTML_HOME%\bin\new_project\new_project.bat
+````
+
+All necessary project files will be created in the directory `your_project`. Just generate 
+the documentation by double-clicking the command file `generate_doc_py.bat` or 
+`generate_doc_java.bat`. Open the generated file `readme.html` in the project's root 
+directory to see the content.
+
+
+
+
+
+
+

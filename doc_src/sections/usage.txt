@@ -19,29 +19,6 @@ Windows, but they may be easily adapted for Linux. Some Linux specific notes are
 required.
 
 ----------------------------------------------------------------------------------------------------
-<!--index quick start--><a name="quick_project_startup"></a>
-# Documentation project quick start
-
-The following sections give the program's usage detailed description that is probably not 
-necessary for just trying the program. The following method lets quickly create a simple new
-project with a [typical structure](#) and with some sample content. The other sections may be
-read further if required.
-
-As for now the quick start script is implemented for Windows only.
-
-So create an empty directory where the documentation must be set up, then switch to there in the
-command line terminal and execute:
-
-````shell
->cd C:\your\path\your_project
-
->%MD2HTML_HOME%\bin\new_project\new_project.bat
-````
-
-All necessary project files will be created in the directory `your_project`. Just generate 
-the documentation by double-clicking the command file `generate_doc.bat`.
-
-----------------------------------------------------------------------------------------------------
 # Command line syntax
 
 A simple usage example for the Python version is:
@@ -218,7 +195,7 @@ Read the popped up message and confirm the operation.
 The program doesn't set restrictions on the documentation project structure. The following 
 structure is just a suggested approach that is used in this documentation.
 
-Note that there's a quick start script described [here](#quick_project_startup) that creates
+Note that there's a quick start script described [here](<!--page quick_start-->) that creates
 a simple project with a structure like this. The following description may be used for manual
 project setup.
 

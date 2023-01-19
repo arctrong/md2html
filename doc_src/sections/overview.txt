@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Overview", "SORT_ORDER": "035", "code": "overview"}--> 
+<!--VARIABLES {"title": "Overview", "SORT_ORDER": "020", "code": "overview"}--> 
 
 [TOC]
 
@@ -16,7 +16,7 @@ The program accepts the following artifacts as the input:
 
 The program processes these artifacts and generates a set of static HTML pages that may 
 represent a logically related documentation with a sidebar menu, navigation, index and 
-other features.
+other elements.
 
 The following subsections describe the above artifacts in more details.
 
@@ -52,7 +52,7 @@ for more details.
 ## HTML page resources
 
 Different resources, like CSS and images are not processed by the program. The program may just
-adjust the location of these resources while putting link on them to the certain pages. 
+adjust the location of these resources while putting link on them into the certain pages. 
 These are usually [plugins](<!--page plugins-->) that perform these adjustments.
 
 ----------------------------------------------------------------------------------------------------

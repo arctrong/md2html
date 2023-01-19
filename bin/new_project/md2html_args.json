@@ -4,7 +4,7 @@
     },
     "default": {
         "input-root": "doc_src",
-        "output-root": "doc",
+        "output-root": "doc/content",
         "template": "doc_src/templates/multipage.html",
         "no-css": true,
         "verbose": true
@@ -28,7 +28,7 @@
         "page-flows": {
             "header": [
                 { "link": "readme.html", "title": "Home" },
-                { "link": "doc/index_page.html", "title": "Index" }
+                { "link": "doc/content/index_page.html", "title": "Index" }
             ],
             "useful_links": [
                 { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },

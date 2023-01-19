@@ -18,7 +18,10 @@ This sample documentation contains several simple pages rendered using a typical
 <!--index usage -->
 # How to use it?
 
-The following steps may be done for customization. 
+The following steps may be done for customization.
+
+- If just one implementation, Python or Java, is going to be used, one of the files 
+    `generate_doc_py.bat` or `generate_doc_java.bat` may be deleted.
 
 - Edit this home page, or delete it if it's not required. In case of deletion:
 
