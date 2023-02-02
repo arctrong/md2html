@@ -227,6 +227,11 @@ def expand_document_globs(documents_item, plugins) -> list:
 
     # TODO Test the case when page metadata is absent. Check the same in the Java version.
 
+    metadata_handlers = None
+    page_variables_plugin = plugins.get("page-variables")
+    if page_variables_plugin:
+        metadata_handlers = register_page_metadata_handlers([page_variables_plugin])
+
     expanded_documents_item = []
     for document_item in documents_item:
         input_file_glob = document_item.get("input-glob")
@@ -245,47 +250,31 @@ def expand_document_globs(documents_item, plugins) -> list:
             sort_by_title = document_item.get("sort-by-title")
 
             if sort_by_file_path:
-                file_list.sort(key=lambda doc: doc)
+                file_list.sort(key=lambda file_path: file_path)
 
             glob_document_items = []
             for file in file_list:
                 glob_document_item = {k: v for k, v in document_item.items() if k != "input-glob"}
                 glob_document_item["input"] = file
 
-                if title_from_variable or code_from_variable or sort_by_variable:
-                    page_variables_plugin = plugins.get("page-variables")
-                    if page_variables_plugin:
-                        page_variables_plugin.new_page(None)
-                        metadata_handlers = register_page_metadata_handlers(
-                            [page_variables_plugin])
-                        input_file_string = read_lines_from_cached_file(
-                            str(Path(input_root).joinpath(file)))
-                        temp_doc = Document(
-                            input_file=glob_document_item.get("input"),
-                            output_file=glob_document_item.get("output"),
-                            title=glob_document_item.get("title"),
-                            code=glob_document_item.get("code"),
-                            template=glob_document_item.get("template"),
-                            link_css=glob_document_item.get("link-css"),
-                            include_css=glob_document_item.get("include-css"),
-                            no_css=glob_document_item.get("no-css"),
-                            force=glob_document_item.get("force"),
-                            verbose=glob_document_item.get("verbose"),
-                            report=glob_document_item.get("report")
-                        )
-                        apply_metadata_handlers(input_file_string, metadata_handlers, temp_doc,
-                                                extract_only=True)
-                        page_variables = page_variables_plugin.variables(None)
-                        if title_from_variable:
-                            title = page_variables.get(title_from_variable)
-                            if title:
-                                glob_document_item["title"] = title
-                        if code_from_variable:
-                            code = page_variables.get(code_from_variable)
-                            if code:
-                                glob_document_item["code"] = code
-                        if sort_by_variable:
-                            glob_document_item["SORT_ORDER"] = page_variables.get(sort_by_variable)
+                if (title_from_variable or code_from_variable or
+                        sort_by_variable) and metadata_handlers:
+                    page_variables_plugin.new_page(None)
+                    input_file_string = read_lines_from_cached_file(
+                        str(Path(input_root).joinpath(file)))
+                    apply_metadata_handlers(input_file_string, metadata_handlers, None,
+                                            extract_only=True)
+                    page_variables = page_variables_plugin.variables(None)
+                    if title_from_variable:
+                        title = page_variables.get(title_from_variable)
+                        if title:
+                            glob_document_item["title"] = title
+                    if code_from_variable:
+                        code = page_variables.get(code_from_variable)
+                        if code:
+                            glob_document_item["code"] = code
+                    if sort_by_variable:
+                        glob_document_item["SORT_ORDER"] = page_variables.get(sort_by_variable)
 
                 glob_document_items.append(glob_document_item)
 
@@ -317,6 +306,11 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
     documents_page_flows_plugin = {}
     extra_plugin_items = {"page-flows": documents_page_flows_plugin}
 
+    # TODO Consider to make `expand_document_globs` to only expand one GLOB document.
+    #  This would make possible to enrich the expanded documents one by one and then
+    #  to apply an optimization. An optimization may be done by keeping page variables
+    #  in a "cache file" and not reading the files that were not changed (unless -f is
+    #  specified). "cache-file" option should also be added to the "options" section.
     documents_item = expand_document_globs(canonized_argument_file['documents'], plugins)
     documents = []
     unique_codes = set()
@@ -342,7 +336,8 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
         documents.append(document_object)
 
         if document_object.code in unique_codes:
-            raise UserError(f"Duplicated document code: {document_object.code}")
+            raise UserError(f"Duplicated document code '{document_object.code}' in: "
+                            f"{document_object.input_file}")
         if document_object.code:
             unique_codes.add(document_object.code)
 
