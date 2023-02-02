@@ -355,7 +355,8 @@ public class ArgFileParsingHelper {
                     .build();
 
             if (uniqueCodes.contains(document.getCode())) {
-                throw new UserError("Duplicated document code: " + document.getCode());
+                throw new UserError("Duplicated document code '" + document.getCode() + "' in: " +
+                        document.getInput());
             } else if (document.getCode() != null) {
                 uniqueCodes.add(document.getCode());
             }
@@ -397,6 +398,13 @@ public class ArgFileParsingHelper {
 
         List<ArgFileDocumentRaw> expandedDocumentRawList = new ArrayList<>();
 
+        PageMetadataHandlersWrapper pageMetadataHandlersWrapper = null;
+        Md2HtmlPlugin pageVariablesPlugin = plugins.get("page-variables");
+        if (pageVariablesPlugin != null) {
+            pageMetadataHandlersWrapper = PageMetadataHandlersWrapper.fromPlugins(
+                    Collections.singletonList(pageVariablesPlugin));
+        }
+
         for (ArgFileDocumentRaw documentRaw : documentsRaw) {
             if (isNullOrEmpty(documentRaw.getInputGlob())) {
                 expandedDocumentRawList.add(documentRaw);
@@ -421,40 +429,34 @@ public class ArgFileParsingHelper {
                     globDocumentRawBuilder.input(inputRootPath.toAbsolutePath()
                             .relativize(globPath.toAbsolutePath()).toString());
 
-                    if (documentRaw.getTitleFromVariable() != null ||
+                    if ((documentRaw.getTitleFromVariable() != null ||
                             documentRaw.getCodeFromVariable() != null ||
-                            documentRaw.getSortByVariable() != null) {
+                            documentRaw.getSortByVariable() != null) &&
+                            pageMetadataHandlersWrapper != null) {
+                        pageVariablesPlugin.newPage(null);
+                        String inputFileString = getCachedString(globPath,
+                                Utils::readStringFromUtf8File);
+                        pageMetadataHandlersWrapper.applyMetadataHandlers(inputFileString,
+                                null);
+                        Map<String, Object> pageVariables =
+                                pageVariablesPlugin.variables(null);
 
-                        Md2HtmlPlugin pageVariablesPlugin = plugins.get("page-variables");
-                        if (pageVariablesPlugin != null) {
-                            pageVariablesPlugin.newPage(null);
-                            PageMetadataHandlersWrapper pageMetadataHandlersWrapper =
-                                    PageMetadataHandlersWrapper.fromPlugins(
-                                    Collections.singletonList(pageVariablesPlugin));
-                            String inputFileString = getCachedString(globPath,
-                                    Utils::readStringFromUtf8File);
-                            pageMetadataHandlersWrapper.applyMetadataHandlers(inputFileString,
-                                    null);
-                            Map<String, Object> pageVariables =
-                                    pageVariablesPlugin.variables(null);
+                        Optional.ofNullable(documentRaw.getTitleFromVariable())
+                                .flatMap(titleVar ->
+                                        Optional.ofNullable(pageVariables.get(titleVar)))
+                                .ifPresent(title ->
+                                        globDocumentRawBuilder.title((String) title));
 
-                            Optional.ofNullable(documentRaw.getTitleFromVariable())
-                                    .flatMap(titleVar ->
-                                            Optional.ofNullable(pageVariables.get(titleVar)))
-                                    .ifPresent(title ->
-                                            globDocumentRawBuilder.title((String) title));
+                        Optional.ofNullable(documentRaw.getCodeFromVariable())
+                                .flatMap(codeVar ->
+                                        Optional.ofNullable(pageVariables.get(codeVar)))
+                                .ifPresent(code ->
+                                        globDocumentRawBuilder.code((String) code));
 
-                            Optional.ofNullable(documentRaw.getCodeFromVariable())
-                                    .flatMap(codeVar ->
-                                            Optional.ofNullable(pageVariables.get(codeVar)))
-                                    .ifPresent(code ->
-                                            globDocumentRawBuilder.code((String) code));
-
-                            Optional.ofNullable(documentRaw.getSortByVariable())
-                                    .ifPresent(sortVar ->
-                                            globDocumentRawBuilder.techSortBy(
-                                                    (String) pageVariables.get(sortVar)));
-                        }
+                        Optional.ofNullable(documentRaw.getSortByVariable())
+                                .ifPresent(sortVar ->
+                                        globDocumentRawBuilder.techSortBy(
+                                                (String) pageVariables.get(sortVar)));
                     }
                     globDocumentRawList.add(globDocumentRawBuilder.build());
                 }
