@@ -259,7 +259,7 @@ element right before a table:
 <div class="tableLight"></div>
 ````
 
-Will give the following table stile:
+Will give the following table style:
 
 <div class="tableLight"></div>
 
