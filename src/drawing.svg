@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="841mm"
+   height="594mm"
+   viewBox="0 0 841 594"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    sodipodi:docname="drawing.svg"
    inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\box.png"
    inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <marker
@@ -93,104 +93,104 @@
          id="path2469" />
     </marker>
     <marker
-       style="overflow:visible;"
+       style="overflow:visible"
        id="marker2232"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="Arrow2Mend"
        inkscape:isstock="true">
       <path
-         transform="scale(0.6) rotate(180) translate(0,0)"
-         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
          id="path2230" />
     </marker>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="-27.516666 : 188.45208 : 1"
+       inkscape:vp_x="-27.516665 : 485.45208 : 1"
        inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="203.38542 : 191.62708 : 1"
-       inkscape:persp3d-origin="105 : 99 : 1"
+       inkscape:vp_z="203.38542 : 488.62708 : 1"
+       inkscape:persp3d-origin="105 : 396.00001 : 1"
        id="perspective948" />
     <marker
        style="overflow:visible"
        id="TriangleOutM"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="TriangleOutM"
        inkscape:isstock="true">
       <path
          transform="scale(0.4)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
          id="path1140" />
     </marker>
     <marker
-       style="overflow:visible;"
+       style="overflow:visible"
        id="Arrow1Send"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="Arrow1Send"
        inkscape:isstock="true">
       <path
-         transform="scale(0.2) rotate(180) translate(6,0)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path1010" />
     </marker>
     <marker
-       style="overflow:visible;"
+       style="overflow:visible"
        id="marker891"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="Arrow2Mend"
        inkscape:isstock="true">
       <path
-         transform="scale(0.6) rotate(180) translate(0,0)"
-         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
          id="path889" />
     </marker>
     <marker
-       style="overflow:visible;"
+       style="overflow:visible"
        id="Arrow2Mend"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="Arrow2Mend"
        inkscape:isstock="true"
        inkscape:collect="always">
       <path
-         transform="scale(0.6) rotate(180) translate(0,0)"
-         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(-0.6)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
          id="path882" />
     </marker>
     <marker
        style="overflow:visible"
        id="TriangleOutL"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="TriangleOutL"
        inkscape:isstock="true">
       <path
          transform="scale(0.8)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 5.77,0 -2.88,5 V -5 Z"
          id="path997" />
     </marker>
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter1064"
-       x="-3.676038e-06"
+       x="-3.6760381e-06"
        width="1.0000074"
-       y="-6.9139721e-06"
+       y="-6.9139723e-06"
        height="1.0000138">
       <feGaussianBlur
          inkscape:collect="always"
@@ -219,6 +219,13 @@
        height="6"
        x="0"
        y="0" />
+    <pattern
+       id="EMFhbasepattern-7"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -227,9 +234,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7071068"
-     inkscape:cx="1018.7224"
-     inkscape:cy="1036.1462"
+     inkscape:zoom="0.50000001"
+     inkscape:cx="989.99997"
+     inkscape:cy="1034"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -258,7 +265,10 @@
      inkscape:guide-bbox="true"
      inkscape:object-nodes="true"
      inkscape:snap-object-midpoints="true"
-     inkscape:snap-nodes="true" />
+     inkscape:snap-nodes="true"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -267,7 +277,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -376,7 +385,7 @@
        style="fill:#ffff00;stroke:none;stroke-width:1.44115"
        id="path858"
        sodipodi:sides="7"
-       sodipodi:cx="-91.514538"
+       sodipodi:cx="-91.514542"
        sodipodi:cy="11.768584"
        sodipodi:r1="14.036164"
        sodipodi:r2="7.0180821"
@@ -423,27 +432,25 @@
        inkscape:export-ydpi="96" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:82.3032;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:82.3032;display:inline;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="4.0141459"
        y="9.4950304"
        id="text1212"><tspan
          x="4.0141459"
-         y="9.4950304"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">Export the </tspan><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">selection into PNG of size </tspan></tspan><tspan
+         y="9.4950304"
+         id="tspan10664">Export the selection into PNG of size </tspan><tspan
          x="4.0141459"
-         y="14.786693"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">48 </tspan><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">by 48 px, use it as the favicon </tspan></tspan><tspan
+         y="14.786693"
+         id="tspan10666">48 by 48 px, use it as the favicon </tspan><tspan
          x="4.0141459"
-         y="20.078355"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">image. Then open the PNG file in </tspan></tspan><tspan
+         y="20.078355"
+         id="tspan10668">image. Then open the PNG file in </tspan><tspan
          x="4.0141459"
-         y="25.370017"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">GIMP and export it into ICO format for </tspan></tspan><tspan
+         y="25.370017"
+         id="tspan10670">GIMP and export it into ICO format for </tspan><tspan
          x="4.0141459"
-         y="30.661679"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">Windows explorer context menu item.</tspan></tspan></text>
+         y="30.661679"
+         id="tspan10672">Windows explorer context menu item.</tspan></text>
     <g
        id="g1135"
        transform="translate(8.6060789,-96.537753)"
@@ -1028,7 +1035,7 @@
        inkscape:export-xdpi="57"
        inkscape:export-ydpi="57">
       <path
-         d="m 88.228736,64.011375 h -4.904817 v -4.061202 h -1.09322 v 4.061202 H 77.325882 V 52.30564 l 4.904817,0 v 3.188578 h 1.09322 V 52.30564 l 4.904817,0 z"
+         d="m 88.228736,64.011375 h -4.904817 v -4.061202 h -1.09322 v 4.061202 H 77.325882 V 52.30564 h 4.904817 v 3.188578 h 1.09322 V 52.30564 h 4.904817 z"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.1003px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#f9f9f9;stroke-width:0.512542"
          id="path1018"
          sodipodi:nodetypes="ccccccccccccc" />
@@ -1184,23 +1191,23 @@
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:82.3032;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:82.3032;display:inline;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="4.0141459"
        y="9.4950304"
        id="text1152"
        transform="translate(52.604404,184.52321)"><tspan
          x="4.0141459"
-         y="9.4950304"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">Export the two separate pictures into </tspan></tspan><tspan
+         y="9.4950304"
+         id="tspan10674">Export the two separate pictures into </tspan><tspan
          x="4.0141459"
-         y="14.786693"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">PNG of size 57 by 38 px each. Then </tspan></tspan><tspan
+         y="14.786693"
+         id="tspan10676">PNG of size 57 by 38 px each. Then </tspan><tspan
          x="4.0141459"
-         y="20.078355"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">open the PNG files in GIMP and </tspan></tspan><tspan
+         y="20.078355"
+         id="tspan10678">open the PNG files in GIMP and </tspan><tspan
          x="4.0141459"
-         y="25.370017"><tspan
-           style="font-size:4.23333px;fill:#ff0000;stroke-width:0.264583">manually combine them into a sprite.</tspan></tspan></text>
+         y="25.370017"
+         id="tspan10680">manually combine them into a sprite.</tspan></text>
     <g
        id="g1207"
        style="opacity:0.997"
@@ -1321,7 +1328,7 @@
     <path
        id="path1052"
        style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 223.39648,1051.6953 -25.35519,15.584 25.35519,14.168 0,-7.1368 h 17.90374 v -15.4785 h -17.90374 z"
+       d="m 223.39648,1051.6953 -25.35519,15.584 25.35519,14.168 v -7.1368 h 17.90374 v -15.4785 h -17.90374 z"
        transform="scale(0.26458333)"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\previous_page.png"
@@ -1400,7 +1407,7 @@
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
          d="m -80.805622,199.09071 15.850441,11.51602 3.741784,-11.51602 -3.741782,-11.51602 z"
-         style="fill:#afe9c6;stroke:#112b00;stroke-width:0.37147877;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#afe9c6;stroke:#112b00;stroke-width:0.371479;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path4529" />
       <path
          d="m -63.527935,206.21413 a 7.4900002,7.4900002 0 0 1 -5.175463,-7.12342 7.4900002,7.4900002 0 0 1 5.175463,-7.12341"
@@ -1437,7 +1444,7 @@
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
          d="m -61.213397,199.09071 -3.741783,-11.51602 15.850445,11.51602 -15.850443,11.51602 z"
-         style="fill:#c6afe9;stroke:#550044;stroke-width:0.36896878;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#c6afe9;stroke:#550044;stroke-width:0.368969;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path4540" />
       <path
          transform="rotate(36)"
@@ -2550,7 +2557,7 @@
     <g
        id="g1853"
        transform="translate(-31.619597,33.719156)"
-       inkscape:export-filename="D:\8230o\projects\md2html\doc\pict\md2html_schema.png"
+       inkscape:export-filename="..\doc\pict\md2html_schema.png"
        inkscape:export-xdpi="96.204895"
        inkscape:export-ydpi="96.204895">
       <g
@@ -3288,19 +3295,24 @@
          inkscape:export-ydpi="96" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-         x="279.24792"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:-0.529167px;fill:#ff7f2a;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="290.76349"
          y="258.69272"
          id="text1992"><tspan
            sodipodi:role="line"
            id="tspan1990"
-           x="279.24792"
+           x="290.4989"
            y="258.69272"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.5833px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-width:0.264583"
-           dy="0 0 -1.83">M<tspan
-   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.82083px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold'"
-   id="tspan1994"
-   dy="1.83">2</tspan>H</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.5833px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#ff7f2a;fill-opacity:1;stroke-width:0.264583"
+           dy="0 0 -1.83"><tspan
+             style="text-align:center;text-anchor:middle;fill:#d45500;fill-opacity:1"
+             id="tspan10193"
+             dx="0">M</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.82083px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1"
+             id="tspan1994"
+             dy="1.83">2</tspan><tspan
+             style="text-align:center;text-anchor:middle;fill:#3771c8;fill-opacity:1"
+             id="tspan9481">H</tspan></tspan></text>
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2232-3)"
@@ -3335,7 +3347,7 @@
        inkscape:export-xdpi="96.204895"
        inkscape:export-ydpi="96.204895" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.2,1.2;stroke-opacity:1;marker-end:url(#marker2939);stroke-dashoffset:0"
+       style="fill:none;stroke:#000000;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.2, 1.2;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker2939)"
        d="m 320.65502,243.80045 -16.86316,19.97756"
        id="path2935"
        sodipodi:nodetypes="cc"
@@ -3373,7 +3385,7 @@
          inkscape:export-xdpi="96"
          inkscape:export-ydpi="96" />
       <rect
-         style="opacity:0.997;fill:#b0e0e6;fill-rule:evenodd;stroke:#000000;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
+         style="opacity:0.997;fill:#b0e0e6;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
          id="rect2054"
          width="10.036794"
          height="27.799101"
