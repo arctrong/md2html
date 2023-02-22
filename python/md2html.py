@@ -39,6 +39,7 @@ def md2html(document, plugins, metadata_handlers, options):
 
     md_lines = read_lines_from_cached_file(document.input_file)
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
+    MARKDOWN.reset()
     substitutions = {'content': MARKDOWN.convert(source=md_lines),
                      'source_file': relativize_relative_resource(document.input_file,
                                                                  document.output_file)}
