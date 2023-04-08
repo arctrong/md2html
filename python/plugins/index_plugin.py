@@ -47,7 +47,7 @@ def _generate_content(index_cache, add_letters, add_letters_block) -> str:
                 current_letter = letter
                 index_letter_id = INDEX_LETTER_ID_PREFIX + current_letter
                 if add_letters:
-                    content.write(f'<p class="{INDEX_LETTER_CLASS}" id="{index_letter_id}">'
+                    content.write(f'<a id="{index_letter_id}"></a><p class="{INDEX_LETTER_CLASS}">'
                                   f'{current_letter}</p>\n')
                 else:
                     content.write(f'<a name="{index_letter_id}"></a>\n')
