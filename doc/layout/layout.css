@@ -52,6 +52,14 @@ table.sidebarAligner td {
     vertical-align: bottom;
 }
 
+.sidebarAligner td.bottom a {
+    color: inherit;
+}
+
+.sidebarAligner td.bottom a:hover {
+    color: firebrick;
+}
+
 a[name], a[id] {
     height: 42px;
     display: block;
@@ -65,20 +73,30 @@ h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
     margin-top: -42px;
 }
 
-div.sidebar_item { 
+div.sidebar h1::before, div.sidebar h2::before, div.sidebar h3::before, 
+div.sidebar h4::before, div.sidebar h5::before, div.sidebar h6::before {
+    content: unset;
+    display: unset;
+    height: unset;
+    margin-top: unset;
+}
+
+.sidebar_item { 
     padding: 0 20px 0 20px; 
     margin-left: -20px; 
     margin-right: -20px;
+    display: block;
+    color: firebrick;
+    text-decoration: none;
 }
 
-div.sidebar_item.selected {
-    border-right: solid 5px firebrick; 
-    padding-right: 15px;
-    font-weight: bold;
+.sidebar_item:hover { 
+    background-color: #8fd8e1;
 }
 
-div.sidebar_item:hover { 
-    background-color: skyblue; 
+.sidebar_item.selected {
+    text-decoration: underline 2px dodgerblue;
+    text-underline-offset: 3px;
 }
 
 div.sidebar h3 {
@@ -89,13 +107,6 @@ div.sidebar h3 {
 
 .header>a:link, .header>a:visited, .header>a:hover, .header>a:active {
     text-decoration: none;
-    /* color: unset; */
-    /* font-weight: bold; */
-}
-
-div.sidebar a:link, div.sidebar a:visited, div.sidebar a:hover, div.sidebar a:active {
-    text-decoration: none;
-    color: firebrick;
 }
 
 .header_item {
