@@ -314,8 +314,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                     currentLetter = letter;
                     String indexLetterId = INDEX_LETTER_ID_PREFIX + currentLetter;
                     if (addLetters) {
-                        content.append("<a id=\"").append(indexLetterId)
-                                .append("\"></a><p class=\"" + INDEX_LETTER_CLASS + "\">")
+                        content.append("<p class=\"" + INDEX_LETTER_CLASS + "\">")
+                                .append("<a id=\"").append(indexLetterId).append("\"></a>")
                                 .append(currentLetter).append("</p>\n");
                     } else {
                         content.append("<a name=\"").append(indexLetterId).append("\">")
