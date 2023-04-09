@@ -1,0 +1,21 @@
+div.index-content {
+    column-count: 3;
+}
+
+p.index-letter {
+    column-span: all;
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+p.index-entry {
+    margin-top: 0px;
+    margin-bottom: 8px;
+    page-break-inside: avoid;
+    break-inside: avoid-column;
+}
+
+div.index-content {
+    max-width: 900px;
+}
