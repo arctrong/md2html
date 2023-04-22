@@ -8,7 +8,7 @@
         }
     },
     "oneOf": [
-                { "$ref": "#/definitions/singlePath" },
+        { "$ref": "#/definitions/singlePath" },
         {
             "type": "object",
             "additionalProperties": false,

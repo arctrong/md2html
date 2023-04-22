@@ -75,7 +75,7 @@ class PageFlowsPluginTest(unittest.TestCase):
             '], "plugins": {"page-flows": {}}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         doc = Document(output_file="index.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -105,7 +105,7 @@ class PageFlowsPluginTest(unittest.TestCase):
             ']}}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         doc = Document(output_file="other.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -141,7 +141,7 @@ class PageFlowsPluginTest(unittest.TestCase):
             ']}}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         doc = Document(output_file="narration.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -161,7 +161,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                               "external": False, "first": True, "last": False}, pages[0])
         self.assertDictEqual({"link": "other2.html", "title": "OtherLink2", "current": False,
                               "external": False, "first": False, "last": True}, pages[1])
-        
+
     def test_sameDocumentInSeveralPageFlows(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": ['
@@ -176,7 +176,7 @@ class PageFlowsPluginTest(unittest.TestCase):
             ']}}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         doc = Document(output_file="other.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -196,7 +196,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                               "external": False, "first": False, "last": False}, pages[1])
         self.assertDictEqual({"link": "index.html", "title": "HomeLink", "current": False,
                               "external": False, "first": False, "last": True}, pages[2])
-        
+
     def test_externalLinks(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": ['
@@ -207,7 +207,7 @@ class PageFlowsPluginTest(unittest.TestCase):
             ']}}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         doc = Document(output_file="index.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -237,10 +237,10 @@ class PageFlowsPluginTest(unittest.TestCase):
             '{"input": "page3.txt", "output": "page3.html", "title": "Title3", '
             '    "page-flows": ["sections"]}  \n'
             '], "plugins": {"page-flows": {}}}')
-            
+
         projection = ["link", "title", "current", "external"]
-        
-        for argument_file_dict, test_name in [(with_plugins_section, "with_plugins_section"), 
+
+        for argument_file_dict, test_name in [(with_plugins_section, "with_plugins_section"),
                                               (with_documents_section, "with_documents_section")]:
             with self.subTest(test_name=test_name):
                 args = parse_argument_file(argument_file_dict, CliArgDataObject())
@@ -257,7 +257,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                 self.assertDictEqual(
                     {"link": "page2.html", "title": "Title2", "current": False,
                      "external": False}, {k: page_flow.next[k] for k in projection})
-                
+
                 doc = Document(output_file="page2.html")
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
@@ -271,7 +271,7 @@ class PageFlowsPluginTest(unittest.TestCase):
                 self.assertDictEqual(
                     {"link": "page3.html", "title": "Title3", "current": False,
                      "external": False}, {k: page_flow.next[k] for k in projection})
-     
+
                 doc = Document(output_file="page3.html")
                 page_flow = plugin.variables(doc)["sections"]
                 self.assertTrue(page_flow.has_navigation)
@@ -285,17 +285,17 @@ class PageFlowsPluginTest(unittest.TestCase):
                 self.assertIsNone(page_flow.next)
 
     def test_navigations_generalized(self):
-    
+
         projection = ["link", "title", "current", "external"]
-    
+
         for page_count in range(1, 5):
-        
+
             arg_file_str = _generate_arg_file_with_plugins_section(page_count)
             with_plugins_section = load_json_argument_file(arg_file_str)
-            
+
             arg_file_str = _generate_arg_file_with_documents_section(page_count)
             with_documents_section = load_json_argument_file(arg_file_str)
-        
+
             for argument_file_dict, test_name in [
                 (with_plugins_section, "with_plugins_section"),
                 (with_documents_section, "with_documents_section")]:
@@ -340,7 +340,7 @@ class PageFlowsPluginTest(unittest.TestCase):
             ']}}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         doc = Document(output_file="root1.html")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -356,7 +356,7 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertEqual("sub1.html", pages[2]["link"])
         self.assertEqual("sub2.html", pages[3]["link"])
         self.assertEqual("ch01/sub-sub-1.html", pages[4]["link"])
-        
+
         doc = Document(output_file="doc/ch01/sub-sub-1")
         page_flow = plugin.variables(doc)["sections"]
         pages = [p for p in page_flow]
@@ -364,3 +364,127 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertEqual("../sub2.html", pages[3]["link"])
         self.assertEqual("sub-sub-1.html", pages[4]["link"])
         self.assertEqual("sub-sub-2.html", pages[5]["link"])
+
+    def test_extended_format_simple(self):
+        argument_file_dict = load_json_argument_file(
+            '{'
+            '   "documents": ['
+            '       {"input": "page1.txt", "title": "whatever"}'
+            '   ],'
+            '   "plugins": {"page-flows": {"sections": { "title": "Sections", "groups": ["gr1"], '
+            '          "items": ['
+            '              {"link": "link1.html", "title": "title1"},'
+            '              {"link": "link2.html", "title": "title2"}'
+            '          ]'
+            '   }}}'
+            '}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+
+        doc = Document(output_file="page1.html")
+        page_flow = plugin.variables(doc)["sections"]
+        self.assertEqual("Sections", page_flow.title)
+        pages = [p for p in page_flow]
+        self.assertEqual("link1.html", pages[0]["link"])
+        self.assertEqual("title1", pages[0]["title"])
+        self.assertEqual("link2.html", pages[1]["link"])
+        self.assertEqual("title2", pages[1]["title"])
+
+        group = plugin.variables(doc)["gr1"]
+        self.assertEqual(1, len(group))
+        pages = [p for p in group[0]]
+        self.assertEqual("link1.html", pages[0]["link"])
+        self.assertEqual("title1", pages[0]["title"])
+        self.assertEqual("link2.html", pages[1]["link"])
+        self.assertEqual("title2", pages[1]["title"])
+
+    def test_extended_format_in_documents(self):
+        argument_file_dict = load_json_argument_file(
+            '{'
+            '   "documents": ['
+            '       {"input": "page1.txt", "title": "whatever", "page-flows": ["sections"]},'
+            '       {"input": "page2.txt", "title": "whatever", "page-flows": ["sections"]}'
+            '   ],'
+            '   "plugins": {"page-flows": {"sections": { "title": "Sections", "groups": ["gr1"], '
+            '          "items": ['
+            '              {"link": "link1.html", "title": "whatever"}'
+            '          ]'
+            '   }}}'
+            '}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+
+        doc = Document(output_file="page1.html")
+        page_flow = plugin.variables(doc)["sections"]
+        self.assertEqual("Sections", page_flow.title)
+        pages = [p for p in page_flow]
+        self.assertEqual("page1.html", pages[0]["link"])
+        self.assertEqual("page2.html", pages[1]["link"])
+        self.assertEqual("link1.html", pages[2]["link"])
+
+        group = plugin.variables(doc)["gr1"]
+        self.assertEqual(1, len(group))
+        pages = [p for p in group[0]]
+        self.assertEqual("page1.html", pages[0]["link"])
+        self.assertEqual("page2.html", pages[1]["link"])
+        self.assertEqual("link1.html", pages[2]["link"])
+
+    def test_extended_format_several_groups(self):
+        argument_file_dict = load_json_argument_file(
+            '{'
+            '    "documents": ['
+            '        {"input": "page1.txt", "title": "whatever"}'
+            '    ],'
+            '    "plugins": {"page-flows": {'
+            '        "flow1": { "title": "Flow 1", "groups": ["gr1"], '
+            '            "items": [{"link": "link1.html", "title": "whatever"}]'
+            '        },'
+            '        "flow2": { "title": "Flow 2", "groups": ["gr1", "gr2"], '
+            '            "items": [{"link": "link2.html", "title": "whatever"}]'
+            '        },'
+            '        "flow3": { "title": "Flow 3", "groups": ["gr2"], '
+            '            "items": [{"link": "link3.html", "title": "whatever"}]'
+            '        }'
+            '    }}'
+            '}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+
+        doc = Document(output_file="page1.html")
+
+        group = plugin.variables(doc)["gr1"]
+        self.assertEqual(2, len(group))
+        self.assertEqual("Flow 1", group[0].title)
+        self.assertEqual("Flow 2", group[1].title)
+        pages = [p for p in group[0]]
+        self.assertEqual("link1.html", pages[0]["link"])
+        pages = [p for p in group[1]]
+        self.assertEqual("link2.html", pages[0]["link"])
+
+        group = plugin.variables(doc)["gr2"]
+        self.assertEqual(2, len(group))
+        self.assertEqual("Flow 2", group[0].title)
+        self.assertEqual("Flow 3", group[1].title)
+        pages = [p for p in group[0]]
+        self.assertEqual("link2.html", pages[0]["link"])
+        pages = [p for p in group[1]]
+        self.assertEqual("link3.html", pages[0]["link"])
+
+    def test_extended_format_duplicate_error(self):
+        argument_file_dict = load_json_argument_file(
+            '{'
+            '   "documents": ['
+            '       {"input": "page1.txt", "title": "whatever"}'
+            '   ],'
+            '   "plugins": {"page-flows": {"name1": { "title": "Sections", "groups": ["gr1", "name1"], '
+            '          "items": ['
+            '              {"link": "link1.html", "title": "title1"}'
+            '          ]'
+            '   }}}'
+            '}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+        with self.assertRaises(UserError) as cm:
+            plugin.variables(Document(output_file="page1.html"))
+        self.assertTrue('Variable duplication' in str(cm.exception))
+

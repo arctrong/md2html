@@ -1,8 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "patternProperties": {
-        "^[\\w\\d_]+$": {
+    "definitions": {
+        "pageFlowItems": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -14,6 +13,23 @@
                 "required": [ "link", "title" ]
             }
         }
+    },
+    "type": "object",
+    "patternProperties": {
+        "^[\\w\\d_]+$": { "oneOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "title": { "type": "string" },
+                    "groups": {
+                        "type": "array",
+                        "items": { "type": "string", "pattern": "^[\\w\\d_]+$" }
+                    },
+                    "items": { "$ref": "#/definitions/pageFlowItems" }
+                }
+            },
+            { "$ref": "#/definitions/pageFlowItems" }
+        ]}
     },
     "additionalProperties": false
 }
