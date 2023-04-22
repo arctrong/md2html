@@ -24,6 +24,9 @@ hr {
     background: cadetblue;
     height: 1px;
     border: 0px;
+    width: 899px;
+    margin-left: 0px;
+    text-align: left;
 }
 
 h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
