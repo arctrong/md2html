@@ -15,7 +15,7 @@ This is an automatically created documentation template.
 This sample documentation contains several simple pages rendered using a typical template.
 
 
-<!--index usage -->
+<!--index usage-->
 # How to use it?
 
 The following steps may be done for customization.
@@ -41,8 +41,5 @@ The following steps may be done for customization.
 
 - Look into the file `md2html_args.json`. Particularly "Useful links" section items may be
     redefined there.
-    
-- Look into the template `doc_src/templates/multipage.html`. If required remove the
-    "Useful links" section and add your own sections.
 
 Consult the [instructions](https://arctrong.github.io/md2html/readme.html) if any questions.

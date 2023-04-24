@@ -14,6 +14,7 @@ if [%CANNOT_PROCEED%]==[Y] (
 )
 
 xcopy %MD2HTML_HOME%\bin\new_project\doc_src doc_src\ /e
+xcopy %MD2HTML_HOME%\doc_src\templates\multipage.html doc_src\templates\
 xcopy %MD2HTML_HOME%\bin\new_project\doc doc\ /e
 xcopy %MD2HTML_HOME%\doc\layout doc\layout\ /e
 xcopy %MD2HTML_HOME%\bin\new_project\md2html_args.json

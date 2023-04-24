@@ -1,21 +1,24 @@
-<!--VARIABLES {"title": "Page 2", "SORT_ORDER": "20", "code": "page_02"}-->
+<!--VARIABLES {"title": "Cats", "SORT_ORDER": "20", "code": "page_02"}-->
 
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
 # Intro
 
-This is the second page.
+This page contains some information about cats.
+
+Also see [Wikipedia](https://en.wikipedia.org/wiki/Cat).
 
 ----------------------------------------------------------------------------------------------------
-<!--index chapter 1 -->
-# Chapter 1
+<!--index ["cute"]-->
+# Shortly speaking
 
-This is the first chapter.
-
-This is a [link](<!--page page_01-->) to the first page.
+Cats are usually cute.
 
 ----------------------------------------------------------------------------------------------------
-# Chapter 2
+<!--index ["naughty"]-->
+# More information
 
-This is the second chapter.
+Cats may be also naughty.
+
+Click [here](<!--page page_01-->) to know about squirrels.
