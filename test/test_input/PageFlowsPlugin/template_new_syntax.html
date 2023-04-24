@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><title>{{title}}</title>
+<meta charset="utf-8">
+{{{styles}}}
+</head>
+<body>
+
+<div id="pageFlows">
+{{#group1}}
+{{#title}}<h3>{{.}}</h3>{{/title}}
+{{#.}}<p><a href="{{link}}">{{title}}{{#current}} - current{{/current}}</a></p>
+{{/.}}
+{{/group1}}
+</div>
+
+<hr />
+
+{{{content}}}
+
+</body>
+</html>

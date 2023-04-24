@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><title>{{title}}</title>
+<meta charset="utf-8">
+{{{styles}}}
+</head>
+<body>
+
+<div id="pageFlows">
+<h3>page_flow_1</h3>
+{{#page_flow_1}}<p><a href="{{link}}">{{title}}{{#current}} - current{{/current}}</a></p>
+{{/page_flow_1}}
+<h3>page_flow_2</h3>
+{{#page_flow_2}}<p><a href="{{link}}">{{title}}{{#current}} - current{{/current}}</a></p>
+{{/page_flow_2}}
+</div>
+
+<hr />
+
+{{{content}}}
+
+</body>
+</html>

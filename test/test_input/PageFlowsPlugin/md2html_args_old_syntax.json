@@ -1,0 +1,23 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/PageFlowsPlugin/template_old_syntax.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/styles.css"]
+    },
+    "documents": [
+        {"input": "page1.txt", "title": "Page 1", "page-flows": ["page_flow_1"]},
+        {"input": "page2.txt", "title": "Page 2", "page-flows": ["page_flow_2"]},
+        {"input": "page3.txt", "title": "Page 3", "page-flows": ["page_flow_1", "page_flow_2"]}
+    ],
+    "plugins": {
+        "page-flows": {
+            "page_flow_2": [],      
+            "page_flow_1": [
+                {"link": "https://www.google.com/", "title": "Google", "external": true}
+            ]
+        }
+    }
+}
