@@ -445,6 +445,3 @@ The result will be like this:
     !!! note
         When a default title is used its first character is capitalized.
 
-
-
-

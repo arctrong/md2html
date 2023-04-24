@@ -147,7 +147,7 @@ Here is a quite complex example of an _argument file_ content:
         # These are the default options for all documents.
         "input-root": "doc_src",
         "output-root": "doc",
-        "template": "doc_src/templates/custom.html",
+        "template": "doc_src/templates/multipage.html",
         "no-css": true,
         "page-flows": ["sections"]
     },

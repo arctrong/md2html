@@ -125,8 +125,13 @@ cumbersome and error-prone.
 
 This plugin defines such pages sequences and and provides them for easy manipulation in templates.
 
+
 **Definition**
 
+!!! note
+    You may want to also look at the new syntax described
+    [here](<!--page plugins-->#page_flows_new_syntax).
+    
 In the `"plugins"` sections:
 
 ````
@@ -227,8 +232,62 @@ Here's a simplified example of how the sidebar items may be rendered:
     `title` and `current` are used in the rendered block.
 
 This documentation demonstrates pretty typical usage of this plugin. Also see the template
-`doc_src/templates/custom.html` and the _argument file_ `md2html_args.json` for more
+`doc_src/templates/multipage.html` and the _argument file_ `md2html_args.json` for more
 understanding of correspondence between the plugin's definition and usage.
+
+<a name="page_flows_new_syntax"></a>
+**New syntax**
+
+In version 1.0.3 new syntax was introduced. The following example demonstrates the differences:
+
+````
+.  .  .
+    "plugins": {
+        "page-flows": {
+            "sections": { "groups": ["sidebar"] },
+            "header": [
+                { "link": "readme.html", "title": "Home" },
+                { "link": "doc/content/sections/installation.html", "title": "Installation" },
+                { "link": "doc/content/sections/usage.html", "title": "Usage" }
+            ],
+            "useful_links": { "title": "Useful links", "groups": ["sidebar"], "items": [
+                { "link": "https://mustache.github.io/", "title": "Mustache", "external": true },
+                { "link": "https://json.org/", "title": "JSON", "external": true }
+            ]}
+        },
+    }
+.  .  .
+````
+
+The `useful_links` *page flow* is defined using the full syntax. The *page flow* has a title, a list
+of groups and the content defined by the `items` attributes. The content definition is a list of
+the pages just the same way as in the old syntax.
+
+The `sections` *page flow* defines only the necessary attributes. The title is an empty string by
+default. The content is empty initially and it may be defined in the `documents` section.
+
+The `header` *page flow* uses the old syntax. Two syntaxes may be used in the same argument file
+that makes the previously written documentation compatible with the new version of the program.
+
+The purpose of this change is to remove specific elements from the
+[templates](<!--page templates-->) and to avoid boilerplates. Now sidebar *page flows* may be
+defined solely in the argument file and the template file in the documentation project
+may be updated with the other one taken from the outside without subsequent customization.
+Here's a sidebar definition that may be defined for the above argument file fragment:
+
+````
+{{#sidebar}}
+{{#title}}<h3>{{.}}</h3>{{/title}}
+{{#.}}<a class="sidebar_item{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a>
+{{/.}}
+{{/sidebar}}
+````
+
+The `sidebar` variable contains a list of *page flows* for which it's defined (here there are 
+two such *page flows*). As each *page flow* now has a title then this title may be conditionally
+rendered using the Mustache syntax. Elements `{{#.}}` and `{{/.}}` represent a current 
+*page flow* that here is represented as a number of links. Current links are highlighted 
+with a CSS class `selected`.
 
 ----------------------------------------------------------------------------------------------------
 <a name="page_variables_plugin"></a>
