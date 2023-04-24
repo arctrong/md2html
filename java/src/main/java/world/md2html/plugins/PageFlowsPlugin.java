@@ -3,6 +3,7 @@ package world.md2html.plugins;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.networknt.schema.JsonSchema;
 import lombok.Getter;
 import world.md2html.options.argfile.ArgFileParseException;
@@ -23,17 +24,44 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
     private final JsonSchema pluginDataSchema =
             loadJsonSchemaFromResource("plugins/page_flows_schema.json");
 
-    private Map<String, List<Map<String, Object>>> data = null;
+    private Map<String, PageFlowRaw> data = null;
     private ObjectNode jsonData = null;
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
         validateInputDataAgainstSchema(data, pluginDataSchema);
+        data = unifyData(data);
         if (this.jsonData == null) {
             this.jsonData = (ObjectNode) data;
         } else {
             addToStart((ObjectNode) data);
         }
+    }
+
+    private JsonNode unifyData(JsonNode data) {
+        ObjectNode newData = new ObjectNode(NODE_FACTORY);
+        Iterator<Map.Entry<String, JsonNode>> fieldIterator = data.fields();
+        while (fieldIterator.hasNext()) {
+            Map.Entry<String, JsonNode> fieldEntry = fieldIterator.next();
+            if (fieldEntry.getValue().isArray()) {
+                ObjectNode pageFlow = new ObjectNode(NODE_FACTORY);
+                pageFlow.set("items", fieldEntry.getValue());
+                newData.set(fieldEntry.getKey(), unifyPageFlow(pageFlow));
+            } else if (fieldEntry.getValue().isObject()) {
+                newData.set(fieldEntry.getKey(), unifyPageFlow((ObjectNode) fieldEntry.getValue()));
+            } else {
+                throw new RuntimeException("Wrong value type: " + fieldEntry.getClass().getSimpleName());
+            }
+        }
+        return newData;
+    }
+
+    private ObjectNode unifyPageFlow(ObjectNode pageFlow) {
+        ObjectNode newPageFlow = new ObjectNode(NODE_FACTORY);
+        newPageFlow.set("title", pageFlow.has("title") ? pageFlow.get("title") : new TextNode(""));
+        newPageFlow.set("groups", pageFlow.has("groups") ? pageFlow.get("groups") : new ArrayNode(NODE_FACTORY));
+        newPageFlow.set("items", pageFlow.has("items") ? pageFlow.get("items") : new ArrayNode(NODE_FACTORY));
+        return newPageFlow;
     }
 
     private void addToStart(ObjectNode data) {
@@ -42,17 +70,16 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         }
         for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> dataEntry = it.next();
-            ArrayNode existingItems = (ArrayNode) this.jsonData.get(dataEntry.getKey());
-            if (existingItems == null) {
-                existingItems = new ArrayNode(NODE_FACTORY);
-                this.jsonData.set(dataEntry.getKey(), existingItems);
+            ObjectNode existingPageFlow = (ObjectNode) this.jsonData.get(dataEntry.getKey());
+            if (existingPageFlow == null) {
+                this.jsonData.set(dataEntry.getKey(), dataEntry.getValue());
+            } else {
+                ArrayNode existingPages = (ArrayNode) existingPageFlow.get("items");
+                ArrayNode newPages = (ArrayNode) existingPageFlow
+                        .set("items", new ArrayNode(NODE_FACTORY)).get("items");
+                newPages.addAll((ArrayNode) dataEntry.getValue().get("items"));
+                newPages.addAll(existingPages);
             }
-            ArrayNode newItems = dataEntry.getValue().deepCopy();
-            for (Iterator<JsonNode> it1 = existingItems.elements(); it1.hasNext(); ) {
-                JsonNode existingItem = it1.next();
-                newItems.add(existingItem);
-            }
-            this.jsonData.set(dataEntry.getKey(), newItems);
         }
     }
 
@@ -62,10 +89,12 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         }
         for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> dataEntry = it.next();
-            ArrayNode existingItems = (ArrayNode) this.jsonData
-                    .putIfAbsent(dataEntry.getKey(), new ArrayNode(NODE_FACTORY));
-            for (Iterator<JsonNode> it1 = dataEntry.getValue().elements(); it1.hasNext(); ) {
-                existingItems.add(it1.next());
+            ObjectNode existingPageFlow = (ObjectNode) this.jsonData.get(dataEntry.getKey());
+            if (existingPageFlow == null) {
+                this.jsonData.set(dataEntry.getKey(), dataEntry.getValue());
+            } else {
+                ArrayNode existingPages = (ArrayNode) existingPageFlow.get("items");
+                existingPages.addAll((ArrayNode) dataEntry.getValue().get("items"));
             }
         }
     }
@@ -75,24 +104,35 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         assureInitializeOnce();
         if (extraPluginData != null) {
             validateInputDataAgainstSchema(extraPluginData, pluginDataSchema);
-            addToEnd((ObjectNode) extraPluginData);
+            addToEnd((ObjectNode) unifyData(extraPluginData));
         }
-        this.data = parsePluginData(this.jsonData);
+        parsePluginData(this.jsonData);
     }
 
-    private Map<String, List<Map<String, Object>>> parsePluginData(JsonNode data) {
+    private static class PageFlowRaw {
+        @Getter private final String title;
+        @Getter private final List<String> groups;
+        @Getter private final List<Map<String, Object>> pages;
 
-        Map<String, List<Map<String, Object>>> pluginData = new HashMap<>();
+        public PageFlowRaw(String title, List<String> groups, List<Map<String, Object>> pages) {
+            this.title = title;
+            this.groups = groups;
+            this.pages = pages;
+        }
+    }
+
+    private void parsePluginData(JsonNode data) {
+        Map<String, PageFlowRaw> pluginData = new LinkedHashMap<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = data.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> pageFlowEntry = it.next();
             List<Map<String, Object>> pages = new ArrayList<>();
             Map<String, Object> page = new HashMap<>();
             boolean isFirst = true;
-            for (Iterator<JsonNode> it1 = pageFlowEntry.getValue().elements(); it1.hasNext(); ) {
+            JsonNode pageFlow = pageFlowEntry.getValue();
+            for (Iterator<JsonNode> it1 = pageFlow.get("items").elements(); it1.hasNext(); ) {
                 ObjectNode pageNode = (ObjectNode) it1.next();
                 page = new HashMap<>();
-                for (Iterator<Map.Entry<String, JsonNode>> it2 = pageNode.fields();
-                     it2.hasNext(); ) {
+                for (Iterator<Map.Entry<String, JsonNode>> it2 = pageNode.fields(); it2.hasNext(); ) {
                     Map.Entry<String, JsonNode> fieldEntry = it2.next();
                     page.put(fieldEntry.getKey(), JsonUtils.deJson(fieldEntry.getValue()));
                 }
@@ -103,9 +143,15 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
                 pages.add(page);
             }
             page.put("last", true);
-            pluginData.put(pageFlowEntry.getKey(), pages);
+            List<String> groups = new ArrayList<>(pageFlow.get("groups").size());
+            for (Iterator<JsonNode> it3 = pageFlow.get("groups").elements(); it3.hasNext(); ) {
+                groups.add(it3.next().asText());
+            }
+
+            pluginData.put(pageFlowEntry.getKey(), new PageFlowRaw(pageFlow.get("title").asText(),
+                    groups, pages));
         }
-        return pluginData;
+        this.data = pluginData;
     }
 
     @Override
@@ -114,20 +160,36 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
     }
 
     public Map<String, Object> variables(Document document) {
-        Map<String, Object> pageVariables = new HashMap<>();
+        Map<String, PageFlow> pageFlowVariables = new LinkedHashMap<>();
+        Map<String, List<PageFlow>> pageFlowGroupVariables = new HashMap<>();
         this.data.forEach((k, v) -> {
+            PageFlow pageFlow;
             try {
-                pageVariables.put(k, processPageFlows(v, document.getOutput()));
+                pageFlow = processPageFlow(v, document.getOutput());
             } catch (CheckedIllegalArgumentException e) {
                 throw new UserError("Error recalculating relative links '" + v +
                         "' of page flow '" + k + "' for page '" + document.getOutput() +
                         "': " + e.getMessage());
             }
+            pageFlowVariables.put(k, pageFlow);
+            v.getGroups().forEach(g -> {
+                pageFlowGroupVariables.putIfAbsent(g, new ArrayList<>());
+                List<PageFlow> groupPageFlows = pageFlowGroupVariables.get(g);
+                groupPageFlows.add(pageFlow);
+            });
         });
-        return pageVariables;
+        pageFlowGroupVariables.keySet().forEach(key -> {
+            if (pageFlowVariables.containsKey(key)) {
+                throw new UserError("Variable duplication error in plugin '" +
+                        this.getClass().getSimpleName() + "': group name is '" + key + "'");
+            }
+        });
+        Map<String, Object> variables = new HashMap<>(pageFlowVariables);
+        variables.putAll(pageFlowGroupVariables);
+        return variables;
     }
 
-    private static PageFlow processPageFlows(List<Map<String, Object>> pages, String outputFile)
+    private static PageFlow processPageFlow(PageFlowRaw pageFlowRaw, String outputFile)
             throws CheckedIllegalArgumentException {
 
         List<Map<String, Object>> result = new ArrayList<>();
@@ -135,7 +197,7 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         Map<String, Object> current = null;
         Map<String, Object> next = null;
 
-        for (Map<String, Object> page : pages) {
+        for (Map<String, Object> page : pageFlowRaw.getPages()) {
             Map<String, Object> newPage = new HashMap<>(page);
             if (Utils.isNullOrFalse(page.get("external"))) {
                 result.add(newPage);
@@ -159,7 +221,7 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         if (current == null) {
             previous = null;
         }
-        return new PageFlow(result, previous, current, next);
+        return new PageFlow(pageFlowRaw.getTitle(), result, previous, current, next);
     }
 
     private static void enrichPage(Map<String, Object> page) {
@@ -169,6 +231,7 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
 
     private static class PageFlow implements Iterable<Map<String, Object>> {
 
+        @Getter private final String title;
         @Getter private final List<Map<String, Object>> pages;
         @Getter private final Map<String, Object> previous;
         @Getter private final Map<String, Object> current;
@@ -177,8 +240,10 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
         @Getter private final boolean has_navigation;
         @Getter private final boolean not_empty;
 
-        private PageFlow(List<Map<String, Object>> pages, Map<String, Object> previous,
+        private PageFlow(String title, List<Map<String, Object>> pages,
+                Map<String, Object> previous,
                 Map<String, Object> current, Map<String, Object> next) {
+            this.title = title;
             this.pages = pages;
             this.previous = previous;
             this.current = current;
@@ -192,5 +257,4 @@ public class PageFlowsPlugin extends AbstractMd2HtmlPlugin {
             return pages.iterator();
         }
     }
-
 }

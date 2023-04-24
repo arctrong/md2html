@@ -9,11 +9,13 @@ import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.testutils.PluginTestUtils;
+import world.md2html.utils.UserError;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -25,11 +27,12 @@ class PageFlowsPluginTest {
 
     /**
      * The `PageFlowsPlugin.PageFlow` class is private and its instances are accessed using
-     * the Bean notation. To reproduce this accessing method is these tests the internal
+     * the Bean notation. To reproduce this accessing method in these tests the internal
      * representation is used.
      */
-    private static class PageFlow {
+    private static class TestPageFlow {
 
+        @Getter private final String title;
         @Getter private final Map<String, Object> previous;
         @Getter private final Map<String, Object> current;
         @Getter private final Map<String, Object> next;
@@ -37,8 +40,9 @@ class PageFlowsPluginTest {
         @Getter private final boolean not_empty;
 
         @SuppressWarnings("unchecked")
-        private PageFlow(Object pageFlow) {
+        private TestPageFlow(Object pageFlow) {
             try {
+                this.title = (String) property(pageFlow, "getTitle");
                 this.previous = (Map<String, Object>) property(pageFlow, "getPrevious");
                 this.current = (Map<String, Object>) property(pageFlow, "getCurrent");
                 this.next = (Map<String, Object>) property(pageFlow, "getNext");
@@ -72,6 +76,11 @@ class PageFlowsPluginTest {
             pages.add(page);
         }
         return pages;
+    }
+
+    private static List<TestPageFlow> convertPageFlowGroup(Object group) {
+        //noinspection unchecked
+        return ((List<Object>) group).stream().map(TestPageFlow::new).collect(Collectors.toList());
     }
 
     private PageFlowsPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
@@ -277,7 +286,7 @@ class PageFlowsPluginTest {
         PageFlowsPlugin plugin = findSinglePlugin(plugins);
 
         Document doc = documentWithOutputLocation("page1.html");
-        PageFlow pageFlow = new PageFlow(plugin.variables(doc).get("sections"));
+        TestPageFlow pageFlow = new TestPageFlow(plugin.variables(doc).get("sections"));
         assertTrue(pageFlow.isHas_navigation());
         assertTrue(pageFlow.isNot_empty());
         assertNull(pageFlow.getPrevious());
@@ -285,7 +294,7 @@ class PageFlowsPluginTest {
         assertPageEquals("page2.html", "Title2", false, false, pageFlow.getNext());
 
         doc = documentWithOutputLocation("page2.html");
-        pageFlow = new PageFlow(plugin.variables(doc).get("sections"));
+        pageFlow = new TestPageFlow(plugin.variables(doc).get("sections"));
         assertTrue(pageFlow.isHas_navigation());
         assertTrue(pageFlow.isNot_empty());
         assertPageEquals("page1.html", "Title1", false, false, pageFlow.getPrevious());
@@ -293,7 +302,7 @@ class PageFlowsPluginTest {
         assertPageEquals("page3.html", "Title3", false, false, pageFlow.getNext());
 
         doc = documentWithOutputLocation("page3.html");
-        pageFlow = new PageFlow(plugin.variables(doc).get("sections"));
+        pageFlow = new TestPageFlow(plugin.variables(doc).get("sections"));
         assertTrue(pageFlow.isHas_navigation());
         assertTrue(pageFlow.isNot_empty());
         assertPageEquals("page2.html", "Title2", false, false, pageFlow.getPrevious());
@@ -358,7 +367,7 @@ class PageFlowsPluginTest {
 
         for (int i = 1; i <= pageCount; ++i) {
             Document doc = documentWithOutputLocation("page" + i + ".html");
-            PageFlow pageFlow = new PageFlow(plugin.variables(doc).get("sections"));
+            TestPageFlow pageFlow = new TestPageFlow(plugin.variables(doc).get("sections"));
             assertEquals(pageCount > 1, pageFlow.isHas_navigation());
             assertTrue(pageFlow.isNot_empty());
             if (i < 2) { // for the first page, the previous page is always absent
@@ -414,4 +423,135 @@ class PageFlowsPluginTest {
         assertEquals("sub-sub-2.html", pages.get(5).get("link"));
     }
 
+    @Test
+    public void test_extended_format_simple() throws ArgFileParseException {
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{" +
+                "   \"documents\": [" +
+                "       {\"input\": \"page1.txt\", \"title\": \"whatever\"}" +
+                "   ]," +
+                "   \"plugins\": {\"page-flows\": {\"sections\": { \"title\": \"Sections\", \"groups\": [\"gr1\"], " +
+                "          \"items\": [" +
+                "              {\"link\": \"link1.html\", \"title\": \"title1\"}," +
+                "              {\"link\": \"link2.html\", \"title\": \"title2\"}" +
+                "          ]" +
+                "   }}}" +
+                "}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
+
+        Document doc = documentWithOutputLocation("page1.html");
+        Object pageFlowObject = plugin.variables(doc).get("sections");
+        TestPageFlow pageFlow = new TestPageFlow(pageFlowObject);
+        assertEquals("Sections", pageFlow.getTitle());
+        List<Map<String, Object>> pages = extractPages(pageFlowObject);
+        assertEquals("link1.html", pages.get(0).get("link"));
+        assertEquals("title1", pages.get(0).get("title"));
+        assertEquals("link2.html", pages.get(1).get("link"));
+        assertEquals("title2", pages.get(1).get("title"));
+
+        //noinspection unchecked
+        List<Object> groupObject = (List<Object>) plugin.variables(doc).get("gr1");
+        pages = extractPages(groupObject.get(0));
+        assertEquals("link1.html", pages.get(0).get("link"));
+        assertEquals("title1", pages.get(0).get("title"));
+        assertEquals("link2.html", pages.get(1).get("link"));
+        assertEquals("title2", pages.get(1).get("title"));
+    }
+
+    @Test
+    public void test_extended_format_in_documents() throws ArgFileParseException {
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{" +
+                "   \"documents\": [" +
+                "       {\"input\": \"page1.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}," +
+                "       {\"input\": \"page2.txt\", \"title\": \"whatever\", \"page-flows\": [\"sections\"]}" +
+                "   ]," +
+                "   \"plugins\": {\"page-flows\": {\"sections\": { \"title\": \"Sections\", \"groups\": [\"gr1\"], " +
+                "          \"items\": [" +
+                "              {\"link\": \"link1.html\", \"title\": \"whatever\"}" +
+                "          ]" +
+                "   }}}" +
+                "}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
+
+        Document doc = documentWithOutputLocation("page1.html");
+        Object pageFlowObject = plugin.variables(doc).get("sections");
+        TestPageFlow pageFlow = new TestPageFlow(pageFlowObject);
+        assertEquals("Sections", pageFlow.getTitle());
+        List<Map<String, Object>> pages = extractPages(pageFlowObject);
+        assertEquals("page1.html", pages.get(0).get("link"));
+        assertEquals("page2.html", pages.get(1).get("link"));
+        assertEquals("link1.html", pages.get(2).get("link"));
+
+        //noinspection unchecked
+        List<Object> groupObject = (List<Object>) plugin.variables(doc).get("gr1");
+        pages = extractPages(groupObject.get(0));
+        assertEquals(1, groupObject.size());
+        assertEquals("page1.html", pages.get(0).get("link"));
+        assertEquals("page2.html", pages.get(1).get("link"));
+        assertEquals("link1.html", pages.get(2).get("link"));
+    }
+
+    @Test
+    public void test_extended_format_several_groups() throws ArgFileParseException {
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{" +
+                "    \"documents\": [" +
+                "        {\"input\": \"page1.txt\", \"title\": \"whatever\"}" +
+                "    ]," +
+                "    \"plugins\": {\"page-flows\": {" +
+                "        \"flow1\": { \"title\": \"Flow 1\", \"groups\": [\"gr1\"], " +
+                "            \"items\": [{\"link\": \"link1.html\", \"title\": \"whatever\"}]" +
+                "        }," +
+                "        \"flow2\": { \"title\": \"Flow 2\", \"groups\": [\"gr1\", \"gr2\"], " +
+                "            \"items\": [{\"link\": \"link2.html\", \"title\": \"whatever\"}]" +
+                "        }," +
+                "        \"flow3\": { \"title\": \"Flow 3\", \"groups\": [\"gr2\"], " +
+                "            \"items\": [{\"link\": \"link3.html\", \"title\": \"whatever\"}]" +
+                "        }" +
+                "    }}" +
+                "}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
+
+        Document doc = documentWithOutputLocation("page1.html");
+
+        Object groupAsObject = plugin.variables(doc).get("gr1");
+        //noinspection unchecked
+        List<Object> groupAsList = (List<Object>) groupAsObject;
+        assertEquals(2, groupAsList.size());
+        List<TestPageFlow> group = convertPageFlowGroup(groupAsObject);
+        assertEquals("Flow 1", group.get(0).getTitle());
+        assertEquals("Flow 2", group.get(1).getTitle());
+        List<Map<String, Object>> pages = extractPages(groupAsList.get(0));
+        assertEquals("link1.html", pages.get(0).get("link"));
+        pages = extractPages(groupAsList.get(1));
+        assertEquals("link2.html", pages.get(0).get("link"));
+
+        groupAsObject = plugin.variables(doc).get("gr2");
+        //noinspection unchecked
+        groupAsList = (List<Object>) groupAsObject;
+        assertEquals(2, groupAsList.size());
+        group = convertPageFlowGroup(groupAsObject);
+        assertEquals("Flow 2", group.get(0).getTitle());
+        assertEquals("Flow 3", group.get(1).getTitle());
+        pages = extractPages(groupAsList.get(0));
+        assertEquals("link2.html", pages.get(0).get("link"));
+        pages = extractPages(groupAsList.get(1));
+        assertEquals("link3.html", pages.get(0).get("link"));
+    }
+
+    @Test
+    public void test_extended_format_duplicate_error() throws ArgFileParseException {
+        List<Md2HtmlPlugin> plugins = parseArgumentFile("{" +
+                "   \"documents\": [" +
+                "       {\"input\": \"page1.txt\", \"title\": \"whatever\"}" +
+                "   ]," +
+                "   \"plugins\": {\"page-flows\": {\"name1\": { \"title\": \"Sections\", \"groups\": [\"gr1\", \"name1\"], " +
+                "          \"items\": [" +
+                "              {\"link\": \"link1.html\", \"title\": \"title1\"}" +
+                "          ]" +
+                "   }}}" +
+                "}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
+        Document doc = documentWithOutputLocation("page1.html");
+        UserError e = assertThrows(UserError.class, () -> plugin.variables(doc));
+        assertTrue(e.getMessage().contains("Variable duplication"));
+    }
 }
