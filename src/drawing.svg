@@ -234,9 +234,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.50000001"
-     inkscape:cx="989.99997"
-     inkscape:cy="1034"
+     inkscape:zoom="2"
+     inkscape:cx="282.99999"
+     inkscape:cy="690.49999"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -284,6 +284,16 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="opacity:0.9955;fill:none;fill-opacity:0.996078;fill-rule:evenodd;stroke:none;stroke-width:3.39998"
+       id="rect1437"
+       width="113.64526"
+       height="56.822628"
+       x="16.400444"
+       y="90.075005"
+       inkscape:export-filename="logo_for_github.png"
+       inkscape:export-xdpi="143.0416"
+       inkscape:export-ydpi="143.0416" />
     <ellipse
        style="fill:#5599ff;fill-opacity:1;stroke:#002255;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
        id="ellipse989"
@@ -438,19 +448,19 @@
        id="text1212"><tspan
          x="4.0141459"
          y="9.4950304"
-         id="tspan10664">Export the selection into PNG of size </tspan><tspan
+         id="tspan3353">Export the selection into PNG of size </tspan><tspan
          x="4.0141459"
          y="14.786693"
-         id="tspan10666">48 by 48 px, use it as the favicon </tspan><tspan
+         id="tspan3355">48 by 48 px, use it as the favicon </tspan><tspan
          x="4.0141459"
          y="20.078355"
-         id="tspan10668">image. Then open the PNG file in </tspan><tspan
+         id="tspan3357">image. Then open the PNG file in </tspan><tspan
          x="4.0141459"
          y="25.370017"
-         id="tspan10670">GIMP and export it into ICO format for </tspan><tspan
+         id="tspan3359">GIMP and export it into ICO format for </tspan><tspan
          x="4.0141459"
          y="30.661679"
-         id="tspan10672">Windows explorer context menu item.</tspan></text>
+         id="tspan3361">Windows explorer context menu item.</tspan></text>
     <g
        id="g1135"
        transform="translate(8.6060789,-96.537753)"
@@ -748,7 +758,8 @@
        d="m -79.196163,215.30674 33.442997,-25.86605 33.44299,25.86605"
        sodipodi:nodetypes="ccc" />
     <g
-       id="g1022">
+       id="g1022"
+       transform="translate(34.281518,-2.9981813)">
       <path
          id="rect980"
          style="opacity:0.998;fill:#ffdd55;fill-opacity:1;stroke:#554400;stroke-width:0.3;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
@@ -843,83 +854,87 @@
            y="313.80679"
            style="text-align:center;text-anchor:middle;fill:#2b2200;stroke-width:0.178686">?</tspan></text>
     </g>
-    <ellipse
-       style="fill:#5599ff;fill-opacity:1;stroke:#002255;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
-       id="ellipse1056"
-       cx="-51.996906"
-       cy="-106.05263"
-       rx="21.711624"
-       ry="21.704834"
-       transform="scale(-1)"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96" />
-    <path
-       id="path1058"
-       style="fill:#ff7f2a;fill-opacity:1;stroke:#803300;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.913725"
-       d="m 15.60009,122.92982 c -2e-6,-8.28733 6.553176,-15.04456 14.761844,-15.37554 l 15.510087,19.33441 c -1.74738,6.58024 -7.746662,11.42936 -14.878871,11.42936 -8.50135,0 -15.393058,-6.88954 -15.39306,-15.38823 z"
-       sodipodi:nodetypes="sccss"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96" />
-    <path
-       id="path1060"
-       style="fill:#ff7f2a;fill-opacity:1;stroke:#803300;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 88.148387,122.92982 c 2e-6,-8.28733 -6.553176,-15.04456 -14.761844,-15.37554 l -15.510087,19.33441 c 1.74738,6.58024 7.746662,11.42936 14.878871,11.42936 8.50135,0 15.393058,-6.88954 15.39306,-15.38823 z"
-       sodipodi:nodetypes="sccss"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.0731px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="72.996185"
-       y="126.61625"
-       id="text1046"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
-       inkscape:export-xdpi="96.400002"
-       inkscape:export-ydpi="96.400002"
-       transform="scale(1.0001565,0.99984352)"><tspan
-         sodipodi:role="line"
-         id="tspan1044"
+    <g
+       id="g1554"
+       transform="translate(21.348837,7.1533968)">
+      <ellipse
+         style="fill:#5599ff;fill-opacity:1;stroke:#002255;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+         id="ellipse1056"
+         cx="-51.996906"
+         cy="-106.05263"
+         rx="21.711624"
+         ry="21.704834"
+         transform="scale(-1)"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <path
+         id="path1058"
+         style="fill:#ff7f2a;fill-opacity:1;stroke:#803300;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.913725"
+         d="m 15.60009,122.92982 c -2e-6,-8.28733 6.553176,-15.04456 14.761844,-15.37554 l 15.510087,19.33441 c -1.74738,6.58024 -7.746662,11.42936 -14.878871,11.42936 -8.50135,0 -15.393058,-6.88954 -15.39306,-15.38823 z"
+         sodipodi:nodetypes="sccss"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <path
+         id="path1060"
+         style="fill:#ff7f2a;fill-opacity:1;stroke:#803300;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 88.148387,122.92982 c 2e-6,-8.28733 -6.553176,-15.04456 -14.761844,-15.37554 l -15.510087,19.33441 c 1.74738,6.58024 7.746662,11.42936 14.878871,11.42936 8.50135,0 15.393058,-6.88954 15.39306,-15.38823 z"
+         sodipodi:nodetypes="sccss"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.0731px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.512543"
          x="72.996185"
          y="126.61625"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0731px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;stroke-width:0.512543">M</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:14.635px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#00112b;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="51.98877"
-       y="111.38943"
-       id="text1050"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
-       inkscape:export-xdpi="96.400002"
-       inkscape:export-ydpi="96.400002"
-       transform="scale(1.0001565,0.99984352)"><tspan
-         sodipodi:role="line"
-         id="tspan1048"
+         id="text1046"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+         inkscape:export-xdpi="96.400002"
+         inkscape:export-ydpi="96.400002"
+         transform="scale(1.0001565,0.99984352)"><tspan
+           sodipodi:role="line"
+           id="tspan1044"
+           x="72.996185"
+           y="126.61625"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0731px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;stroke-width:0.512543">M</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:14.635px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#00112b;fill-opacity:1;stroke:none;stroke-width:0.512543"
          x="51.98877"
          y="111.38943"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#00112b;stroke-width:0.512543">H</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.0731px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#2b1100;fill-opacity:1;stroke:none;stroke-width:0.512543"
-       x="30.736053"
-       y="126.61625"
-       id="text1054"
-       inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
-       inkscape:export-xdpi="96.400002"
-       inkscape:export-ydpi="96.400002"
-       transform="scale(1.0001565,0.99984352)"><tspan
-         sodipodi:role="line"
-         id="tspan1052"
+         id="text1050"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+         inkscape:export-xdpi="96.400002"
+         inkscape:export-ydpi="96.400002"
+         transform="scale(1.0001565,0.99984352)"><tspan
+           sodipodi:role="line"
+           id="tspan1048"
+           x="51.98877"
+           y="111.38943"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#00112b;stroke-width:0.512543">H</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.0731px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#2b1100;fill-opacity:1;stroke:none;stroke-width:0.512543"
          x="30.736053"
          y="126.61625"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0731px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#2b1100;stroke-width:0.512543">M</tspan></text>
+         id="text1054"
+         inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\logo.png"
+         inkscape:export-xdpi="96.400002"
+         inkscape:export-ydpi="96.400002"
+         transform="scale(1.0001565,0.99984352)"><tspan
+           sodipodi:role="line"
+           id="tspan1052"
+           x="30.736053"
+           y="126.61625"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.0731px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#2b1100;stroke-width:0.512543">M</tspan></text>
+    </g>
     <g
        inkscape:export-ydpi="96.224854"
        inkscape:export-xdpi="96.224854"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\protection.png"
-       transform="matrix(0.17518857,0,0,0.17274811,137.67415,141.8822)"
+       transform="matrix(0.17518857,0,0,0.17274811,130.79923,178.82568)"
        id="g5824"
        style="stroke-width:1.25493">
       <path
@@ -948,7 +963,7 @@
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\protection.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
-       transform="rotate(-90,139.99236,216.11314)"
+       transform="rotate(-90,155.02664,238.02234)"
        style="opacity:0.997">
       <path
          style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;shape-margin:0;inline-size:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#374548;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.65125;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
@@ -989,7 +1004,7 @@
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\protection.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
-       transform="rotate(-90,150.21445,205.71244)">
+       transform="rotate(-90,165.24873,227.62164)">
       <g
          id="g1051">
         <path
@@ -1071,7 +1086,7 @@
     <g
        id="g1035"
        style="opacity:0.997"
-       transform="translate(12.348749,18.146481)"
+       transform="translate(5.4738286,55.089965)"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_hidden.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
@@ -1101,34 +1116,34 @@
        id="rect1063"
        width="7.3598948"
        height="10.018"
-       x="117.35647"
-       y="219.26942"
+       x="110.48154"
+       y="256.21292"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <path
-       d="m 112.7601,221.33417 -0.19753,0.3395 -1.11725,-0.65739 0.0185,1.11108 h -0.39814 l 0.0154,-1.11108 -1.11416,0.66047 -0.20061,-0.33949 1.17589,-0.63887 -1.17589,-0.63887 0.20061,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39814 l -0.0216,1.10799 1.12033,-0.6543 0.19753,0.3395 -1.17281,0.63269 z"
+       d="m 105.88518,258.27765 -0.19753,0.3395 -1.11725,-0.65739 0.0185,1.11108 h -0.39814 l 0.0154,-1.11108 -1.11416,0.66047 -0.20061,-0.33949 1.17589,-0.63887 -1.17589,-0.63887 0.20061,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39814 l -0.0216,1.10799 1.12033,-0.6543 0.19753,0.3395 -1.17281,0.63269 z"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        id="path1069"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <path
-       d="m 116.4724,221.65857 -0.19752,0.3395 -1.11725,-0.65739 0.0185,1.11108 h -0.39814 l 0.0154,-1.11108 -1.11416,0.66047 -0.20062,-0.33949 1.1759,-0.63887 -1.1759,-0.63887 0.20062,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39813 l -0.0216,1.10799 1.12034,-0.6543 0.19752,0.3395 -1.1728,0.63269 z"
+       d="m 109.59748,258.60205 -0.19752,0.3395 -1.11725,-0.65739 0.0185,1.11108 h -0.39814 l 0.0154,-1.11108 -1.11416,0.66047 -0.20062,-0.33949 1.1759,-0.63887 -1.1759,-0.63887 0.20062,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39813 l -0.0216,1.10799 1.12034,-0.6543 0.19752,0.3395 -1.1728,0.63269 z"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        id="path1072"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <path
-       d="m 113.21054,225.73217 -0.19753,0.3395 -1.11723,-0.65739 0.0185,1.11108 h -0.39815 l 0.0154,-1.11108 -1.11416,0.66047 -0.20061,-0.33949 1.17589,-0.63887 -1.17589,-0.63887 0.20061,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39815 l -0.0216,1.10799 1.12031,-0.6543 0.19753,0.3395 -1.1728,0.63269 z"
+       d="m 106.33562,262.67565 -0.19753,0.3395 -1.11723,-0.65739 0.0185,1.11108 h -0.39815 l 0.0154,-1.11108 -1.11416,0.66047 -0.20061,-0.33949 1.17589,-0.63887 -1.17589,-0.63887 0.20061,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39815 l -0.0216,1.10799 1.12031,-0.6543 0.19753,0.3395 -1.1728,0.63269 z"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        id="path1074"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <path
-       d="m 116.34624,228.38203 -0.19752,0.3395 -1.11725,-0.65739 0.0185,1.11108 h -0.39814 l 0.0154,-1.11108 -1.11416,0.66047 -0.20062,-0.33949 1.1759,-0.63887 -1.1759,-0.63887 0.20062,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39813 l -0.0216,1.10799 1.12034,-0.6543 0.19752,0.3395 -1.1728,0.63269 z"
+       d="m 109.47132,265.32551 -0.19752,0.3395 -1.11725,-0.65739 0.0185,1.11108 h -0.39814 l 0.0154,-1.11108 -1.11416,0.66047 -0.20062,-0.33949 1.1759,-0.63887 -1.1759,-0.63887 0.20062,-0.3395 1.11725,0.65739 -0.0185,-1.10799 h 0.39813 l -0.0216,1.10799 1.12034,-0.6543 0.19752,0.3395 -1.1728,0.63269 z"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        id="path1083"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1136,7 +1151,7 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#666666;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 119.03638,220.3574 h 4.96383"
+       d="m 112.16146,257.30088 h 4.96383"
        id="path1100"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1144,7 +1159,7 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#666666;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 118.25005,221.86506 h 5.75016"
+       d="m 111.37513,258.80854 h 5.75016"
        id="path1102"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1152,7 +1167,7 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#666666;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 118.25005,223.37275 h 5.75016"
+       d="m 111.37513,260.31623 h 5.75016"
        id="path1104"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1160,7 +1175,7 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#666666;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 118.25005,224.8804 h 5.75016"
+       d="m 111.37513,261.82388 h 5.75016"
        id="path1106"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1168,7 +1183,7 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#666666;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 118.25005,226.38807 h 5.75016"
+       d="m 111.37513,263.33155 h 5.75016"
        id="path1108"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1176,7 +1191,7 @@
        inkscape:export-ydpi="96" />
     <path
        style="fill:none;stroke:#666666;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 118.25005,227.89576 h 2.08694"
+       d="m 111.37513,264.83924 h 2.08694"
        id="path1110"
        sodipodi:nodetypes="cc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
@@ -1185,7 +1200,7 @@
     <path
        id="path1097"
        style="fill:#000000;stroke:none;stroke-width:0.286655;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 116.00363,223.11568 v 0.63679 h -1.65781 v 1.46642 h 1.65781 v 0.63678 l 1.9311,-1.36999 z"
+       d="m 109.12871,260.05916 v 0.63679 h -1.65781 v 1.46642 h 1.65781 v 0.63678 l 1.9311,-1.36999 z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png" />
@@ -1195,23 +1210,23 @@
        x="4.0141459"
        y="9.4950304"
        id="text1152"
-       transform="translate(52.604404,184.52321)"><tspan
+       transform="translate(45.729484,221.46669)"><tspan
          x="4.0141459"
          y="9.4950304"
-         id="tspan10674">Export the two separate pictures into </tspan><tspan
+         id="tspan3363">Export the two separate pictures into </tspan><tspan
          x="4.0141459"
          y="14.786693"
-         id="tspan10676">PNG of size 57 by 38 px each. Then </tspan><tspan
+         id="tspan3365">PNG of size 57 by 38 px each. Then </tspan><tspan
          x="4.0141459"
          y="20.078355"
-         id="tspan10678">open the PNG files in GIMP and </tspan><tspan
+         id="tspan3367">open the PNG files in GIMP and </tspan><tspan
          x="4.0141459"
          y="25.370017"
-         id="tspan10680">manually combine them into a sprite.</tspan></text>
+         id="tspan3369">manually combine them into a sprite.</tspan></text>
     <g
        id="g1207"
        style="opacity:0.997"
-       transform="translate(-32.233543,18.096479)"
+       transform="translate(-39.108463,55.039963)"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_hidden.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
@@ -1238,7 +1253,7 @@
     </g>
     <g
        id="g1223"
-       transform="matrix(0.63830025,0,0,0.59155208,29.435805,89.404212)"
+       transform="matrix(0.63830025,0,0,0.59155208,22.560885,126.3477)"
        style="stroke-width:1.62739"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png"
        inkscape:export-xdpi="96"
@@ -1283,25 +1298,25 @@
     <path
        id="path1225"
        style="fill:#800000;stroke:none;stroke-width:0.286655;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 68.236755,221.87243 v 1.10748 h -3.052493 v 2.55039 h 3.052493 v 1.10747 l 3.555699,-2.38266 z"
+       d="m 61.361835,258.81591 v 1.10748 h -3.052493 v 2.55039 h 3.052493 v 1.10747 l 3.555699,-2.38266 z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\secret_copied.png" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="60.51067"
-       y="269.19809"
+       x="53.63575"
+       y="306.14157"
        id="text1049"><tspan
          sodipodi:role="line"
          id="tspan1047"
-         x="60.51067"
-         y="269.19809"
+         x="53.63575"
+         y="306.14157"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.7625px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI';stroke-width:0.264583">Previous</tspan></text>
     <path
        id="path1051"
        style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 59.107066,265.53878 v 4.69183 l -4.977957,-2.23415 z"
+       d="m 52.232146,302.48226 v 4.69183 l -4.977957,-2.23415 z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
        sodipodi:nodetypes="cccc"
@@ -1309,7 +1324,7 @@
     <path
        id="path1053"
        style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 93.955081,265.53878 v 4.69183 l 4.97795,-2.23415 z"
+       d="m 87.080161,302.48226 v 4.69183 l 4.97795,-2.23415 z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
        sodipodi:nodetypes="cccc"
@@ -1317,19 +1332,18 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="82.735672"
-       y="269.19809"
+       x="75.860748"
+       y="306.14157"
        id="text1057"><tspan
          sodipodi:role="line"
          id="tspan1055"
-         x="82.735672"
-         y="269.19809"
+         x="75.860748"
+         y="306.14157"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.7625px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI';stroke-width:0.264583">Next</tspan></text>
     <path
        id="path1052"
-       style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 223.39648,1051.6953 -25.35519,15.584 25.35519,14.168 v -7.1368 h 17.90374 v -15.4785 h -17.90374 z"
-       transform="scale(0.26458333)"
+       style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 52.232064,315.20453 -6.70856,4.12326 6.70856,3.74862 v -1.88828 h 4.737031 v -4.09535 h -4.737031 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\previous_page.png"
        inkscape:export-xdpi="96"
@@ -1337,7 +1351,7 @@
     <path
        id="path1061"
        style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 78.566705,278.26104 6.708561,4.12327 -6.708561,3.74862 v -1.88828 h -4.737031 v -4.09535 h 4.737031 z"
+       d="m 71.691785,315.20452 6.708561,4.12327 -6.708561,3.74862 v -1.88828 h -4.737031 v -4.09535 h 4.737031 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\next_page.png"
        inkscape:export-xdpi="96"
@@ -1345,7 +1359,7 @@
     <path
        id="path1063"
        style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 59.106985,288.31521 -6.708561,4.12327 6.708561,3.74861 v -1.88827 h 4.737031 v -4.09536 h -4.737031 z"
+       d="m 52.232065,325.25869 -6.708561,4.12327 6.708561,3.74861 v -1.88827 h 4.737031 v -4.09536 h -4.737031 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\previous_page_inective.png"
        inkscape:export-xdpi="96"
@@ -1353,7 +1367,7 @@
     <path
        id="path1065"
        style="fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 78.566705,288.31521 6.708561,4.12327 -6.708561,3.74862 v -1.88828 h -4.737031 v -4.09535 h 4.737031 z"
+       d="m 71.691785,325.25869 6.708561,4.12327 -6.708561,3.74862 v -1.88828 h -4.737031 v -4.09535 h 4.737031 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\study\JavaScript\doc\pict\next_page_inective.png"
        inkscape:export-xdpi="96"
@@ -1366,11 +1380,11 @@
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\previous_page_h18px.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
-       transform="matrix(0.99400752,0,0,0.78259444,0.60997339,65.844144)" />
+       transform="matrix(0.99400752,0,0,0.78259444,-6.264947,102.78763)" />
     <path
        id="path1070"
        style="fill:none;fill-opacity:1;stroke:#5fbcd3;stroke-width:0.211667;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 108.20744,311.0951 -6.41761,2.33962 6.41761,2.12705 v -1.07145 h 4.53159 v -2.32378 h -4.53159 z"
+       d="m 101.33252,348.03858 -6.41761,2.33962 6.41761,2.12705 v -1.07145 h 4.53159 v -2.32378 h -4.53159 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\previous_page_h18px_inactive.png"
        inkscape:export-xdpi="96"
@@ -1378,7 +1392,7 @@
     <path
        id="path1073"
        style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.0999994;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 122.30749,302.8632 6.66841,2.49454 -6.66841,2.26788 v -1.1424 h -4.70867 v -2.47764 h 4.70867 z"
+       d="m 115.43257,339.80668 6.66841,2.49454 -6.66841,2.26788 v -1.1424 h -4.70867 v -2.47764 h 4.70867 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\next_page_h18px.png"
        inkscape:export-xdpi="96"
@@ -1386,7 +1400,7 @@
     <path
        id="path1075"
        style="fill:none;fill-opacity:1;stroke:#5fbcd3;stroke-width:0.211667;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 122.1304,311.0951 6.41762,2.33962 -6.41762,2.12705 v -1.07145 h -4.53158 v -2.32378 h 4.53158 z"
+       d="m 115.25548,348.03858 6.41762,2.33962 -6.41762,2.12705 v -1.07145 h -4.53158 v -2.32378 h 4.53158 z"
        sodipodi:nodetypes="cccccccc"
        inkscape:export-filename="D:\8230o\Projects\md2html\doc\pict\next_page_h18px_inactive.png"
        inkscape:export-xdpi="96"
@@ -1394,7 +1408,7 @@
     <path
        id="path1062"
        style="fill:#5fbcd3;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 108.22334,286.80911 h 4.48876 l -2.13745,-4.7625 z"
+       d="m 101.34842,323.75259 h 4.48876 l -2.13745,-4.7625 z"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"
        sodipodi:nodetypes="cccc"
@@ -3618,6 +3632,60 @@
          inkscape:export-xdpi="96"
          inkscape:export-ydpi="96" />
     </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 6.5327357,90.075005 H 16.400444 V 80.207296"
+       id="path1619" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 130.178,80.075004 v 9.867709 h 9.86771"
+       id="path1621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 130.178,80.075004 v 9.867709 h 9.86771"
+       id="path1623" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 140.04571,147.02992 H 130.178 v 9.86771"
+       id="path1625" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 16.268153,156.89763 v -9.86771 H 6.400442"
+       id="path1627" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:139.453;display:inline;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="4.0141459"
+       y="9.4950304"
+       id="text1784"
+       transform="translate(12.386773,155.40943)"><tspan
+         x="4.0141459"
+         y="9.4950304"
+         id="tspan3371">Export options:
+</tspan><tspan
+         x="4.0141459"
+         y="14.786693"
+         id="tspan3373">- for the documentation content: 
+</tspan><tspan
+         x="4.0141459"
+         y="20.078355"
+         id="tspan3375">    - only the visible elements 
+</tspan><tspan
+         x="4.0141459"
+         y="25.370017"
+         id="tspan3377">    - resolution 275 by 205 px
+</tspan><tspan
+         x="4.0141459"
+         y="30.661679"
+         id="tspan3379">- as the GitHub logo:
+</tspan><tspan
+         x="4.0141459"
+         y="35.953343"
+         id="tspan3381">    - the visible elements with the transparent background
+</tspan><tspan
+         x="4.0141459"
+         y="41.245008"
+         id="tspan3383">    - resolution 640 by 320 px</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
