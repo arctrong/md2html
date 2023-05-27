@@ -13,7 +13,7 @@ from models.arguments import Arguments
 from output_utils import output_page
 from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
 from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_extra_plugin_data, \
-    complete_plugins_initialization, feed_plugins_with_documents
+    complete_plugins_initialization, feed_plugins_with_documents, feed_plugins_with_app_data
 from utils import UserError, read_lines_from_commented_json_file, read_lines_from_cached_file, \
     relativize_relative_resource
 
@@ -65,6 +65,7 @@ def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) ->
     feed_plugins_with_documents(plugins, arguments.documents)
     plugins = filter_non_blank_plugins(plugins)
     arguments.plugins = [plugin for plugin in plugins.values()]
+    feed_plugins_with_app_data(plugins, arguments)
     return arguments
 
 
@@ -116,7 +117,7 @@ def main():
 
         for plugin in arguments.plugins:
             try:
-                plugin.finalize(arguments.plugins, arguments.options)
+                plugin.finalize()
             except UserError as e:
                 raise UserError(f"Error executing finalization action in plugin " +
                                 f"'{type(plugin).__name__}': {e}")

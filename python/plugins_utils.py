@@ -69,3 +69,8 @@ def complete_plugins_initialization(argument_file_dict, cli_args, plugins):
 def feed_plugins_with_documents(plugins: Dict[str, Md2HtmlPlugin], documents: List[Document]):
     for plugin in plugins.values():
         plugin.accept_document_list(documents)
+
+
+def feed_plugins_with_app_data(plugins, arguments):
+    for plugin in plugins.values():
+        plugin.accept_app_data(arguments.plugins, arguments.options)

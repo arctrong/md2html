@@ -99,6 +99,8 @@ class IndexPlugin(Md2HtmlPlugin):
             self.metadata_schema = json.load(schema_file)
         self.index_data = {}
         self.finalization_started = False
+        self.all_plugins = []
+        self.app_options = None
 
     def accept_data(self, data):
         self.assure_accept_data_once()
@@ -151,6 +153,10 @@ class IndexPlugin(Md2HtmlPlugin):
 
         return extra_plugin_data
 
+    def accept_app_data(self, plugins: list, options: Options):
+        self.all_plugins = plugins
+        self.app_options = options
+
     def page_metadata_handlers(self):
         return [(self, marker, False) for marker in self.index_data.keys()]
 
@@ -194,7 +200,7 @@ class IndexPlugin(Md2HtmlPlugin):
                 doc.output_file, index_data.document.output_file)
             index_data.current_anchor_number = 0
 
-    def finalize(self, plugins: list, options: Options):
+    def finalize(self):
         self.finalization_started = True
 
         for index_data in self.index_data.values():
@@ -203,14 +209,14 @@ class IndexPlugin(Md2HtmlPlugin):
                     print(f'Index file is up-to-date. Skipping: {index_data.document.output_file}')
                 return
 
-            for plugin in plugins:
+            for plugin in self.all_plugins:
                 plugin.new_page(index_data.document)
 
             substitutions = {'content': _generate_content(index_data.index_cache,
                                                           index_data.add_letters,
                                                           index_data.add_letters_block)}
 
-            output_page(index_data.document, plugins, substitutions, options)
+            output_page(index_data.document, self.all_plugins, substitutions, self.app_options)
 
             with open(index_data.index_cache_file, 'w', encoding="utf-8") as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)

@@ -39,6 +39,9 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
+    def accept_app_data(self, plugins: list, options: Options):
+        pass
+
     def accept_document_list(self, docs: List[Document]):
         """
         This method is called after all plugins are initialized and all documents are defined.
@@ -65,6 +68,13 @@ class Md2HtmlPlugin(ABC):
         """
         return []
 
+    def new_page(self, doc: Document):
+        """
+        Reacts on a new page. May be used to reset the plugins state (or a part of the plugin
+        state) when a new page comes into processing.
+        """
+        pass
+
     def accept_page_metadata(self, doc: Document, marker: str, metadata,
                              metadata_section: str) -> str:
         """
@@ -79,14 +89,7 @@ class Md2HtmlPlugin(ABC):
     def variables(self, doc: Document) -> dict:
         return {}
 
-    def new_page(self, doc: Document):
-        """
-        Reacts on a new page. May be used to reset the plugins state (or a part of the plugin
-        state) when a new page comes into processing.
-        """
-        pass
-
-    def finalize(self, plugins: list, options: Options):
+    def finalize(self):
         """
         Executes after all pages processed.
         """
