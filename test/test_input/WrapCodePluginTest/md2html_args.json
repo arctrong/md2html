@@ -1,0 +1,22 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/WrapCodePluginTest/page_template.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/styles.css"]
+    },
+    "documents": [
+        { "input": "page1.txt", "title": "Page 1" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "wrap-code": {
+            "wrap_java": {"style": "code",
+                "template": "test_input/WrapCodePluginTest/code_template.html", "variables": {"noPageTitle": true}},
+            "wrap_shell": {"style": "shell", 
+                "template": "test_input/WrapCodePluginTest/code_template.html", "variables": {"noPageTitle": true}}
+        }
+    }
+}

@@ -9,6 +9,7 @@ from plugins.page_links_plugin import PageLinksPlugin
 from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
 from plugins.variables_plugin import VariablesPlugin
+from plugins.wrap_code_plugin import WrapCodePlugin
 from utils import UserError
 
 PLUGIN_PROVIDERS = {
@@ -19,6 +20,7 @@ PLUGIN_PROVIDERS = {
     'index': lambda: IndexPlugin(),
     'page-links': lambda: PageLinksPlugin(),
     'ignore': lambda: IgnorePlugin(),
+    'wrap-code': lambda: WrapCodePlugin(),
 }
 
 

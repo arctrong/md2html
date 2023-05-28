@@ -4,8 +4,10 @@ from datetime import datetime
 from pathlib import Path
 
 import chevron
+import markdown
 
 from constants import EXEC_NAME, EXEC_VERSION
+from models.document import Document
 from utils import relativize_relative_resource, read_lines_from_cached_file, UserError, \
     read_lines_from_file
 
@@ -13,6 +15,9 @@ LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${(sty
 LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${([^}]+)}')
 
 CACHED_FILES = {}
+
+MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
+                                         "pymdownx.superfences", "admonition"])
 
 
 def read_lines_from_cached_file_legacy(template_file):
@@ -25,7 +30,8 @@ def read_lines_from_cached_file_legacy(template_file):
     return lines
 
 
-def output_page(document, plugins: list, substitutions: dict, options):
+def output_page(document: Document, plugins: list, substitutions: dict, options,
+                override_substitutions: dict = None):
 
     substitutions = substitutions.copy()
 
@@ -61,6 +67,9 @@ def output_page(document, plugins: list, substitutions: dict, options):
 
     if substitutions['title'] is None:
         substitutions['title'] = ''
+
+    if override_substitutions:
+        substitutions.update(override_substitutions)
 
     try:
         result = chevron.render(template, substitutions)
