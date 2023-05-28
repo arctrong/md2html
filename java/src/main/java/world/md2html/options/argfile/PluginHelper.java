@@ -2,6 +2,7 @@ package world.md2html.options.argfile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.Constants;
+import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
@@ -83,7 +84,6 @@ public class PluginHelper {
 
     public static Map<String, Md2HtmlPlugin> filterNonBlankPlugins(Map<String,
             Md2HtmlPlugin> plugins) {
-
         Map<String, Md2HtmlPlugin> nonBlankPlugins = new HashMap<>();
         for (Map.Entry<String, Md2HtmlPlugin> plugin : plugins.entrySet()) {
             if (!plugin.getValue().isBlank()) {
@@ -93,4 +93,10 @@ public class PluginHelper {
         return nonBlankPlugins;
     }
 
+    public static void feedPluginsWithAppData(Map<String, Md2HtmlPlugin> plugins,
+                                              ArgFile arguments) {
+        for (Md2HtmlPlugin plugin : plugins.values()) {
+            plugin.acceptAppData(arguments.getOptions(), arguments.getPlugins());
+        }
+    }
 }

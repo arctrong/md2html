@@ -13,7 +13,12 @@ import java.util.Map;
 
 import static world.md2html.options.argfile.ArgFileParsingHelper.completeArgFileProcessing;
 import static world.md2html.options.argfile.ArgFileParsingHelper.mergeAndCanonizeArgFileRaw;
-import static world.md2html.options.argfile.PluginHelper.*;
+import static world.md2html.options.argfile.PluginHelper.addExtraPluginData;
+import static world.md2html.options.argfile.PluginHelper.completePluginsInitialization;
+import static world.md2html.options.argfile.PluginHelper.feedPluginsWithAppData;
+import static world.md2html.options.argfile.PluginHelper.feedPluginsWithDocuments;
+import static world.md2html.options.argfile.PluginHelper.filterNonBlankPlugins;
+import static world.md2html.options.argfile.PluginHelper.instantiatePlugins;
 
 public class ArgumentsHelper {
 
@@ -38,6 +43,11 @@ public class ArgumentsHelper {
         feedPluginsWithDocuments(plugins, arguments.getDocuments());
         plugins = filterNonBlankPlugins(plugins);
 
-        return arguments.toBuilder().plugins(new ArrayList<>(plugins.values())).build();
+        ArgFile argFile = arguments.toBuilder().plugins(new ArrayList<>(plugins.values())).build();
+
+        feedPluginsWithAppData(plugins, argFile);
+
+        return argFile;
     }
+
 }

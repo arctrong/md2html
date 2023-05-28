@@ -39,15 +39,14 @@ public interface Md2HtmlPlugin {
     default void initialize(JsonNode extraPluginData) throws ArgFileParseException {
     }
 
+    default void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins) {
+    }
+
     /**
      * This method is called after all plugins are initialized and all documents are defined.
      * The list of all documents is sent to the method.
      */
     default void acceptDocumentList(List<Document> documents) {
-    }
-
-    default List<PageMetadataHandlerInfo> pageMetadataHandlers() {
-        return Collections.emptyList();
     }
 
     /**
@@ -57,6 +56,10 @@ public interface Md2HtmlPlugin {
     default void newPage(Document document) {
     }
 
+    default List<PageMetadataHandlerInfo> pageMetadataHandlers() {
+        return Collections.emptyList();
+    }
+
     default Map<String, Object> variables(Document document) {
         return Collections.emptyMap();
     }
@@ -64,7 +67,7 @@ public interface Md2HtmlPlugin {
     /**
      * Executes after all pages processed.
      */
-    default void finalize(SessionOptions options, List<Md2HtmlPlugin> plugins) {
+    default void finalizePlugin() {
     }
 
 }

@@ -86,7 +86,7 @@ public class Md2HtmlRunner {
 
         for (Md2HtmlPlugin plugin : argFile.getPlugins()) {
             try {
-                plugin.finalize(argFile.getOptions(), argFile.getPlugins());
+                plugin.finalizePlugin();
             } catch (UserError ue) {
                 throw new UserError("Error executing finalization action in plugin '" +
                         plugin.getClass().getSimpleName() + "': " + ue.getMessage());

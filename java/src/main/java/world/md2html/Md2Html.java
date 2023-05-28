@@ -144,7 +144,7 @@ public class Md2Html {
             }
         }
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(document.getOutput()), StandardCharsets.UTF_8))) {
+                Files.newOutputStream(Paths.get(document.getOutput())), StandardCharsets.UTF_8))) {
             Mustache mustache;
             try {
                 if (options.isLegacyMode()) {

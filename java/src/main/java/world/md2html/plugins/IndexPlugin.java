@@ -68,6 +68,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
     private Map<String, IndexData> indexData;
 
+    private SessionOptions options;
+    private List<Md2HtmlPlugin> plugins;
+
     private boolean finalizationStarted = false;
 
     // We are going to validate multiple metadata blocks, so preloading the schema.
@@ -183,6 +186,12 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     }
 
     @Override
+    public void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins) {
+        this.options = options;
+        this.plugins = plugins;
+    }
+
+    @Override
     public List<PageMetadataHandlerInfo> pageMetadataHandlers() {
         return this.indexData.keySet().stream().map(marker ->
                 new PageMetadataHandlerInfo(this, marker, false)).collect(Collectors.toList());
@@ -213,8 +222,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         return Collections.emptyMap();
     }
 
-    @Override
-    public void finalize(SessionOptions options, List<Md2HtmlPlugin> plugins) {
+    public void finalizePlugin() {
 
         this.finalizationStarted = true;
 
@@ -226,7 +234,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                 }
                 return;
             }
-            for (Md2HtmlPlugin plugin : plugins) {
+            for (Md2HtmlPlugin plugin : this.plugins) {
                 plugin.newPage(indexData.getDocument());
             }
 
@@ -234,7 +242,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             substitutions.put("content", generateIndexHtml(indexData.getIndexCache(),
                     indexData.isAddLetters(), indexData.isAddLettersBlock()));
 
-            Md2Html.outputPage(indexData.getDocument(), plugins, substitutions, options);
+            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, this.options);
 
             ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
