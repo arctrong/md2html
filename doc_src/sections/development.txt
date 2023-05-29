@@ -78,7 +78,7 @@ To run the integral tests [Python 3](https://www.python.org/) is required. The f
 additional Python package must be installed:
 
 ````shell
-$ python3 -m pip install beautifulsoup4
+$ python3 -m pip install beautifulsoup4==4.9.3
 ````
 
 All tested artifacts must be built (if required). All unit tests must pass.

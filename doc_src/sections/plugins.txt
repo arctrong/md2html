@@ -518,6 +518,7 @@ metadata block without substitutions. To achieve that, there are methods that us
 inclusions and masking, but they are quite tedious and cumbersome. This plugin gives an easy
 way of doing that.
 
+
 **Definition**
 
 Here is an example of an *argument file* that uses this plugin:
@@ -536,6 +537,7 @@ Here is an example of an *argument file* that uses this plugin:
 The example shows the default *marker* usage, so the other, and recommended, way is the following 
 definition: `"ignore": { }`. There may be several markers if required.
 
+
 **Usage**
 
 Let's consider two different code blocks:
@@ -553,5 +555,104 @@ and
 In the first block the source text is `![](<!--ignore path pict-->logo.png)` and substitution
 is fulfilled, while in the second block the source text is 
 `![](<!--ignore ignore path pict-->logo.png)` so substitution is omitted.
+
+----------------------------------------------------------------------------------------------------
+# "wrap-code" plugin
+
+**Motivation**
+
+Pages may contain links to source code files like Java (\*.java), Python (\*.py), XML (\*.xml), 
+and so on. When viewing such pages locally (as HTML files) the linked files are often opened by
+browsers as text. When the page is published and is viewed by URL, the browsers will often 
+offer downloading the linked files that's very inconvenient and significantly slows down the
+documentation usage.
+
+The "wrap-code" plugin wraps source code files into HTML pages and provides links to these
+wrapping pages.
+
+
+**Definition**
+
+The plugin definition may look like this:
+
+````
+    "plugins": {
+        . . .
+        "wrap-code": {
+            "wrap_java": {"style": "code", "input-root": "projects/", "output-root": "doc/code",
+                "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}},
+            "wrap_xml": {"style": "xml", "input-root": "projects/", "output-root": "doc/code",
+                "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
+        }
+        . . .
+    }
+````
+
+In this example `wrap_java` and `wrap_xml` are markers to be used in the placeholders (see below).
+The markers define the wrapping HTML page generation options: where to take the source code files, 
+where to place the wrapping HTML pages, which rendering style and template to use.
+
+All possible properties are listed in the table below. They are mostly the same as those 
+of the [`documents` section](<!--page reference-->#documents_section) so see that section for the
+absent descriptions.
+
+Name | Type | Required | Default | Description
+---- | ---- | :----: | ---- | ----
+input-root | string | No |  | |
+output-root | string | No |  | |
+template | string | No |  | |
+link-css | array of string | No |  | |
+include-css | array of string | No |  | |
+no-css | boolean | No |  | |
+add-link-css | array of string | No |  | |
+add-include-css | array of string | No |  | |
+verbose | boolean | No |  | |
+report | boolean | No |  | |
+style | string | No | *empty string* | style, like `code`, `shell`, etc. |
+variables | object | No | *empty* | additional variables to be used in the template |
+
+
+**Usage**
+
+Let's say there's the file `projects/hello/Main.java` with the content:
+
+````code
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hi!");
+    }
+}
+````
+
+To link this file in a source text, use something like this: 
+
+````
+The main class is [here](<!--wrap_java hello/Main.java-->).
+````
+
+As the result, the new file `doc/code/hello/Main.java.html` will be generated based on the
+following transformed content:
+
+    ````code
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hi!");
+        }
+    }
+    ````
+
+The source text will be transformed like this:
+
+````
+The main class is [here](code/hello/Main.java.html).
+````
+
+An example may be viewed [here](<!--wrap_java hello/Main.java-->). Also see the argument file 
+`md2html_args.json` in this project.
+
+!!! note
+    The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
+    To assure regeneration, use `-f` flag or `"force": true` option (see [here](<!--page usage-->) 
+    for more details).
 
 

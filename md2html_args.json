@@ -47,6 +47,10 @@
                     "index-cache-relative": true, "letters": true, "letters-block": true,
                     "add-link-css": ["doc/layout/index.css"] }
         },
-        "page-links": { "markers": ["page"] }
+        "page-links": { "markers": ["page"] },
+        "wrap-code": {
+            "wrap_java": {"style": "code", "input-root": "sample_code/", "output-root": "doc/content/code/",
+                          "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
+        }
     }
 }
