@@ -158,13 +158,13 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
         Document documentObj = markerData.documentObj;
 
         Path inputFile = Paths.get(documentObj.getInput(), metadata);
-        String inputFileStr = inputFile.toString();
+        String inputFileStr = inputFile.toString().replace("\\", "/");
         String cacheKey = marker + "|" + inputFileStr;
 
         String outputFileStr = this.processedCache.get(cacheKey);
         if (outputFileStr == null) {
             Path outputFile = Paths.get(documentObj.getOutput(), metadata + ".html");
-            outputFileStr = outputFile.toString();
+            outputFileStr = outputFile.toString().replace("\\", "/");
 
             boolean needToGenerate = true;
             if (!documentObj.isForce() && Files.exists(outputFile)) {
@@ -178,7 +178,7 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 }
                 if (outputFileTime.compareTo(inputFileTime) > 0) {
                     if (document.isVerbose()) {
-                        System.out.println("The wrapped output file is up-to-date. Skipping: "
+                        System.out.println("Wrapped output file is up-to-date. Skipping: "
                                 + document.getOutput());
                         needToGenerate = false;
                     }
@@ -207,7 +207,7 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                         variables);
 
                 if (documentObj.isVerbose()) {
-                    System.out.println("Index file generated: " + documentObj.getOutput());
+                    System.out.println("Wrapped output file generated: " + documentObj.getOutput());
                 }
                 if (documentObj.isReport()) {
                     System.out.println(documentObj.getOutput());

@@ -81,12 +81,12 @@ class WrapCodePlugin(Md2HtmlPlugin):
         document_obj = marker_data.document_obj
 
         input_file = Path(document_obj.input_file).joinpath(metadata_str)
-        input_file_str = str(input_file)
+        input_file_str = str(input_file).replace("\\", "/")
         cache_key = marker + "|" + input_file_str
         output_file_str = self.processed_cache.get(cache_key)
         if not output_file_str:
             output_file = Path(document_obj.output_file).joinpath(metadata_str + ".html")
-            output_file_str = str(output_file)
+            output_file_str = str(output_file).replace("\\", "/")
 
             need_to_generate = True
             if not document_obj.force and output_file.exists():
@@ -94,7 +94,7 @@ class WrapCodePlugin(Md2HtmlPlugin):
                 input_file_mtime = os.path.getmtime(input_file)
                 if output_file_mtime > input_file_mtime:
                     if document_obj.verbose:
-                        print(f'The wrapped output file is up-to-date. Skipping: {input_file_str}')
+                        print(f'Wrapped output file is up-to-date. Skipping: {output_file_str}')
                         need_to_generate = False
 
             if need_to_generate and not self.dry_run:
@@ -113,7 +113,7 @@ class WrapCodePlugin(Md2HtmlPlugin):
                             self.app_options, variables)
 
                 if document_obj.verbose:
-                    print(f'Wrapped document file generated: {document_obj.output_file}')
+                    print(f'Wrapped output file generated: {document_obj.output_file}')
                 if document_obj.report:
                     print(document_obj.output_file)
 
