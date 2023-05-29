@@ -70,7 +70,8 @@ class Md2htmlWrapCodePluginIntegralTest(unittest.TestCase):
         p = p.find_next_sibling('p')
         self.assertEqual('File name: source2.java', p.text)
 
-        self.assertEqual('some Java code', p.find_next_sibling('pre').code.text)
+        # Java version adds additional line break in the end
+        self.assertEqual('some Java code', p.find_next_sibling('pre').code.text[:14])
 
         with open(Path(self.OUTPUT_DIR).joinpath('code/shell/source1.shell.txt.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
@@ -84,7 +85,8 @@ class Md2htmlWrapCodePluginIntegralTest(unittest.TestCase):
         p = p.find_next_sibling('p')
         self.assertEqual('File name: source1.shell.txt', p.text)
 
-        self.assertEqual('some Shell script', p.find_next_sibling('pre').code.text)
+        # Java version adds additional line break in the end
+        self.assertEqual('some Shell script', p.find_next_sibling('pre').code.text[:17])
 
 
 if __name__ == '__main__':

@@ -1,14 +1,6 @@
 package world.md2html;
 
 import com.github.mustachejava.Mustache;
-import com.vladsch.flexmark.ext.tables.TablesExtension;
-import com.vladsch.flexmark.ext.toc.TocExtension;
-import com.vladsch.flexmark.ext.typographic.TypographicExtension;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.ast.Node;
-import com.vladsch.flexmark.util.data.MutableDataSet;
-import world.md2html.extentions.admonition.PythonMarkdownCompatibleAdmonitionExtension;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
@@ -26,11 +18,11 @@ import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static world.md2html.Md2HtmlUtils.*;
 import static world.md2html.utils.MustacheUtils.createCachedMustacheRenderer;
 import static world.md2html.utils.MustacheUtils.createCachedMustacheRendererLegacy;
 import static world.md2html.utils.Utils.*;
@@ -84,7 +76,7 @@ public class Md2Html {
             throw new RuntimeException(e);
         }
 
-        outputPage(document, plugins, substitutions, options);
+        outputPage(document, plugins, substitutions, options, null);
 
         if (document.isVerbose()) {
             System.out.println("Output file generated: " + document.getOutput());
@@ -95,7 +87,8 @@ public class Md2Html {
     }
 
     public static void outputPage(Document document, List<Md2HtmlPlugin> plugins,
-            Map<String, Object> substitutions, SessionOptions options) {
+                                  Map<String, Object> substitutions, SessionOptions options,
+                                  Map<String, Object> overrideSubstitutions) {
 
         // TODO Probably move to `Md2HtmlUtils`.
 
@@ -111,7 +104,7 @@ public class Md2Html {
         substitutions.put(GENERATION_DATE_PLACEHOLDER, dateTime.format(dateFormatter));
         substitutions.put(GENERATION_TIME_PLACEHOLDER, dateTime.format(timeFormatter));
 
-        substitutions.put(STYLES_PLACEHOLDER, Md2HtmlUtils.generateDocumentStyles(document));
+        substitutions.put(STYLES_PLACEHOLDER, generateDocumentStyles(document));
 
         for (Md2HtmlPlugin plugin : plugins) {
             substitutions.putAll(plugin.variables(document));
@@ -133,6 +126,10 @@ public class Md2Html {
 
         // TODO Decide whether it's required.
         substitutions.putIfAbsent(TITLE_PLACEHOLDER, "");
+
+        if (overrideSubstitutions != null) {
+            substitutions.putAll(overrideSubstitutions);
+        }
 
         Path  outputDirPath = Paths.get((document.getOutput())).normalize().getParent();
         if (outputDirPath != null && !Files.exists(outputDirPath)) {
@@ -162,36 +159,6 @@ public class Md2Html {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String generateHtml(String mdText) {
-        MutableDataSet options = new MutableDataSet()
-                .set(
-                        Parser.EXTENSIONS,
-                        Arrays.asList(
-                                TablesExtension.create(),
-                                //StrikethroughExtension.create(),
-                                TocExtension.create(),
-                                //InsExtension.create(),
-                                TypographicExtension.create(),
-                                PythonMarkdownCompatibleAdmonitionExtension.create()
-                        ))
-                .set(TocExtension.LEVELS, 126) // generate ToC for all header levels
-                // TODO looks like the following option doesn't work. Probably need to
-                //  rewrite to `TypographicExtension` in order to use only `EM_DASH`.
-                .set(TypographicExtension.EN_DASH, "--")
-                .set(TypographicExtension.ENABLE_QUOTES, false); // disable &ndash;
-
-        // TODO Try to wrap table of contents into a `div` block.
-        //  It's really unclear how to do it.
-        //  See https://github.com/vsch/flexmark-java/wiki/Table-of-Contents-Extension
-
-        //options.set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "");
-
-        Parser parser = Parser.builder(options).build();
-        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
-        Node document = parser.parse(mdText);
-        return renderer.render(document);
     }
 
 }

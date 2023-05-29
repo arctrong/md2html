@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "patternProperties": {
+        "^[\\w\\d_]+$": {
+            "type": "object",
+            "properties": {
+                "style": { "type": "string" },
+                "variables": { "type": "object" },
+                "input-root": { "type": "string" },
+                "output-root": { "type": "string" },
+                "template": { "type": "string" },
+                "link-css": { "type": "array", "items": { "type": "string" } },
+                "include-css": { "type": "array", "items": { "type": "string" } },
+                "no-css": { "type": "boolean" },
+                "add-link-css": { "type": "array", "items": { "type": "string" } },
+                "add-include-css": { "type": "array", "items": { "type": "string" } },
+                "verbose": { "type": "boolean" },
+                "report": { "type": "boolean" }
+            }
+        }
+    },
+    "additionalProperties": false
+}

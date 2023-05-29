@@ -242,7 +242,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             substitutions.put("content", generateIndexHtml(indexData.getIndexCache(),
                     indexData.isAddLetters(), indexData.isAddLettersBlock()));
 
-            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, this.options);
+            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, this.options,
+                    null);
 
             ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
