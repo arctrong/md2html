@@ -8,3 +8,5 @@ __pycache__
 /python/.idea/
 /test/.idea/
 /.idea/
+/src/.$diagrams.drawio.bkp
+/src/.$*.drawio.dtmp
