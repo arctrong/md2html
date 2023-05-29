@@ -47,7 +47,7 @@ class WrapCodePlugin(Md2HtmlPlugin):
     def pre_initialize(self, argument_file: dict, cli_args: CliArgDataObject,
                        plugins: list) -> Dict[str, Any]:
 
-        for marker, marker_data in self.data.items():
+        for marker_data in self.data.values():
             this_argument_file = argument_file.copy()
             this_document_dict = marker_data.document_dict.copy()
             this_document_dict["input"] = "fictional"
@@ -89,8 +89,6 @@ class WrapCodePlugin(Md2HtmlPlugin):
             output_file_str = str(output_file)
 
             need_to_generate = True
-            # TODO Using outer document's `force` and `verbose` options is simple but not correct.
-            #  Need to use the wrapped document's options instead.
             if not document_obj.force and output_file.exists():
                 output_file_mtime = os.path.getmtime(output_file)
                 input_file_mtime = os.path.getmtime(input_file)
