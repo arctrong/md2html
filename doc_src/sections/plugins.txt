@@ -650,6 +650,13 @@ The main class is [here](code/hello/Main.java.html).
 An example may be viewed [here](<!--wrap_java hello/Main.java-->). Also see the argument file 
 `md2html_args.json` in this project.
 
+The following additional variables may be used in the template:
+
+Variable | Description
+----- | -----
+`{{wrap_code_path}}` | Path to the wrapped file
+`{{wrap_code_file_name}}` | The wrapped file name
+
 !!! note
     The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
     To assure regeneration, use `-f` flag or `"force": true` option (see [here](<!--page usage-->) 
