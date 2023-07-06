@@ -627,7 +627,7 @@ public class Main {
 To link this file in a source text, use something like this: 
 
 ````
-The main class is [here](<!--wrap_java hello/Main.java-->).
+The main class is [here](<!--ignore wrap_java hello/Main.java-->).
 ````
 
 As the result, the new file `doc/code/hello/Main.java.html` will be generated based on the
@@ -644,7 +644,7 @@ following transformed content:
 The source text will be transformed like this:
 
 ````
-The main class is [here](code/hello/Main.java.html).
+The main class is [here](<!--wrap_java hello/Main.java-->).
 ````
 
 An example may be viewed [here](<!--wrap_java hello/Main.java-->). Also see the argument file 
