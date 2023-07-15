@@ -68,23 +68,13 @@ pre>code.language-text {
     border: none;
 }
 
-pre>code.language-shell, pre>code.language-wrapped-shell {
-    border-style: solid;
-    border-width: 1px;
-}
-
-pre>code.language-wrapped-shell {
-    white-space: pre-wrap;
-    word-break: break-word;
-    min-width: unset;
-}
-
+pre>code.language-shell, pre>code.language-wrapped-shell,
 pre>code.language-code, pre>code.language-wrapped-code {
     border-style: solid;
     border-width: 1px;
 }
 
-pre>code.language-wrapped-code {
+pre>code.language-wrapped-shell, pre>code.language-wrapped-code {
     white-space: pre-wrap;
     word-break: break-word;
     min-width: unset;

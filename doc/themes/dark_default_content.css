@@ -63,6 +63,7 @@ div.admonition {
 
 div.admonition>p.admonition-title {
     border-bottom-color: #cccccc;
+    background-color: #656565;
 }
 
 div.admonition.warning,
