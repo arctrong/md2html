@@ -43,7 +43,7 @@
         },
         "ignore": { "markers": ["ignore"] },
         "variables": {"logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:burlywood;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>",
-                      "theme": "light_default"
+                      "theme": "dark_default"
         },
         "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                     "index-cache-relative": true, "letters": true, "letters-block": true,

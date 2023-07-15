@@ -1,0 +1,112 @@
+body {
+    color: white;
+    background-color: #4a525a;
+}
+
+div.light_only+p>img, img.light_only {
+    background-color: white;
+    padding: 7px;
+}
+
+a {
+  color: #affff4;
+}
+
+a:visited {
+  color: #f2a1c7;
+}
+
+hr {
+    background: #87ebee;
+}
+
+del {
+    color: #ff8585;
+}
+
+ins {
+    color: #37ff37;
+}
+
+code, .code {
+    background-color: #656565;
+}
+
+pre>code.language-shell, pre>code.language-wrapped-shell {
+    background-color: #323232;
+    color: #bee582;
+    border-color: #bee582;
+}
+
+pre>code.language-code, pre>code.language-wrapped-code {
+    background-color: #5d4431;
+    color: beige;
+    border-color: beige;
+}
+
+blockquote {
+    border-color: #cccccc;
+}
+
+table td, table th {
+    border-color: #c1e1ff;
+}
+
+table th {
+    background-color: #374e65;
+}
+
+div.admonition {
+    border-color: #cccccc;
+}
+
+div.admonition>p.admonition-title {
+    border-bottom-color: #cccccc;
+}
+
+div.admonition.warning,
+div.admonition.attention,
+div.admonition.caution {
+    border-color: #ff9001;
+}
+
+div.admonition.warning>p.admonition-title,
+div.admonition.attention>p.admonition-title, 
+div.admonition.caution>p.admonition-title {
+    border-bottom-color: #ff9001;
+    background-color: #615240;
+}
+
+div.admonition.danger,
+div.admonition.error {
+    border-color: #f50057;
+}
+
+div.admonition.danger>p.admonition-title,
+div.admonition.error>p.admonition-title {
+    border-bottom-color: #f50057;
+    background-color: #61444e;
+}
+
+div.admonition.hint,
+div.admonition.tip,
+div.admonition.important {
+    border-color: #01bfa5;
+}
+
+div.admonition.hint>p.admonition-title,
+div.admonition.tip>p.admonition-title, 
+div.admonition.important>p.admonition-title {
+    border-bottom-color: #01bfa5;
+    background-color: #3b5b56;
+}
+
+div.admonition.note {
+    border-color: #448aff;
+}
+
+div.admonition.note>p.admonition-title {
+    border-bottom-color: #448aff;
+    background-color: #33425b;
+}
+

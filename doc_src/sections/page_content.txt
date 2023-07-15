@@ -225,7 +225,7 @@ Blockquotes are inserted by starting each line with `> `.
 > Links, images and some other Markdown elements may be used inside `blockquote`s:
 > 
 > - Here's a link with a clickable image:    
->   [![TARGET](<!--path pict-->target-smaller.png)](#anchor_demo "How to add an anchor.")
+>   [![TARGET](<!--path pict-->pointing_right.png)](#anchor_demo "How to add an anchor.")
 > - Also a list inside this `blockquote` is used for demonstration.
 
 ----------------------------------------------------------------------------------------------------

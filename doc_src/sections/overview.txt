@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------------------------------
 # Common schema
 
-<p><img src="<!--path pict-->md2html_schema.png" title="md2html" class="floatRight" /></p>
+<p><img src="<!--path pict-->md2html_schema.png" title="md2html" class="floatRight light_only" /></p>
 
 The program accepts the following artifacts as the input:
 
