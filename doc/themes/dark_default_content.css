@@ -30,6 +30,7 @@ ins {
 
 code, .code {
     background-color: #656565;
+    border-color: #747474;
 }
 
 pre>code.language-shell, pre>code.language-wrapped-shell {

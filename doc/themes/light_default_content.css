@@ -17,6 +17,7 @@ ins {
 
 code, .code {
     background-color: #eeeeee;
+    border-color: lightgray;
 }
 
 pre>code.language-shell, pre>code.language-wrapped-shell {
