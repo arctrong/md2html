@@ -30,16 +30,30 @@ The following steps may be done for customization.
 - The picture in this page is added just for demonstration. If it's removed then the image
     file must probably be deleted from the folder `doc/pict`.
     
-- If required create your own `doc/favicon.png` image and replace the existing one.
+- If required, create your own `doc/favicon.png` image and replace the existing one.
     
-- If required add custom styles to the file `doc/custom.css`. It's not recommended to modify
+- If required, add custom styles to the file `doc/custom.css`. It's not recommended to modify
     the content of the directory `doc/layout`. If improvements are done in the `md2html`
     program then the directory `doc/layout` may be entirely copied from there with replacement
-    while the custom stiles will remain in the file `doc/custom.css`.
+    while the custom styles will stay untouched.
 
 - Write your own pages using the existing sample pages as examples.
 
 - Look into the file `md2html_args.json`. Particularly "Useful links" section items may be
     redefined there.
 
+- Consider using alternative themes. Have a look in at the variable `"theme": "light_default"`
+    in the `md2html_args.json` file. The themes are stored in the `doc/themes` directory.
+    Alternative themes may be created from scratch (using the existing ones as examples)
+    or taken from the `md2html` program installation directory.
+    For example:
+
+    - copy the files `dark_default_content.css` and `dark_default_layout.css` to the
+        `doc/themes` directory;
+    - assign the value `dark_default` to the variable `theme` in the file `md2html_args.json`;
+    - fulfill forcible full documentation regeneration;
+    - the dark theme will be applied.
+
 Consult the [instructions](https://arctrong.github.io/md2html/readme.html) if any questions.
+
+

@@ -36,7 +36,10 @@
                 { "link": "https://github.com/arctrong/md2html", "title": "md2html", "external": true }
             ]}
         },
-        "variables": {"logo": "<b><span style=\"color:#59f;margin-right:7px;\">Logo</span></b>" },
+        "variables": {
+            "logo": "<b><span style=\"color:#59f;margin-right:7px;\">Logo</span></b>",
+            "theme": "light_default"
+        },
         "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                     "index-cache-relative": true, "letters": true, "letters-block": true,
                     "add-link-css": ["doc/layout/index.css"] }

@@ -17,6 +17,8 @@ xcopy %MD2HTML_HOME%\bin\new_project\doc_src doc_src\ /e
 xcopy %MD2HTML_HOME%\doc_src\templates\multipage.html doc_src\templates\
 xcopy %MD2HTML_HOME%\bin\new_project\doc doc\ /e
 xcopy %MD2HTML_HOME%\doc\layout doc\layout\ /e
+xcopy %MD2HTML_HOME%\doc\themes\light_default_content.css doc\themes\
+xcopy %MD2HTML_HOME%\doc\themes\light_default_layout.css doc\themes\
 xcopy %MD2HTML_HOME%\bin\new_project\md2html_args.json
 xcopy %MD2HTML_HOME%\bin\new_project\readme.txt
 xcopy %MD2HTML_HOME%\generate_doc_py.bat
