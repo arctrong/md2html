@@ -74,7 +74,7 @@ There are two main CSS files used in this documentation:
 - `doc/layout/styles.css`, mainly defines appearance of the page content;
 - `doc/layout/layout.css`, defines appearance and geometry (like the header and the sidebar) 
     of the `multipage.html` template and redefines some rules for the page content;
-- `doc/theme.css`, is intended for customization in the other projects. This way the above 
+- `doc/custom.css`, is intended for customization in the other projects. This way the above 
     CSS files will stay unchanged and may be safely replaced with newer versions when they appear
     in this project.
 

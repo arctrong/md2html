@@ -216,7 +216,7 @@ $ tree -L 2 --charset=ascii --dirsfirst
 |   |   |-- image1.png
 |   |   `-- image2.png
 |   |-- favicon.png
-|   `-- theme.css
+|   `-- custom.css
 |-- doc_src
 |   |-- templates
 |   |   `-- multipage.html
@@ -264,7 +264,7 @@ $ tree -L 2 --charset=ascii --dirsfirst
 - `favicon.png` file was placed here as it's treated as rather a project's artifact than an 
     artifact belonging to the template;
     
-- `theme.css` is intended to contain the styles specific to the other project that is created
+- `custom.css` is intended to contain the styles specific to the other project that is created
     by copy-pasting the current documentation structure and its artifacts.
 
 ----------------------------------------------------------------------------------------------------

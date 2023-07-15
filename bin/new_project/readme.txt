@@ -32,10 +32,10 @@ The following steps may be done for customization.
     
 - If required create your own `doc/favicon.png` image and replace the existing one.
     
-- If required add custom styles to the file `doc/theme.css`. It's not recommended to modify
+- If required add custom styles to the file `doc/custom.css`. It's not recommended to modify
     the content of the directory `doc/layout`. If improvements are done in the `md2html`
     program then the directory `doc/layout` may be entirely copied from there with replacement
-    while the custom stiles will remain in the file `doc/theme.css`.
+    while the custom stiles will remain in the file `doc/custom.css`.
 
 - Write your own pages using the existing sample pages as examples.
 
