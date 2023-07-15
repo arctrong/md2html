@@ -28,7 +28,7 @@ pre>code.language-shell, pre>code.language-wrapped-shell {
 pre>code.language-code, pre>code.language-wrapped-code {
     background-color: beige;
     color: darkred;
-    border-color: beige;
+    border-color: darkred;
 }
 
 blockquote {
@@ -97,8 +97,4 @@ div.admonition.note>p.admonition-title {
     border-bottom-color: #448aff;
     background-color: #edf4ff;
 }
-
-
-
-
 
