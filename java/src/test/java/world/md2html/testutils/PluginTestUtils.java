@@ -11,8 +11,10 @@ public final class PluginTestUtils {
 
     private PluginTestUtils() {}
 
-    public static <T extends Md2HtmlPlugin> T findSinglePlugin(List<? extends Md2HtmlPlugin> plugins,
-            Class<T> pluginClass) {
+    public static <T extends Md2HtmlPlugin> T findSinglePlugin(
+            List<? extends Md2HtmlPlugin> plugins,
+            Class<T> pluginClass
+    ) {
         Md2HtmlPlugin result = null;
         for (Md2HtmlPlugin plugin : plugins) {
             if (pluginClass.equals(plugin.getClass())) {
@@ -24,7 +26,8 @@ public final class PluginTestUtils {
                 }
             }
         }
-        // TODO Try to remove this warning.
+        // TODO Remove this warning.
+        //  See https://stackoverflow.com/questions/76636746/java-generic-method-return-specific-type-without-unchecked-cast-warning
         return (T) result;
     }
 
