@@ -12,7 +12,6 @@ body {
     height: 30px;
     margin: 0;
     padding: 5px 20px;
-    background-color: black;
     overflow: hidden;
     white-space: nowrap;
     font-size: 20px;
@@ -28,8 +27,8 @@ body {
     left: 0;
     width: 210px;
     overflow-y: auto;
-    border-right: solid 1px cadetblue;
-    background-color: powderblue;
+    border-right-style: solid;
+    border-right-width: 1px;
 }
 
 table.sidebarAligner {
@@ -47,17 +46,12 @@ table.sidebarAligner td {
 
 .sidebarAligner td.bottom {
     font-size: smaller;
-    color: dimgray;
     padding-top: 40px;
     vertical-align: bottom;
 }
 
 .sidebarAligner td.bottom a {
     color: inherit;
-}
-
-.sidebarAligner td.bottom a:hover {
-    color: firebrick;
 }
 
 a[name], a[id] {
@@ -86,51 +80,44 @@ div.sidebar h4::before, div.sidebar h5::before, div.sidebar h6::before {
     margin-left: -20px; 
     margin-right: -20px;
     display: block;
-    color: firebrick;
     text-decoration: none;
 }
 
-.sidebar_item:hover { 
-    background-color: #8fd8e1;
-}
-
 .sidebar_item.selected {
-    text-decoration: underline 2px dodgerblue;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: 2px;
     text-underline-offset: 3px;
 }
 
 div.sidebar h3 {
-    color: darkslategray;
     margin-top: 10px;
     margin-bottom: 0;
 }
 
 .header>a:link, .header>a:visited, .header>a:hover, .header>a:active {
-    text-decoration: none;
+    text-decoration-color: transparent;
 }
 
 .header_item {
-    color: darksalmon;
     font-weight: bold;
     margin: 0 7px 0 7px;
 }
 
 .header_item.selected {
-    color: darksalmon;
-    border-bottom: solid dodgerblue 3px;
+    text-decoration-style: solid;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 3px;
 }
 
 .headerTitle {
     font-weight: bold; 
-    color: antiquewhite;
     margin: 0 7px 0 7px;
 }
 
 .header_item_source {
-    color: darksalmon;
     margin: 0 7px 0 7px;
 }
 
-.header_item_source.inactive {
-    color: darkgray;
-}
+
+
