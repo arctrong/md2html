@@ -1,1 +1,104 @@
-/* Write your styles here. */
+body {
+    color: black;
+    background-color: white;
+}
+
+hr {
+    background: cadetblue;
+}
+
+del {
+    color: red;
+}
+
+ins {
+    color: green;
+}
+
+code, .code {
+    background-color: #eeeeee;
+}
+
+pre>code.language-shell, pre>code.language-wrapped-shell {
+    background-color: darkslategray;
+    color: floralwhite;
+    border-color: darkslategray;
+}
+
+pre>code.language-code, pre>code.language-wrapped-code {
+    background-color: beige;
+    color: darkred;
+    border-color: beige;
+}
+
+blockquote {
+    border-color: #cccccc;
+}
+
+table td, table th {
+    border-color: #6a8fb3;
+}
+
+table th {
+    background-color: #e9f0f2;
+}
+
+div.admonition {
+    border-color: #cccccc;
+}
+
+div.admonition>p.admonition-title {
+    border-bottom-color: #cccccc;
+    background-color: #eeeeee;
+}
+
+div.admonition.warning,
+div.admonition.attention,
+div.admonition.caution {
+    border-color: #ff9001;
+}
+
+div.admonition.warning>p.admonition-title,
+div.admonition.attention>p.admonition-title, 
+div.admonition.caution>p.admonition-title {
+    border-bottom-color: #ff9001;
+    background-color: #fef3e8;
+}
+
+div.admonition.danger,
+div.admonition.error {
+    border-color: #f50057;
+}
+
+div.admonition.danger>p.admonition-title,
+div.admonition.error>p.admonition-title {
+    border-bottom-color: #f50057;
+    background-color: #ffe9ed;
+}
+
+div.admonition.hint,
+div.admonition.tip,
+div.admonition.important {
+    border-color: #01bfa5;
+}
+
+div.admonition.hint>p.admonition-title,
+div.admonition.tip>p.admonition-title, 
+div.admonition.important>p.admonition-title {
+    border-bottom-color: #01bfa5;
+    background-color: #e9f9f6;
+}
+
+div.admonition.note {
+    border-color: #448aff;
+}
+
+div.admonition.note>p.admonition-title {
+    border-bottom-color: #448aff;
+    background-color: #edf4ff;
+}
+
+
+
+
+

@@ -21,7 +21,6 @@ ul, ol {
 }
 
 hr {
-    background: cadetblue;
     height: 1px;
     border: 0px;
     width: 899px;
@@ -31,14 +30,6 @@ hr {
 
 h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
     font-size: unset;
-}
-
-del {
-    color: red;
-}
-
-ins {
-    color: green;
 }
 
 code, .code {
@@ -75,31 +66,23 @@ pre>code.language-text {
     border: none;
 }
 
-pre>code.language-shell {
-    background-color: darkslategray;
-    color: floralwhite;
-    border: solid 1px darkslategray;
+pre>code.language-shell, pre>code.language-wrapped-shell {
+    border-style: solid;
+    border-width: 1px;
 }
 
 pre>code.language-wrapped-shell {
-    background-color: darkslategray;
-    color: floralwhite;
-    border: solid 1px darkslategray;
     white-space: pre-wrap;
     word-break: break-word;
     min-width: unset;
 }
 
-pre>code.language-code {
-    color: darkred;
-    border: solid 1px darkred;
-    background-color: beige;
+pre>code.language-code, pre>code.language-wrapped-code {
+    border-style: solid;
+    border-width: 1px;
 }
 
 pre>code.language-wrapped-code {
-    color: darkred;
-    border: solid 1px darkred;
-    background-color: beige;
     white-space: pre-wrap;
     word-break: break-word;
     min-width: unset;
@@ -111,7 +94,6 @@ blockquote {
     font-size: 16px;
     width: 868px;
     min-width: max-content;
-    border-color: #cccccc;
     border-style: solid;
     border-width: 1px 1px 1px 10px;
 }
@@ -144,7 +126,8 @@ table {
 }
 
 table td, table th {
-    border: solid 1px #6a8fb3;
+    border-style: solid;
+    border-width: 1px;
     padding: 7px 14px;
 }
 
@@ -154,7 +137,6 @@ table td {
 
 table th {
     background-color: #e9f0f2;
-    font-size: 14px;
 }
 
 div.tableLight+table td, div.tableLight+table th {
@@ -175,72 +157,21 @@ div.admonition {
     font-size: 16px;
     width: 898px;
     min-width: max-content;
-    border-color: #cccccc;
     border-style: solid;
     border-width: 1px;
 }
 
 div.admonition>p.admonition-title {
     margin: 0;
-    border-bottom: solid 1px #cccccc;
-    background-color: #eeeeee;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
     padding: 5px 20px 5px 10px;
     font-weight: bold;
     max-width: unset;
 }
 
-div.admonition p {
-    
-}
-
 div.admonition>* {
     margin: 16px 10px;
-}
-
-div.admonition.warning,
-div.admonition.attention,
-div.admonition.caution {
-    border-color: #ff9001;
-}
-
-div.admonition.warning>p.admonition-title,
-div.admonition.attention>p.admonition-title, 
-div.admonition.caution>p.admonition-title {
-    border-bottom-color: #ff9001;
-    background-color: #fef3e8;
-}
-
-div.admonition.danger,
-div.admonition.error {
-    border-color: #f50057;
-}
-
-div.admonition.danger>p.admonition-title,
-div.admonition.error>p.admonition-title {
-    border-bottom-color: #f50057;
-    background-color: #ffe9ed;
-}
-
-div.admonition.hint,
-div.admonition.tip,
-div.admonition.important {
-    border-color: #01bfa5;
-}
-
-div.admonition.hint>p.admonition-title,
-div.admonition.tip>p.admonition-title, 
-div.admonition.important>p.admonition-title {
-    border-bottom-color: #01bfa5;
-    background-color: #e9f9f6;
-}
-
-div.admonition.note {
-    border-color: #448aff;
-}
-
-div.admonition.note>p.admonition-title {
-    border-bottom-color: #448aff;
-    background-color: #edf4ff;
 }
 
 div.admonition li {
