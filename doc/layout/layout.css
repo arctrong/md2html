@@ -17,6 +17,30 @@ body {
     font-size: 20px;
 }
 
+.header>a:link, .header>a:visited, .header>a:hover, .header>a:active {
+    text-decoration-color: transparent;
+}
+
+.header_item {
+    font-weight: bold;
+    margin: 0 7px 0 7px;
+}
+
+.header_item.selected {
+    text-decoration-style: solid;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 2px;
+}
+
+.headerTitle {
+    font-weight: bold; 
+    margin: 0 7px 0 7px;
+}
+
+.header_item_source {
+    margin: 0 7px 0 7px;
+}
+
 .sidebar {
     position: fixed;
     top: 40px;
@@ -94,30 +118,4 @@ div.sidebar h3 {
     margin-top: 10px;
     margin-bottom: 0;
 }
-
-.header>a:link, .header>a:visited, .header>a:hover, .header>a:active {
-    text-decoration-color: transparent;
-}
-
-.header_item {
-    font-weight: bold;
-    margin: 0 7px 0 7px;
-}
-
-.header_item.selected {
-    text-decoration-style: solid;
-    text-underline-offset: 2px;
-    text-decoration-thickness: 3px;
-}
-
-.headerTitle {
-    font-weight: bold; 
-    margin: 0 7px 0 7px;
-}
-
-.header_item_source {
-    margin: 0 7px 0 7px;
-}
-
-
 
