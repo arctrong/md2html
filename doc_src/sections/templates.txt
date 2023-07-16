@@ -83,8 +83,11 @@ in the template files. The main CSS files are:
     CSS files will stay unchanged and may be safely replaced with newer versions when they appear
     in this project.
 
+----------------------------------------------------------------------------------------------------
 <!--index ["themes"]--><a name="themes"></a>
-There's also a way for defining and using **themes**. A *theme* is a set of CSS files located
+# Color themes
+
+There's a mechanism for defining and using color **themes**. A *theme* is a set of CSS files located
 according to the masks:
 
 - `doc/themes/<theme_name>_content.css` and

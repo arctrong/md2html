@@ -215,6 +215,9 @@ $ tree -L 2 --charset=ascii --dirsfirst
 |   |-- pict
 |   |   |-- image1.png
 |   |   `-- image2.png
+|   |-- themes
+|   |   |-- light_default_content.css
+|   |   `-- light_default_layout.css
 |   |-- favicon.png
 |   `-- custom.css
 |-- doc_src
@@ -260,6 +263,9 @@ $ tree -L 2 --charset=ascii --dirsfirst
 - `doc/layout` directory contains the resources that are used by the template itself. It's a 
     convenient way to separate those resources from the ones that are used by the documentation
     content. This directory may be copy-pasted to a new project and it will most likely work;
+
+- `doc/themes` directory contains the [color *themes*](<!--page templates-->#themes) used by
+    the documentation. More than one theme may be used at the same time.
 
 - `favicon.png` file was placed here as it's treated as rather a project's artifact than an 
     artifact belonging to the template;
