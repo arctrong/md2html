@@ -1,4 +1,5 @@
-<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates"}-->
+<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates",
+"theme": "dark_default"}-->
 
 [TOC]
 
@@ -65,7 +66,8 @@ This documentation is created using an extended template that can be easily reus
 documentation projects. The template file location is `doc_src/templates/multipage.html`.
 
 There's also the other template located at `doc_src/templates/default.html`. This is a single-page
-template that is used by Windows context menu scripts.
+template that is used by the Windows context menu scripts. It may also be used manually for
+single-page documents creation.
 
 ----------------------------------------------------------------------------------------------------
 <!--index CSS-->
@@ -81,9 +83,9 @@ in the template files. The main CSS files are:
     CSS files will stay unchanged and may be safely replaced with newer versions when they appear
     in this project.
 
-<!--index ["themes"]-->
-There's also a way for defining and using **themes**. A *theme* is a set of files located
-according the masks:
+<!--index ["themes"]--><a name="themes"></a>
+There's also a way for defining and using **themes**. A *theme* is a set of CSS files located
+according to the masks:
 
 - `doc/themes/<theme_name>_content.css` and
 - `doc/themes/<theme_name>_layout.css`
@@ -100,6 +102,20 @@ The *quick start script* creates and defines the light theme only. To use the da
 - assign the value `dark_default` to the variable `theme` in the file `md2html_args.json`;
 - fulfill forcible full documentation regeneration;
 - the dark theme will be applied.
+
+<!--index ["dark theme", "theme, dark"]-->
+In this page, variable `"theme": "dark_default"` is defined in the *page variables section*, 
+so this page is rendered using the dark theme.
+
+<p><img src="<!--path pict-->light_only.png" class="floatRight light_only" /></p>
+<p><img src="<!--path pict-->light_only.png" class="floatLeft" /></p>
+
+Also see [here](<!--page page_content-->#handling_images_on_dark_background) to know about
+handling images on dark backgrounds. The picture on the left has thin black elements
+(arms, hands, legs and hair) that doesn't look well on the dark background. The picture on the
+right has local white underlying plate and probably looks better.
+
+<p style="clear: both;"></p>
 
 
 

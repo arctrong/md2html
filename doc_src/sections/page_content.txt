@@ -176,6 +176,25 @@ Then we will get a clickable image that works as a link:
 
 [![](<!--path pict-->penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
 
+<a name="handling_images_on_dark_background"></a>
+There's one point that should be taken into account when working with images. Usually images are
+intended to be shown on a light background. When using a 
+[*dark theme*](<!--page templates-->#themes), some images may not look well on a dark background.
+So such images may be marked the following way:
+
+````
+<div class="light_only"></div>
+
+![](path/to/image.png)
+````
+
+Alternatively the class `light_only` may be added to the `<img>` HTML tag. In dark themes these
+images may be put on a white background (particularly, this is defined in the `dark_default`
+theme).
+
+See [here](<!--page templates-->#themes) for the *theme* mechanism description and the image
+on dark background problem handling demonstration.
+
 ----------------------------------------------------------------------------------------------------
 # Lists
 

@@ -17,7 +17,6 @@
             "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
-        "page-variables": {},
         "relative-paths": {
             "markers": ["path"],
             "paths": {
@@ -45,5 +44,6 @@
                     "add-link-css": ["doc/layout/index.css"] }
         },
         "page-links": { "markers": ["page"] }
-    }
+    },
+    "page-variables": {}
 }

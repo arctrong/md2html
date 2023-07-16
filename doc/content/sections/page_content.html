@@ -259,6 +259,19 @@ See <a href="plugins.html#relative_paths_plugin">"relative-paths" plugin</a> for
 <pre class="highlight"><code>[![](../../pict/target.png)](page.html)</code></pre>
 <p>Then we will get a clickable image that works as a link:</p>
 <p><a href="https://en.wikipedia.org/wiki/Penrose_tiling" title="Penrose"><img alt="" src="../../pict/penrose_small.png" /></a></p>
+<p><a name="handling_images_on_dark_background"></a>
+There's one point that should be taken into account when working with images. Usually images are
+intended to be shown on a light background. When using a 
+<a href="templates.html#themes"><em>dark theme</em></a>, some images may not look well on a dark background.
+So such images may be marked the following way:</p>
+<pre class="highlight"><code>&lt;div class="light_only"&gt;&lt;/div&gt;
+
+![](path/to/image.png)</code></pre>
+<p>Alternatively the class <code>light_only</code> may be added to the <code>&lt;img&gt;</code> HTML tag. In dark themes these
+images may be put on a white background (particularly, this is defined in the <code>dark_default</code>
+theme).</p>
+<p>See <a href="templates.html#themes">here</a> for the <em>theme</em> mechanism description and the image
+on dark background problem handling demonstration.</p>
 <hr />
 <h1 id="lists">Lists</h1>
 <p>The following markup:</p>

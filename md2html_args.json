@@ -17,7 +17,6 @@
             "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
-        "page-variables": {},
         "relative-paths": {
             "markers": ["path"],
             "paths": {
@@ -54,6 +53,7 @@
         "wrap-code": {
             "wrap_java": {"style": "code", "input-root": "sample_code/", "output-root": "doc/content/code/",
                           "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
-        }
+        },
+        "page-variables": {}
     }
 }

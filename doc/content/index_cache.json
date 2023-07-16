@@ -84,6 +84,16 @@
       "entry": "themes",
       "link": "sections/templates.html#index_entry_index_3",
       "title": "Templates"
+    },
+    {
+      "entry": "dark theme",
+      "link": "sections/templates.html#index_entry_index_4",
+      "title": "Templates"
+    },
+    {
+      "entry": "theme, dark",
+      "link": "sections/templates.html#index_entry_index_4",
+      "title": "Templates"
     }
   ],
   "doc/content/sections/plugins.html": [
