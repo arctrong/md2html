@@ -3,6 +3,13 @@
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
+# Preliminary note
+
+As for now the program provides a *quick start script* described [here](<!--page quick_start-->).
+This page may be useful for understanding the program's working principles, and for possible 
+new templates creation or existing templates modification.
+
+----------------------------------------------------------------------------------------------------
 <!--index ["template", "Mustache"] -->
 # What is template?
 
@@ -54,30 +61,45 @@ The other tags may be provided by _plugins_ that are described in the
 ----------------------------------------------------------------------------------------------------
 # Provided templates
 
-This documentation is created using an extended template that contains some project specific 
-elements and is intended to be used with _plugins_. Anyway this template may be suitable for 
-other writing works with minimal or no modifications. It's recommended to copy this
-template to other projects in order to make it independent of the further modifications
-of this program. The template itself, the corresponding CSS files and some images must be copied.
-This template location is `doc_src/templates/multipage.html`.
+This documentation is created using an extended template that can be easily reused in other
+documentation projects. The template file location is `doc_src/templates/multipage.html`.
 
-There's also a simpler template, `doc_src/templates/default.html`, that is used as the default
-in some cases. This template may also be used in other projects, probably in simpler and smaller
-ones.
+There's also the other template located at `doc_src/templates/default.html`. This is a single-page
+template that is used by Windows context menu scripts.
 
 ----------------------------------------------------------------------------------------------------
 <!--index CSS-->
 # CSS
 
-There are two main CSS files used in this documentation: 
+This documentation uses a set of CSS files. The information about this files location may be found
+in the template files. The main CSS files are:
 
 - `doc/layout/styles.css`, mainly defines appearance of the page content;
 - `doc/layout/layout.css`, defines appearance and geometry (like the header and the sidebar) 
     of the `multipage.html` template and redefines some rules for the page content;
-- `doc/custom.css`, is intended for customization in the other projects. This way the above 
+- `doc/custom.css`, is intended for customization in the certain projects. This way the above 
     CSS files will stay unchanged and may be safely replaced with newer versions when they appear
     in this project.
 
+<!--index ["themes"]-->
+There's also a way for defining and using **themes**. A *theme* is a set of files located
+according the masks:
+
+- `doc/themes/<theme_name>_content.css` and
+- `doc/themes/<theme_name>_layout.css`
+
+The `<theme_name>` is defined by the variable `theme` in the *argument file*
+`md2html_args.json`. The complete declaration may look like this: `"theme": "light_default"`, 
+where `light_default` is the currently used theme name. As for now, two themes are defined:
+`light_default` and `dark_default`.
+
+The *quick start script* creates and defines the light theme only. To use the dark theme:
+
+- copy the files `dark_default_content.css` and `dark_default_layout.css` to the
+    `doc/themes` directory;
+- assign the value `dark_default` to the variable `theme` in the file `md2html_args.json`;
+- fulfill forcible full documentation regeneration;
+- the dark theme will be applied.
 
 
 

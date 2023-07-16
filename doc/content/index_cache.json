@@ -79,6 +79,11 @@
       "entry": "CSS",
       "link": "sections/templates.html#index_entry_index_2",
       "title": "Templates"
+    },
+    {
+      "entry": "themes",
+      "link": "sections/templates.html#index_entry_index_3",
+      "title": "Templates"
     }
   ],
   "doc/content/sections/plugins.html": [

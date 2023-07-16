@@ -64,11 +64,17 @@ class="header_item" href="https://github.com/arctrong/md2html">GitHub</a>
 
 <div class="toc">
 <ul>
+<li><a href="#preliminary-note">Preliminary note</a></li>
 <li><a href="#what-is-template">What is template?</a></li>
 <li><a href="#provided-templates">Provided templates</a></li>
 <li><a href="#css">CSS</a></li>
 </ul>
 </div>
+<hr />
+<h1 id="preliminary-note">Preliminary note</h1>
+<p>As for now the program provides a <em>quick start script</em> described <a href="quick_start.html">here</a>.
+This page may be useful for understanding the program's working principles, and for possible 
+new templates creation or existing templates modification.</p>
 <hr />
 <p><a name="index_entry_index_1"></a></p>
 <h1 id="what-is-template">What is template?</h1>
@@ -144,26 +150,41 @@ as it's presented in the table above.</p>
 </div>
 <hr />
 <h1 id="provided-templates">Provided templates</h1>
-<p>This documentation is created using an extended template that contains some project specific 
-elements and is intended to be used with <em>plugins</em>. Anyway this template may be suitable for 
-other writing works with minimal or no modifications. It's recommended to copy this
-template to other projects in order to make it independent of the further modifications
-of this program. The template itself, the corresponding CSS files and some images must be copied.
-This template location is <code>doc_src/templates/multipage.html</code>.</p>
-<p>There's also a simpler template, <code>doc_src/templates/default.html</code>, that is used as the default
-in some cases. This template may also be used in other projects, probably in simpler and smaller
-ones.</p>
+<p>This documentation is created using an extended template that can be easily reused in other
+documentation projects. The template file location is <code>doc_src/templates/multipage.html</code>.</p>
+<p>There's also the other template located at <code>doc_src/templates/default.html</code>. This is a single-page
+template that is used by Windows context menu scripts.</p>
 <hr />
 <p><a name="index_entry_index_2"></a></p>
 <h1 id="css">CSS</h1>
-<p>There are two main CSS files used in this documentation: </p>
+<p>This documentation uses a set of CSS files. The information about this files location may be found
+in the template files. The main CSS files are:</p>
 <ul>
 <li><code>doc/layout/styles.css</code>, mainly defines appearance of the page content;</li>
 <li><code>doc/layout/layout.css</code>, defines appearance and geometry (like the header and the sidebar) 
     of the <code>multipage.html</code> template and redefines some rules for the page content;</li>
-<li><code>doc/custom.css</code>, is intended for customization in the other projects. This way the above 
+<li><code>doc/custom.css</code>, is intended for customization in the certain projects. This way the above 
     CSS files will stay unchanged and may be safely replaced with newer versions when they appear
     in this project.</li>
+</ul>
+<p><a name="index_entry_index_3"></a>
+There's also a way for defining and using <strong>themes</strong>. A <em>theme</em> is a set of files located
+according the masks:</p>
+<ul>
+<li><code>doc/themes/&lt;theme_name&gt;_content.css</code> and</li>
+<li><code>doc/themes/&lt;theme_name&gt;_layout.css</code></li>
+</ul>
+<p>The <code>&lt;theme_name&gt;</code> is defined by the variable <code>theme</code> in the <em>argument file</em>
+<code>md2html_args.json</code>. The complete declaration may look like this: <code>"theme": "light_default"</code>, 
+where <code>light_default</code> is the currently used theme name. As for now, two themes are defined:
+<code>light_default</code> and <code>dark_default</code>.</p>
+<p>The <em>quick start script</em> creates and defines the light theme only. To use the dark theme:</p>
+<ul>
+<li>copy the files <code>dark_default_content.css</code> and <code>dark_default_layout.css</code> to the
+    <code>doc/themes</code> directory;</li>
+<li>assign the value <code>dark_default</code> to the variable <code>theme</code> in the file <code>md2html_args.json</code>;</li>
+<li>fulfill forcible full documentation regeneration;</li>
+<li>the dark theme will be applied.</li>
 </ul>
 <p>&nbsp;</p>
 <hr />

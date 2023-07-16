@@ -6,7 +6,7 @@
 # About this section
 
 This section describes documentation source text writing and covers such topics as Markdown
-syntax, formatting examples and tricks. The templates and styling question, as well as the 
+syntax, formatting examples and tricks. The templates and styling, as well as the 
 documentation structuring, are discussed in the other sections.
 
 The complete Markdown guide is not provided in this section, so see 
