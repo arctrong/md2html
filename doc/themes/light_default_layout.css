@@ -7,6 +7,26 @@ body {
     background-color: black;
 }
 
+.header_item {
+    color: darksalmon;
+}
+
+.header_item.selected {
+    text-decoration-color: dodgerblue !important;
+}
+
+.headerTitle {
+    color: antiquewhite;
+}
+
+.header_item_source {
+    color: darksalmon;
+}
+
+.header_item_source.inactive {
+    color: darkgray;
+}
+
 .sidebar {
     border-right-color: cadetblue;
     background-color: powderblue;
@@ -36,26 +56,5 @@ body {
 div.sidebar h3 {
     color: darkslategray;
 }
-
-.header_item {
-    color: darksalmon;
-}
-
-.header_item.selected {
-    text-decoration-color: dodgerblue !important;
-}
-
-.headerTitle {
-    color: antiquewhite;
-}
-
-.header_item_source {
-    color: darksalmon;
-}
-
-.header_item_source.inactive {
-    color: darkgray;
-}
-
 
 

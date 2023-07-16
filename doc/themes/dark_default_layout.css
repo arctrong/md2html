@@ -1,25 +1,25 @@
 .header {
-    background-color: bisque;
-}
-
-.header_item {
-    color: black;
+    background-color: black;
 }
 
 .header>a:link, .header>a:visited, .header>a:hover, .header>a:active {
-    color: black;
+    color: darksalmon;
+}
+
+.header_item {
+    color: darksalmon;
 }
 
 .header_item.selected {
-    text-decoration-color: #e68100 !important;
+    text-decoration-color: dodgerblue !important;
 }
 
 .headerTitle {
-    color: #6e5f4e;
+    color: antiquewhite;
 }
 
 .header_item_source {
-    color: black;
+    color: darksalmon;
 }
 
 .header_item_source.inactive {
