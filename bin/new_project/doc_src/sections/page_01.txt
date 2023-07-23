@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Squirrels", "SORT_ORDER": "10", "code": "page_01"}-->
+<!--VARIABLES {"title": "Squirrels", "SORT_ORDER": "010", "code": "page_01"}-->
 
 [TOC]
 

@@ -57,7 +57,7 @@ helps achieve more complex result when it's required.
 **M<sub>2</sub>H** automates conversion of Markdown texts into HTML pages and provides templates
 and styles that are ether ready to use or may be easily adapted and extended for certain tasks.
 
-Apart of that it provides means for processing whole sets of documents, organizing the output
+Apart of that, it provides means for processing whole sets of documents, organizing the output
 and producing a self-contained static HTML documentation that needs only a browser to be viewed.
 
 In the end, this tool has a set of useful plugins that automate and simplify typical tasks and

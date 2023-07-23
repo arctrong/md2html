@@ -1,6 +1,6 @@
 <!--VARIABLES {"noPageTitle": true}-->
 
-<p><img src="<!--path pict-->sample_picture.jpg" title="md2html" class="floatRight" /></p>
+<p><img src="<!--path pict-->sample_picture.jpg" class="floatRight" /></p>
 
 <!--index Home page -->
 This is an automatically created documentation template.
