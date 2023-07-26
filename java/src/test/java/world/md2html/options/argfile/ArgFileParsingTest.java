@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
-import static world.md2html.testutils.PluginTestUtils.findSinglePlugin;
+import static world.md2html.testutils.PluginTestUtils.findFirstElementOfType;
 
 public class ArgFileParsingTest {
 
@@ -292,7 +292,7 @@ public class ArgFileParsingTest {
                         "-fv", "--legacy-mode"}));
         List<Md2HtmlPlugin> plugins = argFile.getPlugins();
         assertTrue(argFile.getOptions().isLegacyMode());
-        PageVariablesPlugin plugin = findSinglePlugin(plugins, PageVariablesPlugin.class);
+        PageVariablesPlugin plugin = findFirstElementOfType(plugins, PageVariablesPlugin.class);
         PageMetadataHandlersWrapper metadataHandlers =
                 PageMetadataHandlersWrapper.fromPlugins(plugins);
         String pageContent = "<!--METADATA {\"key\": \"value\"}-->";

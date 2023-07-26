@@ -21,7 +21,7 @@ class RelativePathsPluginTest {
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
 
     private RelativePathsPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, RelativePathsPlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, RelativePathsPlugin.class);
     }
 
     @Test

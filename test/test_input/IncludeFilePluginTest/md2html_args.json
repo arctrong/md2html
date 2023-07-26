@@ -1,0 +1,20 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/IncludeFilePluginTest/page_template.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/styles.css"]
+    },
+    "documents": [
+        { "input": "page1.txt", "title": "IncludeFilePlugin test" }
+    ],
+    "plugins": {
+        "include-file": [
+            { "markers": ["include_java"], "root-dir": "test_input/IncludeFilePluginTest/code/java/" },
+            { "markers": ["include_shell"], "root-dir": "test_input/IncludeFilePluginTest/code/shell/", "trim": false },
+            { "markers": ["include_code1", "include_code2"], "root-dir": "test_input/IncludeFilePluginTest/code/" }
+        ]
+    }
+}

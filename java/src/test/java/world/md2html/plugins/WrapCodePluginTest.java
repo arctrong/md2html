@@ -19,7 +19,7 @@ class WrapCodePluginTest {
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
 
     private WrapCodePlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, WrapCodePlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, WrapCodePlugin.class);
     }
 
     @Test

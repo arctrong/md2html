@@ -19,7 +19,7 @@ class PageLinksPluginTest {
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
 
     private PageLinksPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, PageLinksPlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, PageLinksPlugin.class);
     }
 
     @Test
