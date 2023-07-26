@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "markers": {
+                "type": "array",
+                "items": { "type": "string", "pattern": "^[\\w\\d_]+$" },
+                "minItems": 1
+            },
+            "root-dir": { "type": "string" },
+            "trim": { "type": "boolean" }
+        },
+        "additionalProperties": false,
+        "required": ["markers", "root-dir"]
+    },
+    "minItems": 1
+}

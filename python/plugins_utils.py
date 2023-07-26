@@ -2,6 +2,7 @@ from typing import Dict, List
 
 from models.document import Document
 from plugins.ignore_plugin import IgnorePlugin
+from plugins.include_file_plugin import IncludeFilePlugin
 from plugins.index_plugin import IndexPlugin
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.page_flows_plugin import PageFlowsPlugin
@@ -21,6 +22,7 @@ PLUGIN_PROVIDERS = {
     'page-links': lambda: PageLinksPlugin(),
     'ignore': lambda: IgnorePlugin(),
     'wrap-code': lambda: WrapCodePlugin(),
+    'include-file': lambda: IncludeFilePlugin(),
 }
 
 
