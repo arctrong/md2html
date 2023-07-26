@@ -557,6 +557,7 @@ is fulfilled, while in the second block the source text is
 `![](<!--ignore ignore path pict-->logo.png)` so substitution is omitted.
 
 ----------------------------------------------------------------------------------------------------
+<a name="wrap_code_plugin"></a>
 # "wrap-code" plugin
 
 **Motivation**
@@ -661,5 +662,60 @@ Variable | Description
     The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
     To assure regeneration, use `-f` flag or `"force": true` option (see [here](<!--page usage-->) 
     for more details).
+
+----------------------------------------------------------------------------------------------------
+# "include-file" plugin
+
+**Motivation**
+
+When writing and running program code, it may be desired to place some source code into the
+documentation. Just copy-pasting will require updating documentation each time the source code 
+is changed. ["wrap-code" plugin](#wrap_code_plugin) may help by generating a separate page
+for this code. But if the source text is small it may be better to show it directly in the text 
+where it's described. This plugin does such kind of inclusion.
+
+
+**Definition**
+
+The plugin is defined the following way:
+
+````
+    "plugins": {
+        . . .
+        "include-file": [
+            { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
+            { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/" }
+        ],
+        . . .
+    }
+````
+
+In this example:
+
+- `include_code` is the marker to be used in the placeholders (see below).
+    There may be several markers;
+- `sample_code/` and `sample_text/` define the places where to take the source code files;
+- `"trim": true` defines whether to trim leading and trailing white spaces (`true` by default).
+
+
+**Usage**
+
+By adding the following content on the page:
+
+`````
+````code
+<!--ignore include_code hello/Main.java-->
+````
+`````
+
+we will get the following output:
+
+````code
+<!--include_code hello/Main.java-->
+````
+
+
+
+
 
 
