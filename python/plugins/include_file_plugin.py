@@ -19,7 +19,6 @@ class IncludeFilePlugin(Md2HtmlPlugin):
     def __init__(self):
         super().__init__()
         self.data: Dict[str, IncludeFileData] = {}
-        # self.dry_run = False
 
     def accept_data(self, data):
         self.assure_accept_data_once()
