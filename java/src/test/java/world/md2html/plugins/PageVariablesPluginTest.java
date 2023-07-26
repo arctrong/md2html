@@ -19,7 +19,7 @@ class PageVariablesPluginTest {
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
 
     private PageVariablesPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, PageVariablesPlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, PageVariablesPlugin.class);
     }
 
     private ArgFile parsePluginData(String pluginData) throws ArgFileParseException {

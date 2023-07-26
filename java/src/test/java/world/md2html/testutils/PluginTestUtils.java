@@ -11,24 +11,16 @@ public final class PluginTestUtils {
 
     private PluginTestUtils() {}
 
-    public static <T extends Md2HtmlPlugin> T findSinglePlugin(
-            List<? extends Md2HtmlPlugin> plugins,
-            Class<T> pluginClass
+    public static <T, R extends T> R findFirstElementOfType(
+            List<? extends T> elements,
+            Class<R> requiredClass
     ) {
-        Md2HtmlPlugin result = null;
-        for (Md2HtmlPlugin plugin : plugins) {
-            if (pluginClass.equals(plugin.getClass())) {
-                if (result == null) {
-                    result = plugin;
-                } else {
-                    throw new IllegalArgumentException("More than one plugins of type'" +
-                            pluginClass.getSimpleName() + "' found");
-                }
+        for (T element : elements) {
+            if (requiredClass.isAssignableFrom(element.getClass())) {
+                return requiredClass.cast(element);
             }
         }
-        // TODO Remove this warning.
-        //  See https://stackoverflow.com/questions/76636746/java-generic-method-return-specific-type-without-unchecked-cast-warning
-        return (T) result;
+        return null;
     }
 
     public static Document documentWithOutputLocation(String outputLocation) {

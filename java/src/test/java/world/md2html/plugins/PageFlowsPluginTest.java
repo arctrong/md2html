@@ -84,7 +84,7 @@ class PageFlowsPluginTest {
     }
 
     private PageFlowsPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, PageFlowsPlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, PageFlowsPlugin.class);
     }
 
     private void assertPageEquals(String link, String title, boolean current, boolean external,

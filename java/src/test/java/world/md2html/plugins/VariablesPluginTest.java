@@ -19,7 +19,7 @@ class VariablesPluginTest {
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
 
     private VariablesPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, VariablesPlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, VariablesPlugin.class);
     }
 
     @Test

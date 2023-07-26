@@ -18,7 +18,7 @@ class IndexPluginTest {
     private static final CliOptions DUMMY_CLI_OPTIONS = CliOptions.builder().build();
 
     private IndexPlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
-        return PluginTestUtils.findSinglePlugin(plugins, IndexPlugin.class);
+        return PluginTestUtils.findFirstElementOfType(plugins, IndexPlugin.class);
     }
 
     @Test
