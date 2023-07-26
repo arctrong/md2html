@@ -273,7 +273,7 @@ The purpose of this change is to remove specific elements from the
 [templates](<!--page templates-->) and to avoid boilerplates. Now sidebar *page flows* may be
 defined solely in the argument file and the template file in the documentation project
 may be updated with the other one taken from the outside without subsequent customization.
-Here's a sidebar definition that may be defined for the above argument file fragment:
+Here's a sidebar block that may be defined for the above argument file fragment:
 
 ````
 {{#sidebar}}
@@ -287,7 +287,7 @@ The `sidebar` variable contains a list of *page flows* for which it's defined (h
 two such *page flows*). As each *page flow* now has a title then this title may be conditionally
 rendered using the Mustache syntax. Elements `{{#.}}` and `{{/.}}` represent a current 
 *page flow* that here is represented as a number of links. Current links are highlighted 
-with a CSS class `selected`.
+with the `selected` CSS class.
 
 ----------------------------------------------------------------------------------------------------
 <a name="page_variables_plugin"></a>

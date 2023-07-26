@@ -4,6 +4,12 @@
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
+# Why is this page dark?
+
+This page describes color [*themes*](#themes) usage and that's why itself uses the dark theme
+for demonstration.
+
+----------------------------------------------------------------------------------------------------
 # Preliminary note
 
 As for now the program provides a *quick start script* described [here](<!--page quick_start-->).
@@ -115,7 +121,7 @@ so this page is rendered using the dark theme.
 
 Also see [here](<!--page page_content-->#handling_images_on_dark_background) to know about
 handling images on dark backgrounds. The picture on the left has thin black elements
-(arms, hands, legs and hair) that doesn't look well on the dark background. The picture on the
+(arms, hands, feet and hair) that doesn't look well on the dark background. The picture on the
 right has local white underlying plate and probably looks better.
 
 <p style="clear: both;"></p>

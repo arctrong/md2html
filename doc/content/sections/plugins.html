@@ -335,7 +335,7 @@ that makes the previously written documentation compatible with the new version 
 <a href="templates.html">templates</a> and to avoid boilerplates. Now sidebar <em>page flows</em> may be
 defined solely in the argument file and the template file in the documentation project
 may be updated with the other one taken from the outside without subsequent customization.
-Here's a sidebar definition that may be defined for the above argument file fragment:</p>
+Here's a sidebar block that may be defined for the above argument file fragment:</p>
 <pre class="highlight"><code>{{#sidebar}}
 {{#title}}&lt;h3&gt;{{.}}&lt;/h3&gt;{{/title}}
 {{#.}}&lt;a class="sidebar_item{{#current}} selected{{/current}}" href="{{link}}"&gt;{{title}}&lt;/a&gt;
@@ -345,7 +345,7 @@ Here's a sidebar definition that may be defined for the above argument file frag
 two such <em>page flows</em>). As each <em>page flow</em> now has a title then this title may be conditionally
 rendered using the Mustache syntax. Elements <code>{{#.}}</code> and <code>{{/.}}</code> represent a current 
 <em>page flow</em> that here is represented as a number of links. Current links are highlighted 
-with a CSS class <code>selected</code>.</p>
+with the <code>selected</code> CSS class.</p>
 <hr />
 <p><a name="page_variables_plugin"></a></p>
 <h1 id="page-variables-plugin">"page-variables" plugin</h1>
