@@ -8,7 +8,7 @@ from models.document import Document
 from models.options import Options
 from output_utils import output_page, MARKDOWN
 from plugins.md2html_plugin import Md2HtmlPlugin
-from utils import read_lines_from_cached_file, relativize_relative_resource
+from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -99,9 +99,12 @@ class WrapCodePlugin(Md2HtmlPlugin):
 
             if need_to_generate and not self.dry_run:
                 document_obj = document_obj.copy(input_file=input_file_str, output_file=output_file_str)
-                doc_content = ("````" + marker_data.style + "\n" +
-                               read_lines_from_cached_file(document_obj.input_file) +
-                               "\n" + "````")
+
+                try:
+                    content = read_lines_from_cached_file(document_obj.input_file)
+                except FileNotFoundError as e:
+                    raise UserError(f"Error processing page metadata block: {type(e).__name__}: {e}")
+                doc_content = ("````" + marker_data.style + "\n" + content + "\n" + "````")
                 substitutions = {'content': MARKDOWN.convert(source=doc_content)}
 
                 variables = marker_data.variables.copy()

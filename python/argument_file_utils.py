@@ -260,8 +260,11 @@ def expand_document_globs(documents_item, plugins) -> list:
                 if (title_from_variable or code_from_variable or
                         sort_by_variable) and metadata_handlers:
                     page_variables_plugin.new_page(None)
-                    input_file_string = read_lines_from_cached_file(
-                        str(Path(input_root).joinpath(file)))
+                    try:
+                        input_file_string = read_lines_from_cached_file(
+                            str(Path(input_root).joinpath(file)))
+                    except FileNotFoundError as e:
+                        raise UserError(f"Error processing GLOB path '{file}': {type(e).__name__}: {e}")
                     apply_metadata_handlers(input_file_string, metadata_handlers, None,
                                             extract_only=True)
                     page_variables = page_variables_plugin.variables(None)

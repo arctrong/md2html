@@ -9,7 +9,11 @@ import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,10 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static world.md2html.Md2HtmlUtils.*;
+import static world.md2html.Md2HtmlUtils.generateDocumentStyles;
+import static world.md2html.Md2HtmlUtils.generateHtml;
 import static world.md2html.utils.MustacheUtils.createCachedMustacheRenderer;
 import static world.md2html.utils.MustacheUtils.createCachedMustacheRendererLegacy;
-import static world.md2html.utils.Utils.*;
+import static world.md2html.utils.Utils.firstNotNull;
+import static world.md2html.utils.Utils.getCachedString;
+import static world.md2html.utils.Utils.relativizeRelativeResource;
+import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
 public class Md2Html {
 
@@ -61,7 +69,11 @@ public class Md2Html {
             plugin.newPage(document);
         }
 
-        String mdText = getCachedString(inputFile, Utils::readStringFromUtf8File);
+        String mdText = supplyWithFileExceptionAsUserError(
+                () -> getCachedString(inputFile, Utils::readStringFromUtf8File),
+                "Error processing page"
+        );
+
         mdText = metadataHandlersWrapper.applyMetadataHandlers(mdText, document);
 
         Map<String, Object> substitutions = new HashMap<>();

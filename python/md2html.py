@@ -33,7 +33,11 @@ def md2html(document, plugins, metadata_handlers, options):
     for plugin in plugins:
         plugin.new_page(document)
 
-    md_lines = read_lines_from_cached_file(document.input_file)
+    try:
+        md_lines = read_lines_from_cached_file(document.input_file)
+    except FileNotFoundError as e:
+        raise UserError(f"Error processing page: {type(e).__name__}: {e}")
+
     md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
     MARKDOWN.reset()
     substitutions = {'content': MARKDOWN.convert(source=md_lines),

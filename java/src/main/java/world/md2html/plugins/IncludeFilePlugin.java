@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.Utils.getCachedString;
+import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
 public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
@@ -65,7 +66,10 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         IncludeFileData markerData = this.data.get(marker);
         filePath = filePath.trim();
         Path includeFile = Paths.get(markerData.rootDir, filePath);
-        String content = getCachedString(includeFile, Utils::readStringFromUtf8File);
+        String content = supplyWithFileExceptionAsUserError(
+                () -> getCachedString(includeFile, Utils::readStringFromUtf8File),
+                "Error processing page metadata block"
+        );
         if (markerData.trim) {
             content = content.trim();
         }

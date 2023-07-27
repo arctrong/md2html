@@ -35,6 +35,7 @@ import static world.md2html.utils.JsonUtils.OBJECT_MAPPER_FOR_BUILDERS;
 import static world.md2html.utils.JsonUtils.deJson;
 import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
+import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
 public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
@@ -190,9 +191,13 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                         .input(inputFileStr)
                         .output(outputFileStr)
                         .build();
+
+                String content = supplyWithFileExceptionAsUserError(
+                        () -> getCachedString(inputFile, Utils::readStringFromUtf8File),
+                        "Error processing page metadata block"
+                );
                 String docContent = "````" + markerData.style + "\n" +
-                        getCachedString(inputFile, Utils::readStringFromUtf8File) +
-                        "\n" + "````";
+                         content + "\n" + "````";
 
                 Map<String, Object> substitutions = new HashMap<>();
                 substitutions.put("content", generateHtml(docContent));

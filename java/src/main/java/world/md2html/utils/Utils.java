@@ -1,12 +1,14 @@
 package world.md2html.utils;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -20,6 +22,11 @@ public class Utils {
     @FunctionalInterface
     public interface FunctionWithException<T, R> {
         R apply(T arg) throws Exception;
+    }
+
+    @FunctionalInterface
+    public interface SupplierWithException<R> {
+        R apply() throws Exception;
     }
 
     public static final Map<Path, String> CACHED_FILES = new HashMap<>();
@@ -58,14 +65,14 @@ public class Utils {
     }
 
     public static String getCachedString(Path path,
-            FunctionWithException<Path, String> stringProvider) {
+            FunctionWithException<Path, String> stringProvider) throws Exception {
         String lines = CACHED_FILES.get(path);
         if (lines == null) {
-            try {
+          //  try {
                 lines = stringProvider.apply(path);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+       //     } catch (Exception e) {
+     //           throw new RuntimeException(e);
+    //        }
             CACHED_FILES.put(path, lines);
         }
         return lines;
@@ -237,4 +244,18 @@ public class Utils {
         return "{" + string.substring(prefixLength, string.length() - 1) + "}";
     }
 
+    public static <R> R supplyWithFileExceptionAsUserError(
+            SupplierWithException<R> supplier,
+            String stepDescription) {
+        R result;
+        try {
+            result = supplier.apply();
+        } catch (NoSuchFileException | FileNotFoundException e) {
+            throw new UserError(String.format(stepDescription + ": " +
+                    e.getClass().getSimpleName() + ": " +  e.getMessage()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
 }

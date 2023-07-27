@@ -434,8 +434,10 @@ public class ArgFileParsingHelper {
                             documentRaw.getSortByVariable() != null) &&
                             pageMetadataHandlersWrapper != null) {
                         pageVariablesPlugin.newPage(null);
-                        String inputFileString = getCachedString(globPath,
-                                Utils::readStringFromUtf8File);
+                        String inputFileString = supplyWithFileExceptionAsUserError(
+                                () -> getCachedString(globPath, Utils::readStringFromUtf8File),
+                                "Error processing GLOB path '" + globPath + "'"
+                        );
                         pageMetadataHandlersWrapper.applyMetadataHandlers(inputFileString,
                                 null);
                         Map<String, Object> pageVariables =

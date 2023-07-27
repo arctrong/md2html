@@ -42,7 +42,10 @@ class IncludeFilePlugin(Md2HtmlPlugin):
         marker_data = self.data[marker]
         file_path = metadata_str.strip()
         include_file = Path(marker_data.root_dir).joinpath(file_path)
-        content = read_lines_from_cached_file(include_file)
+        try:
+            content = read_lines_from_cached_file(include_file)
+        except FileNotFoundError as e:
+            raise UserError(f"Error processing page metadata block: {type(e).__name__}: {e}")
         if marker_data.trim:
             content = content.strip()
         return content
