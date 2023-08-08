@@ -15,8 +15,7 @@ class VariablesPlugin(Md2HtmlPlugin):
 
     def accept_data(self, data):
         self.assure_accept_data_once()
-        # Yes, this plugin uses JSON schema of the other plugin as they are the same.
-        self.validate_data_with_file(data, MODULE_DIR.joinpath('relative_paths_schema.json'))
+        self.validate_data_with_file(data, MODULE_DIR.joinpath('variables_plugin_schema.json'))
         self.data = data
 
     def is_blank(self) -> bool:

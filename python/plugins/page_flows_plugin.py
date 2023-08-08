@@ -121,12 +121,12 @@ class PageFlowsPlugin(Md2HtmlPlugin):
             new_page = {}
             is_first = True
             for item in v["items"]:
-                # TODO Consider letting other arbitrary fields. Then they might be used in
-                #  the template. This is already done in Java version.
+                # Allows other arbitrary fields. This fields then may be used in the templates.
+                new_page = dict(item)
+                new_page["external"] = first_not_none(item.get("external"), False)
+                new_page["first"] = is_first
+                new_page["last"] = False
 
-                new_page = {"link": item["link"], "title": item["title"],
-                            "external": first_not_none(item.get("external"), False),
-                            "first": is_first, "last": False}
                 page_flow_items.append(new_page)
                 is_first = False
             new_page["last"] = True
