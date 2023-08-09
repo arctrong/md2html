@@ -20,6 +20,11 @@
             "page_flow_1": {"groups": ["group1"]},
             "page_flow_2": { "title": "Page flow 2", "groups": ["group1"], "items": [
                 {"link": "https://www.google.com/", "title": "Google", "external": true}
+            ]},
+            "page_flow_3": { "title": "Page flow 3", "groups": ["group1"], "items": [
+                {"link": "https://en.wikipedia.org/", "title": "Wikipedia", "external": true,
+                    "custom_string": "custom string value", "custom_number": 101.4, 
+                    "custom_boolean": true}
             ]}
         }
     }

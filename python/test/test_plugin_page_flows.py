@@ -66,6 +66,24 @@ class PageFlowsPluginTest(unittest.TestCase):
         self.assertDictEqual({"link": "other.html", "title": "Other", "current": False,
                               "external": False, "first": False, "last": True}, pages[2])
 
+    def test_customAttributes(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "about.md"}], '
+            '"plugins": {"page-flows": {"sections": ['
+            '{"link": "other.html", "title": "Other", "custom_string": "custom string value", '
+            '    "custom_number": 101.4, "custom_boolean": true}'
+            ']}}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+
+        doc = Document(output_file="about.html")
+        page_flow = plugin.variables(doc)["sections"]
+        pages = [p for p in page_flow]
+        self.assertEqual(1, len(pages))
+        self.assertEqual("custom string value", pages[0]["custom_string"])
+        self.assertEqual(101.4, pages[0]["custom_number"])
+        self.assertEqual(True, pages[0]["custom_boolean"])
+
     def test_pageSequence_inDocumentsSection(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": ['

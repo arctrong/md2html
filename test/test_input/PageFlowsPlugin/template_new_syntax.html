@@ -9,6 +9,8 @@
 {{#group1}}
 {{#title}}<h3>{{.}}</h3>{{/title}}
 {{#.}}<p><a href="{{link}}">{{title}}{{#current}} - current{{/current}}</a></p>
+{{#custom_string
+}}<p>{{custom_string}} {{custom_number}} {{#custom_boolean}}TRUE{{/custom_boolean}}</p>{{/custom_string}}
 {{/.}}
 {{/group1}}
 </div>

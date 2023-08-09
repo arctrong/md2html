@@ -17,6 +17,11 @@
             "page_flow_2": [],      
             "page_flow_1": [
                 {"link": "https://www.google.com/", "title": "Google", "external": true}
+            ],
+            "page_flow_3": [
+                {"link": "https://en.wikipedia.org/", "title": "Wikipedia", "external": true,
+                    "custom_string": "custom string value", "custom_number": 101.4, 
+                    "custom_boolean": true}
             ]
         }
     }

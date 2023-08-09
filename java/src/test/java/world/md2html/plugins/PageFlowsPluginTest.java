@@ -133,6 +133,24 @@ class PageFlowsPluginTest {
     }
 
     @Test
+    public void customAttributes() throws ArgFileParseException {
+        List<Md2HtmlPlugin> plugins = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"about.md\"}], " +
+                        "\"plugins\": {\"page-flows\": {\"sections\": [" +
+                        "{\"link\": \"other.html\", \"title\": \"Other\"," +
+                        "    \"custom_string\": \"custom string value\", " +
+                        "    \"custom_number\": 101.4, \"custom_boolean\": true}" +
+                        "]}}}", DUMMY_CLI_OPTIONS).getPlugins();
+        PageFlowsPlugin plugin = findSinglePlugin(plugins);
+        Document doc = documentWithOutputLocation("about.html");
+        List<Map<String, Object>> pages = extractPages(plugin.variables(doc).get("sections"));
+        assertEquals(1, pages.size());
+        assertEquals("custom string value", pages.get(0).get("custom_string"));
+        assertEquals(101.4, pages.get(0).get("custom_number"));
+        assertEquals(true, pages.get(0).get("custom_boolean"));
+    }
+
+    @Test
     public void pageSequence_inDocumentsSection() throws ArgFileParseException {
         List<Md2HtmlPlugin> plugins = parseArgumentFile("{\"documents\": [" +
                 "{\"input\": \"index.txt\", \"title\": \"Home\", \"page-flows\": [\"sections\"]}, " +

@@ -43,6 +43,14 @@ class Md2htmlPageFlowsPluginIntegralTest(unittest.TestCase):
         p = p.next_sibling.next_sibling
         self.assertEqual('Page 3', p.a.text)
         self.assertEqual('page3.html', p.a["href"])
+        
+        h3 = p.next_sibling.next_sibling
+        self.assertEqual('page_flow_3', h3.text)
+        p = h3.next_sibling.next_sibling
+        self.assertEqual('Wikipedia', p.a.text)
+        self.assertEqual('https://en.wikipedia.org/', p.a["href"])
+        p = p.next_sibling.next_sibling
+        self.assertEqual('custom string value 101.4 TRUE', p.text)
 
         with open(Path(self.OUTPUT_DIR).joinpath('page2.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
@@ -119,6 +127,14 @@ class Md2htmlPageFlowsPluginIntegralTest(unittest.TestCase):
         p = p.next_sibling.next_sibling
         self.assertEqual('Google', p.a.text)
         self.assertEqual('https://www.google.com/', p.a["href"])
+        
+        h3 = p.next_sibling.next_sibling
+        self.assertEqual('Page flow 3', h3.text)
+        p = h3.next_sibling.next_sibling
+        self.assertEqual('Wikipedia', p.a.text)
+        self.assertEqual('https://en.wikipedia.org/', p.a["href"])
+        p = p.next_sibling.next_sibling
+        self.assertEqual('custom string value 101.4 TRUE', p.text)
 
         with open(Path(self.OUTPUT_DIR).joinpath('new_syntax/page2.html')) as html_file:
             root = BeautifulSoup(html_file, 'html.parser')
