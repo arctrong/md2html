@@ -145,14 +145,18 @@ In the `"plugins"` sections:
         "page-flows": {
             "sidebar": [
                 { "link": "page1.html", "title": "Page 1" },
-                { "link": "doc/page2.html", "title": "Page 2" },
-                { "link": "doc/page3.html", "title": "Page 3" },
-                { "link": "www.google.com", "title": "Page 3", "external": true }
+                { "link": "doc/page2.html", "title": "Page 2", "class": "align_right" },
+                { "link": "doc/page3.html", "title": "Page 3", "highlight": true },
+                { "link": "www.google.com", "title": "Search", "external": true }
             ]
         }
     }
 }
 ````
+
+Here we see the page flow `sidebar` that contains four link definitions. Each link definition
+has main attributes `link`, `title`, `external`. Also other arbitrary attributes (like `class`
+and `highlight`) may be added and then used in the templates (will be discussed below).
 
 In the above example the three pages are defined twice. To avoid such repetition the page flows 
 may be defined directly in the `"documents"` section:
@@ -180,17 +184,17 @@ page flows.
 
 **Usage**
 
-In a template, each page flow is accessible by its name (`sidebar` in the above example) and
+In a template, each page flow is accessible by its name (`sidebar` in this example) and
 provides the following structured data:
 
 Field | Description
 ----- | -----
-`{{_name_}}` | Iterable, returns [pages](#page_flow_page_structure)
-`{{_name_.previous}}` | Previous [page](#page_flow_page_structure) if exists
-`{{_name_.current}}` | Current [page](#page_flow_page_structure) if exists
-`{{_name_.next}}` | Next [page](#page_flow_page_structure) if exists
-`{{_name_.has_navigation}}` | Boolean, `true` if ether previous or next page exist
-`{{_name_.not_empty}}` | Boolean, `true` if contains at least one page
+`{{sidebar}}` | Iterable, returns [pages](#page_flow_page_structure)
+`{{sidebar.previous}}` | Previous [page](#page_flow_page_structure) if exists
+`{{sidebar.current}}` | Current [page](#page_flow_page_structure) if exists
+`{{sidebar.next}}` | Next [page](#page_flow_page_structure) if exists
+`{{sidebar.has_navigation}}` | Boolean, `true` if ether previous or next page exist
+`{{sidebar.not_empty}}` | Boolean, `true` if contains at least one page
 
 <a name="page_flow_page_structure"></a>
 The page has the following structure:
@@ -202,6 +206,7 @@ Field | Description
 `{{external}}` | Boolean, external pages can never be current
 `{{first}}` | Boolean, `true` if this is the first page in the sequence
 `{{last}}` | Boolean, `true` if this is the last page in the sequence
+`{{class}}` | Example of a custom arbitrary attribute
 
 This data is calculated for every page that uses this template. So for the current page we can 
 know the previous and the next pages and render the navigations. Here's a simple example:

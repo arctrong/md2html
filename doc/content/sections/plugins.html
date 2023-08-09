@@ -187,13 +187,16 @@ cumbersome and error-prone.</p>
         "page-flows": {
             "sidebar": [
                 { "link": "page1.html", "title": "Page 1" },
-                { "link": "doc/page2.html", "title": "Page 2" },
-                { "link": "doc/page3.html", "title": "Page 3" },
-                { "link": "www.google.com", "title": "Page 3", "external": true }
+                { "link": "doc/page2.html", "title": "Page 2", "class": "align_right" },
+                { "link": "doc/page3.html", "title": "Page 3", "highlight": true },
+                { "link": "www.google.com", "title": "Search", "external": true }
             ]
         }
     }
 }</code></pre>
+<p>Here we see the page flow <code>sidebar</code> that contains four link definitions. Each link definition
+has main attributes <code>link</code>, <code>title</code>, <code>external</code>. Also other arbitrary attributes (like <code>class</code>
+and <code>highlight</code>) may be added and then used in the templates (will be discussed below).</p>
 <p>In the above example the three pages are defined twice. To avoid such repetition the page flows 
 may be defined directly in the <code>"documents"</code> section:</p>
 <pre class="highlight"><code>{
@@ -213,7 +216,7 @@ section.</p>
 demonstrated here). Several page flows may be defined and a single page may be a part of several
 page flows.</p>
 <p><strong>Usage</strong></p>
-<p>In a template, each page flow is accessible by its name (<code>sidebar</code> in the above example) and
+<p>In a template, each page flow is accessible by its name (<code>sidebar</code> in this example) and
 provides the following structured data:</p>
 <table>
 <thead>
@@ -224,27 +227,27 @@ provides the following structured data:</p>
 </thead>
 <tbody>
 <tr>
-<td><code>{{_name_}}</code></td>
+<td><code>{{sidebar}}</code></td>
 <td>Iterable, returns <a href="#page_flow_page_structure">pages</a></td>
 </tr>
 <tr>
-<td><code>{{_name_.previous}}</code></td>
+<td><code>{{sidebar.previous}}</code></td>
 <td>Previous <a href="#page_flow_page_structure">page</a> if exists</td>
 </tr>
 <tr>
-<td><code>{{_name_.current}}</code></td>
+<td><code>{{sidebar.current}}</code></td>
 <td>Current <a href="#page_flow_page_structure">page</a> if exists</td>
 </tr>
 <tr>
-<td><code>{{_name_.next}}</code></td>
+<td><code>{{sidebar.next}}</code></td>
 <td>Next <a href="#page_flow_page_structure">page</a> if exists</td>
 </tr>
 <tr>
-<td><code>{{_name_.has_navigation}}</code></td>
+<td><code>{{sidebar.has_navigation}}</code></td>
 <td>Boolean, <code>true</code> if ether previous or next page exist</td>
 </tr>
 <tr>
-<td><code>{{_name_.not_empty}}</code></td>
+<td><code>{{sidebar.not_empty}}</code></td>
 <td>Boolean, <code>true</code> if contains at least one page</td>
 </tr>
 </tbody>
@@ -278,6 +281,10 @@ The page has the following structure:</p>
 <tr>
 <td><code>{{last}}</code></td>
 <td>Boolean, <code>true</code> if this is the last page in the sequence</td>
+</tr>
+<tr>
+<td><code>{{class}}</code></td>
+<td>Example of a custom arbitrary attribute</td>
 </tr>
 </tbody>
 </table>
