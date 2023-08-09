@@ -62,28 +62,113 @@ class="header_item" href="https://github.com/arctrong/md2html">GitHub</a>
 
 <p style="font-size:44px;font-weight:bold;margin:0 0 30px 0;">Quick start</p>
 
-<p><a name="index_entry_index_1"></a>
-This documentation gives the program's <a href="usage.html">usage</a> detailed description 
+<div class="toc">
+<ul>
+<li><a href="#about-this-section">About this section</a></li>
+<li><a href="#quick-start-script">Quick start script</a></li>
+<li><a href="#creating-a-simplest-project">Creating a simplest project</a></li>
+</ul>
+</div>
+<hr />
+<h1 id="about-this-section">About this section</h1>
+<p>The documentation gives the program's <a href="usage.html">usage</a> detailed description 
 as well as the <a href="page_content.html">page content</a> writing methods and tricks. But this 
-information is probably not necessary for just trying the program out. The program provides 
-a quick-start script that creates a simple new project with a 
+information is probably not necessary for just trying the program out. This section describes 
+the ways of quick starting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before using this script the program must be installed, see the 
+<a href="installation.html">Installation section</a>.</p>
+</div>
+<hr />
+<p><a name="index_entry_index_1"></a></p>
+<h1 id="quick-start-script">Quick start script</h1>
+<p>The  quick-start script creates a simple new project with a 
 <a href="usage.html#typical_project_structure">typical structure</a> 
 and with some sample content.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>As for now the quick start script is implemented for Windows only.</p>
 </div>
-<p>Before using this script the program must be installed, see the 
-<a href="installation.html">Installation section</a>.</p>
 <p>As the program is installed, create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal and execute:</p>
-<pre class="highlight"><code class="language-shell">&gt;cd C:\your\path\your_project
-
-&gt;%MD2HTML_HOME%\bin\new_project\new_project.bat</code></pre>
+then switch to there in the command line terminal</p>
+<pre class="highlight"><code class="language-shell">&gt;cd C:\your\path\your_project</code></pre>
+<p>and execute the following command:</p>
+<pre class="highlight"><code class="language-shell">&gt;%MD2HTML_HOME%\bin\new_project\new_project.bat</code></pre>
 <p>All necessary project files will be created in the directory <code>your_project</code>. Just generate 
 the documentation by double-clicking the command file <code>generate_doc_py.bat</code> or 
 <code>generate_doc_java.bat</code>. Open the generated file <code>readme.html</code> in the project's root 
 directory to see the content.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>your_project</code> directory must better be empty before running the new project generation 
+script.</p>
+</div>
+<hr />
+<p><a name="index_entry_index_2"></a></p>
+<h1 id="creating-a-simplest-project">Creating a simplest project</h1>
+<p>Here is an instruction for manually creating a very simple documentation project.</p>
+<p>In a project directory create the following artifacts.</p>
+<ul>
+<li>
+<p>File <code>generate_doc_py.bat</code> or <code>generate_doc_java.bat</code>. May be copied from the program's root 
+    directory.</p>
+</li>
+<li>
+<p><em>Argument file</em> <code>md2html_args.json</code> with a content like this:</p>
+<pre class="highlight"><code>{
+    "options": {
+        "verbose": true
+    },
+    "default": {
+        "template": "template.html",
+        "no-css": true,
+        "verbose": true
+    },
+    "documents": [
+        { "input": "example.txt", "title": "Example" }
+    ]
+}</code></pre>
+</li>
+<li>
+<p>Template file <code>template.html</code> with a content like this:</p>
+<pre class="highlight"><code>&lt;!DOCTYPE html&gt;
+&lt;html style="font-size: 20px;"&gt;
+&lt;head&gt;
+    &lt;title&gt;{{title}}&lt;/title&gt;
+    &lt;meta charset="utf-8"&gt;
+&lt;/head&gt;
+    &lt;body&gt;
+{{{content}}}
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</li>
+<li>
+<p>Example Markdown file <code>example.txt</code> with a content like this:</p>
+<pre class="highlight"><code>[TOC]
+
+--------------------------------------------------
+
+# About this page
+
+This page demonstrates a simplest possible documentation.
+
+# Formatting and lists
+
+Demonstrated are:
+
+- **bold** text decoration;
+- *italic* text decoration;
+- `code` text decoration;
+- a list usage.</code></pre>
+</li>
+</ul>
+<p>Click ether of the files <code>generate_doc_py.bat</code> or <code>generate_doc_java.bat</code>, or open the project
+directory in the command line and run them there. The result file <code>example.html</code> will be generated.</p>
+<p>The result HTML page in this simple example doesn't contain nor link any style sheets and uses the
+browser's default styles.</p>
+<p>The described example is reproduced in the directory <code>simplest_project</code> and the generated page
+may be viewed <a href="../../../simplest_project/example.html">here</a>.</p>
 <p>&nbsp;</p>
 <hr />
 

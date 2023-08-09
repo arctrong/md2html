@@ -9,8 +9,13 @@
   "doc/content/sections/overview.html": [],
   "doc/content/sections/quick_start.html": [
     {
-      "entry": "quick start",
+      "entry": "quick start script",
       "link": "sections/quick_start.html#index_entry_index_1",
+      "title": "Quick start"
+    },
+    {
+      "entry": "quick start, manual",
+      "link": "sections/quick_start.html#index_entry_index_2",
       "title": "Quick start"
     }
   ],

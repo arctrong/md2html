@@ -1,0 +1,13 @@
+{
+    "options": {
+        "verbose": true
+    },
+    "default": {
+        "template": "template.html",
+        "no-css": true,
+        "verbose": true
+    },
+    "documents": [
+        { "input": "example.txt", "title": "Example" }
+    ]
+}

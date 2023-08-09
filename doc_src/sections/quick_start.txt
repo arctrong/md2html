@@ -1,25 +1,40 @@
 <!--VARIABLES {"title": "Quick start", "SORT_ORDER": "030", "code": "quick_start"}-->
 
-<!--index quick start-->
-This documentation gives the program's [usage](<!--page usage-->) detailed description 
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About this section
+
+The documentation gives the program's [usage](<!--page usage-->) detailed description 
 as well as the [page content](<!--page page_content-->) writing methods and tricks. But this 
-information is probably not necessary for just trying the program out. The program provides 
-a quick-start script that creates a simple new project with a 
+information is probably not necessary for just trying the program out. This section describes 
+the ways of quick starting.
+
+!!! note
+    Before using this script the program must be installed, see the 
+    [Installation section](<!--page installation-->).
+
+----------------------------------------------------------------------------------------------------
+<!--index quick start script-->
+# Quick start script
+
+The  quick-start script creates a simple new project with a 
 [typical structure](<!--page usage-->#typical_project_structure) 
 and with some sample content.
 
 !!! note
     As for now the quick start script is implemented for Windows only.
 
-Before using this script the program must be installed, see the 
-[Installation section](<!--page installation-->).
-
 As the program is installed, create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal and execute:
+then switch to there in the command line terminal
 
 ````shell
 >cd C:\your\path\your_project
+````
 
+and execute the following command:
+
+````shell
 >%MD2HTML_HOME%\bin\new_project\new_project.bat
 ````
 
@@ -28,9 +43,84 @@ the documentation by double-clicking the command file `generate_doc_py.bat` or
 `generate_doc_java.bat`. Open the generated file `readme.html` in the project's root 
 directory to see the content.
 
+!!! note
+    The `your_project` directory must better be empty before running the new project generation 
+    script.
+
+----------------------------------------------------------------------------------------------------
+<!--index quick start, manual-->
+# Creating a simplest project
+
+Here is an instruction for manually creating a very simple documentation project.
+
+In a project directory create the following artifacts.
+
+- File `generate_doc_py.bat` or `generate_doc_java.bat`. May be copied from the program's root 
+    directory.
+
+- *Argument file* `md2html_args.json` with a content like this:
+
+    ````
+    {
+        "options": {
+            "verbose": true
+        },
+        "default": {
+            "template": "template.html",
+            "no-css": true,
+            "verbose": true
+        },
+        "documents": [
+            { "input": "example.txt", "title": "Example" }
+        ]
+    }
+    ````
+    
+- Template file `template.html` with a content like this:
+
+    ````
+    <!DOCTYPE html>
+    <html style="font-size: 20px;">
+    <head>
+        <title>{{title}}</title>
+        <meta charset="utf-8">
+    </head>
+        <body>
+    {{{content}}}
+        </body>
+    </html>
+    ````
+
+- Example Markdown file `example.txt` with a content like this:
+
+    ````
+    [TOC]
+
+    --------------------------------------------------
+
+    # About this page
+
+    This page demonstrates a simplest possible documentation.
+
+    # Formatting and lists
+
+    Demonstrated are:
+
+    - **bold** text decoration;
+    - *italic* text decoration;
+    - `code` text decoration;
+    - a list usage.
+    ````
+
+Click ether of the files `generate_doc_py.bat` or `generate_doc_java.bat`, or open the project
+directory in the command line and run them there. The result file `example.html` will be generated.
+
+The result HTML page in this simple example doesn't contain nor link any style sheets and uses the
+browser's default styles.
+
+The described example is reproduced in the directory `simplest_project` and the generated page
+may be viewed [here](<!--path resource_path-->../simplest_project/example.html).
 
 
-
-
-
-
+    
+    

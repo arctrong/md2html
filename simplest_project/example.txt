@@ -1,0 +1,16 @@
+[TOC]
+
+--------------------------------------------------
+
+# About this page
+
+This page demonstrates a simplest possible documentation.
+
+# Formatting and lists
+
+Demonstrated are:
+
+- **bold** text decoration;
+- *italic* text decoration;
+- `code` text decoration;
+- a list usage.
