@@ -597,9 +597,9 @@ important information may be easily missed by the reader.</p>
 <p>Attribute lists let add attributes to HTML tags. More details may be found at:</p>
 <ul>
 <li><a href="https://python-markdown.github.io/extensions/attr_list/">Attribute Lists extension</a>
-    for the Python library.</li>
+    for the Python library;</li>
 <li><a href="https://github.com/vsch/flexmark-java/wiki/Extensions#attributes">Attributes Extension</a>
-    for the Java library;</li>
+    for the Java library.</li>
 </ul>
 <p>The above libraries have some differences in their interpretation, so Python and Java versions
 may work differently. The below are the usage examples that must work the same way.</p>
@@ -639,7 +639,7 @@ descriptions.</p>
 <p>Here's a way a table cell may be formatted:</p>
 <pre class="highlight"><code>Header 1 | Header 2
 ---------|--------
-Cell 1 {.green} | Cell 2 {class='blue' name=cell2}</code></pre>
+Cell 1 {style="background-color: aqua;"} | Cell 2 {name=cell2}</code></pre>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Mind the space between the header title and the opening curly brace <code>{</code> &mdash; it's mandatory.</p>
@@ -650,13 +650,31 @@ Cell 1 {.green} | Cell 2 {class='blue' name=cell2}</code></pre>
 &lt;tr&gt;&lt;th&gt;Header 1&lt;/th&gt;&lt;th&gt;Header 2&lt;/th&gt;&lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
-&lt;tr&gt;&lt;td class="green"&gt;Cell 1 &lt;/td&gt;
-&lt;td class="blue" name="cell2"&gt;Cell 2&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: aqua;"&gt;Cell 1&lt;/td&gt;
+&lt;td name="cell2"&gt;Cell 2&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;</code></pre>
 <p>In this example an arbitrary attribute <code>name=cell2</code> is added. This may be done for other elements
 as well. Single or double quotes may be used, and ether of them <em>must</em> be used if the attribute 
-value contains spaces.</p>
+value contains spaces. Of cause alternatively a class might be assigned instead of the direct
+CSS parameters.</p>
+<p>The table will look like this:</p>
+<table>
+<thead>
+<tr>
+<th>Header 1</th>
+<th>Header 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="background-color: aqua;">Cell 1</td>
+<td name="cell2">Cell 2</td>
+</tr>
+</tbody>
+</table>
 <p>&nbsp;</p>
 <hr />
 

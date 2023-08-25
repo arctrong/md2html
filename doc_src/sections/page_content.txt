@@ -537,7 +537,7 @@ Here's a way a table cell may be formatted:
 ````
 Header 1 | Header 2
 ---------|--------
-Cell 1 {.green} | Cell 2 {class='blue' name=cell2}
+Cell 1 {style="background-color: aqua;"} | Cell 2 {name=cell2}
 ````
 
 !!! important
@@ -551,15 +551,26 @@ The generated HTML code will be like this:
 <tr><th>Header 1</th><th>Header 2</th></tr>
 </thead>
 <tbody>
-<tr><td class="green">Cell 1 </td>
-<td class="blue" name="cell2">Cell 2</td></tr>
+<tr>
+<td style="background-color: aqua;">Cell 1</td>
+<td name="cell2">Cell 2</td>
+</tr>
 </tbody>
 </table>
 ````
 
 In this example an arbitrary attribute `name=cell2` is added. This may be done for other elements
 as well. Single or double quotes may be used, and ether of them *must* be used if the attribute 
-value contains spaces.
+value contains spaces. Of cause alternatively a class might be assigned instead of the direct
+CSS parameters.
+
+The table will look like this:
+
+Header 1 | Header 2
+---------|--------
+Cell 1 {style="background-color: aqua;"} | Cell 2 {name=cell2}
+
+
 
 
 
