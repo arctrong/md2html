@@ -377,7 +377,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
 
         p = h1.next_sibling.next_sibling
         self.assertEqual('Paragraph 2 content.', p.text)
-        self.assertEqual(['blue'], p["class"])
+        self.assertEqual(['blue', 'underlined'], p["class"])
         self.assertEqual('paragraph2_id', p["id"])
 
         li = p.next_sibling.next_sibling.li
@@ -395,6 +395,7 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         td = tds[1]
         self.assertEqual('Cell 2', td.text.strip())
         self.assertEqual(['blue'], td["class"])
+        self.assertEqual('cell2', td["name"])
 
 
 if __name__ == '__main__':

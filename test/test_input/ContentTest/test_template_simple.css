@@ -5,3 +5,8 @@
 .green {
     background-color: chartreuse;
 }
+
+.underlined {
+  text-decoration: underline;
+}
+

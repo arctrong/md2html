@@ -11,7 +11,7 @@ Paragraph 1 content.
 # Header 2 title { name=paragraph2_name }
 
 Paragraph 2 content.
-{ .blue id='paragraph2_id' }
+{ .blue id='paragraph2_id' .underlined }
 
 - List item 1
     { class=blue }
@@ -20,5 +20,5 @@ Paragraph 2 content.
 
 Header 1 | Header 2
 ---------|--------
-Cell 1 {.green} | Cell 2 {class='blue'}
+Cell 1 {.green} | Cell 2 {class='blue' name=cell2}
 
