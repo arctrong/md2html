@@ -24,7 +24,9 @@
         { "input": "admonitions_test.txt" },
         { "input": "admonition_custom_header.txt" },
         { "input": "admonition_without_header.txt" },
-        { "input": "admonition_with_fenced_block.txt" }
+        { "input": "admonition_with_fenced_block.txt" },
+        { "input": "attribute_lists_test.txt", 
+            "link-css": ["test_input/ContentTest/test_template_simple.css"] }
     ]
 }
 

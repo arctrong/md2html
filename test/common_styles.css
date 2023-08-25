@@ -1,0 +1,194 @@
+body, html {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+body {
+    font-size: 18px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    max-width: 900px;
+}
+
+li {
+    max-width: 860px;
+}
+
+ul, ol {
+    padding-left: 40px;
+}
+
+hr {
+    height: 1px;
+    border: 0px;
+    width: 899px;
+    margin-left: 0px;
+    text-align: left;
+}
+
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+    font-size: unset;
+}
+
+code, .code {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
+    font-size: 16px;
+    background-color: #eeeeee;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 7px;
+    white-space: nowrap;
+    border-style: solid;
+    border-width: 1px;
+}
+
+pre>code, div.code {
+    font-size: 16px;
+    display: block;
+    width: 878px;
+    min-width: max-content;
+    line-height: 1.4;
+    border-radius: 0;
+    white-space: pre;
+    padding: 10px;
+}
+
+pre>code.language-wrapped {
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-width: unset;
+}
+
+pre>code.language-text {
+    background-color: unset;
+    padding: 0;
+    width: 900px;
+    border: none;
+}
+
+pre>code.language-shell, pre>code.language-wrapped-shell,
+pre>code.language-code, pre>code.language-wrapped-code {
+    border-style: solid;
+    border-width: 1px;
+}
+
+pre>code.language-wrapped-shell, pre>code.language-wrapped-code {
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-width: unset;
+}
+
+blockquote {
+    margin-left: 0;
+    padding: 1px 10px;
+    font-size: 16px;
+    width: 868px;
+    min-width: max-content;
+    border-style: solid;
+    border-width: 1px 1px 1px 10px;
+}
+
+blockquote *, div.admonition * {
+    max-width: 868px;
+}
+
+blockquote, div.admonition {
+    overflow: hidden;
+}
+
+blockquote pre>code {
+    width: 847px;
+}
+
+div.admonition pre>code {
+    width: 857px;
+}
+
+blockquote li pre code {
+    width: 808px;
+}
+
+table {
+    max-width: 900px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+table td, table th {
+    border-style: solid;
+    border-width: 1px;
+    padding: 7px 14px;
+}
+
+table td {
+    vertical-align: top;
+}
+
+table th {
+    background-color: #e9f0f2;
+}
+
+div.tableLight+table td, div.tableLight+table th {
+    background: none;
+    border: none;
+    padding: 2px 7px;
+}
+
+div.tableHederless+table>thead {
+    display: none;
+}
+
+div.admonition {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0;
+    padding: 0;
+    font-size: 16px;
+    width: 898px;
+    min-width: max-content;
+    border-style: solid;
+    border-width: 1px;
+}
+
+div.admonition>p.admonition-title {
+    margin: 0;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding: 5px 20px 5px 10px;
+    font-weight: bold;
+    max-width: unset;
+}
+
+div.admonition>* {
+    margin: 16px 10px;
+}
+
+div.admonition li {
+    width: 838px;
+}
+
+li>div.admonition {
+    width: unset;
+    min-width: unset;
+}
+
+li>blockquote {
+    width: 827px;
+}
+
+li>pre>code {
+    width: 838px;
+}
+
+img.floatRight {
+    float: right; 
+    margin: 0 0 25px 25px;
+}
+
+img.floatLeft {
+    float: left; 
+    margin: 0 25px 25px 0;
+}
