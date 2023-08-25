@@ -1,5 +1,6 @@
 package world.md2html;
 
+import com.vladsch.flexmark.ext.attributes.AttributesExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
@@ -73,19 +74,19 @@ public class Md2HtmlUtils {
                                 TocExtension.create(),
                                 //InsExtension.create(),
                                 TypographicExtension.create(),
-                                PythonMarkdownCompatibleAdmonitionExtension.create()
+                                PythonMarkdownCompatibleAdmonitionExtension.create(),
+                                AttributesExtension.create()
                         ))
                 .set(TocExtension.LEVELS, 126) // generate ToC for all header levels
                 // TODO looks like the following option doesn't work. Probably need to
                 //  rewrite to `TypographicExtension` in order to use only `EM_DASH`.
                 .set(TypographicExtension.EN_DASH, "--")
-                .set(TypographicExtension.ENABLE_QUOTES, false); // disable &ndash;
+                .set(TypographicExtension.ENABLE_QUOTES, false) // disable &ndash;
+                .set(AttributesExtension.ASSIGN_TEXT_ATTRIBUTES, false);
 
         // TODO Try to wrap table of contents into a `div` block.
         //  It's really unclear how to do it.
         //  See https://github.com/vsch/flexmark-java/wiki/Table-of-Contents-Extension
-
-        //options.set(HtmlRenderer.FENCED_CODE_LANGUAGE_CLASS_PREFIX, "");
 
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();

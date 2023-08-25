@@ -354,6 +354,48 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual(['language-code'], fenced_block.get('class'))
         self.assertEqual('print("Code fragment inside an admonition.")', fenced_block.text.strip())
 
+    def test_attribute_lists(self):
+        root = self._read_output_file('attribute_lists_test.html')
+        
+        toc_item = root.body.ul.li
+        self.assertEqual('Header 1 title', toc_item.a.text)
+        self.assertEqual('#custom_id', toc_item.a["href"])
+        
+        h1 = root.body.h1
+        self.assertEqual('Header 1 title', h1.text)
+        self.assertEqual('custom_id', h1["id"])
+
+        p = h1.next_sibling.next_sibling
+        self.assertEqual('Paragraph 1 content.', p.text)
+        self.assertEqual(['blue'], p["class"])
+        self.assertEqual('paragraph1_id', p["id"])
+        self.assertEqual('paragraph1 name', p["name"])
+
+        h1 = p.next_sibling.next_sibling
+        self.assertEqual('Header 2 title', h1.text)
+        self.assertEqual('paragraph2_name', h1["name"])
+
+        p = h1.next_sibling.next_sibling
+        self.assertEqual('Paragraph 2 content.', p.text)
+        self.assertEqual(['blue'], p["class"])
+        self.assertEqual('paragraph2_id', p["id"])
+
+        li = p.next_sibling.next_sibling.li
+        self.assertEqual('List item 1', li.text)
+        self.assertEqual(['blue'], li["class"])
+
+        li = li.next_sibling.next_sibling
+        self.assertEqual('List item 2', li.text)
+        self.assertEqual(['green'], li["class"])
+
+        tds = root.body.find_all('table')[0].tbody.tr.find_all('td')
+        td = tds[0]
+        self.assertEqual('Cell 1', td.text.strip())
+        self.assertEqual(['green'], td["class"])
+        td = tds[1]
+        self.assertEqual('Cell 2', td.text.strip())
+        self.assertEqual(['blue'], td["class"])
+
 
 if __name__ == '__main__':
     unittest.main()

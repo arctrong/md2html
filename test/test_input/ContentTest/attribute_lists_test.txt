@@ -1,0 +1,24 @@
+
+[TOC]
+
+
+# Header 1 title {#custom_id}
+
+Paragraph 1 content.
+{.blue #paragraph1_id name="paragraph1 name"}
+
+
+# Header 2 title { name=paragraph2_name }
+
+Paragraph 2 content.
+{ .blue id='paragraph2_id' }
+
+- List item 1
+    { class=blue }
+- List item 2
+    { class='green' }
+
+Header 1 | Header 2
+---------|--------
+Cell 1 {.green} | Cell 2 {class='blue'}
+
