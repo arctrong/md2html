@@ -72,7 +72,7 @@ Dashes and equal signs may be interpreted as header marks of the previous line, 
 markup it's better, and sometimes required, to leave an empty line before these sequences.
 
 ----------------------------------------------------------------------------------------------------
-# Table of contents
+# Table of contents {id=table_of_contents}
 
 `[TOC]` element in the Markdown document will resolve into the document's table of contents in
 the generated HTML. The example can be seen at the top of this and other pages. The ToC is
@@ -109,6 +109,10 @@ that will make the link text equal the link location.
 ----------------------------------------------------------------------------------------------------
 <a name="anchor_demo"></a>
 # Anchors
+
+!!! note
+    Since the version 1.0.6, [*attribute lists*](#attribute_lists) may be used for the tag IDs
+    definition.
 
 The header tags have their automatically generated `id`s so they can be referenced by the links. 
 But these `id`s are uncontrolled and will change if the the header changes. Anchors may be added
@@ -462,5 +466,102 @@ The result will be like this:
     Admonitions are not supported in GitHub and StackOverflow.
  
     !!! note
-        When a default title is used its first character is capitalized.
+        When a default title is used, its first character is capitalized.
+
+----------------------------------------------------------------------------------------------------
+<!--index attribute lists-->
+# Attribute lists {#attribute_lists}
+
+Attribute lists let add attributes to HTML tags. More details may be found at:
+
+- [Attribute Lists extension](https://python-markdown.github.io/extensions/attr_list/)
+    for the Python library;
+- [Attributes Extension](https://github.com/vsch/flexmark-java/wiki/Extensions#attributes)
+    for the Java library.
+
+The above libraries have some differences in their interpretation, so Python and Java versions
+may work differently. The below are the usage examples that must work the same way.
+
+The following header:
+
+````
+# Header title {#custom_id}
+````
+
+will be converted into something like:
+
+````
+<h1 id="custom_id">Header title</h1>
+````
+
+!!! important
+    Mind the space between the header title and the opening curly brace `{` --- it's mandatory.
+
+Alternatively an ID may be assigned by expression `{id=custom_id}` or `{id='custom_id'}` or
+`{id="custom_id"}`.
+    
+This `id` will be also set in the corresponding [table of contents](#table_of_contents) item.
+
+A paragraph and a list item may be styled by assigning CSS classes like this:
+
+````
+Paragraph content.
+{ .blue .underlined }
+
+- List item 1
+    { class=blue }
+- List item 2
+    { class='green' }
+````
+
+The generated HTML will be like:
+
+````
+<p class="blue underlined">Paragraph content.</p>
+<ul>
+<li class="blue">List item 1</li>
+<li class="green">List item 2</li>
+</ul>
+````
+
+As we can see, a dot `.` may be replaced by `class=` with optional single or double quotes.
+Also note that the attributes must be specified at a separate line in the end of the element.
+
+!!! note
+    To make the document be rendered similarly in the Python and the Java versions, it's better
+    to follow the examples above. See the above links at the extensions (libraries)
+    descriptions.
+
+Here's a way a table cell may be formatted:
+
+````
+Header 1 | Header 2
+---------|--------
+Cell 1 {.green} | Cell 2 {class='blue' name=cell2}
+````
+
+!!! important
+    Mind the space between the header title and the opening curly brace `{` --- it's mandatory.
+
+The generated HTML code will be like this:
+
+````
+<table>
+<thead>
+<tr><th>Header 1</th><th>Header 2</th></tr>
+</thead>
+<tbody>
+<tr><td class="green">Cell 1 </td>
+<td class="blue" name="cell2">Cell 2</td></tr>
+</tbody>
+</table>
+````
+
+In this example an arbitrary attribute `name=cell2` is added. This may be done for other elements
+as well. Single or double quotes may be used, and ether of them *must* be used if the attribute 
+value contains spaces.
+
+
+
+
 

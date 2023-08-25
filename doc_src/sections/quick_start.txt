@@ -18,7 +18,7 @@ the ways of quick starting.
 <!--index quick start script-->
 # Quick start script
 
-The  quick-start script creates a simple new project with a 
+The  quick-start script creates a small new project with a 
 [typical structure](<!--page usage-->#typical_project_structure) 
 and with some sample content.
 
