@@ -33,6 +33,7 @@ Text effect | Markdown/HTML syntax | Comments
 <span class="code">escaped &lt;code&gt; fragment</span> | `<span class="code">escaped &lt;code&gt; fragment</span>` | 1
 <del>deleted</del> | `<del>deleted</del>` | 2
 <ins>inserted</ins> | `<ins>inserted</ins>` | 2
+<s>stricken through</s> | `<s>stricken through</s>` | 3
 Normal text<sub>subscript</sub> | `Normal text<sub>subscript</sub>` | 3
 Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>` | 3
 --- (em-dash, `&mdash;`) | `---` |   |
@@ -45,8 +46,8 @@ Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>` | 3
         text is not implemented in this program. First, these effects must not be required very
         often. Second, such markup may cause problems if we write text like "C++", or `++i`.
         The used direct HTML markup lets achieve these effects safely.
-    3. Subscript and superscript are not in the Markdown syntax. Here direct HTML markup
-        is used as a possible workaround.
+    3. Stricken through text, subscript and superscript are not in the Markdown syntax.
+        Here direct HTML markup is used as a possible workaround.
 
 ----------------------------------------------------------------------------------------------------
 # Horizontal line
@@ -255,7 +256,7 @@ Blockquotes are inserted by starting each line with `> `.
 <!--index tables-->
 # Tables
 
-Table are added with the syntax like this:
+Tables are added with the syntax like this:
 
 ````
 Item No | Name  | Description   | Price
@@ -295,7 +296,7 @@ Will give the following table style:
 If we want to just align text we can use a table without a header:
 
 ````
-<div class="tableHederless"></div>
+<div class="tableHeaderless"></div>
 
 | | | | |
 |---:|---: |---: |---: |
@@ -306,7 +307,7 @@ If we want to just align text we can use a table without a header:
 
 This will give:
 
-<div class="tableHederless"></div>
+<div class="tableHeaderless"></div>
 
 | | | | |
 |---:|---: |---: |---: |
@@ -317,10 +318,10 @@ This will give:
 We also can combine the CSS classes like this:
 
 ````
-<div class="tableLight tableHederless"></div>
+<div class="tableLight tableHeaderless"></div>
 ````
 
-<div class="tableLight tableHederless"></div>
+<div class="tableLight tableHeaderless"></div>
 
 | | | | |
 |---:|---: |---: |---: |

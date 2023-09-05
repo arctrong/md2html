@@ -137,7 +137,7 @@ div.tableLight+table td, div.tableLight+table th {
     padding: 2px 7px;
 }
 
-div.tableHederless+table>thead {
+div.tableHeaderless+table>thead {
     display: none;
 }
 

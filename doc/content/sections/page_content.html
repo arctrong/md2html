@@ -143,6 +143,11 @@ the possible result that may be obtained. The source Markdown text files may be 
 <td align="center">2</td>
 </tr>
 <tr>
+<td><s>stricken through</s></td>
+<td><code>&lt;s&gt;stricken through&lt;/s&gt;</code></td>
+<td align="center">3</td>
+</tr>
+<tr>
 <td>Normal text<sub>subscript</sub></td>
 <td><code>Normal text&lt;sub&gt;subscript&lt;/sub&gt;</code></td>
 <td align="center">3</td>
@@ -169,8 +174,8 @@ the possible result that may be obtained. The source Markdown text files may be 
     text is not implemented in this program. First, these effects must not be required very
     often. Second, such markup may cause problems if we write text like "C++", or <code>++i</code>.
     The used direct HTML markup lets achieve these effects safely.</li>
-<li>Subscript and superscript are not in the Markdown syntax. Here direct HTML markup
-    is used as a possible workaround.</li>
+<li>Stricken through text, subscript and superscript are not in the Markdown syntax.
+    Here direct HTML markup is used as a possible workaround.</li>
 </ol>
 </div>
 <hr />
@@ -334,7 +339,7 @@ on dark background problem handling demonstration.</p>
 <hr />
 <p><a name="index_entry_index_1"></a></p>
 <h1 id="tables">Tables</h1>
-<p>Table are added with the syntax like this:</p>
+<p>Tables are added with the syntax like this:</p>
 <pre class="highlight"><code>Item No | Name  | Description   | Price
 :------:|-------|---------------|------:
 1       | Chair | Kitchen chair |  87.50
@@ -410,7 +415,7 @@ element right before a table:</p>
 </tbody>
 </table>
 <p>If we want to just align text we can use a table without a header:</p>
-<pre class="highlight"><code>&lt;div class="tableHederless"&gt;&lt;/div&gt;
+<pre class="highlight"><code>&lt;div class="tableHeaderless"&gt;&lt;/div&gt;
 
 | | | | |
 |---:|---: |---: |---: |
@@ -418,7 +423,7 @@ element right before a table:</p>
 | 50 | 60  | 70  | 80  |
 | 90 | 100 | 110 | 120 |</code></pre>
 <p>This will give:</p>
-<div class="tableHederless"></div>
+<div class="tableHeaderless"></div>
 
 <table>
 <thead>
@@ -451,8 +456,8 @@ element right before a table:</p>
 </tbody>
 </table>
 <p>We also can combine the CSS classes like this:</p>
-<pre class="highlight"><code>&lt;div class="tableLight tableHederless"&gt;&lt;/div&gt;</code></pre>
-<div class="tableLight tableHederless"></div>
+<pre class="highlight"><code>&lt;div class="tableLight tableHeaderless"&gt;&lt;/div&gt;</code></pre>
+<div class="tableLight tableHeaderless"></div>
 
 <table>
 <thead>
