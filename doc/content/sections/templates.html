@@ -3,61 +3,82 @@
 <head><title>Templates</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" type="image/png" href="../../favicon.png"/>
-<link rel="stylesheet" type="text/css" href="../../layout/styles.css"/>
-<link rel="stylesheet" type="text/css" href="../../themes/dark_default_content.css"/>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../../layout/content.css"/>
+<link rel="stylesheet" type="text/css" href="../../themes/dark/content_theme.css"/>
 <link rel="stylesheet" type="text/css" href="../../layout/layout.css"/>
-<link rel="stylesheet" type="text/css" href="../../themes/dark_default_layout.css"/>
+<link rel="stylesheet" type="text/css" href="../../themes/dark/layout_theme.css"/>
 
+<link rel="stylesheet" type="text/css" href="../../layout/flex.css"/>
 <link rel="stylesheet" type="text/css" href="../../custom.css"/>
-<style>
-.headerNavArrows {position: relative; top: 3px;}
-</style>
 </head>
 <body>
 
-<div class="header"><b><span style="color:#ff7f2a;">M</span><sub style="color:burlywood;">2</sub><span style="color:#59f;margin-right:7px;">H</span></b><a 
-class="header_item" href="../../../readme.html">Home</a><a 
-class="header_item" href="installation.html">Installation</a><a 
-class="header_item" href="usage.html">Usage</a><a 
-class="header_item" href="../index_page.html">Index</a><a 
-class="header_item" href="https://github.com/arctrong/md2html">GitHub</a>
+<div class="header">
+<img id="burger" src="../..//layout/pict/burger.png" 
+onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" />
 
-<a href="../../../doc_src/sections/templates.txt " class="header_item_source" title="Source text">&lt;/&gt;</a>
+<a 
+class="header_item "
+href="../../../readme.html"><img 
+class="logo_image" src="../../favicon.png" /></a><a 
+class="header_item toggle_wide_only_inline"
+href="../../../readme.html"><span class="">Home</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="installation.html"><span class="">Installation</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="usage.html"><span class="">Usage</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="../index_page.html"><span class="">Index</span></a><a 
+class="header_item toggle_narrow_only_inline"
+href="../index_page.html"><img 
+class="header_image index_image" src="../../layout/pict/search.png" /></a><a 
+class="header_item toggle_wide_only_inline"
+href="https://github.com/arctrong/md2html"><span class="">GitHub</span></a>
+<a href="../../../doc_src/sections/templates.txt" class="header_item_source toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>
 
+<a href="page_content.html" title="Previous: Page content"><img class="headerNavArrows" src="../../layout/pict/previous_page_h21px.png"/></a>
 
-<a href="page_content.html" title="Previous: Page content"><img class="headerNavArrows" src="../../layout/pict/previous_page_h18px.png"/></a>
-
-<a href="plugins.html" title="Next: Plugins"><img class="headerNavArrows" src="../../layout/pict/next_page_h18px.png"/></a>
+<a href="plugins.html" title="Next: Plugins"><img class="headerNavArrows" src="../../layout/pict/next_page_h21px.png"/></a>
 
 
 <span class="headerTitle">Templates</span>
 
 </div>
 
+<div class="sidebarWrapper">
 <div class="sidebar">
     <table class="sidebarAligner">
         <tr><td valign="top">
+            <div class="align_right toggle_narrow_only_block">
+            <a class="sidebar_item_inline align_right" href="https://github.com/arctrong/md2html">GitHub</a>
             
-            <a class="sidebar_item" href="../../../readme.html">Home</a>
-            <a class="sidebar_item" href="overview.html">Overview</a>
-            <a class="sidebar_item" href="quick_start.html">Quick start</a>
-            <a class="sidebar_item" href="installation.html">Installation</a>
-            <a class="sidebar_item" href="usage.html">Usage</a>
-            <a class="sidebar_item" href="page_content.html">Page content</a>
-            <a class="sidebar_item selected" href="templates.html">Templates</a>
-            <a class="sidebar_item" href="plugins.html">Plugins</a>
-            <a class="sidebar_item" href="reference.html">Reference</a>
-            <a class="sidebar_item" href="development.html">Development</a>
+            <a href="../../../doc_src/sections/templates.txt" class="sidebar_item_inline header_item_source align_right" 
+                title="Source text">&lt;/&gt;</a>
+            
+            </div>
+            
+            <a class="sidebar_item " href="../../../readme.html">Home</a>
+            <a class="sidebar_item " href="overview.html">Overview</a>
+            <a class="sidebar_item " href="quick_start.html">Quick start</a>
+            <a class="sidebar_item " href="installation.html">Installation</a>
+            <a class="sidebar_item " href="usage.html">Usage</a>
+            <a class="sidebar_item " href="page_content.html">Page content</a>
+            <a class="sidebar_item selected " href="templates.html">Templates</a>
+            <a class="sidebar_item " href="plugins.html">Plugins</a>
+            <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="development.html">Development</a>
             <h3>Useful links</h3>
-            <a class="sidebar_item" href="https://daringfireball.net/projects/markdown/">Markdown</a>
-            <a class="sidebar_item" href="https://mustache.github.io/">Mustache</a>
-            <a class="sidebar_item" href="https://json.org/">JSON</a>
-            <a class="sidebar_item" href="https://en.wikipedia.org/wiki/Glob_(programming)">GLOB</a>
+            <a class="sidebar_item " href="https://daringfireball.net/projects/markdown/">Markdown</a>
+            <a class="sidebar_item " href="https://mustache.github.io/">Mustache</a>
+            <a class="sidebar_item " href="https://json.org/">JSON</a>
+            <a class="sidebar_item " href="https://en.wikipedia.org/wiki/Glob_(programming)">GLOB</a>
         </td></tr>
-        <tr><td class="bottom" valign="bottom">
-            Generated by <a href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.5
+        <tr><td class="bottom" valign="bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
+            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.6</span>
         </td></tr>
     </table>
+</div>
 </div>
 
 <p style="font-size:44px;font-weight:bold;margin:0 0 30px 0;">Templates</p>
@@ -177,35 +198,29 @@ in the template files. The main CSS files are:</p>
 <hr />
 <p><a name="index_entry_index_3"></a><a name="themes"></a></p>
 <h1 id="color-themes">Color themes</h1>
-<p>There's a mechanism for defining and using color <strong>themes</strong>. A <em>theme</em> is a set of CSS files located
-according to the masks:</p>
+<p>There's a mechanism for defining and using color <strong>themes</strong>. A <em>theme</em> is a directory located
+in the directory <code>doc/themes/</code>. The theme directory name is the theme's name.</p>
+<p>The theme name is specified by the variable <code>theme</code> in the <em>argument file</em> <code>md2html_args.json</code>.
+The complete declaration may look like this: <code>"theme": "light"</code>, where <code>light</code> is the desired
+theme name. As for now, two themes are defined: <code>light</code> and <code>dark</code>.</p>
+<p>The <a href="quick_start.html"><em>quick start script</em></a> creates and defines the light theme only.
+To use the dark theme:</p>
 <ul>
-<li><code>doc/themes/&lt;theme_name&gt;_content.css</code> and</li>
-<li><code>doc/themes/&lt;theme_name&gt;_layout.css</code></li>
-</ul>
-<p>The <code>&lt;theme_name&gt;</code> is defined by the variable <code>theme</code> in the <em>argument file</em>
-<code>md2html_args.json</code>. The complete declaration may look like this: <code>"theme": "light_default"</code>, 
-where <code>light_default</code> is the currently used theme name. As for now, two themes are defined:
-<code>light_default</code> and <code>dark_default</code>.</p>
-<p>The <em>quick start script</em> creates and defines the light theme only. To use the dark theme:</p>
-<ul>
-<li>copy the files <code>dark_default_content.css</code> and <code>dark_default_layout.css</code> to the
-    <code>doc/themes</code> directory;</li>
-<li>assign the value <code>dark_default</code> to the variable <code>theme</code> in the file <code>md2html_args.json</code>;</li>
+<li>copy the directory <code>dark</code> to the <code>doc/themes</code> directory;</li>
+<li>assign the value <code>dark</code> to the variable <code>theme</code> in the file <code>md2html_args.json</code>;</li>
 <li>fulfill forcible full documentation regeneration;</li>
 <li>the dark theme will be applied.</li>
 </ul>
 <p><a name="index_entry_index_4"></a>
-In this page, variable <code>"theme": "dark_default"</code> is defined in the <em>page variables section</em>, 
+In this page, variable <code>"theme": "dark"</code> is defined in the <em>page variables section</em>, 
 so this page is rendered using the dark theme.</p>
-<p><img src="../../pict/light_only.png" class="floatRight light_only" /></p>
-<p><img src="../../pict/light_only.png" class="floatLeft" /></p>
-
-<p>Also see <a href="page_content.html#handling_images_on_dark_background">here</a> to know about
-handling images on dark backgrounds. The picture on the left has thin black elements
-(arms, hands, feet and hair) that doesn't look well on the dark background. The picture on the
-right has local white underlying plate and probably looks better.</p>
-<p style="clear: both;"></p>
+<p>Using the dark scheme, the following problem may be encountered (also see
+<a href="page_content.html#handling_images_on_dark_background">here</a>):</p>
+<p><img src="../../pict/light_only.png" />
+<img src="../../pict/light_only.png" class="light_only" /></p>
+<p>The first picture has thin black elements (arms, hands, feet and hair) that doesn't look well
+on the dark background. The second picture has local white underlying plate and probably
+looks better.</p>
 <p>&nbsp;</p>
 <hr />
 
@@ -216,7 +231,17 @@ title="Previous: Page content"><img src="../../layout/pict/previous_page.png"/><
 src="../../layout/pict/next_page.png"/></a>
 </p>
 
-<div style="height: 1000px;"><p>&nbsp;</p></div>
+<script>
+function toggleSidebar() {
+    let sidebar = document.getElementsByClassName("sidebarWrapper")[0]
+    let display = sidebar.style.display
+    if (!display || display == "none") {
+        sidebar.style.display = "block"
+    } else {
+        sidebar.style.display = ""
+    }
+}
+</script>
 
 </body>
 </html>

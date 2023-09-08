@@ -209,7 +209,7 @@ Properties:
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
 verbose | boolean | No | The whole run verbosity, for now, only printing execution duration on finish
-legacy-mode | boolean | No | Activates [legacy mode](#legacy_mode)
+legacy-mode | boolean | No | Activates [legacy mode](<!--page usage-->#legacy_mode)
 
 
 <a name="default_section"></a>

@@ -1,5 +1,4 @@
-<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates",
-"theme": "dark_default"}-->
+<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates", "theme": "dark"}-->
 
 [TOC]
 
@@ -93,38 +92,34 @@ in the template files. The main CSS files are:
 <!--index ["themes"]--><a name="themes"></a>
 # Color themes
 
-There's a mechanism for defining and using color **themes**. A *theme* is a set of CSS files located
-according to the masks:
+There's a mechanism for defining and using color **themes**. A *theme* is a directory located
+in the directory `doc/themes/`. The theme directory name is the theme's name.
 
-- `doc/themes/<theme_name>_content.css` and
-- `doc/themes/<theme_name>_layout.css`
+The theme name is specified by the variable `theme` in the *argument file* `md2html_args.json`.
+The complete declaration may look like this: `"theme": "light"`, where `light` is the desired
+theme name. As for now, two themes are defined: `light` and `dark`.
 
-The `<theme_name>` is defined by the variable `theme` in the *argument file*
-`md2html_args.json`. The complete declaration may look like this: `"theme": "light_default"`, 
-where `light_default` is the currently used theme name. As for now, two themes are defined:
-`light_default` and `dark_default`.
+The [*quick start script*](<!--page quick_start-->) creates and defines the light theme only.
+To use the dark theme:
 
-The *quick start script* creates and defines the light theme only. To use the dark theme:
-
-- copy the files `dark_default_content.css` and `dark_default_layout.css` to the
-    `doc/themes` directory;
-- assign the value `dark_default` to the variable `theme` in the file `md2html_args.json`;
+- copy the directory `dark` to the `doc/themes` directory;
+- assign the value `dark` to the variable `theme` in the file `md2html_args.json`;
 - fulfill forcible full documentation regeneration;
 - the dark theme will be applied.
 
 <!--index ["dark theme", "theme, dark"]-->
-In this page, variable `"theme": "dark_default"` is defined in the *page variables section*, 
+In this page, variable `"theme": "dark"` is defined in the *page variables section*, 
 so this page is rendered using the dark theme.
 
-<p><img src="<!--path pict-->light_only.png" class="floatRight light_only" /></p>
-<p><img src="<!--path pict-->light_only.png" class="floatLeft" /></p>
+Using the dark scheme, the following problem may be encountered (also see
+[here](<!--page page_content-->#handling_images_on_dark_background)):
 
-Also see [here](<!--page page_content-->#handling_images_on_dark_background) to know about
-handling images on dark backgrounds. The picture on the left has thin black elements
-(arms, hands, feet and hair) that doesn't look well on the dark background. The picture on the
-right has local white underlying plate and probably looks better.
+<img src="<!--path pict-->light_only.png" />
+<img src="<!--path pict-->light_only.png" class="light_only" />
 
-<p style="clear: both;"></p>
+The first picture has thin black elements (arms, hands, feet and hair) that doesn't look well
+on the dark background. The second picture has local white underlying plate and probably
+looks better.
 
 
 

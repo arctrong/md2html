@@ -194,7 +194,7 @@ So such images may be marked the following way:
 ````
 
 Alternatively the class `light_only` may be added to the `<img>` HTML tag. In dark themes these
-images may be put on a white background (particularly, this is defined in the `dark_default`
+images may be put on a white background (particularly, this is defined in the `dark`
 theme).
 
 See [here](<!--page templates-->#themes) for the *theme* mechanism description and the image
@@ -408,6 +408,12 @@ may make the content inconvenient for copy-pasting. To address this cases, addit
 `wrapped`, `wrapped-code` and `wrapped-shell` were defined. Here's an example:
 
 ````wrapped-code
+This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
+````
+
+Just for comparison, the same content will be scrolled in not wrapped fenced blocks:
+
+````code
 This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
 ````
 
