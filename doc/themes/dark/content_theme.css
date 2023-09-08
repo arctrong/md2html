@@ -1,35 +1,35 @@
 body {
-    color: black;
-    background-color: white;
+    color: white;
+    background-color: #4a525a;
 }
 
 hr {
-    background: cadetblue;
+    background: #87ebee;
 }
 
 del {
-    color: red;
+    color: #ff8585;
 }
 
 ins {
-    color: green;
+    color: #37ff37;
 }
 
 code, .code {
-    background-color: #eeeeee;
-    border-color: lightgray;
+    background-color: #656565;
+    border-color: #747474;
 }
 
 pre>code.language-shell, pre>code.language-wrapped-shell {
-    background-color: darkslategray;
-    color: floralwhite;
-    border-color: darkslategray;
+    background-color: #323232;
+    color: #bee582;
+    border-color: #bee582;
 }
 
 pre>code.language-code, pre>code.language-wrapped-code {
-    background-color: beige;
-    color: darkred;
-    border-color: darkred;
+    background-color: #5d4431;
+    color: beige;
+    border-color: beige;
 }
 
 blockquote {
@@ -37,11 +37,11 @@ blockquote {
 }
 
 table td, table th {
-    border-color: #6a8fb3;
+    border-color: #c1e1ff;
 }
 
 table th {
-    background-color: #e9f0f2;
+    background-color: #374e65;
 }
 
 div.admonition {
@@ -50,7 +50,7 @@ div.admonition {
 
 div.admonition>p.admonition-title {
     border-bottom-color: #cccccc;
-    background-color: #eeeeee;
+    background-color: #656565;
 }
 
 div.admonition.warning,
@@ -63,7 +63,7 @@ div.admonition.warning>p.admonition-title,
 div.admonition.attention>p.admonition-title, 
 div.admonition.caution>p.admonition-title {
     border-bottom-color: #ff9001;
-    background-color: #fef3e8;
+    background-color: #615240;
 }
 
 div.admonition.danger,
@@ -74,7 +74,7 @@ div.admonition.error {
 div.admonition.danger>p.admonition-title,
 div.admonition.error>p.admonition-title {
     border-bottom-color: #f50057;
-    background-color: #ffe9ed;
+    background-color: #61444e;
 }
 
 div.admonition.hint,
@@ -87,7 +87,7 @@ div.admonition.hint>p.admonition-title,
 div.admonition.tip>p.admonition-title, 
 div.admonition.important>p.admonition-title {
     border-bottom-color: #01bfa5;
-    background-color: #e9f9f6;
+    background-color: #3b5b56;
 }
 
 div.admonition.note {
@@ -96,6 +96,26 @@ div.admonition.note {
 
 div.admonition.note>p.admonition-title {
     border-bottom-color: #448aff;
-    background-color: #edf4ff;
+    background-color: #33425b;
 }
+
+.poweredBy {
+    color: lightgray;
+}
+
+/* Only for this theme. */
+
+a {
+  color: #affff4;
+}
+
+a:visited {
+  color: #f2a1c7;
+}
+
+div.light_only+p>img, img.light_only {
+    background-color: white;
+    padding: 7px;
+}
+
 

@@ -1,0 +1,66 @@
+.header {
+    background-color: black;
+}
+
+.header a:link, .header a:visited, .header a:hover, .header a:active,
+.header_item {
+    color: darksalmon;
+}
+
+.header_item.selected {
+    text-decoration-color: dodgerblue !important;
+}
+
+.header_item.selected .header_image {
+    border-bottom-color: dodgerblue;
+}
+
+.headerTitle {
+    color: antiquewhite;
+}
+
+.header_item_source {
+    color: darksalmon;
+}
+
+.header_item_source.inactive {
+    color: darkgray;
+}
+
+.sidebar {
+    border-color: cadetblue;
+    background-color: powderblue;
+}
+
+.sidebar a:link, .sidebar a:visited, .sidebar a:hover, .sidebar a:active {
+    color: firebrick;
+}
+
+.poweredBy a:link, .poweredBy a:visited, .poweredBy a:hover, .poweredBy a:active {
+    color: inherit;
+}
+
+.poweredBy a:hover {
+    color: firebrick;
+}
+
+.sidebar_item, .sidebar_item_inline { 
+    color: firebrick;
+}
+
+.sidebar_item:hover, .sidebar_item_inline:hover { 
+    background-color: #8fd8e1;
+}
+
+.sidebar_item.selected, .sidebar_item_inline.selected {
+    text-decoration-color: dodgerblue;
+}
+
+div.sidebar h3 {
+    color: darkslategray;
+}
+
+*[id]:target::before, *[name]:target::before {
+    content: url(target_pointer.png);
+}
+

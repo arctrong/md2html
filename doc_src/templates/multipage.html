@@ -3,47 +3,65 @@
 <head><title>{{title}}</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" type="image/png" href="{{resource_path}}favicon.png"/>
-<link rel="stylesheet" type="text/css" href="{{resource_path}}layout/styles.css"/>
-<link rel="stylesheet" type="text/css" href="{{resource_path}}themes/{{theme}}_content.css"/>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="{{resource_path}}layout/content.css"/>
+<link rel="stylesheet" type="text/css" href="{{resource_path}}themes/{{theme}}/content_theme.css"/>
 <link rel="stylesheet" type="text/css" href="{{resource_path}}layout/layout.css"/>
-<link rel="stylesheet" type="text/css" href="{{resource_path}}themes/{{theme}}_layout.css"/>
+<link rel="stylesheet" type="text/css" href="{{resource_path}}themes/{{theme}}/layout_theme.css"/>
 {{{styles}}}
+<link rel="stylesheet" type="text/css" href="{{resource_path}}layout/flex.css"/>
 <link rel="stylesheet" type="text/css" href="{{resource_path}}custom.css"/>
-<style>
-.headerNavArrows {position: relative; top: 3px;}
-</style>
 </head>
 <body>
 
-<div class="header">{{{logo}}}{{#header}}<a 
-class="header_item{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a>{{/header}}
-
-{{#source_file}}<a href="{{.}} " class="header_item_source" title="Source text">&lt;/&gt;</a>{{/source_file}}
-{{^source_file}}<span class="header_item_source inactive">&lt;/&gt;</span>{{/source_file}}
-
-{{#nav.previous}}<a href="{{link}}" title="Previous: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h18px.png"/></a>{{/nav.previous}}
-{{^nav.previous}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h18px_inactive.png"/>{{/nav.previous}}
-{{#nav.next}}<a href="{{link}}" title="Next: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h18px.png"/></a>{{/nav.next}}
-{{^nav.next}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h18px_inactive.png"/>{{/nav.next}}
+<div class="header">
+<img id="burger" src="{{resource_path}}/layout/pict/burger.png" 
+onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" />
+{{#logo}}<span class="toggle_wide_only_inline">{{{.}}}</span>{{/logo}}
+{{#header}}<a 
+class="header_item{{#current}} selected{{/current}} {{{class}}}"
+href="{{link}}">{{#title}}<span class="{{{title_class}}}">{{{.}}}</span>{{/title}}{{#image}}<img 
+class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" />{{/image}}</a>{{/header}}{{#header_wide_only}}<a 
+class="header_item{{#current}} selected{{/current}} toggle_wide_only_inline"
+href="{{link}}">{{#title}}<span class="{{{title_class}}}">{{{.}}}</span>{{/title}}{{#image}}<img 
+class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" />{{/image}}</a>{{/header_wide_only}}
+{{#show_source_link}}
+{{#source_file}}<a href="{{{.}}}" class="header_item_source toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>{{/source_file}}
+{{^source_file}}<span class="header_item_source inactive toggle_wide_only_inline">&lt;/&gt;</span>{{/source_file}}
+{{/show_source_link}}
+{{#nav.previous}}<a href="{{link}}" title="Previous: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h21px.png"/></a>{{/nav.previous}}
+{{^nav.previous}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h21px_inactive.png"/>{{/nav.previous}}
+{{#nav.next}}<a href="{{link}}" title="Next: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h21px.png"/></a>{{/nav.next}}
+{{^nav.next}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h21px_inactive.png"/>{{/nav.next}}
 
 <span class="headerTitle">{{title}}</span>
 
 </div>
 
+<div class="sidebarWrapper">
 <div class="sidebar">
     <table class="sidebarAligner">
         <tr><td valign="top">
+            <div class="align_right toggle_narrow_only_block">{{#header_wide_only}}
+            <a class="sidebar_item_inline{{#current}} selected{{/current}} align_right" href="{{link}}">{{title}}</a>
+            {{/header_wide_only}}{{#show_source_link}}
+            {{#source_file}}<a href="{{{.}}}" class="sidebar_item_inline header_item_source align_right" 
+                title="Source text">&lt;/&gt;</a>{{/source_file}}
+            {{^source_file}}<span class="sidebar_item_inline header_item_source inactive align_right"
+                >&lt;/&gt;</span>{{/source_file}}
+            {{/show_source_link}}</div>
             {{#sidebar}}
             {{#not_empty}}{{#title}}<h3>{{.}}</h3>{{/title}}{{/not_empty}}
             {{#.}}
-            <a class="sidebar_item{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a>
+            <a class="sidebar_item{{#current}} selected{{/current}} {{{class}}}" href="{{link}}">{{title}}</a>
             {{/.}}
             {{/sidebar}}
         </td></tr>
-        <tr><td class="bottom" valign="bottom">
-            Generated by <a href="https://github.com/arctrong/md2html">{{exec_name}}</a> {{exec_version}}
+        <tr><td class="bottom" valign="bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
+            href="https://github.com/arctrong/md2html">{{exec_name}}</a> {{exec_version}}</span>
         </td></tr>
     </table>
+</div>
 </div>
 
 {{^noPageTitle}}<p style="font-size:44px;font-weight:bold;margin:0 0 30px 0;">{{title}}</p>{{/noPageTitle}}
@@ -61,7 +79,17 @@ src="{{resource_path}}layout/pict/next_page.png"/></a>{{/nav.next}}
 {{^nav.next}}<img src="{{resource_path}}layout/pict/next_page_inactive.png"/>{{/nav.next}}</p>
 {{/nav.has_navigation}}
 
-<div style="height: 1000px;"><p>&nbsp;</p></div>
+<script>
+function toggleSidebar() {
+    let sidebar = document.getElementsByClassName("sidebarWrapper")[0]
+    let display = sidebar.style.display
+    if (!display || display == "none") {
+        sidebar.style.display = "block"
+    } else {
+        sidebar.style.display = ""
+    }
+}
+</script>
 
 </body>
 </html>

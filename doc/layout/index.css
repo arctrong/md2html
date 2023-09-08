@@ -5,7 +5,7 @@ div.index-content {
 p.index-letter {
     column-span: all;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 1.667rem;
     margin-bottom: 12px;
 }
 
@@ -17,5 +17,5 @@ p.index-entry {
 }
 
 div.index-content {
-    max-width: 900px;
+    max-width: 50rem;
 }

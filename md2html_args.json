@@ -17,6 +17,12 @@
             "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
+        "variables": {
+#            "logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:burlywood;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>",
+            "show_source_link": true,
+            "theme": "light"
+        },
+        "page-variables": {},
         "relative-paths": {
             "markers": ["path"],
             "paths": {
@@ -25,14 +31,19 @@
             }
         },
         "page-flows": {
-            "sections": { "groups": ["sidebar"] },
             "header": [
-                { "link": "readme.html", "title": "Home" },
-                { "link": "doc/content/sections/installation.html", "title": "Installation" },
-                { "link": "doc/content/sections/usage.html", "title": "Usage" },
-                { "link": "doc/content/index_page.html", "title": "Index" },
+                { "link": "readme.html", "title": "", "image": "favicon.png", "image_class": "logo_image" },
+                { "link": "readme.html", "title": "Home", "class": "toggle_wide_only_inline" },
+                { "link": "doc/content/sections/installation.html", "title": "Installation", "class": "toggle_wide_only_inline" },
+                { "link": "doc/content/sections/usage.html", "title": "Usage", "class": "toggle_wide_only_inline" },
+                { "link": "doc/content/index_page.html", "title": "Index", "class": "toggle_wide_only_inline" },
+                { "link": "doc/content/index_page.html", "title": "", "class": "toggle_narrow_only_inline",
+                    "image": "layout/pict/search.png", "image_class": "header_image index_image" }
+            ],
+            "header_wide_only": [
                 { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
             ],
+            "sections": { "groups": ["sidebar"] },
             "useful_links": { "title": "Useful links", "groups": ["sidebar"], "items": [
                 { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },
                 { "link": "https://mustache.github.io/", "title": "Mustache", "external": true },
@@ -41,10 +52,6 @@
             ]}
         },
         "ignore": { "markers": ["ignore"] },
-        "variables": {
-            "logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:burlywood;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>",
-            "theme": "light_default"
-        },
         "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                     "index-cache-relative": true, "letters": true, "letters-block": true,
                     "add-link-css": ["doc/layout/index.css"] }
@@ -54,7 +61,6 @@
             "wrap_java": {"style": "code", "input-root": "sample_code/", "output-root": "doc/content/code/",
                           "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
         },
-        "include-file": [{ "markers": ["include_code"], "root-dir": "sample_code/" }],
-        "page-variables": {}
+        "include-file": [{ "markers": ["include_code"], "root-dir": "sample_code/" }]
     }
 }

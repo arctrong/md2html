@@ -1,0 +1,36 @@
+@media screen and (max-width: 850px) {
+    body {
+        margin-left: 0px;
+    }
+    .sidebarWrapper {
+        display: none;
+    }
+    .sidebar {
+        bottom: unset;
+        border-bottom-style: solid;
+    }
+    .toggle_wide_only_block {
+        display: none;
+    }
+    .toggle_wide_only_inline {
+        display: none;
+    }
+    .toggle_narrow_only_block {
+        display: block;
+    }
+    .toggle_narrow_only_inline {
+        display: inline;
+    }
+    div.index-content {
+        column-count: 1;
+    }
+    img.floatRight, img.floatLeft {
+        float: unset;
+        margin: unset;
+    }
+    table.sidebarAligner {
+        height: unset;
+    }
+}
+
+
