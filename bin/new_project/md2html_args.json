@@ -17,6 +17,11 @@
             "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
+        "variables": {
+            "show_source_link": true,
+            "theme": "light"
+        },
+        "page-variables": {},
         "relative-paths": {
             "markers": ["path"],
             "paths": {
@@ -25,25 +30,26 @@
             }
         },
         "page-flows": {
-            "sections": { "groups": ["sidebar"] },
             "header": [
-                { "link": "readme.html", "title": "Home" },
-                { "link": "doc/content/index_page.html", "title": "Index" }
+                { "link": "readme.html", "title": "", "image": "favicon.png", "image_class": "logo_image" },
+                { "link": "readme.html", "title": "Home", "class": "toggle_wide_only_inline" },
+                { "link": "doc/content/index_page.html", "title": "Index", "class": "toggle_wide_only_inline" },
+                { "link": "doc/content/index_page.html", "title": "", "class": "toggle_narrow_only_inline",
+                    "image": "layout/pict/search.png", "image_class": "header_image index_image" }
             ],
+            "header_wide_only": [
+                { "link": "https://add.your/link/here", "title": "GitHub", "external": true }
+            ],
+            "sections": { "groups": ["sidebar"] },
             "useful_links": { "title": "Useful links", "groups": ["sidebar"], "items": [
                 { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },
                 { "link": "https://github.com/arctrong/md2html", "title": "md2html", "external": true }
             ]}
         },
-        "variables": {
-            "logo": "<b><span style=\"color:#59f;margin-right:7px;\">Logo</span></b>",
-            "theme": "light_default"
-        },
         "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                     "index-cache-relative": true, "letters": true, "letters-block": true,
                     "add-link-css": ["doc/layout/index.css"] }
         },
-        "page-links": { "markers": ["page"] },
-        "page-variables": {}
+        "page-links": { "markers": ["page"] }
     }
 }

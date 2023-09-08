@@ -48,9 +48,8 @@ The following steps may be done for customization.
     or taken from the `md2html` program installation directory.
     For example:
 
-    - copy the files `dark_default_content.css` and `dark_default_layout.css` to the
-        `doc/themes` directory;
-    - assign the value `dark_default` to the variable `theme` in the file `md2html_args.json`;
+    - copy the directory `dark` to the `doc/themes` directory;
+    - assign the value `dark` to the variable `theme` in the file `md2html_args.json`;
     - fulfill forcible full documentation regeneration;
     - the dark theme will be applied.
 
