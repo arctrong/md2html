@@ -19,11 +19,11 @@
     color: antiquewhite;
 }
 
-.header_item_source {
+.source_file {
     color: darksalmon;
 }
 
-.header_item_source.inactive {
+.source_file.inactive {
     color: darkgray;
 }
 
