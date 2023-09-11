@@ -109,6 +109,7 @@ body {
 
 .sidebar {
     position: absolute;
+    overflow-y: auto;
     top: 0;
     left: 0;
     right: 0;
@@ -118,10 +119,6 @@ body {
     border-right-width: 1px;
     border-bottom-style: none;
     border-bottom-width: 1px;
-}
-
-.align_right {
-  text-align: right;
 }
 
 table.sidebarAligner {
@@ -139,16 +136,7 @@ table.sidebarAligner td {
 
 .sidebarAligner td.bottom {
     padding-top: 40px;
-    vertical-align: bottom;
 }
-
-/* div.sidebar h1::before, div.sidebar h2::before, div.sidebar h3::before,  */
-/* div.sidebar h4::before, div.sidebar h5::before, div.sidebar h6::before { */
-    /* content: unset; */
-    /* display: unset; */
-    /* height: unset; */
-    /* margin-top: unset; */
-/* } */
 
 .sidebar_item {
     display: block;
@@ -192,5 +180,16 @@ div.sidebar h3 {
     animation-iteration-count: 5;
 }
 
+.align_right {
+  text-align: right;
+}
+
+.valign_bottom {
+    vertical-align: bottom;
+}
+
+.valign_top {
+    vertical-align: top;
+}
 
 

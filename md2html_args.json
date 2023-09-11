@@ -18,6 +18,7 @@
     ],
     "plugins": {
         "variables": {
+            "html_lang": "en",
 #            "logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:burlywood;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>",
             "show_source_link": true,
             "theme": "light"
@@ -32,13 +33,15 @@
         },
         "page-flows": {
             "header": [
-                { "link": "readme.html", "title": "", "image": "favicon.png", "image_class": "logo_image" },
+                { "link": "readme.html", "title": "", "image": "favicon.png", "image_class": "logo_image",
+                    "image_alt": "Logo" },
                 { "link": "readme.html", "title": "Home", "class": "toggle_wide_only_inline" },
                 { "link": "doc/content/sections/installation.html", "title": "Installation", "class": "toggle_wide_only_inline" },
                 { "link": "doc/content/sections/usage.html", "title": "Usage", "class": "toggle_wide_only_inline" },
                 { "link": "doc/content/index_page.html", "title": "Index", "class": "toggle_wide_only_inline" },
                 { "link": "doc/content/index_page.html", "title": "", "class": "toggle_narrow_only_inline",
-                    "image": "layout/pict/search.png", "image_class": "header_image index_image" }
+                    "image": "layout/pict/search.png", "image_class": "header_image index_image",
+                    "image_alt": "Index" }
             ],
             "header_wide_only": [
                 { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
