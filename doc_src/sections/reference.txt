@@ -159,6 +159,8 @@ Here is a quite complex example of an _argument file_ content:
             "title": "Debug", "page-flows": [] }
     ],
     "plugins": {
+        "variables": {"logo": "<img src=\"logo.png\" />" },
+        "page-variables": {},
         "relative-paths": { "resource_path": "doc/" },
         "page-flows": {
             "otherLinks": [
@@ -168,8 +170,6 @@ Here is a quite complex example of an _argument file_ content:
                     "title": "Markdown Wiki", "external": true }
             ]
         },
-        "page-variables": {},
-        "variables": {"logo": "<img src=\"logo.png\" />" },
         "index": {"index": {"output": "index_page.html", "title": "Index", 
             "index-cache": "index_cache.json" }
     }

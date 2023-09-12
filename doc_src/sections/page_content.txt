@@ -9,7 +9,7 @@ This section describes documentation source text writing and covers such topics 
 syntax, formatting examples and tricks. The templates and styling, as well as the 
 documentation structuring, are discussed in the other sections.
 
-The complete Markdown guide is not provided in this section, so see 
+The complete Markdown guide is not provided here, so see 
 [the original syntax description](https://daringfireball.net/projects/markdown/syntax)
 for more details.
 
@@ -17,7 +17,7 @@ for more details.
 # Example source texts
 
 This documentation is written solely using the **M<sub>2</sub>H** program and itself demonstrates
-the possible result that may be obtained. The source Markdown text files may be viewed using the 
+the possible obtainable result. The source Markdown text files may be viewed using the 
 "Source text" link ("&lt;/&gt;") in the page title block.
 
 ----------------------------------------------------------------------------------------------------
@@ -39,13 +39,13 @@ Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>` | 3
 --- (em-dash, `&mdash;`) | `---` |   |
 
 !!! note "Comments"
-    1. Sometimes it's required to show HTML entities inside a code block, but the standard Markdown
-        syntax (with backticks) will show the content as is. For this purpose the CSS class `code`
-        was defined, so direct HTML inclusions may be a suitable workaround.
+    1. This method was used as a workaround for preventing conflicts with the plugin markers
+        preprocessing. As for now, there's 
+        [the "ignore" plugin](<!--page plugins-->#ignore_plugin) that is easier to use.
     2. Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
-        text is not implemented in this program. First, these effects must not be required very
+        text is not activated in this program. First, these effects must not be required very
         often. Second, such markup may cause problems if we write text like "C++", or `++i`.
-        The used direct HTML markup lets achieve these effects safely.
+        The used direct HTML markup lets achieve these effects more safely.
     3. Stricken through text, subscript and superscript are not in the Markdown syntax.
         Here direct HTML markup is used as a possible workaround.
 
@@ -79,15 +79,13 @@ markup it's better, and sometimes required, to leave an empty line before these 
 the generated HTML. The example can be seen at the top of this and other pages. The ToC is
 composed of the [headers](#headers) found on the page.
 
-!!! note
-    Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
-    that would contain only the sub-headers of this header.
-    
-!!! note
-    The Python and the Java versions give slightly different ToC appearance. The Java version
-    preserves the header text formatting while the Python version removes this formatting. So
-    if a header contains e.g. an `inline code block` the Python version will reflect this
-    code block as unformatted text in the corresponding ToC item.
+!!! note "Notes"
+    1. Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
+        that would contain only the sub-headers of this header.
+    1. The Python and the Java versions give slightly different ToC appearance. The Java version
+        preserves the header text formatting while the Python version removes this formatting. So
+        if a header contains e.g. an `inline code block` the Python version will reflect this
+        code block as unformatted text in the corresponding ToC item.
 
 ----------------------------------------------------------------------------------------------------
 # Links
@@ -106,6 +104,10 @@ There's the other syntax:
 ````
 
 that will make the link text equal the link location.
+
+!!! tip
+    [The "page-links" plugin](<!--page plugins-->#page_links_plugin) may be used for creating
+    relative internal links within the documentation.
 
 ----------------------------------------------------------------------------------------------------
 <a name="anchor_demo"></a>
@@ -136,6 +138,9 @@ from the same page, or:
 ````
 
 from the same or the other page.
+
+!!! tip
+    Also see [the "page-links" plugin](<!--page plugins-->#page_links_plugin).
 
 ----------------------------------------------------------------------------------------------------
 # Images
@@ -185,7 +190,7 @@ Then we will get a clickable image that works as a link:
 There's one point that should be taken into account when working with images. Usually images are
 intended to be shown on a light background. When using a 
 [*dark theme*](<!--page templates-->#themes), some images may not look well on a dark background.
-So such images may be marked the following way:
+Such images may be marked the following way:
 
 ````
 <div class="light_only"></div>
@@ -197,8 +202,8 @@ Alternatively the class `light_only` may be added to the `<img>` HTML tag. In da
 images may be put on a white background (particularly, this is defined in the `dark`
 theme).
 
-See [here](<!--page templates-->#themes) for the *theme* mechanism description and the image
-on dark background problem handling demonstration.
+See [here](<!--page templates-->#themes) for more details about the *theme* mechanism. Also there
+the above problem and its solution are demonstrated.
 
 ----------------------------------------------------------------------------------------------------
 # Lists
@@ -293,7 +298,7 @@ Will give the following table style:
 |2       | Table | Kitchen table | 450.00|
 |3       | Lamp  | Standard lamp | 120.75|
 
-If we want to just align text we can use a table without a header:
+If we want a table without a header, we can use:
 
 ````
 <div class="tableHeaderless"></div>
@@ -383,7 +388,7 @@ System.out.println("This block demonstrates " +
 !!! note
     Program language source code syntax highlighting is not implemented yet.
 
-> Fenced blocks may be inserted inside other blocks like `blockquote`s:
+> Fenced blocks may be inserted inside other blocks, like `blockquote`s:
 > 
 > ````shell
 > $ echo Fenced blocks inside a blockquote
@@ -411,14 +416,18 @@ may make the content inconvenient for copy-pasting. To address this cases, addit
 This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
 ````
 
-Just for comparison, the same content will be scrolled in not wrapped fenced blocks:
+Just for comparison, a similar content will be scrolled in not wrapped fenced blocks:
 
 ````code
-This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
+This is a long line that doesn't contain line breaks inside itself and that we want to be scrolled so that the fenced code block doesn't exceed the page width.
 ````
 
 
 ## Using HTML
+
+!!! note
+    As for now, there's [the "ignore" plugin](<!--page plugins-->#ignore_plugin) that is easier
+    to use. So the following method must be needed less often.
 
 The following code may be used in order to avoid plugin substitutions:
 

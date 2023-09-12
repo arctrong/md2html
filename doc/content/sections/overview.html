@@ -94,14 +94,14 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#html-page-resources">HTML page resources</a></li>
 </ul>
 </li>
-<li><a href="#security">Security</a></li>
+<li><a href="#restrictions-and-security">Restrictions and security</a></li>
 </ul>
 </div>
 <hr />
 <h1 id="common-schema">Common schema</h1>
 <p><img src="../../pict/md2html_schema.png" title="md2html" class="floatRight light_only" /></p>
 
-<p>The program accepts the following artifacts as the input:</p>
+<p>The program accepts the following artifacts as its input:</p>
 <ul>
 <li>source Markdown texts;</li>
 <li>one or several HTML templates;</li>
@@ -121,9 +121,9 @@ the <a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a> m
 may be used in process of the content writing.</p>
 <h2 id="html-templates">HTML templates</h2>
 <p>An HTML artifact that is generated out of a markdown text is not a complete HTML page. It's
-just a fragment that must be put inside the <code>&lt;body&gt;...&lt;/body&gt;</code> HTML element. A <em>template</em> may
+just a fragment that must be put inside the <code>&lt;body&gt;...&lt;/body&gt;</code> HTML element. A <strong>template</strong> may
 be considered as an HTML page that doesn't have the main content but just specifies the place
-(placeholder) where this content must be inserted. </p>
+(placeholder) where this main content must be inserted.</p>
 <p>See <a href="templates.html">here</a> for more details about templates and other placeholders that 
 may be used in templates.</p>
 <h2 id="argument-file">Argument file</h2>
@@ -131,11 +131,11 @@ may be used in templates.</p>
 following HTML documents generation. See <a href="usage.html#using_argument_file">here</a> 
 for more details.</p>
 <h2 id="html-page-resources">HTML page resources</h2>
-<p>Different resources, like CSS and images are not processed by the program. The program may just
-adjust the location of these resources while putting link on them into the certain pages. 
+<p>Different resources, like CSS, JavaScript and images are not processed by the program. The program
+may just adjust the location of these resources while putting link on them into the certain pages. 
 These are usually <a href="plugins.html">plugins</a> that perform these adjustments.</p>
 <hr />
-<h1 id="security">Security</h1>
+<h1 id="restrictions-and-security">Restrictions and security</h1>
 <p>The program doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
 may contain JavaScript that will be translated unchanged into the generated HTML page. This
 must not be a problem for personal use but may be a security issue when converting and
@@ -143,9 +143,9 @@ publishing source texts from untrusted third-parties. Click the image below to s
 look like.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>In case of worry first have a look at the source text by clicking at the "Source text"
-link ("&lt;/&gt;") at the page top. Also you can view the page source HTML text
-(<code>Ctrl</code>+<code>U</code> in the main browsers).</p>
+<p>In case of worry, first have a look at the source text by clicking at the "Source text"
+link ("&lt;/&gt;") at the page top. Also you can view the HTML text
+(<code>Ctrl</code>+<code>U</code> in most browsers).</p>
 </div>
 <p><img src="../../pict/box.png" style="cursor: pointer;" onclick="alert(
 'This is just a message but might be any JavaScript code.');return false;" /></p>

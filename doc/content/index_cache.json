@@ -1,11 +1,4 @@
 {
-  "readme.html": [
-    {
-      "entry": "Markdown",
-      "link": "../../readme.html#index_entry_index_1",
-      "title": "Home"
-    }
-  ],
   "doc/content/sections/overview.html": [],
   "doc/content/sections/quick_start.html": [
     {
@@ -33,6 +26,11 @@
     },
     {
       "entry": "command scripts",
+      "link": "sections/usage.html#index_entry_index_3",
+      "title": "Usage"
+    },
+    {
+      "entry": "double-click script",
       "link": "sections/usage.html#index_entry_index_3",
       "title": "Usage"
     },

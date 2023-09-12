@@ -95,12 +95,12 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <hr />
 <h1 id="about-this-section">About this section</h1>
 <p>The documentation gives the program's <a href="usage.html">usage</a> detailed description 
-as well as the <a href="page_content.html">page content</a> writing methods and tricks. But this 
+as well as the <a href="page_content.html">page content</a> writing methods and tricks. But such 
 information is probably not necessary for just trying the program out. This section describes 
 the ways of quick starting.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Before using this script the program must be installed, see the 
+<p>Before following this section, the program must be installed, see the 
 <a href="installation.html">Installation section</a>.</p>
 </div>
 <hr />
@@ -111,16 +111,16 @@ the ways of quick starting.</p>
 and with some sample content.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As for now the quick start script is implemented for Windows only.</p>
+<p>As for now, the quick start script is implemented for Windows only.</p>
 </div>
-<p>As the program is installed, create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal</p>
+<p>After the program is installed, create an empty directory where the documentation must be set up,
+then switch to there in the command line terminal:</p>
 <pre class="highlight"><code class="language-shell">&gt;cd C:\your\path\your_project</code></pre>
-<p>and execute the following command:</p>
+<p>Execute the following command:</p>
 <pre class="highlight"><code class="language-shell">&gt;%MD2HTML_HOME%\bin\new_project\new_project.bat</code></pre>
 <p>All necessary project files will be created in the directory <code>your_project</code>. Just generate 
 the documentation by double-clicking the command file <code>generate_doc_py.bat</code> or 
-<code>generate_doc_java.bat</code>. Open the generated file <code>readme.html</code> in the project's root 
+<code>generate_doc_java.bat</code>. Open the generated file <code>readme.html</code> in the <code>your_project</code>
 directory to see the content.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -135,7 +135,7 @@ script.</p>
 <ul>
 <li>
 <p>File <code>generate_doc_py.bat</code> or <code>generate_doc_java.bat</code>. May be copied from the program's root 
-    directory.</p>
+    directory. There are corresponding <code>generate_doc_py</code> or <code>generate_doc_java</code> scripts for Linux.</p>
 </li>
 <li>
 <p><em>Argument file</em> <code>md2html_args.json</code> with a content like this:</p>
@@ -186,8 +186,9 @@ Demonstrated are:
 - a list usage.</code></pre>
 </li>
 </ul>
-<p>Click ether of the files <code>generate_doc_py.bat</code> or <code>generate_doc_java.bat</code>, or open the project
-directory in the command line and run them there. The result file <code>example.html</code> will be generated.</p>
+<p>Click ether of the files <code>generate_doc_py.bat</code> or <code>generate_doc_java.bat</code> (or corresponding
+files for Linux). Alternatively the project's directory may be opened in the command line and 
+the scripts may be run in there. The result file <code>example.html</code> will be generated.</p>
 <p>The result HTML page in this simple example doesn't contain nor link any style sheets and uses the
 browser's default styles.</p>
 <p>The described example is reproduced in the directory <code>simplest_project</code> and the generated page

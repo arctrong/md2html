@@ -56,8 +56,8 @@ per one run (unless [GLOB](<!--page reference-->#input_glob) argument is used). 
 if the `--argument-file` argument is not specified.
 
 ----------------------------------------------------------------------------------------------------
-<a name="using_argument_file"></a><!--index argument file -->
-# Using argument file
+<!--index argument file -->
+# Using argument file {#using_argument_file}
 
 The `--argument-file` argument defines the __argument file__ that will be used for
 processing. This may be a single parameter of the call or other command line parameters may be
@@ -99,8 +99,8 @@ To execute an _argument file_ `md2html_args.json` the following command may be u
 ````
 
 ----------------------------------------------------------------------------------------------------
-<a name="command_scripts"></a><!--index command scripts -->
-# Command scripts
+<!--index ["command scripts", "double-click script"] -->
+# Command scripts {#command_scripts}
 
 The following convenience command scripts are provided:
 
@@ -135,7 +135,7 @@ run (that is the Python version for now).
 
 ----------------------------------------------------------------------------------------------------
 <!--index context menu items-->
-# Windows Explorer context menu integration
+# Windows Explorer context menu integration {#win_explorer_context_menu}
 
 The program may be integrated into Windows Explorer context menu:
 
@@ -207,17 +207,13 @@ $ tree -L 2 --charset=ascii --dirsfirst
 |   |   |-- doc1.html
 |   |   `-- doc2.html
 |   |-- layout
-|   |   |-- pict
-|   |   |   |-- layout_image1.png
-|   |   |   `-- layout_image2.png
-|   |   |-- styles.css
-|   |   `-- scripts.js
+|   |   `-- <...>
 |   |-- pict
 |   |   |-- image1.png
 |   |   `-- image2.png
 |   |-- themes
-|   |   |-- light_default_content.css
-|   |   `-- light_default_layout.css
+|   |   `-- light
+|   |       `-- <...>
 |   |-- favicon.png
 |   `-- custom.css
 |-- doc_src
@@ -235,8 +231,8 @@ $ tree -L 2 --charset=ascii --dirsfirst
     page that we want to have in the project's root.
     
     !!! hint
-        It may be convenient to have a documentation starting page in the project's root directory
-        but this page, on the other hand, requires special manipulation, so this decision is a kind
+        It may be convenient to have a documentation starting page in the project's root directory.
+        But this page, on the other hand, requires special manipulation, so this decision is a kind
         of a trade-off.
 
 - the `doc` directory along with the file `doc0.html` contain the whole project's HTML 
@@ -248,30 +244,30 @@ $ tree -L 2 --charset=ascii --dirsfirst
     Markdown texts. In this case, if we want these links to work, we need to preserve the
     source texts location.
     
-- the `doc/content` directory is intended to contain the **generated artifacts only**. I case of 
+- the `doc/content` directory is intended to contain the **generated artifacts only**. In case of 
     problems with document generation, this directory may be safely deleted (or, maybe, better
     first renamed and then deleted). On the next project regeneration this directory and its 
     content will be recreated.
     
 - the `doc_src` directory contains all source files required for producing the project's
-    documentation (except the file `doc0.txt` if we want to use it);
-    
-- `generate_doc.bat` --- the double-click script for the whole HTML documentation regeneration;
+    documentation (also need the file `doc0.txt` if we want to use it);
 
-- `md2html_args.json` --- the project's _argument file_;
+- `generate_doc.bat` --- the [double-click script](#command_scripts) for the whole HTML
+    documentation regeneration;
+
+- `md2html_args.json` --- the project's [*argument file*](#using_argument_file);
 
 - `doc/layout` directory contains the resources that are used by the template itself. It's a 
-    convenient way to separate those resources from the ones that are used by the documentation
-    content. This directory may be copy-pasted to a new project and it will most likely work;
+    convenient way to separate those resources from the ones that belong to the documentation
+    content. This directory may be copy-pasted to a new project and it will most likely work
+    (in conjunction with the particular *template*);
 
 - `doc/themes` directory contains the [color *themes*](<!--page templates-->#themes) used by
     the documentation. More than one theme may be used at the same time.
 
-- `favicon.png` file was placed here as it's treated as rather a project's artifact than an 
-    artifact belonging to the template;
+- `favicon.png` file is placed here as it's considered as a project's artifact;
     
-- `custom.css` is intended to contain the styles specific to the other project that is created
-    by copy-pasting the current documentation structure and its artifacts.
+- `custom.css` is intended to contain the styles specific to the project (if required).
 
 ----------------------------------------------------------------------------------------------------
 <a name="legacy_compatibility"></a><!--index legacy mode -->
@@ -287,7 +283,7 @@ for the previous versions. The following subsections describe the possible solut
 situations.
 
 The descriptions contain not yet introduced terminology. See the [Index](../index_page.html) and
-the further sections for clarification when required.
+the further sections for clarification when it's required.
 
 
 ## Legacy projects migration
@@ -334,10 +330,9 @@ processing.
 !!! important
     The former versions of this program used very slow (about ten times slower) documents bulk 
     processing mechanism. So with large number of files it would be very helpful to at least replace
-    the outdated _list file_ `md2html_list.txt` with an _argument file_ `md2html_args.json`.
+    the outdated *list file* `md2html_list.txt` with an *argument file* `md2html_args.json`.
     In this case use the `generate_doc.bat` script, and legacy mode may be activated
-    ether in that script or in the _argument file_.
-
+    ether in that script or in the *argument file*.
 
 
 

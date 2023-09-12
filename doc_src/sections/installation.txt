@@ -7,17 +7,19 @@
 # Common steps
 
 This program doesn't have any installer and is installed according to the principle 
-_unpack-and-run_:
+*unpack-and-run*:
 
 - Put (or clone from the VCS) the unpacked directory `md2html` to the directory by choice.
 - Define the `MD2HTML_HOME` environment variable as the absolute path of the directory `md2html`.
 - Follow further specific steps for:
     - [Python version](#installation_python) and
     - [Java version](#installation_java)
+- For Windows, file explorer context menu items may be added, see
+    [here](<!--page usage-->#win_explorer_context_menu).
 
 !!! tip
-    After the program is installed, before further reading, you may go
-    [here](<!--page quick_start-->) for a quick instruction on a simple project creation.
+    After the program is installed, before further reading, you may go to the
+    [Quick start section](<!--page quick_start-->) and try out the program.
 
 ----------------------------------------------------------------------------------------------------
 <a id="installation_python"></a>
@@ -26,13 +28,18 @@ _unpack-and-run_:
 ## Prerequisites
 
 This program requires [Python 3](https://www.python.org/) runtime that can be installed in 
-different ways. Here is a short instruction for a typical installation on Windows. The installer
-file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your platform). 
-Only the following option (1) must be changed:
+different ways. Here is a short instruction for a typical installation on Windows. 
+
+!!! note
+    Again, this is just one of the methods intended mainly for less experienced users and those
+    who want to save the time. Other installation methods will most likely work as well.
+
+The installer file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your
+platform). Only the following option (1) must be changed:
 
 ![](<!--path pict-->install_python_3_8.png)
 
-Nothing else should be changed in this and the subsequent dialogues.
+Nothing else should be changed in this and the subsequent dialogs.
 
 The following command may be used to check whether Python is installed.
 

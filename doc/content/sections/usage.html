@@ -91,9 +91,9 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#on-linux">On Linux</a></li>
 <li><a href="#command-line-syntax">Command line syntax</a></li>
 <li><a href="#using-command-line-arguments">Using command line arguments</a></li>
-<li><a href="#using-argument-file">Using argument file</a></li>
-<li><a href="#command-scripts">Command scripts</a></li>
-<li><a href="#windows-explorer-context-menu-integration">Windows Explorer context menu integration</a></li>
+<li><a href="#using_argument_file">Using argument file</a></li>
+<li><a href="#command_scripts">Command scripts</a></li>
+<li><a href="#win_explorer_context_menu">Windows Explorer context menu integration</a></li>
 <li><a href="#typical-project-structure">Typical project structure</a></li>
 <li><a href="#previous-versions-compatibility">Previous versions compatibility</a><ul>
 <li><a href="#legacy-projects-migration">Legacy projects migration</a></li>
@@ -140,8 +140,8 @@ there are more convenient ways described below in this section.</p>
 per one run (unless <a href="reference.html#input_glob">GLOB</a> argument is used). It's selected 
 if the <code>--argument-file</code> argument is not specified.</p>
 <hr />
-<p><a name="using_argument_file"></a><a name="index_entry_index_2"></a></p>
-<h1 id="using-argument-file">Using argument file</h1>
+<p><a name="index_entry_index_2"></a></p>
+<h1 id="using_argument_file">Using argument file</h1>
 <p>The <code>--argument-file</code> argument defines the <strong>argument file</strong> that will be used for
 processing. This may be a single parameter of the call or other command line parameters may be
 specified as well.</p>
@@ -171,8 +171,8 @@ arguments will <strong>override</strong> the corresponding parameters in the <em
 <p>To execute an <em>argument file</em> <code>md2html_args.json</code> the following command may be used:</p>
 <pre class="highlight"><code class="language-shell">&gt;python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json</code></pre>
 <hr />
-<p><a name="command_scripts"></a><a name="index_entry_index_3"></a></p>
-<h1 id="command-scripts">Command scripts</h1>
+<p><a name="index_entry_index_3"></a></p>
+<h1 id="command_scripts">Command scripts</h1>
 <p>The following convenience command scripts are provided:</p>
 <table>
 <thead>
@@ -222,7 +222,7 @@ with these scripts. See <a href="#legacy_compatibility">here</a> for possible wo
 </div>
 <hr />
 <p><a name="index_entry_index_4"></a></p>
-<h1 id="windows-explorer-context-menu-integration">Windows Explorer context menu integration</h1>
+<h1 id="win_explorer_context_menu">Windows Explorer context menu integration</h1>
 <p>The program may be integrated into Windows Explorer context menu:</p>
 <p><img alt="WINDOWS_EXPOLORER_CONTEXT_MENU" src="../../pict/windows_context_menu.png" /></p>
 <p>This may be a quick and convenient way to convert single documents.</p>
@@ -275,17 +275,13 @@ project setup.</p>
 |   |   |-- doc1.html
 |   |   `-- doc2.html
 |   |-- layout
-|   |   |-- pict
-|   |   |   |-- layout_image1.png
-|   |   |   `-- layout_image2.png
-|   |   |-- styles.css
-|   |   `-- scripts.js
+|   |   `-- &lt;...&gt;
 |   |-- pict
 |   |   |-- image1.png
 |   |   `-- image2.png
 |   |-- themes
-|   |   |-- light_default_content.css
-|   |   `-- light_default_layout.css
+|   |   `-- light
+|   |       `-- &lt;...&gt;
 |   |-- favicon.png
 |   `-- custom.css
 |-- doc_src
@@ -303,8 +299,8 @@ project setup.</p>
     page that we want to have in the project's root.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>It may be convenient to have a documentation starting page in the project's root directory
-but this page, on the other hand, requires special manipulation, so this decision is a kind
+<p>It may be convenient to have a documentation starting page in the project's root directory.
+But this page, on the other hand, requires special manipulation, so this decision is a kind
 of a trade-off.</p>
 </div>
 </li>
@@ -318,37 +314,37 @@ Markdown texts. In this case, if we want these links to work, we need to preserv
 source texts location.</p>
 </li>
 <li>
-<p>the <code>doc/content</code> directory is intended to contain the <strong>generated artifacts only</strong>. I case of 
+<p>the <code>doc/content</code> directory is intended to contain the <strong>generated artifacts only</strong>. In case of 
     problems with document generation, this directory may be safely deleted (or, maybe, better
     first renamed and then deleted). On the next project regeneration this directory and its 
     content will be recreated.</p>
 </li>
 <li>
 <p>the <code>doc_src</code> directory contains all source files required for producing the project's
-    documentation (except the file <code>doc0.txt</code> if we want to use it);</p>
+    documentation (also need the file <code>doc0.txt</code> if we want to use it);</p>
 </li>
 <li>
-<p><code>generate_doc.bat</code> &mdash; the double-click script for the whole HTML documentation regeneration;</p>
+<p><code>generate_doc.bat</code> &mdash; the <a href="#command_scripts">double-click script</a> for the whole HTML
+    documentation regeneration;</p>
 </li>
 <li>
-<p><code>md2html_args.json</code> &mdash; the project's <em>argument file</em>;</p>
+<p><code>md2html_args.json</code> &mdash; the project's <a href="#using_argument_file"><em>argument file</em></a>;</p>
 </li>
 <li>
 <p><code>doc/layout</code> directory contains the resources that are used by the template itself. It's a 
-    convenient way to separate those resources from the ones that are used by the documentation
-    content. This directory may be copy-pasted to a new project and it will most likely work;</p>
+    convenient way to separate those resources from the ones that belong to the documentation
+    content. This directory may be copy-pasted to a new project and it will most likely work
+    (in conjunction with the particular <em>template</em>);</p>
 </li>
 <li>
 <p><code>doc/themes</code> directory contains the <a href="templates.html#themes">color <em>themes</em></a> used by
     the documentation. More than one theme may be used at the same time.</p>
 </li>
 <li>
-<p><code>favicon.png</code> file was placed here as it's treated as rather a project's artifact than an 
-    artifact belonging to the template;</p>
+<p><code>favicon.png</code> file is placed here as it's considered as a project's artifact;</p>
 </li>
 <li>
-<p><code>custom.css</code> is intended to contain the styles specific to the other project that is created
-    by copy-pasting the current documentation structure and its artifacts.</p>
+<p><code>custom.css</code> is intended to contain the styles specific to the project (if required).</p>
 </li>
 </ul>
 <hr />
@@ -363,7 +359,7 @@ source texts location.</p>
 for the previous versions. The following subsections describe the possible solutions in such
 situations.</p>
 <p>The descriptions contain not yet introduced terminology. See the <a href="../index_page.html">Index</a> and
-the further sections for clarification when required.</p>
+the further sections for clarification when it's required.</p>
 <h2 id="legacy-projects-migration">Legacy projects migration</h2>
 <p>This process consists of several steps.</p>
 <ol>

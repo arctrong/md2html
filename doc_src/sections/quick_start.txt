@@ -6,12 +6,12 @@
 # About this section
 
 The documentation gives the program's [usage](<!--page usage-->) detailed description 
-as well as the [page content](<!--page page_content-->) writing methods and tricks. But this 
+as well as the [page content](<!--page page_content-->) writing methods and tricks. But such 
 information is probably not necessary for just trying the program out. This section describes 
 the ways of quick starting.
 
 !!! note
-    Before using this script the program must be installed, see the 
+    Before following this section, the program must be installed, see the 
     [Installation section](<!--page installation-->).
 
 ----------------------------------------------------------------------------------------------------
@@ -23,16 +23,16 @@ The  quick-start script creates a small new project with a
 and with some sample content.
 
 !!! note
-    As for now the quick start script is implemented for Windows only.
+    As for now, the quick start script is implemented for Windows only.
 
-As the program is installed, create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal
+After the program is installed, create an empty directory where the documentation must be set up,
+then switch to there in the command line terminal:
 
 ````shell
 >cd C:\your\path\your_project
 ````
 
-and execute the following command:
+Execute the following command:
 
 ````shell
 >%MD2HTML_HOME%\bin\new_project\new_project.bat
@@ -40,7 +40,7 @@ and execute the following command:
 
 All necessary project files will be created in the directory `your_project`. Just generate 
 the documentation by double-clicking the command file `generate_doc_py.bat` or 
-`generate_doc_java.bat`. Open the generated file `readme.html` in the project's root 
+`generate_doc_java.bat`. Open the generated file `readme.html` in the `your_project`
 directory to see the content.
 
 !!! note
@@ -56,7 +56,7 @@ Here is an instruction for manually creating a very simple documentation project
 In a project directory create the following artifacts.
 
 - File `generate_doc_py.bat` or `generate_doc_java.bat`. May be copied from the program's root 
-    directory.
+    directory. There are corresponding `generate_doc_py` or `generate_doc_java` scripts for Linux.
 
 - *Argument file* `md2html_args.json` with a content like this:
 
@@ -112,8 +112,9 @@ In a project directory create the following artifacts.
     - a list usage.
     ````
 
-Click ether of the files `generate_doc_py.bat` or `generate_doc_java.bat`, or open the project
-directory in the command line and run them there. The result file `example.html` will be generated.
+Click ether of the files `generate_doc_py.bat` or `generate_doc_java.bat` (or corresponding
+files for Linux). Alternatively the project's directory may be opened in the command line and 
+the scripts may be run in there. The result file `example.html` will be generated.
 
 The result HTML page in this simple example doesn't contain nor link any style sheets and uses the
 browser's default styles.

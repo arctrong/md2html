@@ -55,17 +55,17 @@ helps achieve more complex result when it's required.
 # Features
 
 **M<sub>2</sub>H** automates conversion of Markdown texts into HTML pages and provides templates
-and styles that are ether ready to use or may be easily adapted and extended for certain tasks.
+and styles that are ether ready to use or may be easily adapted and extended for certain cases.
 
 Apart of that, it provides means for processing whole sets of documents, organizing the output
 and producing a self-contained static HTML documentation that needs only a browser to be viewed.
 
-In the end, this tool has a set of useful plugins that automate and simplify typical tasks and
-make the documentation look more professionally.
+In the end, this tool has a set of plugins that automate and simplify typical tasks and make
+the documentation look more professionally.
 
 **M<sub>2</sub>H** doesn't lay much restrictions on the documentation project's organization and
-lets the users make their own configuration. There are recommendations on the project's organization
-described in this documentation and used for its creation.
+lets the users make their own configuration. There are recommendations on the project structure
+described in this manual and used for its creation.
 
 
 # Implementation
@@ -74,7 +74,7 @@ described in this documentation and used for its creation.
 work mostly the same way, have the same command line syntax, process the same input, are shipped
 together as source code and share some common artifacts like templates and styles, command
 scripts, and this documentation. Despite this, the versions are independent and can be
-used separately. This documentation describes the both versions.
+used separately. This manual describes the both versions.
 
 
 

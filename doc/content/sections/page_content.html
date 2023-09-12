@@ -114,13 +114,13 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <p>This section describes documentation source text writing and covers such topics as Markdown
 syntax, formatting examples and tricks. The templates and styling, as well as the 
 documentation structuring, are discussed in the other sections.</p>
-<p>The complete Markdown guide is not provided in this section, so see 
+<p>The complete Markdown guide is not provided here, so see 
 <a href="https://daringfireball.net/projects/markdown/syntax">the original syntax description</a>
 for more details.</p>
 <hr />
 <h1 id="example-source-texts">Example source texts</h1>
 <p>This documentation is written solely using the <strong>M<sub>2</sub>H</strong> program and itself demonstrates
-the possible result that may be obtained. The source Markdown text files may be viewed using the 
+the possible obtainable result. The source Markdown text files may be viewed using the 
 "Source text" link ("&lt;/&gt;") in the page title block.</p>
 <hr />
 <h1 id="text-effects">Text effects</h1>
@@ -190,13 +190,13 @@ the possible result that may be obtained. The source Markdown text files may be 
 <div class="admonition note">
 <p class="admonition-title">Comments</p>
 <ol>
-<li>Sometimes it's required to show HTML entities inside a code block, but the standard Markdown
-    syntax (with backticks) will show the content as is. For this purpose the CSS class <code>code</code>
-    was defined, so direct HTML inclusions may be a suitable workaround.</li>
+<li>This method was used as a workaround for preventing conflicts with the plugin markers
+    preprocessing. As for now, there's 
+    <a href="plugins.html#ignore_plugin">the "ignore" plugin</a> that is easier to use.</li>
 <li>Special markdown syntax for inserted (<code>++inserted++</code>) and deleted (<code>~~deleted~~</code>)
-    text is not implemented in this program. First, these effects must not be required very
+    text is not activated in this program. First, these effects must not be required very
     often. Second, such markup may cause problems if we write text like "C++", or <code>++i</code>.
-    The used direct HTML markup lets achieve these effects safely.</li>
+    The used direct HTML markup lets achieve these effects more safely.</li>
 <li>Stricken through text, subscript and superscript are not in the Markdown syntax.
     Here direct HTML markup is used as a possible workaround.</li>
 </ol>
@@ -223,16 +223,15 @@ markup it's better, and sometimes required, to leave an empty line before these 
 the generated HTML. The example can be seen at the top of this and other pages. The ToC is
 composed of the <a href="#headers">headers</a> found on the page.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
-that would contain only the sub-headers of this header.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The Python and the Java versions give slightly different ToC appearance. The Java version
-preserves the header text formatting while the Python version removes this formatting. So
-if a header contains e.g. an <code>inline code block</code> the Python version will reflect this
-code block as unformatted text in the corresponding ToC item.</p>
+<p class="admonition-title">Notes</p>
+<ol>
+<li>Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
+    that would contain only the sub-headers of this header.</li>
+<li>The Python and the Java versions give slightly different ToC appearance. The Java version
+    preserves the header text formatting while the Python version removes this formatting. So
+    if a header contains e.g. an <code>inline code block</code> the Python version will reflect this
+    code block as unformatted text in the corresponding ToC item.</li>
+</ol>
 </div>
 <hr />
 <h1 id="links">Links</h1>
@@ -242,6 +241,11 @@ code block as unformatted text in the corresponding ToC item.</p>
 There's the other syntax:</p>
 <pre class="highlight"><code>&lt;path/to/doc.html&gt;</code></pre>
 <p>that will make the link text equal the link location.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><a href="plugins.html#page_links_plugin">The "page-links" plugin</a> may be used for creating
+relative internal links within the documentation.</p>
+</div>
 <hr />
 <p><a name="anchor_demo"></a></p>
 <h1 id="anchors">Anchors</h1>
@@ -259,6 +263,10 @@ at the arbitrary places on the page with the syntax:</p>
 <p>from the same page, or:</p>
 <pre class="highlight"><code>[link text](this_page.html#anchor_name)</code></pre>
 <p>from the same or the other page.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Also see <a href="plugins.html#page_links_plugin">the "page-links" plugin</a>.</p>
+</div>
 <hr />
 <h1 id="images">Images</h1>
 <p><img src="../../pict/penrose.png" alt="Penrose" title="Penrose" class="floatRight" /></p>
@@ -297,15 +305,15 @@ See <a href="plugins.html#relative_paths_plugin">"relative-paths" plugin</a> for
 There's one point that should be taken into account when working with images. Usually images are
 intended to be shown on a light background. When using a 
 <a href="templates.html#themes"><em>dark theme</em></a>, some images may not look well on a dark background.
-So such images may be marked the following way:</p>
+Such images may be marked the following way:</p>
 <pre class="highlight"><code>&lt;div class="light_only"&gt;&lt;/div&gt;
 
 ![](path/to/image.png)</code></pre>
 <p>Alternatively the class <code>light_only</code> may be added to the <code>&lt;img&gt;</code> HTML tag. In dark themes these
 images may be put on a white background (particularly, this is defined in the <code>dark</code>
 theme).</p>
-<p>See <a href="templates.html#themes">here</a> for the <em>theme</em> mechanism description and the image
-on dark background problem handling demonstration.</p>
+<p>See <a href="templates.html#themes">here</a> for more details about the <em>theme</em> mechanism. Also there
+the above problem and its solution are demonstrated.</p>
 <hr />
 <h1 id="lists">Lists</h1>
 <p>The following markup:</p>
@@ -437,7 +445,7 @@ element right before a table:</p>
 </tr>
 </tbody>
 </table>
-<p>If we want to just align text we can use a table without a header:</p>
+<p>If we want a table without a header, we can use:</p>
 <pre class="highlight"><code>&lt;div class="tableHeaderless"&gt;&lt;/div&gt;
 
 | | | | |
@@ -551,7 +559,7 @@ This block demonstrates operations in a shell</code></pre>
 <p>Program language source code syntax highlighting is not implemented yet.</p>
 </div>
 <blockquote>
-<p>Fenced blocks may be inserted inside other blocks like <code>blockquote</code>s:</p>
+<p>Fenced blocks may be inserted inside other blocks, like <code>blockquote</code>s:</p>
 <pre class="highlight"><code class="language-shell">$ echo Fenced blocks inside a blockquote
 Fenced blocks inside a blockquote</code></pre>
 <p>Also, for instance, lists inside <code>blockquote</code>s may contain fenced code blocks:</p>
@@ -568,9 +576,14 @@ blocks don't wrap the lines automatically. Of cause we can break the lines manua
 may make the content inconvenient for copy-pasting. To address this cases, additional markers
 <code>wrapped</code>, <code>wrapped-code</code> and <code>wrapped-shell</code> were defined. Here's an example:</p>
 <pre class="highlight"><code class="language-wrapped-code">This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.</code></pre>
-<p>Just for comparison, the same content will be scrolled in not wrapped fenced blocks:</p>
-<pre class="highlight"><code class="language-code">This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.</code></pre>
+<p>Just for comparison, a similar content will be scrolled in not wrapped fenced blocks:</p>
+<pre class="highlight"><code class="language-code">This is a long line that doesn't contain line breaks inside itself and that we want to be scrolled so that the fenced code block doesn't exceed the page width.</code></pre>
 <h2 id="using-html">Using HTML</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As for now, there's <a href="plugins.html#ignore_plugin">the "ignore" plugin</a> that is easier
+to use. So the following method must be needed less often.</p>
+</div>
 <p>The following code may be used in order to avoid plugin substitutions:</p>
 <pre class="highlight"><code>&lt;div class="code"&gt;![](&amp;lt;!--path pict--&amp;gt;logo.png)&lt;/div&gt;</code></pre>
 <p>The result will be like this:</p>

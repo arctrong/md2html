@@ -300,7 +300,7 @@ with the `selected` CSS class.
 
 **Motivation**
 
-This plugin extracts variables from documents source text and provides these variables to be
+This plugin extracts variables from document source texts and provides these variables to be
 used in the template.
 
 **Definition**
@@ -464,7 +464,7 @@ The first letter link block will look like this:
 The above information allows define desirable styling with CSS.
 
 ----------------------------------------------------------------------------------------------------
-# "page-links" plugin
+# "page-links" plugin {#page_links_plugin}
 
 **Motivation**
 
@@ -514,7 +514,7 @@ become `[](../page1.html)`.
     2. Changing a page's `code` will invalidate all links that reference this page by its `code`.
 
 ----------------------------------------------------------------------------------------------------
-# "ignore" plugin
+# "ignore" plugin {#ignore_plugin}
 
 **Motivation**
 

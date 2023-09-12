@@ -7,7 +7,7 @@
 
 <p><img src="<!--path pict-->md2html_schema.png" title="md2html" class="floatRight light_only" /></p>
 
-The program accepts the following artifacts as the input:
+The program accepts the following artifacts as its input:
 
 - source Markdown texts;
 - one or several HTML templates;
@@ -34,9 +34,9 @@ may be used in process of the content writing.
 ## HTML templates
 
 An HTML artifact that is generated out of a markdown text is not a complete HTML page. It's
-just a fragment that must be put inside the `<body>...</body>` HTML element. A _template_ may
+just a fragment that must be put inside the `<body>...</body>` HTML element. A **template** may
 be considered as an HTML page that doesn't have the main content but just specifies the place
-(placeholder) where this content must be inserted. 
+(placeholder) where this main content must be inserted.
 
 See [here](<!--page templates-->) for more details about templates and other placeholders that 
 may be used in templates.
@@ -44,19 +44,19 @@ may be used in templates.
 
 ## Argument file
 
-The _argument file_ defines the set of input source files and different parameters for the 
+The *argument file* defines the set of input source files and different parameters for the 
 following HTML documents generation. See [here](<!--page usage-->#using_argument_file) 
 for more details.
 
 
 ## HTML page resources
 
-Different resources, like CSS and images are not processed by the program. The program may just
-adjust the location of these resources while putting link on them into the certain pages. 
+Different resources, like CSS, JavaScript and images are not processed by the program. The program
+may just adjust the location of these resources while putting link on them into the certain pages. 
 These are usually [plugins](<!--page plugins-->) that perform these adjustments.
 
 ----------------------------------------------------------------------------------------------------
-# Security
+# Restrictions and security
 
 The program doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
 may contain JavaScript that will be translated unchanged into the generated HTML page. This
@@ -65,16 +65,12 @@ publishing source texts from untrusted third-parties. Click the image below to s
 look like.
 
 !!! tip
-    In case of worry first have a look at the source text by clicking at the "Source text"
-    link ("&lt;/&gt;") at the page top. Also you can view the page source HTML text
-    (`Ctrl`+`U` in the main browsers).
+    In case of worry, first have a look at the source text by clicking at the "Source text"
+    link ("&lt;/&gt;") at the page top. Also you can view the HTML text
+    (`Ctrl`+`U` in most browsers).
 
 <img src="<!--path pict-->box.png" style="cursor: pointer;" onclick="alert(
 'This is just a message but might be any JavaScript code.');return false;" />
-
-
-
-
 
 
 

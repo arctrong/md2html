@@ -12,8 +12,8 @@ for demonstration.
 # Preliminary note
 
 As for now the program provides a *quick start script* described [here](<!--page quick_start-->).
-This page may be useful for understanding the program's working principles, and for possible 
-new templates creation or existing templates modification.
+This page may be useful for understanding the program's working principles, and for new templates
+creation or the existing templates modification.
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["template", "Mustache"] -->
@@ -74,26 +74,23 @@ There's also the other template located at `doc_src/templates/default.html`. Thi
 template that is used by the Windows context menu scripts. It may also be used manually for
 single-page documents creation.
 
+The above templates, in conjunction with the corresponding CSS, produce responsive HTML documents
+that are adapted for both desktop and mobile devices.
+
 ----------------------------------------------------------------------------------------------------
 <!--index CSS-->
 # CSS
 
 This documentation uses a set of CSS files. The information about this files location may be found
-in the template files. The main CSS files are:
-
-- `doc/layout/styles.css`, mainly defines appearance of the page content;
-- `doc/layout/layout.css`, defines appearance and geometry (like the header and the sidebar) 
-    of the `multipage.html` template and redefines some rules for the page content;
-- `doc/custom.css`, is intended for customization in the certain projects. This way the above 
-    CSS files will stay unchanged and may be safely replaced with newer versions when they appear
-    in this project.
+in the template files. See the [typical project structure](<!--page usage-->#typical_project_structure)
+for more details.
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["themes"]--><a name="themes"></a>
 # Color themes
 
-There's a mechanism for defining and using color **themes**. A *theme* is a directory located
-in the directory `doc/themes/`. The theme directory name is the theme's name.
+There's a mechanism for defining and using color **themes**. A *theme* is a subdirectory of
+the directory `doc/themes/`. The theme subdirectory name is the theme's name.
 
 The theme name is specified by the variable `theme` in the *argument file* `md2html_args.json`.
 The complete declaration may look like this: `"theme": "light"`, where `light` is the desired
@@ -109,7 +106,7 @@ To use the dark theme:
 
 <!--index ["dark theme", "theme, dark"]-->
 In this page, variable `"theme": "dark"` is defined in the *page variables section*, 
-so this page is rendered using the dark theme.
+so this **single** page is rendered using the dark theme.
 
 Using the dark scheme, the following problem may be encountered (also see
 [here](<!--page page_content-->#handling_images_on_dark_background)):

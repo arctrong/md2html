@@ -102,8 +102,8 @@ for demonstration.</p>
 <hr />
 <h1 id="preliminary-note">Preliminary note</h1>
 <p>As for now the program provides a <em>quick start script</em> described <a href="quick_start.html">here</a>.
-This page may be useful for understanding the program's working principles, and for possible 
-new templates creation or existing templates modification.</p>
+This page may be useful for understanding the program's working principles, and for new templates
+creation or the existing templates modification.</p>
 <hr />
 <p><a name="index_entry_index_1"></a></p>
 <h1 id="what-is-template">What is template?</h1>
@@ -184,24 +184,19 @@ documentation projects. The template file location is <code>doc_src/templates/mu
 <p>There's also the other template located at <code>doc_src/templates/default.html</code>. This is a single-page
 template that is used by the Windows context menu scripts. It may also be used manually for
 single-page documents creation.</p>
+<p>The above templates, in conjunction with the corresponding CSS, produce responsive HTML documents
+that are adapted for both desktop and mobile devices.</p>
 <hr />
 <p><a name="index_entry_index_2"></a></p>
 <h1 id="css">CSS</h1>
 <p>This documentation uses a set of CSS files. The information about this files location may be found
-in the template files. The main CSS files are:</p>
-<ul>
-<li><code>doc/layout/styles.css</code>, mainly defines appearance of the page content;</li>
-<li><code>doc/layout/layout.css</code>, defines appearance and geometry (like the header and the sidebar) 
-    of the <code>multipage.html</code> template and redefines some rules for the page content;</li>
-<li><code>doc/custom.css</code>, is intended for customization in the certain projects. This way the above 
-    CSS files will stay unchanged and may be safely replaced with newer versions when they appear
-    in this project.</li>
-</ul>
+in the template files. See the <a href="usage.html#typical_project_structure">typical project structure</a>
+for more details.</p>
 <hr />
 <p><a name="index_entry_index_3"></a><a name="themes"></a></p>
 <h1 id="color-themes">Color themes</h1>
-<p>There's a mechanism for defining and using color <strong>themes</strong>. A <em>theme</em> is a directory located
-in the directory <code>doc/themes/</code>. The theme directory name is the theme's name.</p>
+<p>There's a mechanism for defining and using color <strong>themes</strong>. A <em>theme</em> is a subdirectory of
+the directory <code>doc/themes/</code>. The theme subdirectory name is the theme's name.</p>
 <p>The theme name is specified by the variable <code>theme</code> in the <em>argument file</em> <code>md2html_args.json</code>.
 The complete declaration may look like this: <code>"theme": "light"</code>, where <code>light</code> is the desired
 theme name. As for now, two themes are defined: <code>light</code> and <code>dark</code>.</p>
@@ -215,7 +210,7 @@ To use the dark theme:</p>
 </ul>
 <p><a name="index_entry_index_4"></a>
 In this page, variable <code>"theme": "dark"</code> is defined in the <em>page variables section</em>, 
-so this page is rendered using the dark theme.</p>
+so this <strong>single</strong> page is rendered using the dark theme.</p>
 <p>Using the dark scheme, the following problem may be encountered (also see
 <a href="page_content.html#handling_images_on_dark_background">here</a>):</p>
 <p><img src="../../pict/light_only.png" />
