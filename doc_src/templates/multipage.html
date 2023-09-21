@@ -11,6 +11,8 @@
 {{{styles}}}
 <link rel="stylesheet" type="text/css" href="{{resource_path}}layout/flex.css">
 <link rel="stylesheet" type="text/css" href="{{resource_path}}custom.css">
+{{#link_js}}<script {{#defer}} defer{{/defer}} src="{{resource_path}}{{{src}}}"></script>
+{{/link_js}}
 </head>
 <body>
 
@@ -38,6 +40,8 @@ alt="No back">{{/nav.previous}}
 src="{{resource_path}}layout/pict/next_page_h21px.png" alt="Next"></a>{{/nav.next}}
 {{^nav.next}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h21px_inactive.png"
 alt="No next">{{/nav.next}}
+{{#controls}}{{{.}}}
+{{/controls}}
 
 <span class="headerTitle">{{title}}</span>
 
