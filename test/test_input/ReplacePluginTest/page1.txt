@@ -1,0 +1,8 @@
+
+Test 1: <!--replace1 VALUE--> etc.
+
+Test 2: <!--replace2 ["VALUE"]--> etc.
+
+Test 3: <!--replace3 VALUE1 --> etc.
+
+Test 4: <!--replace4 ["VALUE1", "VALUE2"]--> etc.

@@ -1,0 +1,20 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/ReplacePluginTest/template.html",
+        "verbose": false,
+        "link-css": ["../doc/layout/content.css"]
+    },
+    "documents": [
+        { "input": "page1.txt", "title": "ReplacePlugin" }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "replace": [
+            { "markers": ["replace1", "replace2"], "replace-with": "pref1+${1}+suff1" },
+            { "markers": ["replace3", "replace4"], "replace-with": "pref2+${1}+middle2+${2}+suff2" }
+        ]
+    }
+}
