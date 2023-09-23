@@ -719,7 +719,62 @@ we will get the following output:
 <!--include_code hello/Main.java-->
 ````
 
+----------------------------------------------------------------------------------------------------
+# "replace" plugin
 
+**Motivation**
+
+This plugin makes replacements by template. It may be helpful for contracting long and recurring
+fragments. Probably, long and cumbersome HTML inclusions are the first fragments that 
+may be addressed by this plugin. 
+
+!!! important
+    This plugin must be used with care. When used too much, it may become a replacement of
+    the Markdown syntax. And that, in its turn, may significantly reduce the documents 
+    readability and compatibility.
+
+
+**Definition**
+
+The plugin is defined the following way:
+
+````
+    "plugins": {
+        . . .
+        "replace": [
+            { "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" },
+            { "markers": ["blue"], "replace-with": "<span style=\"color:blue;\">${1}</span>" }
+        ],
+        . . .
+    }
+````
+
+In this example:
+
+- `red` and `blue` are the marker to be used in the placeholders (see below).
+    There may be several markers;
+- the `replace-with` attributes define the templates to be extended;
+- `${1}`, `${2}`, `${3}`, etc. are the placeholders that will be replaced in the text.
+
+
+**Usage**
+
+The content may be added the following ways:
+
+- `<!--ignore red some text -->` --- using a string;
+- `<!--ignore red ["some text ", "some other text"] -->` --- using a list. Unused items will be
+    ignored.
+
+The output will be the same in both cases:
+
+````code
+<span style="color:red;">some text </span>
+````
+
+This result may look like this: <!--red some text -->.
+
+If there are not enough values provided for the template, the missing positions will be replaced
+with empty strings.
 
 
 

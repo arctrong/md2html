@@ -97,6 +97,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#ignore_plugin">"ignore" plugin</a></li>
 <li><a href="#wrap-code-plugin">"wrap-code" plugin</a></li>
 <li><a href="#include-file-plugin">"include-file" plugin</a></li>
+<li><a href="#replace-plugin">"replace" plugin</a></li>
 </ul>
 </div>
 <hr />
@@ -885,6 +886,47 @@ where it's described. This plugin does such kind of inclusion.</p>
         System.out.println("Hi!");
     }
 }</code></pre>
+<hr />
+<h1 id="replace-plugin">"replace" plugin</h1>
+<p><strong>Motivation</strong></p>
+<p>This plugin makes replacements by template. It may be helpful for contracting long and recurring
+fragments. Probably, long and cumbersome HTML inclusions are the first fragments that 
+may be addressed by this plugin. </p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>This plugin must be used with care. When used too much, it may become a replacement of
+the Markdown syntax. And that, in its turn, may significantly reduce the documents 
+readability and compatibility.</p>
+</div>
+<p><strong>Definition</strong></p>
+<p>The plugin is defined the following way:</p>
+<pre class="highlight"><code>    "plugins": {
+        . . .
+        "replace": [
+            { "markers": ["red"], "replace-with": "&lt;span style=\"color:red;\"&gt;${1}&lt;/span&gt;" },
+            { "markers": ["blue"], "replace-with": "&lt;span style=\"color:blue;\"&gt;${1}&lt;/span&gt;" }
+        ],
+        . . .
+    }</code></pre>
+<p>In this example:</p>
+<ul>
+<li><code>red</code> and <code>blue</code> are the marker to be used in the placeholders (see below).
+    There may be several markers;</li>
+<li>the <code>replace-with</code> attributes define the templates to be extended;</li>
+<li><code>${1}</code>, <code>${2}</code>, <code>${3}</code>, etc. are the placeholders that will be replaced in the text.</li>
+</ul>
+<p><strong>Usage</strong></p>
+<p>The content may be added the following ways:</p>
+<ul>
+<li><code>&lt;!--red some text --&gt;</code> &mdash; using a string;</li>
+<li><code>&lt;!--red ["some text ", "some other text"] --&gt;</code> &mdash; using a list. Unused items will be
+    ignored.</li>
+</ul>
+<p>The output will be the same in both cases:</p>
+<pre class="highlight"><code class="language-code">&lt;span style="color:red;"&gt;some text &lt;/span&gt;</code></pre>
+<p>This result may look like this: <span style="color:red;">some text </span>.</p>
+<p>If there are not enough values provided for the template, the missing positions will be replaced
+with empty strings.</p>
 <p>&nbsp;</p>
 <hr />
 
