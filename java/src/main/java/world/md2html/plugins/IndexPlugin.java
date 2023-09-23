@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.networknt.schema.JsonSchema;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 import static world.md2html.options.argfile.ArgFileParsingHelper.completeArgFileProcessing;
 import static world.md2html.options.argfile.ArgFileParsingHelper.mergeAndCanonizeArgFileRaw;
+import static world.md2html.plugins.PluginUtils.listFromStringOrArray;
 import static world.md2html.utils.JsonUtils.*;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 
@@ -75,7 +75,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
     // We are going to validate multiple metadata blocks, so preloading the schema.
     private final JsonSchema metadataSchema =
-            loadJsonSchemaFromResource("plugins/index_metadata_schema.json");
+            loadJsonSchemaFromResource("plugins/string_or_array_schema.json");
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
@@ -277,7 +277,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         List<String> terms;
         if (metadata.startsWith("[")) {
             //noinspection unchecked
-            terms = (List<String>) deJson(parseAndValidateEntryJson(document, metadata));
+            terms = (List<String>) deJson(listFromStringOrArray(document, metadata));
         } else {
             terms = Collections.singletonList(metadata);
         }
@@ -367,29 +367,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         return title == null || title.isEmpty() ? "" : " title=\"" + escapeHtml4(title) + "\"";
     }
 
-    private ArrayNode parseAndValidateEntryJson(Document document, String metadata) {
-        JsonNode metadataJsonNode;
-        try {
-            metadataJsonNode = OBJECT_MAPPER.readTree(metadata);
-        } catch (JsonProcessingException e) {
-            throw new PageMetadataException("Incorrect JSON in index entry. Class '" +
-                    e.getClass().getSimpleName() + "', page '" + document.getInput()
-                    + "', error: " + e.getMessage());
-        }
-        try {
-            validateJson(metadataJsonNode, this.metadataSchema);
-        } catch (JsonValidationException e) {
-            throw new PageMetadataException("Error validating index entry. Class '" +
-                    e.getClass().getSimpleName() + "', page '" + document.getInput()
-                    + "', error: " + e.getMessage());
-        }
-        return (ArrayNode) metadataJsonNode;
-    }
-
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-//    @Setter
     static class IndexEntry {
         private String entry;
         private String link;

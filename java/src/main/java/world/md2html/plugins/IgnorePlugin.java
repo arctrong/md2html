@@ -18,7 +18,6 @@ import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 
 public class IgnorePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
-    private List<String> markers;
     private List<PageMetadataHandlerInfo> pageLinksHandlers = new ArrayList<>();
 
     @Override
@@ -26,8 +25,9 @@ public class IgnorePlugin extends AbstractMd2HtmlPlugin implements PageMetadataH
         assureAcceptDataOnce();
         validateInputDataAgainstSchemaFromResource(data, "plugins/ignore_schema.json");
         JsonNode markersNode = data.get("markers");
+        List<String> markers;
         if (markersNode == null || markersNode instanceof NullNode) {
-            this.markers = null;
+            markers = null;
         } else {
             ObjectReader reader = OBJECT_MAPPER.readerFor(new TypeReference<List<String>>() {});
             ArrayList<String> list;
@@ -37,13 +37,13 @@ public class IgnorePlugin extends AbstractMd2HtmlPlugin implements PageMetadataH
                 throw new ArgFileParseException("Error reading plugin '" +
                         this.getClass().getSimpleName() + "' data: " + data);
             }
-            this.markers = list;
+            markers = list;
         }
-        if (this.markers == null || this.markers.isEmpty()) {
-            this.markers = Collections.singletonList("ignore");
+        if (markers == null || markers.isEmpty()) {
+            markers = Collections.singletonList("ignore");
         }
 
-        this.pageLinksHandlers = this.markers.stream()
+        this.pageLinksHandlers = markers.stream()
                 .map(m -> new PageMetadataHandlerInfo(this, m, false))
                 .collect(Collectors.toList());
     }
