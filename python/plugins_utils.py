@@ -9,6 +9,7 @@ from plugins.page_flows_plugin import PageFlowsPlugin
 from plugins.page_links_plugin import PageLinksPlugin
 from plugins.page_variables_plugin import PageVariablesPlugin
 from plugins.relative_paths_plugin import RelativePathsPlugin
+from plugins.replace_plugin import ReplacePlugin
 from plugins.variables_plugin import VariablesPlugin
 from plugins.wrap_code_plugin import WrapCodePlugin
 from utils import UserError
@@ -23,6 +24,7 @@ PLUGIN_PROVIDERS = {
     'ignore': lambda: IgnorePlugin(),
     'wrap-code': lambda: WrapCodePlugin(),
     'include-file': lambda: IncludeFilePlugin(),
+    'replace': lambda: ReplacePlugin(),
 }
 
 

@@ -68,7 +68,7 @@ class UtilTest(unittest.TestCase):
         self.assertEqual('', relativize_relative_resource_path('', 'index.html'))
         self.assertEqual('doc/', relativize_relative_resource_path('doc/', 'index.html'))
         self.assertEqual('doc/pict/', relativize_relative_resource_path('doc/pict/', 'index.html'))
-        
+
         self.assertEqual('../../', relativize_relative_resource_path('../', 'doc/index.html'))
         self.assertEqual('../', relativize_relative_resource_path('', 'doc/index.html'))
         self.assertEqual('', relativize_relative_resource_path('doc/', 'doc/index.html'))
@@ -82,7 +82,7 @@ class UtilTest(unittest.TestCase):
                          relativize_relative_resource_path('pict/', 'doc/chapter01/index.html'))
         self.assertEqual('../../pict/doc/',
                          relativize_relative_resource_path('pict/doc/', 'doc/chapter01/index.html'))
-        
+
         self.assertEqual('', relativize_relative_resource_path('./', 'index.html'))
         self.assertEqual('../', relativize_relative_resource_path('./', 'doc/index.html'))
 
@@ -106,7 +106,7 @@ class UtilTest(unittest.TestCase):
                          relativize_relative_resource('doc/styles.css', 'index.html'))
         self.assertEqual('doc/pict/logo.png',
                          relativize_relative_resource('doc/pict/logo.png', 'index.html'))
-        
+
         self.assertEqual('../../logo.png',
                          relativize_relative_resource('../logo.png', 'doc/index.html'))
         self.assertEqual('../logo.png',
@@ -125,8 +125,41 @@ class UtilTest(unittest.TestCase):
         self.assertEqual('../../pict/doc/logo.png',
                          relativize_relative_resource('pict/doc/logo.png',
                                                       'doc/chapter01/index.html'))
-        
+
         self.assertEqual('logo.png',
                          relativize_relative_resource('./logo.png', 'index.html'))
         self.assertEqual('../logo.png',
                          relativize_relative_resource('./logo.png', 'doc/index.html'))
+
+    def test_variable_replacer_positive(self):
+        for test_case in (
+            ("simple", "start${1}middle${2}end", ["-A-", "-B-"], "start-A-middle-B-end"),
+            ("at start", "${1}end", ["-A-"], "-A-end"),
+            ("at end", "start${1}", ["-A-"], "start-A-"),
+            ("with spaces", "start${\n\t1 \n}end", ["-A-"], "start-A-end"),
+            ("not enough values", "start${1}middle${2} end", ["-A-"], "start-A-middle end"),
+            ("with masking in the middle", "start$${1}end", [], "start${1}end"),
+            ("with masking at start", "$${1}end", [], "${1}end"),
+            ("with masking at end", "start$$", [], "start$"),
+            ("with marker at end", "start$", [], "start$"),
+            ("no positions", "something", ["X"], "something"),
+            ("multi digit position", "start-${11}-end", ["1", "2", "3", "4", "5", "6", "7", "8", "9",
+                                                         "10", "11ok"], "start-11ok-end"),
+        ):
+            with self.subTest(test_name=test_case[0]):
+                replacer = VariableReplacer(test_case[1])
+                self.assertEqual(test_case[3], replacer.replace(test_case[2]))
+
+    def test_variable_replacer_negative(self):
+        for test_case in (
+            ("not a digit", "start${not-a-digit}end", [], "not-a-digit"),
+            ("position is zero", "start${0}end", [], "0"),
+            ("position too small", "start${-43}end", [], "-43"),
+            ("no closing brace", "start${1", [], "brace"),
+            ("no closing brace at the end", "start${", [], "brace"),
+        ):
+            with self.subTest(test_name=test_case[0]):
+                with self.assertRaises(VariableReplacerError) as cm:
+                    replacer = VariableReplacer(test_case[1])
+                    replacer.replace(test_case[2])
+                self.assertTrue(test_case[3] in str(cm.exception))

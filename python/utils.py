@@ -119,3 +119,65 @@ def read_lines_from_cached_file(file):
         lines = read_lines_from_file(file)
         CACHED_FILES[file] = lines
     return lines
+
+
+class VariableReplacerError(Exception):
+    pass
+
+
+class VariableReplacer:
+
+    TOKEN_MARKER = "$"
+    TOKEN_START = "{"
+    TOKEN_END = "}"
+
+    def __init__(self, template: str):
+        self.parts = []
+
+        state = 0
+        token = []
+        for char in template:
+            if state == 0:
+                if char == self.TOKEN_MARKER:
+                    state = 1
+                else:
+                    token.append(char)
+            elif state == 1:
+                if char == self.TOKEN_MARKER:
+                    token.append(self.TOKEN_MARKER)
+                    state = 0
+                elif char == self.TOKEN_START:
+                    self.parts.append("".join(token))
+                    token = []
+                    state = 2
+                else:
+                    token.append(char)
+                    state = 0
+            elif state == 2:
+                if char == self.TOKEN_END:
+                    index = "".join(token).strip()
+                    if not index.isdigit():
+                        raise VariableReplacerError(f"Replacement position is not a number: {index}")
+                    index = int(index)
+                    if index < 1:
+                        raise VariableReplacerError(f"Replacement position is less that 1: {index}")
+                    self.parts.append(index)
+                    token = []
+                    state = 0
+                else:
+                    token.append(char)
+        if state > 1:
+            raise VariableReplacerError("Matching closing brace not found: " + self.TOKEN_END)
+        if state == 1:
+            token.append(self.TOKEN_MARKER)
+        self.parts.append("".join(token))
+
+    def replace(self, substitutions: list):
+        result = []
+        for part in self.parts:
+            if type(part) == int:
+                if len(substitutions) >= part:
+                    result.append(substitutions[part - 1])
+            else:
+                result.append(part)
+        return "".join(result)

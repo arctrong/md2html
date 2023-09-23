@@ -1,11 +1,8 @@
 import json
 from html import escape
 from io import StringIO
-from json import JSONDecodeError
 from pathlib import Path
 from typing import Any, Dict
-
-from jsonschema import validate, ValidationError
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
 from cli_arguments_utils import CliArgDataObject
@@ -13,7 +10,8 @@ from models.document import Document
 from models.options import Options
 from output_utils import output_page
 from plugins.md2html_plugin import Md2HtmlPlugin
-from utils import UserError, reduce_json_validation_error_message, relativize_relative_resource
+from plugins.plugin_utils import list_from_string_or_array
+from utils import UserError, relativize_relative_resource
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -94,9 +92,6 @@ class IndexPlugin(Md2HtmlPlugin):
 
     def __init__(self):
         super().__init__()
-        with open(MODULE_DIR.joinpath('index_metadata_schema.json'), 'r',
-                  encoding="utf-8") as schema_file:
-            self.metadata_schema = json.load(schema_file)
         self.index_data = {}
         self.finalization_started = False
         self.all_plugins = []
@@ -162,20 +157,12 @@ class IndexPlugin(Md2HtmlPlugin):
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
                              metadata_section):
-        index_data = self.index_data[marker.upper()]
-        metadata_str = metadata_str.strip()
-        if metadata_str.startswith('['):
-            try:
-                metadata = json.loads(metadata_str)
-                validate(instance=metadata, schema=self.metadata_schema)
-            except JSONDecodeError as e:
-                raise UserError(f"Incorrect JSON in index entry: {type(e).__name__}: {str(e)}")
-            except ValidationError as e:
-                raise UserError(f"Error validating index entry: {type(e).__name__}: " +
-                                reduce_json_validation_error_message(str(e)))
-        else:
-            metadata = [metadata_str]
+        try:
+            metadata = list_from_string_or_array(metadata_str.strip())
+        except UserError as e:
+            raise UserError(f"Error in index entry: {str(e)}")
 
+        index_data = self.index_data[marker.upper()]
         anchors = index_data.index_cache[doc.output_file]
         index_data.current_anchor_number += 1
         anchor_name = f'{INDEX_ENTRY_ANCHOR_PREFIX}{marker.lower()}_' \
