@@ -139,5 +139,12 @@
       "link": "sections/development.html#index_entry_index_1",
       "title": "Development"
     }
+  ],
+  "readme.html": [
+    {
+      "entry": "Markdown",
+      "link": "../../readme.html#index_entry_index_1",
+      "title": "Home"
+    }
   ]
 }
