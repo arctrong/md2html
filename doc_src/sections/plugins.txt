@@ -730,9 +730,9 @@ fragments. Probably, long and cumbersome HTML inclusions are the first fragments
 may be addressed by this plugin. 
 
 !!! important
-    This plugin must be used with care. When used too much, it may become a replacement of
-    the Markdown syntax. And that, in its turn, may significantly reduce the documents 
-    readability and compatibility.
+    This plugin must be used with care. When used too much, it may become a replacement for
+    the Markdown syntax, and that, in its turn, may significantly reduce the documents 
+    readability and compatibility in source text.
 
 
 **Definition**
@@ -744,7 +744,8 @@ The plugin is defined the following way:
         . . .
         "replace": [
             { "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" },
-            { "markers": ["blue"], "replace-with": "<span style=\"color:blue;\">${1}</span>" }
+            { "markers": ["blue"], "replace-with": "<span style=\"color:blue;\">${1}</span>" },
+            { "markers": ["pict"], "replace-with": "![](<!--ignore path pict-->${1})", "recursive": true }
         ],
         . . .
     }
@@ -752,14 +753,18 @@ The plugin is defined the following way:
 
 In this example:
 
-- there are two replacement definitions;
-- `red` and `blue` are the marker to be used in the placeholders (see below).
+- there are several replacement definitions;
+- `red`, `blue` and `pict` are the marker to be used in the placeholders (see below).
     There may be several markers in one replacement definition;
 - the `replace-with` attributes define the templates to be extended;
 - `${1}`, `${2}`, `${3}`, etc. are the placeholders that will be replaced in the template.
     To add a dollar sign `$` it must be doubled. So `$${4}` will be interpreted as `${4}`.
     There's a need for this doubling only if a dollar sign if followed by a curly brace.
-    So `$3` will be taken literary as `$3`.
+    So `$3` will be taken literary as `$3`;
+- if the `recursive` flag is set to `true` then the resulting text (after the template is
+    extending) will be considered as containing metadata blocks. In the replacement definition
+    with marker `pict` the fragment `<!--ignore path pict-->` will be processed and replaced if
+    the marker `path` is defined.
 
 
 **Usage**
@@ -780,7 +785,5 @@ This result may look like this: <!--red some text -->.
 
 If there are not enough values provided for the template, the missing positions will be replaced
 with empty strings.
-
-
 
 

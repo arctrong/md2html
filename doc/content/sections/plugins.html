@@ -895,9 +895,9 @@ fragments. Probably, long and cumbersome HTML inclusions are the first fragments
 may be addressed by this plugin. </p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This plugin must be used with care. When used too much, it may become a replacement of
-the Markdown syntax. And that, in its turn, may significantly reduce the documents 
-readability and compatibility.</p>
+<p>This plugin must be used with care. When used too much, it may become a replacement for
+the Markdown syntax, and that, in its turn, may significantly reduce the documents 
+readability and compatibility in source text.</p>
 </div>
 <p><strong>Definition</strong></p>
 <p>The plugin is defined the following way:</p>
@@ -905,20 +905,25 @@ readability and compatibility.</p>
         . . .
         "replace": [
             { "markers": ["red"], "replace-with": "&lt;span style=\"color:red;\"&gt;${1}&lt;/span&gt;" },
-            { "markers": ["blue"], "replace-with": "&lt;span style=\"color:blue;\"&gt;${1}&lt;/span&gt;" }
+            { "markers": ["blue"], "replace-with": "&lt;span style=\"color:blue;\"&gt;${1}&lt;/span&gt;" },
+            { "markers": ["pict"], "replace-with": "![](&lt;!--path pict--&gt;${1})", "recursive": true }
         ],
         . . .
     }</code></pre>
 <p>In this example:</p>
 <ul>
-<li>there are two replacement definitions;</li>
-<li><code>red</code> and <code>blue</code> are the marker to be used in the placeholders (see below).
+<li>there are several replacement definitions;</li>
+<li><code>red</code>, <code>blue</code> and <code>pict</code> are the marker to be used in the placeholders (see below).
     There may be several markers in one replacement definition;</li>
 <li>the <code>replace-with</code> attributes define the templates to be extended;</li>
 <li><code>${1}</code>, <code>${2}</code>, <code>${3}</code>, etc. are the placeholders that will be replaced in the template.
     To add a dollar sign <code>$</code> it must be doubled. So <code>$${4}</code> will be interpreted as <code>${4}</code>.
     There's a need for this doubling only if a dollar sign if followed by a curly brace.
-    So <code>$3</code> will be taken literary as <code>$3</code>.</li>
+    So <code>$3</code> will be taken literary as <code>$3</code>;</li>
+<li>if the <code>recursive</code> flag is set to <code>true</code> then the resulting text (after the template is
+    extending) will be considered as containing metadata blocks. In the replacement definition
+    with marker <code>pict</code> the fragment <code>&lt;!--path pict--&gt;</code> will be processed and replaced if
+    the marker <code>path</code> is defined.</li>
 </ul>
 <p><strong>Usage</strong></p>
 <p>The content may be added the following ways:</p>
