@@ -8,7 +8,8 @@
                 "type": "array",
                 "items": { "type": "string", "pattern": "^[\\w\\d_]+$" }
             },
-            "replace-with": { "type": "string" }
+            "replace-with": { "type": "string" },
+            "recursive": { "type": "boolean" }
         },
         "required": ["markers", "replace-with"],
         "additionalProperties": false

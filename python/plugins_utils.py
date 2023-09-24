@@ -77,6 +77,6 @@ def feed_plugins_with_documents(plugins: Dict[str, Md2HtmlPlugin], documents: Li
         plugin.accept_document_list(documents)
 
 
-def feed_plugins_with_app_data(plugins, arguments):
+def feed_plugins_with_app_data(plugins, arguments, metadata_handlers):
     for plugin in plugins.values():
-        plugin.accept_app_data(arguments.plugins, arguments.options)
+        plugin.accept_app_data(arguments.plugins, arguments.options, metadata_handlers)

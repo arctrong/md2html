@@ -2,15 +2,10 @@ import re
 from typing import Iterator, List
 
 from models.document import Document
+from models.page_metadata_handlers import PageMetadataHandlers
 from plugins.md2html_plugin import Md2HtmlPlugin
 
 METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
-
-
-class PageMetadataHandlers:
-    def __init__(self, marker_handlers, all_only_at_page_start):
-        self.marker_handlers = marker_handlers
-        self.all_only_at_page_start = all_only_at_page_start
 
 
 def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadataHandlers:

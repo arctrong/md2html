@@ -7,6 +7,7 @@ from jsonschema import validate, ValidationError
 from cli_arguments_utils import CliArgDataObject
 from models.document import Document
 from models.options import Options
+from models.page_metadata_handlers import PageMetadataHandlers
 from utils import UserError, reduce_json_validation_error_message
 
 
@@ -39,7 +40,7 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def accept_app_data(self, plugins: list, options: Options):
+    def accept_app_data(self, plugins: list, options: Options, metadata_handlers: PageMetadataHandlers):
         pass
 
     def accept_document_list(self, docs: List[Document]):

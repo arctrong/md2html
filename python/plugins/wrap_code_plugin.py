@@ -6,6 +6,7 @@ from argument_file_utils import complete_arguments_processing, merge_and_canoniz
 from cli_arguments_utils import CliArgDataObject
 from models.document import Document
 from models.options import Options
+from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import output_page, MARKDOWN
 from plugins.md2html_plugin import Md2HtmlPlugin
 from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
@@ -67,7 +68,7 @@ class WrapCodePlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return not bool(self.data)
 
-    def accept_app_data(self, plugins: list, options: Options):
+    def accept_app_data(self, plugins: list, options: Options, metadata_handlers: PageMetadataHandlers):
         self.plugins_for_output = plugins
         self.app_options = options
 

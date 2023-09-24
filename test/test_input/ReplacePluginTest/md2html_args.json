@@ -14,7 +14,10 @@
         "page-variables": {},
         "replace": [
             { "markers": ["replace1", "replace2"], "replace-with": "pref1+${1}+suff1" },
-            { "markers": ["replace3", "replace4"], "replace-with": "pref2+${1}+middle2+${2}+suff2" }
+            { "markers": ["replace3", "replace4"], "replace-with": "pref2+${1}+middle2+${2}+suff2" },
+            {"markers": ["m1"], "replace-with": "${1} m1", "recursive": false},
+            {"markers": ["m2"], "replace-with": "${1} m2 <!--m1 v1-->", "recursive": true},
+            {"markers": ["m3"], "replace-with": "${1} m3 <!--m1 v1-->"}
         ]
     }
 }

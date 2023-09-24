@@ -8,6 +8,7 @@ from argument_file_utils import complete_arguments_processing, merge_and_canoniz
 from cli_arguments_utils import CliArgDataObject
 from models.document import Document
 from models.options import Options
+from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import output_page
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.plugin_utils import list_from_string_or_array
@@ -148,7 +149,7 @@ class IndexPlugin(Md2HtmlPlugin):
 
         return extra_plugin_data
 
-    def accept_app_data(self, plugins: list, options: Options):
+    def accept_app_data(self, plugins: list, options: Options, metadata_handlers: PageMetadataHandlers):
         self.all_plugins = plugins
         self.app_options = options
 

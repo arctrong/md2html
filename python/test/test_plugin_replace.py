@@ -91,3 +91,26 @@ class ReplacePluginTest(unittest.TestCase):
         page_text = "beginning <!--marker2 VALUE--> ending"
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning s2 VALUE e2 ending", processed_page)
+
+    def test_recursive(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "page1.txt"}], \n'
+            '"plugins": { \n'
+            '    "replace": [\n'
+            '        {"markers": ["m1"], "replace-with": "${1} m1", "recursive": false},\n'
+            '        {"markers": ["m2"], "replace-with": "${1} m2 <!--m1 v1-->", "recursive": true},\n'
+            '        {"markers": ["m3"], "replace-with": "${1} m3 <!--m1 v1-->"}\n'
+            '    ] \n'
+            '}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "beginning <!--m2 V2--> ending"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("beginning V2 m2 v1 m1 ending", processed_page)
+
+        page_text = "beginning <!--m3 V3--> ending"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("beginning V3 m3 <!--m1 v1--> ending", processed_page)

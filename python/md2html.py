@@ -65,7 +65,9 @@ def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) ->
     feed_plugins_with_documents(plugins, arguments.documents)
     plugins = filter_non_blank_plugins(plugins)
     arguments.plugins = [plugin for plugin in plugins.values()]
-    feed_plugins_with_app_data(plugins, arguments)
+    metadata_handlers = register_page_metadata_handlers(arguments.plugins)
+    feed_plugins_with_app_data(plugins, arguments, metadata_handlers)
+    arguments.metadata_handlers = metadata_handlers
     return arguments
 
 
@@ -102,14 +104,12 @@ def main():
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
 
-        metadata_handlers = register_page_metadata_handlers(arguments.plugins)
-
         for document in arguments.documents:
             try:
 
                 # TODO Consider removing `plugins` argument and using only `plugins.values()`.
 
-                md2html(document, arguments.plugins, metadata_handlers, arguments.options)
+                md2html(document, arguments.plugins, arguments.metadata_handlers, arguments.options)
             except UserError as e:
                 error_input_file = document.input_file
                 raise UserError(f"Error processing input file '{error_input_file}': "
