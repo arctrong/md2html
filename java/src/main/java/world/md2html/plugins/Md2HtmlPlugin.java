@@ -6,6 +6,7 @@ import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.raw.ArgFileRaw;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,8 @@ public interface Md2HtmlPlugin {
     default void initialize(JsonNode extraPluginData) throws ArgFileParseException {
     }
 
-    default void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins) {
+    default void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins,
+                               PageMetadataHandlersWrapper metadataHandlers) {
     }
 
     /**

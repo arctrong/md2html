@@ -2,6 +2,7 @@ package world.md2html.options.model;
 
 import lombok.Builder;
 import lombok.Value;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public class ArgFile {
     SessionOptions options;
     List<Document> documents;
     List<Md2HtmlPlugin> plugins;
+    PageMetadataHandlersWrapper metadataHandlers;
 }

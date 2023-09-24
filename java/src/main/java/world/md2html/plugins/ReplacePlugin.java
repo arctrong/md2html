@@ -3,9 +3,12 @@ package world.md2html.plugins;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectReader;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.UserError;
 import world.md2html.utils.VariableReplacer;
 
@@ -23,8 +26,15 @@ import static world.md2html.utils.JsonUtils.deJson;
 
 public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
+    @AllArgsConstructor
+    private static class Replacement {
+        public VariableReplacer replacer;
+        public boolean recursive;
+    }
+
     private final List<PageMetadataHandlerInfo> pageLinksHandlers = new ArrayList<>();
-    private final Map<String, VariableReplacer> replacers = new HashMap<>();
+    private final Map<String, Replacement> replacements = new HashMap<>();
+    private PageMetadataHandlersWrapper metadataHandlers;
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
@@ -43,12 +53,19 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
                         this.getClass().getSimpleName() + "' data: " + node);
             }
             String replaceWith = node.get("replace-with").asText();
+            VariableReplacer replacer;
             for (String marker : markers) {
                 try {
-                    replacers.put(marker.toUpperCase(), new VariableReplacer(replaceWith));
+                    replacer = new VariableReplacer(replaceWith);
                 } catch (VariableReplacer.VariableReplacerException e) {
                     throw new UserError(e.getMessage() + " The template is: " + replaceWith);
                 }
+                boolean recursive = false;
+                JsonNode recursiveNode = node.get("recursive");
+                if (recursiveNode != null) {
+                    recursive = recursiveNode.asBoolean(false);
+                }
+                replacements.put(marker.toUpperCase(), new Replacement(replacer, recursive));
             }
             this.pageLinksHandlers.addAll(markers.stream()
                     .map(m -> new PageMetadataHandlerInfo(this, m, false))
@@ -59,6 +76,12 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
     @Override
     public boolean isBlank() {
         return this.pageLinksHandlers.isEmpty();
+    }
+
+    @Override
+    public void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins,
+                              PageMetadataHandlersWrapper metadataHandlers) {
+        this.metadataHandlers = metadataHandlers;
     }
 
     @Override
@@ -79,6 +102,11 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
         } else {
             values = Collections.singletonList(metadataStr);
         }
-        return replacers.get(marker.toUpperCase()).replace(values);
+        Replacement replacement = replacements.get(marker.toUpperCase());
+        String result = replacement.replacer.replace(values);
+
+        return replacement.recursive ?
+                metadataHandlers.applyMetadataHandlers(result, document) :
+                result;
     }
 }

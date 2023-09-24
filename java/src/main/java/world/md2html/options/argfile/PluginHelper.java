@@ -96,7 +96,8 @@ public class PluginHelper {
     public static void feedPluginsWithAppData(Map<String, Md2HtmlPlugin> plugins,
                                               ArgFile arguments) {
         for (Md2HtmlPlugin plugin : plugins.values()) {
-            plugin.acceptAppData(arguments.getOptions(), arguments.getPlugins());
+            plugin.acceptAppData(arguments.getOptions(), arguments.getPlugins(),
+                    arguments.getMetadataHandlers());
         }
     }
 }

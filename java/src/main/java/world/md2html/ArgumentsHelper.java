@@ -6,9 +6,11 @@ import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.raw.ArgFileRaw;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static world.md2html.options.argfile.ArgFileParsingHelper.completeArgFileProcessing;
@@ -29,25 +31,31 @@ public class ArgumentsHelper {
             CliOptions cliOptions) throws ArgFileParseException {
 
         ArgFileRaw canonizedArgFileRaw = mergeAndCanonizeArgFileRaw(argFileRaw, cliOptions);
-        Map<String, Md2HtmlPlugin> plugins = instantiatePlugins(canonizedArgFileRaw.getPlugins());
+        Map<String, Md2HtmlPlugin> pluginMap = instantiatePlugins(canonizedArgFileRaw.getPlugins());
 
         // Plugins are not initialized yet, but 'page-variables' plugin will be used in the
         // following call. Still particularly this plugin is already fully functional.
         Pair<ArgFile, Map<String, JsonNode>> processingResult =
-                completeArgFileProcessing(canonizedArgFileRaw, plugins);
+                completeArgFileProcessing(canonizedArgFileRaw, pluginMap);
         ArgFile arguments = processingResult.getValue0();
         Map<String, JsonNode> extraPluginData = processingResult.getValue1();
 
-        addExtraPluginData(extraPluginData, plugins);
-        completePluginsInitialization(argFileRaw, cliOptions, plugins);
-        feedPluginsWithDocuments(plugins, arguments.getDocuments());
-        plugins = filterNonBlankPlugins(plugins);
+        addExtraPluginData(extraPluginData, pluginMap);
+        completePluginsInitialization(argFileRaw, cliOptions, pluginMap);
+        feedPluginsWithDocuments(pluginMap, arguments.getDocuments());
+        pluginMap = filterNonBlankPlugins(pluginMap);
 
-        ArgFile argFile = arguments.toBuilder().plugins(new ArrayList<>(plugins.values())).build();
+        List<Md2HtmlPlugin> plugins = new ArrayList<>(pluginMap.values());
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(plugins);
 
-        feedPluginsWithAppData(plugins, argFile);
+        ArgFile argFile = arguments.toBuilder()
+                .plugins(plugins)
+                .metadataHandlers(metadataHandlers)
+                .build();
+
+        feedPluginsWithAppData(pluginMap, argFile);
 
         return argFile;
     }
-
 }

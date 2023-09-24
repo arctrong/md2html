@@ -12,6 +12,7 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.Utils;
 
@@ -133,7 +134,8 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
     }
 
     @Override
-    public void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins) {
+    public void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins,
+                              PageMetadataHandlersWrapper metadataHandlers) {
         this.options = options;
         this.plugins = plugins;
     }

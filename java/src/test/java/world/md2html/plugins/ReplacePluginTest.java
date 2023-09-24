@@ -116,4 +116,28 @@ class ReplacePluginTest {
         processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
         assertEquals("beginning s2 VALUE e2 ending", processedPage);
     }
+
+    @Test
+    public void test_recursive() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"page1.txt\"}], \n" +
+                        "\"plugins\": { \n" +
+                        "    \"replace\": [\n" +
+                        "        {\"markers\": [\"m1\"], \"replace-with\": \"${1} m1\", \"recursive\": false},\n" +
+                        "        {\"markers\": [\"m2\"], \"replace-with\": \"${1} m2 <!--m1 v1-->\", \"recursive\": true},\n" +
+                        "        {\"markers\": [\"m3\"], \"replace-with\": \"${1} m3 <!--m1 v1-->\"}\n" +
+                        "    ] \n" +
+                        "}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String pageText = "beginning <!--m2 V2--> ending";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("beginning V2 m2 v1 m1 ending", processedPage);
+
+        pageText = "beginning <!--m3 V3--> ending";
+        processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("beginning V3 m3 <!--m1 v1--> ending", processedPage);
+    }
 }
