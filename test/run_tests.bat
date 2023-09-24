@@ -11,7 +11,7 @@ exit /b
 
 :RUN_TEST
 echo.
-echo ===== %1 implementation integral tests =====
+echo ===== %1 implementation E2E tests =====
 set IMPLEMENTATION=%1
 python -m unittest discover %ARGS% --start-directory=%~dp0
 exit /b
