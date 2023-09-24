@@ -10,7 +10,9 @@ import world.md2html.testutils.PluginTestUtils;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 
 class IndexPluginTest {

@@ -1,7 +1,6 @@
 package world.md2html.testutils;
 
 import world.md2html.options.model.Document;
-import world.md2html.plugins.Md2HtmlPlugin;
 
 import java.util.List;
 

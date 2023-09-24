@@ -7,7 +7,12 @@ import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageMetadataHandler;
 import world.md2html.plugins.PageMetadataHandlerInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

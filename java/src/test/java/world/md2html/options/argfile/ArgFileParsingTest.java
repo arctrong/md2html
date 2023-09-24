@@ -20,7 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
 import static world.md2html.testutils.PluginTestUtils.findFirstElementOfType;

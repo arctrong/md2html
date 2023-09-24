@@ -7,7 +7,11 @@ import world.md2html.options.model.Document;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.UserError;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.Utils.relativizeRelativePath;

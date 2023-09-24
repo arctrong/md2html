@@ -13,7 +13,12 @@ import world.md2html.utils.JsonUtils;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static world.md2html.utils.JsonUtils.NODE_FACTORY;
 import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;

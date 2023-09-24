@@ -8,7 +8,12 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.plugins.Md2HtmlPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class PluginHelper {

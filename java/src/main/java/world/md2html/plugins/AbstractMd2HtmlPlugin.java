@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchema;
 import world.md2html.options.argfile.ArgFileParseException;
 
-import static world.md2html.utils.JsonUtils.*;
+import static world.md2html.utils.JsonUtils.JsonValidationException;
+import static world.md2html.utils.JsonUtils.validateJson;
+import static world.md2html.utils.JsonUtils.validateJsonAgainstSchemaFromResource;
 
 abstract public class AbstractMd2HtmlPlugin implements Md2HtmlPlugin {
 

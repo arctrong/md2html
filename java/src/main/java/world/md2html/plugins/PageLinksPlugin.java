@@ -9,7 +9,11 @@ import world.md2html.options.model.Document;
 import world.md2html.utils.CheckedIllegalArgumentException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
