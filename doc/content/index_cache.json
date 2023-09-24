@@ -135,7 +135,12 @@
   ],
   "doc/content/sections/development.html": [
     {
-      "entry": "integral tests",
+      "entry": "end-to-end tests",
+      "link": "sections/development.html#index_entry_index_1",
+      "title": "Development"
+    },
+    {
+      "entry": "E2E tests",
       "link": "sections/development.html#index_entry_index_1",
       "title": "Development"
     }

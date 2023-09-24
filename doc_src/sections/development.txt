@@ -58,23 +58,23 @@ project is built. See the [installation instructions](<!--page installation-->#i
 for more details.
 
 ----------------------------------------------------------------------------------------------------
-<!--index integral tests-->
-# Integral tests
+<!--index ["end-to-end tests", "E2E tests"]-->
+# End-to-end tests
 
-The integral tests are used for testing the built and ready-to-use program's artifacts. These
-tests are the same for the Python and the Java versions.
+The end-to-end (E2E) tests are used for testing the built and ready-to-use program's artifacts.
+These tests are the same for the Python and the Java versions.
 
 
 ## Implementation
 
-The test framework Python [`unittest`](https://docs.python.org/3.8/library/unittest.html) is used.
+The test framework [Python `unittest`](https://docs.python.org/3.8/library/unittest.html) is used.
 [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-the-tree)
 library is used for HTML parsing.
 
 
 ## Prerequisites
 
-To run the integral tests [Python 3](https://www.python.org/) is required. The following
+To run the E2E tests [Python 3](https://www.python.org/) is required. The following
 additional Python package must be installed:
 
 ````shell
@@ -103,14 +103,14 @@ $ ./run_tests
 The output must look like this:
 
 ````shell
-===== py implementation integral tests =====
+===== py implementation E2E tests =====
 .....................................
 ----------------------------------------------------------------------
 Ran 37 tests in 7.167s
 
 OK
 
-===== java implementation integral tests =====
+===== java implementation E2E tests =====
 .....................................
 ----------------------------------------------------------------------
 Ran 37 tests in 23.592s

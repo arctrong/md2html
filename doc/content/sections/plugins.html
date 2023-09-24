@@ -870,7 +870,8 @@ where it's described. This plugin does such kind of inclusion.</p>
     }</code></pre>
 <p>In this example:</p>
 <ul>
-<li><code>include_code</code> is the marker to be used in the placeholders (see below).
+<li>there are two inclusion definitions;</li>
+<li><code>include_code</code> is the marker to be used in the placeholders (see below);
     There may be several markers;</li>
 <li><code>sample_code/</code> and <code>sample_text/</code> define the places where to take the source code files;</li>
 <li><code>"trim": true</code> defines whether to trim leading and trailing white spaces (<code>true</code> by default).</li>
@@ -910,15 +911,19 @@ readability and compatibility.</p>
     }</code></pre>
 <p>In this example:</p>
 <ul>
+<li>there are two replacement definitions;</li>
 <li><code>red</code> and <code>blue</code> are the marker to be used in the placeholders (see below).
-    There may be several markers;</li>
+    There may be several markers in one replacement definition;</li>
 <li>the <code>replace-with</code> attributes define the templates to be extended;</li>
-<li><code>${1}</code>, <code>${2}</code>, <code>${3}</code>, etc. are the placeholders that will be replaced in the text.</li>
+<li><code>${1}</code>, <code>${2}</code>, <code>${3}</code>, etc. are the placeholders that will be replaced in the template.
+    To add a dollar sign <code>$</code> it must be doubled. So <code>$${4}</code> will be interpreted as <code>${4}</code>.
+    There's a need for this doubling only if a dollar sign if followed by a curly brace.
+    So <code>$3</code> will be taken literary as <code>$3</code>.</li>
 </ul>
 <p><strong>Usage</strong></p>
 <p>The content may be added the following ways:</p>
 <ul>
-<li><code>&lt;!--red some text --&gt;</code> &mdash; using a string;</li>
+<li><code>&lt;!--red some text --&gt;</code> &mdash; using a string, only one value may be specified;</li>
 <li><code>&lt;!--red ["some text ", "some other text"] --&gt;</code> &mdash; using a list. Unused items will be
     ignored.</li>
 </ul>

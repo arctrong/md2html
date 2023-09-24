@@ -697,7 +697,8 @@ The plugin is defined the following way:
 
 In this example:
 
-- `include_code` is the marker to be used in the placeholders (see below).
+- there are two inclusion definitions;
+- `include_code` is the marker to be used in the placeholders (see below);
     There may be several markers;
 - `sample_code/` and `sample_text/` define the places where to take the source code files;
 - `"trim": true` defines whether to trim leading and trailing white spaces (`true` by default).
@@ -751,17 +752,21 @@ The plugin is defined the following way:
 
 In this example:
 
+- there are two replacement definitions;
 - `red` and `blue` are the marker to be used in the placeholders (see below).
-    There may be several markers;
+    There may be several markers in one replacement definition;
 - the `replace-with` attributes define the templates to be extended;
-- `${1}`, `${2}`, `${3}`, etc. are the placeholders that will be replaced in the text.
+- `${1}`, `${2}`, `${3}`, etc. are the placeholders that will be replaced in the template.
+    To add a dollar sign `$` it must be doubled. So `$${4}` will be interpreted as `${4}`.
+    There's a need for this doubling only if a dollar sign if followed by a curly brace.
+    So `$3` will be taken literary as `$3`.
 
 
 **Usage**
 
 The content may be added the following ways:
 
-- `<!--ignore red some text -->` --- using a string;
+- `<!--ignore red some text -->` --- using a string, only one value may be specified;
 - `<!--ignore red ["some text ", "some other text"] -->` --- using a list. Unused items will be
     ignored.
 
