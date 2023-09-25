@@ -7,6 +7,12 @@ from plugins.md2html_plugin import Md2HtmlPlugin
 from utils import UserError
 
 METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
+METADATA_START = "<!--"
+METADATA_END = "-->"
+METADATA_START_LEN = len(METADATA_START)
+METADATA_END_LEN = len(METADATA_END)
+METADATA_DELIMITERS_PATTERN = re.compile(METADATA_START.replace("|", "\\|") + '|' +
+                                         METADATA_END.replace("|", "\\|"))
 
 
 def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadataHandlers:
@@ -35,31 +41,28 @@ class MetadataMatchObject:
 
 
 def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
-    """
-    If this is done completely in regex, it works about 100 times longer.
-    """
+    # When this was done completely in regex, it worked about 100 times longer.
     done = 0
-    current = 0
-    while True:
-        begin = text.find('<!--', current)
-        if begin >= 0:
-            end = text.find('-->', begin + 4)
-            if end >= 0:
-                match = METADATA_PATTERN.search(text[begin + 4:end])
-                if match:
-                    yield MetadataMatchObject(text[done:begin], match.group(1),
-                                              match.group(2), text[begin:end + 3], end + 3)
-                    done = end + 3
-                current = end + 3
-            else:
-                return
-        else:
-            return
+    stack = []
+    begin = 0
+    for delimiter in METADATA_DELIMITERS_PATTERN.finditer(text):
+        if delimiter[0] == METADATA_START:
+            stack.append(delimiter.start())
+        elif delimiter[0] == METADATA_END and stack:
+            begin = stack.pop()
+        if not stack:
+            end = delimiter.end() - METADATA_END_LEN
+            match = METADATA_PATTERN.search(text[begin + METADATA_START_LEN:end])
+            if match:
+                yield MetadataMatchObject(text[done:begin], match.group(1),
+                                          match.group(2), text[begin:end + METADATA_END_LEN],
+                                          end + METADATA_END_LEN)
+                done = end + METADATA_END_LEN
 
 
 def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: Union[Document, None],
                             extract_only=False,
-                            # Using a `dict` as there no standard ordered set
+                            # Using a `dict` as there's no standard ordered set
                             visited_markers: Union[Dict[str, None], None] = None
                             ):
     marker_handlers = page_metadata_handlers.marker_handlers

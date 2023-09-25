@@ -33,3 +33,19 @@ class PageMetadataUtilsTest(unittest.TestCase):
             ' t2 ', 'm2', ' d2', '<!--m2 d2-->', 28), match_objects[1])
         self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
             ' t3 ', 'm3', ' d3', '<!--m3 d3-->', 44), match_objects[2])
+
+    def test_metadata_finder_must_ignore_first_closing_delimiter(self):
+        page_content = 'some text --><!--m1 v1-->'
+        match_objects = [md for md in metadata_finder(page_content)]
+        self.assertEqual(1, len(match_objects))
+        self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
+            'some text -->', 'm1', ' v1', '<!--m1 v1-->', 25),
+            match_objects[0])
+
+    def test_metadata_finder_nested_metadata_must_preserve(self):
+        page_content = '<!--m1 d1 <!--m2 d2-->--> t2'
+        match_objects = [md for md in metadata_finder(page_content)]
+        self.assertEqual(1, len(match_objects))
+        self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
+            '', 'm1', ' d1 <!--m2 d2-->', '<!--m1 d1 <!--m2 d2-->-->', 25),
+            match_objects[0])
