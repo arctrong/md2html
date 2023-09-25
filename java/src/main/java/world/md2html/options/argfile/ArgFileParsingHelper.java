@@ -484,7 +484,9 @@ public class ArgFileParsingHelper {
                         Optional.ofNullable(documentRaw.getSortByVariable())
                                 .ifPresent(sortVar ->
                                         globDocumentRawBuilder.techSortBy(
-                                                (String) pageVariables.get(sortVar)));
+                                                // TODO Consider throwing UserError
+                                                //  if the variable is absent
+                                                (String) pageVariables.getOrDefault(sortVar, "")));
                     }
                     globDocumentRawList.add(globDocumentRawBuilder.build());
                 }
