@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Union
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
@@ -37,7 +37,8 @@ class IncludeFilePlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return [(self, marker, False) for marker in self.data.keys()]
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section,
+                             visited_markers: Union[Dict[str, None]] = None):
         marker = marker.upper()
         marker_data = self.data[marker]
         file_path = metadata_str.strip()

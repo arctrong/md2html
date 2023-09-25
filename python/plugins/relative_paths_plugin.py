@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
@@ -45,7 +45,8 @@ class RelativePathsMetadataHandler:
     def __init__(self, paths: Dict[str, str]):
         self.paths = paths
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section,
+                             visited_markers: Union[Dict[str, None]] = None):
 
         path = self.paths.get(metadata_str.strip())
         if path is None:

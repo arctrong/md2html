@@ -1,9 +1,10 @@
 import re
-from typing import Iterator, List
+from typing import Iterator, List, Union, Dict
 
 from models.document import Document
 from models.page_metadata_handlers import PageMetadataHandlers
 from plugins.md2html_plugin import Md2HtmlPlugin
+from utils import UserError
 
 METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
 
@@ -56,12 +57,16 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
             return
 
 
-def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: Document,
-                            extract_only=False):
+def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: Union[Document, None],
+                            extract_only=False,
+                            # Using a `dict` as there no standard ordered set
+                            visited_markers: Union[Dict[str, None], None] = None
+                            ):
     marker_handlers = page_metadata_handlers.marker_handlers
     new_md_lines_list = []
     last_position = 0
     replacement_done = False
+    visited_markers = visited_markers or {}
     for matchObj in metadata_finder(text):
         first_non_blank = not bool(matchObj.before.strip())
         last_position = matchObj.end_position
@@ -72,8 +77,14 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, 
         replacement = matchObj.metadata_block
         if handlers:
             for h in handlers:
-                replacement = h.accept_page_metadata(doc, matchObj.marker,
-                                                     matchObj.metadata, matchObj.metadata_block)
+                if lookup_marker in visited_markers:
+                    raise UserError(f"Cycle detected at marker: {lookup_marker}, "
+                                    f"path is [{','.join(visited_markers)}]")
+                visited_markers[lookup_marker] = None
+                replacement = h.accept_page_metadata(doc, lookup_marker,
+                                                     matchObj.metadata, matchObj.metadata_block,
+                                                     visited_markers)
+                del visited_markers[lookup_marker]
                 replacement_done = True
         if not extract_only:
             new_md_lines_list.append(matchObj.before)

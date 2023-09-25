@@ -114,3 +114,46 @@ class ReplacePluginTest(unittest.TestCase):
         page_text = "beginning <!--m3 V3--> ending"
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning V3 m3 <!--m1 v1--> ending", processed_page)
+
+    def test_recursive_direct_cycle_must_fail(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "page1.txt"}], \n'
+            '"plugins": { \n'
+            '    "replace": [\n'
+            '        {"markers": ["m1"], "replace-with": "${1} <!--m1 v1-->", "recursive": true}\n'
+            '    ] \n'
+            '}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "beginning <!--m1 V1--> ending"
+        with self.assertRaises(UserError) as cm:
+            apply_metadata_handlers(page_text, metadata_handlers, doc)
+        message = str(cm.exception).upper()
+        self.assertIn("CYCLE", message)
+        self.assertIn("M1", message)
+
+    def test_recursive_indirect_cycle_must_fail(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "page1.txt"}], \n'
+            '"plugins": { \n'
+            '    "replace": [\n'
+            '        {"markers": ["m1"], "replace-with": "${1} <!--m2 v2-->", "recursive": true},\n'
+            '        {"markers": ["m2"], "replace-with": "${1} <!--m3 v3-->", "recursive": true},\n'
+            '        {"markers": ["m3"], "replace-with": "${1} <!--m1 v1-->", "recursive": true}\n'
+            '    ] \n'
+            '}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "beginning <!--m1 V1--> ending"
+        with self.assertRaises(UserError) as cm:
+            apply_metadata_handlers(page_text, metadata_handlers, doc)
+        message = str(cm.exception).upper()
+        self.assertIn("CYCLE", message)
+        self.assertIn("M1,M2,M3", message)
+

@@ -1,6 +1,7 @@
 import json
 from json import JSONDecodeError
 from pathlib import Path
+from typing import Union, Dict
 
 from jsonschema import validate, ValidationError
 
@@ -54,7 +55,8 @@ class PageVariablesCollectingMetadataHandler:
                   encoding="utf-8") as schema_file:
             self.metadata_schema = json.load(schema_file)
 
-    def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section):
+    def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section,
+                             visited_markers: Union[Dict[str, None]] = None):
         try:
             metadata = json.loads(metadata_str)
             validate(instance=metadata, schema=self.metadata_schema)

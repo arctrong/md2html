@@ -2,7 +2,7 @@ import json
 from html import escape
 from io import StringIO
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
 from cli_arguments_utils import CliArgDataObject
@@ -157,7 +157,8 @@ class IndexPlugin(Md2HtmlPlugin):
         return [(self, marker, False) for marker in self.index_data.keys()]
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
-                             metadata_section):
+                             metadata_section,
+                             visited_markers: Union[Dict[str, None]] = None):
         try:
             metadata = list_from_string_or_array(metadata_str.strip())
         except UserError as e:

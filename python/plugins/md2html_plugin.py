@@ -1,6 +1,6 @@
 import json
 from abc import ABC
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from jsonschema import validate, ValidationError
 
@@ -77,13 +77,18 @@ class Md2HtmlPlugin(ABC):
         pass
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata,
-                             metadata_section: str) -> str:
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None]] = None) -> str:
         """
         Accepts document `doc` where the `metadata` was found, the metadata marker, the
         `metadata` itself (as a string) and the whole section `metadata_section` from
         which the `metadata` was extracted.
+
         Adjusts the plugin's internal state accordingly, and returns the text that must replace
         the metadata section in the source text.
+
+        If the plugin itself processes metadata in its own content, it must just send forward the
+        provided `visited_markers` collection.
         """
         return metadata_section
 

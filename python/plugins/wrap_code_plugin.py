@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
 from cli_arguments_utils import CliArgDataObject
@@ -75,7 +75,8 @@ class WrapCodePlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return [(self, marker, False) for marker in self.data.keys()]
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section,
+                             visited_markers: Union[Dict[str, None]] = None):
         marker = marker.upper()
         marker_data = self.data[marker]
         metadata_str = metadata_str.strip()

@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union, Dict
 
 from models.document import Document
 from models.options import Options
@@ -47,7 +48,8 @@ class ReplacePlugin(Md2HtmlPlugin):
         return self.metadata_handlers
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
-                             metadata_section: str):
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None]] = None):
         # Preserving trailing spaces
         metadata_str = metadata_str.lstrip()
         try:
@@ -58,6 +60,7 @@ class ReplacePlugin(Md2HtmlPlugin):
         replacer, recursive = self.replacers[marker.upper()]
         result = replacer.replace(metadata)
         if recursive:
-            result = apply_metadata_handlers(result, self.all_metadata_handlers, doc)
+            result = apply_metadata_handlers(result, self.all_metadata_handlers, doc,
+                                             visited_markers=visited_markers)
 
         return result

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
@@ -39,7 +39,8 @@ class PageLinkMetadataHandler:
     def __init__(self, pages: Dict[str, str]):
         self.pages = pages
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section,
+                             visited_markers: Union[Dict[str, None]] = None):
 
         metadata_str = metadata_str.strip()
         destination_page_output = self.pages.get(metadata_str)

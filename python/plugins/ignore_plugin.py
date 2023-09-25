@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Union, Dict
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin
@@ -28,7 +28,8 @@ class IgnorePlugin(Md2HtmlPlugin):
         return self.metadata_handlers
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
-                             metadata_section: str):
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None]] = None):
         content_start = metadata_section.find(metadata_str)
         prefix = metadata_section[:content_start - len(marker)]
         suffix = metadata_section[content_start + len(metadata_str):]
