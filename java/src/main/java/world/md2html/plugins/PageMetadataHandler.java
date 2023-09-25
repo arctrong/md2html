@@ -3,6 +3,8 @@ package world.md2html.plugins;
 import world.md2html.options.model.Document;
 import world.md2html.utils.UserError;
 
+import java.util.Set;
+
 public interface PageMetadataHandler {
 
     /**
@@ -10,9 +12,12 @@ public interface PageMetadataHandler {
      * `metadata` itself and the whole section `metadata_section` from which the `metadata`
      * was extracted.
      * Returns the text that must replace the metadata section in the source text.
+     * If the plugin itself processes metadata in its own content, it must just send forward
+     * the provided `visitedMarkers` collection.
      */
     String acceptPageMetadata(Document document, String marker, String metadata,
-            String metadataSection) throws PageMetadataException;
+                              String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException;
 
     class PageMetadataException extends UserError {
         public PageMetadataException(String message) {

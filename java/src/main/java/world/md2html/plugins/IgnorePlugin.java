@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
@@ -59,8 +60,10 @@ public class IgnorePlugin extends AbstractMd2HtmlPlugin implements PageMetadataH
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-            String metadataSection) throws PageMetadataException {
+    public String acceptPageMetadata(
+            Document document, String marker, String metadata,
+            String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
 
         int contentStart = metadataSection.indexOf(metadata);
         String prefix = metadataSection.substring(0, contentStart - marker.length());

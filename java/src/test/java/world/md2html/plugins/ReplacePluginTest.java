@@ -2,16 +2,20 @@ package world.md2html.plugins;
 
 import org.junit.jupiter.api.Test;
 import world.md2html.options.argfile.ArgFileParseException;
+import world.md2html.options.cli.CliArgumentsException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.testutils.PluginTestUtils;
+import world.md2html.utils.UserError;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 
 class ReplacePluginTest {
@@ -139,5 +143,51 @@ class ReplacePluginTest {
         pageText = "beginning <!--m3 V3--> ending";
         processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
         assertEquals("beginning V3 m3 <!--m1 v1--> ending", processedPage);
+    }
+
+    @Test
+    public void test_recursive_direct_cycle_must_fail() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"page1.txt\"}], \n" +
+                        "\"plugins\": { \n" +
+                        "    \"replace\": [\n" +
+                        "        {\"markers\": [\"m1\"], \"replace-with\": \"${1} <!--m1 v1-->\", \"recursive\": true}\n" +
+                        "    ] \n" +
+                        "}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String pageText = "beginning <!--m1 V1--> ending";
+
+        UserError e = assertThrows(UserError.class,
+                () -> metadataHandlers.applyMetadataHandlers(pageText, doc));
+        String message = e.getMessage().toUpperCase();
+        assertTrue(message.contains("CYCLE"));
+        assertTrue(message.contains("M1"));
+    }
+
+    @Test
+    public void test_recursive_indirect_cycle_must_fail() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"page1.txt\"}], \n" +
+                        "\"plugins\": { \n" +
+                        "    \"replace\": [\n" +
+                        "        {\"markers\": [\"m1\"], \"replace-with\": \"${1} <!--m2 v2-->\", \"recursive\": true},\n" +
+                        "        {\"markers\": [\"m2\"], \"replace-with\": \"${1} <!--m3 v3-->\", \"recursive\": true},\n" +
+                        "        {\"markers\": [\"m3\"], \"replace-with\": \"${1} <!--m1 v1-->\", \"recursive\": true}\n" +
+                        "    ] \n" +
+                        "}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String pageText = "beginning <!--m1 V1--> ending";
+
+        UserError e = assertThrows(UserError.class,
+                () -> metadataHandlers.applyMetadataHandlers(pageText, doc));
+        String message = e.getMessage().toUpperCase();
+        assertTrue(message.contains("CYCLE"));
+        assertTrue(message.contains("M1,M2,M3"));
     }
 }

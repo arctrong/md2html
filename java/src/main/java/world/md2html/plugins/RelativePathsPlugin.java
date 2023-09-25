@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.Utils.relativizeRelativePath;
@@ -74,7 +75,8 @@ public class RelativePathsPlugin extends AbstractMd2HtmlPlugin implements PageMe
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
-            String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
 
         String path = this.paths.get(metadata.trim());
         if (path == null) {

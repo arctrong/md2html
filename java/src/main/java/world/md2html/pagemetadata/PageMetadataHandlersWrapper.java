@@ -6,13 +6,16 @@ import world.md2html.options.model.Document;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageMetadataHandler;
 import world.md2html.plugins.PageMetadataHandlerInfo;
+import world.md2html.utils.UserError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,11 +56,13 @@ public class PageMetadataHandlersWrapper {
         return new PageMetadataHandlersWrapper(markerHandlers, allOnlyAtPageStart);
     }
 
-    public String applyMetadataHandlers(String text, Document document) {
+    public String applyMetadataHandlers(String text, Document document,
+                                        Set<String> visitedMarkers) {
 
         StringBuilder newText = new StringBuilder();
         int lastPos = 0;
         boolean replacementDone = false;
+        visitedMarkers = visitedMarkers == null ? new LinkedHashSet<>() : visitedMarkers;
         Iterator<MetadataMatchObject> it = metadataFinder(text);
         while (it.hasNext()) {
             MetadataMatchObject matchObj = it.next();
@@ -73,8 +78,14 @@ public class PageMetadataHandlersWrapper {
             String replacement = matchObj.metadataBlock;
             if (handlers != null) {
                 for (PageMetadataHandler h : handlers) {
-                    replacement = h.acceptPageMetadata(document, matchObj.marker,
-                            matchObj.metadata, matchObj.metadataBlock);
+                    if (visitedMarkers.contains(lookupMarker)) {
+                        throw new UserError("Cycle detected at marker: " + lookupMarker +
+                                ", path is [" + String.join(",", visitedMarkers) + "]");
+                    }
+                    visitedMarkers.add(lookupMarker);
+                    replacement = h.acceptPageMetadata(document, lookupMarker,
+                            matchObj.metadata, matchObj.metadataBlock, visitedMarkers);
+                    visitedMarkers.remove(lookupMarker);
                     replacementDone = true;
                 }
             }
@@ -90,6 +101,10 @@ public class PageMetadataHandlersWrapper {
         } else {
             return text;
         }
+    }
+
+    public String applyMetadataHandlers(String pageText, Document doc) {
+        return applyMetadataHandlers(pageText, doc, null);
     }
 
     @AllArgsConstructor

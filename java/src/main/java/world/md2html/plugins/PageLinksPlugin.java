@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
@@ -63,7 +64,8 @@ public class PageLinksPlugin extends AbstractMd2HtmlPlugin implements PageMetada
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
-            String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
 
         String destinationPageOutput = this.pages.get(metadata.trim());
         if (destinationPageOutput == null) {

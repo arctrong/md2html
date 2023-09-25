@@ -286,7 +286,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
 
         IndexData indexData = this.indexData.get(marker.toUpperCase());
         Map<String, List<IndexEntry>> indexCache = indexData.getIndexCache();

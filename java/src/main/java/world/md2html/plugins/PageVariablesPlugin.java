@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 import static world.md2html.utils.JsonUtils.deJson;
@@ -56,7 +57,8 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
-            String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
         ObjectNode metadataNode;
         try {
             metadataNode = parseAndValidatePageVariableMetadata(metadata);

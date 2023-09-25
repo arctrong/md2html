@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static world.md2html.plugins.PluginUtils.listFromStringOrArray;
@@ -91,7 +92,8 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
-            String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
 
         String metadataStr = StringUtils.stripStart(metadata, null);
 
@@ -106,7 +108,7 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
         String result = replacement.replacer.replace(values);
 
         return replacement.recursive ?
-                metadataHandlers.applyMetadataHandlers(result, document) :
+                metadataHandlers.applyMetadataHandlers(result, document, visitedMarkers) :
                 result;
     }
 }

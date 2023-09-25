@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.Utils.getCachedString;
@@ -61,7 +62,8 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String filePath,
-                                     String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
         marker = marker.toUpperCase();
         IncludeFileData markerData = this.data.get(marker);
         filePath = filePath.trim();

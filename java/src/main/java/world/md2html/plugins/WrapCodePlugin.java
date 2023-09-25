@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static world.md2html.Md2HtmlUtils.generateHtml;
@@ -153,7 +154,8 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
 
     @Override
     public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection) throws PageMetadataException {
+                                     String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
 
         marker = marker.toUpperCase();
         WrapCodeData markerData = this.data.get(marker);
