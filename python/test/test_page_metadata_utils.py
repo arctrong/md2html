@@ -49,3 +49,19 @@ class PageMetadataUtilsTest(unittest.TestCase):
         self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
             '', 'm1', ' d1 <!--m2 d2-->', '<!--m1 d1 <!--m2 d2-->-->', 25),
             match_objects[0])
+
+    def test_metadata_finder_must_tolerate_unclosed_blocks(self):
+        page_content = '<!--m1 d1--> t2 <!-- some text'
+        match_objects = [md for md in metadata_finder(page_content)]
+        self.assertEqual(1, len(match_objects))
+        self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
+            '', 'm1', ' d1', '<!--m1 d1-->', 12),
+            match_objects[0])
+
+    def test_metadata_finder_must_tolerate_extra_end_delimiters(self):
+        page_content = '<!--m1 d1--> t2 --> some text -->'
+        match_objects = [md for md in metadata_finder(page_content)]
+        self.assertEqual(1, len(match_objects))
+        self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
+            '', 'm1', ' d1', '<!--m1 d1-->', 12),
+            match_objects[0])

@@ -163,8 +163,12 @@ public class PageMetadataHandlersWrapper {
                 while (delimiter.find()) {
                     if (delimiter.group().equals(METADATA_START)) {
                         stack.push(delimiter.start());
-                    } else if (delimiter.group().equals(METADATA_END) && !stack.isEmpty()) {
-                        begin = stack.pop();
+                    } else if (delimiter.group().equals(METADATA_END)) {
+                        if (stack.isEmpty()) {
+                            continue;
+                        } else {
+                            begin = stack.pop();
+                        }
                     }
                     if (stack.isEmpty()) {
                         int end = delimiter.end() - METADATA_END_LEN;

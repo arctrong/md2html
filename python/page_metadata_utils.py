@@ -48,8 +48,11 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
     for delimiter in METADATA_DELIMITERS_PATTERN.finditer(text):
         if delimiter[0] == METADATA_START:
             stack.append(delimiter.start())
-        elif delimiter[0] == METADATA_END and stack:
-            begin = stack.pop()
+        elif delimiter[0] == METADATA_END:
+            if stack:
+                begin = stack.pop()
+            else:
+                continue
         if not stack:
             end = delimiter.end() - METADATA_END_LEN
             match = METADATA_PATTERN.search(text[begin + METADATA_START_LEN:end])
