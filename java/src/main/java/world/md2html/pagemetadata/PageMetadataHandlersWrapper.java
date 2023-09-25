@@ -8,7 +8,9 @@ import world.md2html.plugins.PageMetadataHandler;
 import world.md2html.plugins.PageMetadataHandlerInfo;
 import world.md2html.utils.UserError;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -23,6 +25,14 @@ public class PageMetadataHandlersWrapper {
 
     private static final Pattern METADATA_PATTERN =
             Pattern.compile("^([\\w_][\\w\\d_]*)([^\\w\\d_]*.*)$", Pattern.DOTALL);
+
+    private static final String METADATA_START = "<!--";
+    private static final String METADATA_END = "-->";
+    private final static int METADATA_START_LEN = METADATA_START.length();
+    private final static int METADATA_END_LEN = METADATA_END.length();
+    private static final Pattern METADATA_DELIMITERS_PATTERN =
+            Pattern.compile(METADATA_START.replace("|", "\\|") +  "|" +
+                    METADATA_END.replace("|", "\\|"));
 
     private final Map<MarkerKey, List<PageMetadataHandler>> markerHandlers;
     private final boolean allOnlyAtPageStart;
@@ -129,7 +139,8 @@ public class PageMetadataHandlersWrapper {
     }
 
     @AllArgsConstructor
-    private static class MetadataMatchObject {
+    @Getter
+    public static class MetadataMatchObject {
         private final String before;
         private final String marker;
         private final String metadata;
@@ -137,36 +148,40 @@ public class PageMetadataHandlersWrapper {
         private final int endPos;
     }
 
-    private Iterator<MetadataMatchObject> metadataFinder(String text) {
+    public static Iterator<MetadataMatchObject> metadataFinder(String text) {
 
         return new Iterator<MetadataMatchObject>() {
 
-            private int current = 0;
             private int done = 0;
+            private int begin = 0;
+            final Deque<Integer> stack = new ArrayDeque<>();
             private MetadataMatchObject metadataMatchObject;
+            final Matcher delimiter = METADATA_DELIMITERS_PATTERN.matcher(text);
 
             @Override
             public boolean hasNext() {
-                metadataMatchObject = null;
-                int begin;
-                do {
-                    begin = text.indexOf("<!--", current);
-                    if (begin >= 0) {
-                        int end = text.indexOf("-->", begin + 4);
-                        if (end >= 0) {
-                            Matcher matcher = METADATA_PATTERN.matcher(text.substring(begin + 4, end));
-                            if (matcher.find()) {
-                                metadataMatchObject =
-                                        new MetadataMatchObject(text.substring(done, begin),
-                                                matcher.group(1), matcher.group(2),
-                                                text.substring(begin, end + 3), end + 3);
-                                done = end + 3;
-                            }
-                            current = end + 3;
+                while (delimiter.find()) {
+                    if (delimiter.group().equals(METADATA_START)) {
+                        stack.push(delimiter.start());
+                    } else if (delimiter.group().equals(METADATA_END) && !stack.isEmpty()) {
+                        begin = stack.pop();
+                    }
+                    if (stack.isEmpty()) {
+                        int end = delimiter.end() - METADATA_END_LEN;
+                        Matcher matcher = METADATA_PATTERN
+                                .matcher(text.substring(begin + METADATA_START_LEN, end));
+                        if (matcher.find()) {
+                            metadataMatchObject =
+                                    new MetadataMatchObject(text.substring(done, begin),
+                                            matcher.group(1), matcher.group(2),
+                                            text.substring(begin, end + METADATA_END_LEN),
+                                            end + METADATA_END_LEN);
+                            done = end + METADATA_END_LEN;
+                            return true;
                         }
                     }
-                } while (begin >= 0 && metadataMatchObject == null);
-                return metadataMatchObject != null;
+                }
+                return false;
             }
 
             @Override
@@ -178,5 +193,4 @@ public class PageMetadataHandlersWrapper {
             }
         };
     }
-
 }

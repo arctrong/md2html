@@ -161,5 +161,4 @@ class PageVariablesPluginTest {
         assertEquals("answer", variables.get("question"));
         assertEquals("     other text  some more text", result);
     }
-
 }
