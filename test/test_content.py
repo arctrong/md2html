@@ -1,6 +1,7 @@
 import unittest
 from bs4 import BeautifulSoup
 from pathlib import Path
+import re
 
 import helpers as h
 
@@ -173,9 +174,9 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         root = self._read_output_file('blockquotes_test.html')
 
         paragraph = root.body.p
-        self.assertEqual('The following is a blockquote:', paragraph.text)
-        paragraph = root.body.blockquote.p
-        fragment = paragraph.contents[0]
+        self.assertEqual('The following are blockquotes:', paragraph.text)
+        blockquotes = root.body.find_all('blockquote')
+        fragment = blockquotes[0].p.contents[0]
         self.assertEqual('This is the ', fragment)
         fragment = fragment.next_sibling
         self.assertEqual('strong', fragment.name)
@@ -187,6 +188,11 @@ class Md2htmlContentIntegralTest(unittest.TestCase):
         self.assertEqual('blockquote', fragment.text)
         fragment = fragment.next_sibling
         self.assertEqual('.', fragment)
+        
+        self.assertEqual('this is a multiline quote', 
+            re.sub('\\s+', ' ', blockquotes[1].p.text))
+        self.assertEqual('this is a multiline quote with indent', 
+            re.sub('\\s+', ' ', blockquotes[2].p.text))
 
     def test_fenced_blocks(self):
         root = self._read_output_file('fenced_blocks_test.html')

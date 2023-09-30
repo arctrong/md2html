@@ -1,3 +1,15 @@
-The following is a blockquote:
+The following are blockquotes:
 
 > This is the __content__ of a `blockquote`.
+
+some text
+
+> this is
+> a multiline
+> quote
+
+some text
+
+> this is
+    a multiline
+    quote with indent
