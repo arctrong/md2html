@@ -59,12 +59,12 @@ alt="No next">{{/nav.next}}
             {{^source_file}}<span class="sidebar_item_inline source_file inactive align_right"
                 >&lt;/&gt;</span>{{/source_file}}
             {{/show_source_link}}</div>
-            {{#sidebar}}
+            {{#sidebar}}<div class="sidebar_block">
             {{#not_empty}}{{#title}}<h3>{{.}}</h3>{{/title}}{{/not_empty}}
             {{#.}}
             <a class="sidebar_item{{#current}} selected{{/current}} {{{class}}}" href="{{link}}">{{title}}</a>
             {{/.}}
-            {{/sidebar}}
+            </div>{{/sidebar}}
         </td></tr>
         <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
             href="https://github.com/arctrong/md2html">{{exec_name}}</a> {{exec_version}}</span>
