@@ -138,7 +138,7 @@ class IncludeFilePluginTest {
     }
 
     @Test
-    public void test_with_duplicate_markers_must_raise_error() throws ArgFileParseException {
+    public void test_with_duplicate_markers_must_raise_error() {
         UserError e = assertThrows(UserError.class,
                 () -> parseArgumentFile(
                         "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
@@ -149,5 +149,97 @@ class IncludeFilePluginTest {
                                 "]}}", DUMMY_CLI_OPTIONS));
         assertTrue(e.getMessage().contains("duplication"));
         assertTrue(e.getMessage().contains("MARKER1"));
+    }
+
+    @Test
+    public void test_recursive() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+            "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+            "\"plugins\": {" +
+            "\"replace\": [{\"markers\": [\"replace\"], \"replace-with\": \"[[${1}]]\"}]," +
+            "\"include-file\": [" +
+            "    {\"markers\": [\"marker1\"], " +
+            "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+            "     \"recursive\": true}" +
+            "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--marker1 recursive.txt --> after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before text 1, [[text 2]] after", processedPage);
+    }
+
+    @Test
+    public void test_recursive_cycle_detection() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+            "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+            "\"plugins\": {" +
+            "\"replace\": [{\"markers\": [\"replace\"], \"replace-with\": " +
+            "    \"[[${1}<!--marker1 recursive.txt -->]]\", \"recursive\": true}]," +
+            "\"include-file\": [" +
+            "    {\"markers\": [\"marker1\"], " +
+            "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+            "     \"recursive\": true}" +
+            "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--marker1 recursive.txt --> after";
+
+        UserError e = assertThrows(UserError.class,
+                () -> metadataHandlers.applyMetadataHandlers(pageText, doc));
+        String message = e.getMessage().toUpperCase();
+        assertTrue(message.contains("CYCLE"));
+        assertTrue(message.contains("INCLUDE_FILE_PLUGIN"));
+        assertTrue(message.contains("RECURSIVE.TXT"));
+    }
+
+    @Test
+    public void test_recursive_cycle_detection_with_different_markers() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+            "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+            "\"plugins\": {" +
+            "\"replace\": [{\"markers\": [\"replace\"], \"replace-with\": " +
+            "    \"[[${1}<!--marker2 recursive.txt -->]]\", \"recursive\": true}]," +
+            "\"include-file\": [" +
+            "    {\"markers\": [\"marker1\", \"marker2\"], " +
+            "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+            "     \"recursive\": true}" +
+            "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--marker1 recursive.txt --> after";
+
+        UserError e = assertThrows(UserError.class,
+                () -> metadataHandlers.applyMetadataHandlers(pageText, doc));
+        String message = e.getMessage().toUpperCase();
+        assertTrue(message.contains("CYCLE"));
+        assertTrue(message.contains("INCLUDE_FILE_PLUGIN"));
+        assertTrue(message.contains("RECURSIVE.TXT"));
+    }
+
+    @Test
+    public void test_recursive_no_cycles_with_different_files() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+            "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+            "\"plugins\": {" +
+            "\"replace\": [{\"markers\": [\"replace\"], \"replace-with\": \"[[${1}]]\"}]," +
+            "\"include-file\": [" +
+            "    {\"markers\": [\"include\"], " +
+            "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+            "     \"recursive\": true}" +
+            "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--include recursive1.txt --> after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before text 3, text 1, [[text 2]] after", processedPage);
     }
 }

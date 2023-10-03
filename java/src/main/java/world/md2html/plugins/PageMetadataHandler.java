@@ -12,8 +12,10 @@ public interface PageMetadataHandler {
      * `metadata` itself and the whole section `metadata_section` from which the `metadata`
      * was extracted.
      * Returns the text that must replace the metadata section in the source text.
-     * If the plugin itself processes metadata in its own content, it must just send forward
-     * the provided `visitedMarkers` collection.
+     *If the plugin itself processes metadata in its own content, it must:
+     *send forward the provided `visited_markers` collection
+     *and state the key that must be used for cycle detection
+     *(see the existing plugins for examples).
      */
     String acceptPageMetadata(Document document, String marker, String metadata,
                               String metadataSection, Set<String> visitedMarkers

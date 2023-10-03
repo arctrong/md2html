@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
@@ -23,9 +25,11 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
     private static class IncludeFileData {
         private String rootDir = "";
         private boolean trim = true;
+        private boolean recursive = true;
     }
 
     private Map<String, IncludeFileData> data;
+    private PageMetadataHandlersWrapper metadataHandlers;
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
@@ -43,6 +47,8 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
                 IncludeFileData wrapCodeData = new IncludeFileData();
                 wrapCodeData.rootDir = itemNode.get("root-dir").asText();
                 wrapCodeData.trim = !itemNode.has("trim") || itemNode.get("trim").asBoolean(true);
+                wrapCodeData.recursive = !itemNode.has("recursive") ||
+                        itemNode.get("recursive").asBoolean(false);
                 dataMap.put(marker, wrapCodeData);
             }
             this.data = dataMap;
@@ -55,6 +61,12 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
     }
 
     @Override
+    public void acceptAppData(SessionOptions options, List<Md2HtmlPlugin> plugins,
+                              PageMetadataHandlersWrapper metadataHandlers) {
+        this.metadataHandlers = metadataHandlers;
+    }
+
+    @Override
     public List<PageMetadataHandlerInfo> pageMetadataHandlers() {
         return this.data.keySet().stream().map(marker ->
                 new PageMetadataHandlerInfo(this, marker, false)).collect(Collectors.toList());
@@ -64,7 +76,6 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
     public String acceptPageMetadata(Document document, String marker, String filePath,
                                      String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
-        marker = marker.toUpperCase();
         IncludeFileData markerData = this.data.get(marker);
         filePath = filePath.trim();
         Path includeFile = Paths.get(markerData.rootDir, filePath);
@@ -75,6 +86,9 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         if (markerData.trim) {
             content = content.trim();
         }
-        return  content;
+        return markerData.recursive ?
+                metadataHandlers.applyMetadataHandlers(content, document, visitedMarkers,
+                        "INCLUDE_FILE_PLUGIN:" + includeFile) :
+                content;
     }
 }

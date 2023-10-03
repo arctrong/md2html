@@ -34,6 +34,8 @@ public class PageMetadataHandlersWrapper {
             Pattern.compile(METADATA_START.replace("|", "\\|") +  "|" +
                     METADATA_END.replace("|", "\\|"));
 
+    private final static int RECURSIVE_MAX_DEPTH = 100;
+
     private final Map<MarkerKey, List<PageMetadataHandler>> markerHandlers;
     private final boolean allOnlyAtPageStart;
 
@@ -67,12 +69,28 @@ public class PageMetadataHandlersWrapper {
     }
 
     public String applyMetadataHandlers(String text, Document document,
-                                        Set<String> visitedMarkers) {
+                                        Set<String> visitedMarkers,
+                                        String recursiveMarker) {
+
+        if (recursiveMarker != null) {
+            visitedMarkers = visitedMarkers == null ? new LinkedHashSet<>() : visitedMarkers;
+            if (visitedMarkers.contains(recursiveMarker)) {
+                throw new UserError("Cycle detected at marker: " + recursiveMarker +
+                        ", path is [" + String.join(",", visitedMarkers) + "]");
+            }
+            visitedMarkers.add(recursiveMarker);
+            // Different plugin may have their peculiarities, so we cannot be completely sure
+            // that ALL cycles are detected in ALL possible cases.
+            if (visitedMarkers.size() > RECURSIVE_MAX_DEPTH) {
+                throw new UserError("Cycle SUSPECTED with recursive depth " + RECURSIVE_MAX_DEPTH +
+                        "at marker: " + recursiveMarker +
+                        ", path is [" + String.join("\n", visitedMarkers) + "]");
+            }
+        }
 
         StringBuilder newText = new StringBuilder();
         int lastPos = 0;
         boolean replacementDone = false;
-        visitedMarkers = visitedMarkers == null ? new LinkedHashSet<>() : visitedMarkers;
         Iterator<MetadataMatchObject> it = metadataFinder(text);
         while (it.hasNext()) {
             MetadataMatchObject matchObj = it.next();
@@ -88,14 +106,8 @@ public class PageMetadataHandlersWrapper {
             String replacement = matchObj.metadataBlock;
             if (handlers != null) {
                 for (PageMetadataHandler h : handlers) {
-                    if (visitedMarkers.contains(lookupMarker)) {
-                        throw new UserError("Cycle detected at marker: " + lookupMarker +
-                                ", path is [" + String.join(",", visitedMarkers) + "]");
-                    }
-                    visitedMarkers.add(lookupMarker);
                     replacement = h.acceptPageMetadata(document, lookupMarker,
                             matchObj.metadata, matchObj.metadataBlock, visitedMarkers);
-                    visitedMarkers.remove(lookupMarker);
                     replacementDone = true;
                 }
             }
@@ -105,6 +117,11 @@ public class PageMetadataHandlersWrapper {
                 break;
             }
         }
+
+        if (recursiveMarker != null) {
+            visitedMarkers.remove(recursiveMarker);
+        }
+
         if (replacementDone) {
             newText.append(text.substring(lastPos));
             return newText.toString();
@@ -114,7 +131,7 @@ public class PageMetadataHandlersWrapper {
     }
 
     public String applyMetadataHandlers(String pageText, Document doc) {
-        return applyMetadataHandlers(pageText, doc, null);
+        return applyMetadataHandlers(pageText, doc, null, null);
     }
 
     @AllArgsConstructor

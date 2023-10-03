@@ -104,11 +104,11 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
         } else {
             values = Collections.singletonList(metadataStr);
         }
-        Replacement replacement = replacements.get(marker.toUpperCase());
+        Replacement replacement = replacements.get(marker);
         String result = replacement.replacer.replace(values);
 
         return replacement.recursive ?
-                metadataHandlers.applyMetadataHandlers(result, document, visitedMarkers) :
+                metadataHandlers.applyMetadataHandlers(result, document, visitedMarkers, marker) :
                 result;
     }
 }

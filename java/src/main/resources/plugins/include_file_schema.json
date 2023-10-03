@@ -10,7 +10,8 @@
                 "minItems": 1
             },
             "root-dir": { "type": "string" },
-            "trim": { "type": "boolean" }
+            "trim": { "type": "boolean" },
+            "recursive": { "type": "boolean" }
         },
         "additionalProperties": false,
         "required": ["markers", "root-dir"]
