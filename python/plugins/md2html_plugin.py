@@ -87,8 +87,10 @@ class Md2HtmlPlugin(ABC):
         Adjusts the plugin's internal state accordingly, and returns the text that must replace
         the metadata section in the source text.
 
-        If the plugin itself processes metadata in its own content, it must just send forward the
-        provided `visited_markers` collection.
+        If the plugin itself processes metadata in its own content, it must:
+
+        - send forward the provided `visited_markers` collection
+        - and state the key that must be used for cycle detection (see the existing plugins for examples).
         """
         return metadata_section
 

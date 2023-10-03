@@ -121,3 +121,89 @@ class IncludeFilePluginTest(unittest.TestCase):
             parse_argument_file(argument_file_dict, CliArgDataObject())
         self.assertTrue('duplication' in str(cm.exception))
         self.assertTrue('MARKER1' in str(cm.exception))
+
+    def test_recursive(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"replace": [{"markers": ["replace"], "replace-with": "[[${1}]]"}],'
+            '"include-file": ['
+            '    {"markers": ["marker1"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "recursive": true}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before <!--marker1 recursive.txt --> after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before text 1, [[text 2]] after", processed_page)
+
+    def test_recursive_cycle_detection(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"replace": [{"markers": ["replace"], "replace-with": '
+            '    "[[${1}<!--marker1 recursive.txt -->]]", "recursive": true}],'
+            '"include-file": ['
+            '    {"markers": ["marker1"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "recursive": true}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before <!--marker1  recursive.txt --> after"
+        with self.assertRaises(UserError) as cm:
+            apply_metadata_handlers(page_text, metadata_handlers, doc)
+        message = str(cm.exception).upper()
+        self.assertIn("CYCLE", message)
+        self.assertIn("INCLUDE_FILE_PLUGIN", message)
+        self.assertIn("RECURSIVE.TXT", message)
+
+    def test_recursive_cycle_detection_with_different_markers(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"replace": [{"markers": ["replace"], "replace-with": '
+            '    "[[${1}<!--marker2 recursive.txt -->]]", "recursive": true}],'
+            '"include-file": ['
+            '    {"markers": ["marker1", "marker2"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "recursive": true}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before <!--marker1  recursive.txt --> after"
+        with self.assertRaises(UserError) as cm:
+            apply_metadata_handlers(page_text, metadata_handlers, doc)
+        message = str(cm.exception).upper()
+        self.assertIn("CYCLE", message)
+        self.assertIn("INCLUDE_FILE_PLUGIN", message)
+        self.assertIn("RECURSIVE.TXT", message)
+
+    def test_recursive_no_cycles_with_different_files(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"replace": [{"markers": ["replace"], "replace-with": "[[${1}]]"}],'
+            '"include-file": ['
+            '    {"markers": ["include"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "recursive": true}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before <!--include recursive1.txt --> after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before text 3, text 1, [[text 2]] after", processed_page)

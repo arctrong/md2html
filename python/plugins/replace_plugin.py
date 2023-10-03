@@ -57,10 +57,11 @@ class ReplacePlugin(Md2HtmlPlugin):
         except UserError as e:
             raise UserError(f"Error in replace entry: {str(e)}")
 
-        replacer, recursive = self.replacers[marker.upper()]
+        replacer, recursive = self.replacers[marker]
         result = replacer.replace(metadata)
         if recursive:
             result = apply_metadata_handlers(result, self.all_metadata_handlers, doc,
-                                             visited_markers=visited_markers)
+                                             visited_markers=visited_markers,
+                                             recursive_marker=marker)
 
         return result

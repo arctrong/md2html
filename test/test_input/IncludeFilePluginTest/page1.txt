@@ -6,3 +6,5 @@ Include Shell: [<!--include_shell source1.shell.txt-->]
 Include Code 1: [<!--include_code1 source.code.txt-->]
 
 Include Code 2: [<!--include_code2 source.code.txt-->]
+
+Include recursive: <!--recursive recursive.txt-->

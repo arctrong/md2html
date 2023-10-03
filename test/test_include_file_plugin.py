@@ -39,6 +39,9 @@ class Md2htmlIncludeFilePluginIntegralTest(unittest.TestCase):
         p = p.find_next_sibling('p')
         self.assertEqual('Include Code 2: [some source code]', p.text)
 
+        p = p.find_next_sibling('p')
+        self.assertEqual('Include recursive: some text 1, [[some text 2]]', p.text)
+
 
 if __name__ == '__main__':
     unittest.main()

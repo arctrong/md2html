@@ -13,6 +13,7 @@ METADATA_START_LEN = len(METADATA_START)
 METADATA_END_LEN = len(METADATA_END)
 METADATA_DELIMITERS_PATTERN = re.compile(METADATA_START.replace("|", "\\|") + '|' +
                                          METADATA_END.replace("|", "\\|"))
+RECURSIVE_MAX_DEPTH = 100
 
 
 def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadataHandlers:
@@ -66,13 +67,26 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
 def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: Union[Document, None],
                             extract_only=False,
                             # Using a `dict` as there's no standard ordered set
-                            visited_markers: Union[Dict[str, None], None] = None
+                            visited_markers: Union[Dict[str, None], None] = None,
+                            recursive_marker: Union[str, None] = None
                             ):
+    if recursive_marker:
+        visited_markers = visited_markers or {}
+        if recursive_marker in visited_markers:
+            raise UserError(f"Cycle detected at marker: {recursive_marker}, "
+                            f"path is [{','.join(visited_markers)}]")
+        visited_markers[recursive_marker] = None
+        # Different plugin may have their peculiarities, so we cannot be completely sure
+        # that ALL cycles are detected in ALL possible cases.
+        if len(visited_markers) > RECURSIVE_MAX_DEPTH:
+            cycle_path = '\n'.join(visited_markers)
+            raise UserError(f"Cycle SUSPECTED with recursive depth {RECURSIVE_MAX_DEPTH} "
+                            f"at marker: {recursive_marker}, path is [{cycle_path}]")
+
     marker_handlers = page_metadata_handlers.marker_handlers
     new_md_lines_list = []
     last_position = 0
     replacement_done = False
-    visited_markers = visited_markers or {}
     for matchObj in metadata_finder(text):
         first_non_blank = not bool(matchObj.before.strip())
         last_position = matchObj.end_position
@@ -83,20 +97,19 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, 
         replacement = matchObj.metadata_block
         if handlers:
             for h in handlers:
-                if lookup_marker in visited_markers:
-                    raise UserError(f"Cycle detected at marker: {lookup_marker}, "
-                                    f"path is [{','.join(visited_markers)}]")
-                visited_markers[lookup_marker] = None
                 replacement = h.accept_page_metadata(doc, lookup_marker,
                                                      matchObj.metadata, matchObj.metadata_block,
                                                      visited_markers)
-                del visited_markers[lookup_marker]
                 replacement_done = True
         if not extract_only:
             new_md_lines_list.append(matchObj.before)
             new_md_lines_list.append(replacement)
         if page_metadata_handlers.all_only_at_page_start:
             break
+
+    if recursive_marker:
+        del visited_markers[recursive_marker]
+
     if extract_only:
         return None
     else:
