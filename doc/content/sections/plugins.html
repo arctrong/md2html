@@ -867,7 +867,8 @@ where it's described. This plugin does such kind of inclusion.</p>
         . . .
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
-            { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/" }
+            { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/",
+                "recursive": true }
         ],
         . . .
     }</code></pre>
@@ -878,6 +879,8 @@ where it's described. This plugin does such kind of inclusion.</p>
     There may be several markers;</li>
 <li><code>sample_code/</code> and <code>sample_text/</code> define the places where to take the source code files;</li>
 <li><code>"trim": true</code> defines whether to trim leading and trailing white spaces (<code>true</code> by default).</li>
+<li><code>"recursive": true</code> (<code>false</code> by default) means that if the included file content contains
+    <em>metadata</em> blocks, like <code>&lt;!--path pict--&gt;</code>, then these <em>metadata</em> blocks will be processed.</li>
 </ul>
 <p><strong>Usage</strong></p>
 <p>By adding the following content on the page:</p>

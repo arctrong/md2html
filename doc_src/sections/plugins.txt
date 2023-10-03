@@ -689,7 +689,8 @@ The plugin is defined the following way:
         . . .
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
-            { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/" }
+            { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/",
+                "recursive": true }
         ],
         . . .
     }
@@ -702,6 +703,8 @@ In this example:
     There may be several markers;
 - `sample_code/` and `sample_text/` define the places where to take the source code files;
 - `"trim": true` defines whether to trim leading and trailing white spaces (`true` by default).
+- `"recursive": true` (`false` by default) means that if the included file content contains
+    *metadata* blocks, like `<!--ignore path pict-->`, then these *metadata* blocks will be processed.
 
 
 **Usage**
