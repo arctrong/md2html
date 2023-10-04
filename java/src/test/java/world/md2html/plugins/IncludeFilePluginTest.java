@@ -242,4 +242,30 @@ class IncludeFilePluginTest {
         String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
         assertEquals("before text 3, text 1, [[text 2]] after", processedPage);
     }
+
+    @Test
+    public void test_substring() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+                "\"plugins\": {" +
+                "\"include-file\": [" +
+                "    {\"markers\": [\"include_text\"], " +
+                "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+                "     \"start-with\": \"<body>\", \"end-with\": \"</body>\"}," +
+                "    {\"markers\": [\"include_marker\"], " +
+                "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+                "     \"start-marker\": \"<body>\", \"end-marker\": \"</body>\"}" +
+                "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--include_text substrings.txt --> after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before <body>BODY</body> after", processedPage);
+
+         pageText = "before <!--include_marker substrings.txt --> after";
+        processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before BODY after", processedPage);
+    }
 }

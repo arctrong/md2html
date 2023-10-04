@@ -6,6 +6,7 @@ import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.utils.SmartSubstringer;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
@@ -26,6 +27,7 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         private String rootDir = "";
         private boolean trim = true;
         private boolean recursive = true;
+        private SmartSubstringer substringer;
     }
 
     private Map<String, IncludeFileData> data;
@@ -44,12 +46,18 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
                 if (dataMap.containsKey(marker)) {
                     throw new UserError("Marker duplication (case-insensitively): " + marker);
                 }
-                IncludeFileData wrapCodeData = new IncludeFileData();
-                wrapCodeData.rootDir = itemNode.get("root-dir").asText();
-                wrapCodeData.trim = !itemNode.has("trim") || itemNode.get("trim").asBoolean(true);
-                wrapCodeData.recursive = !itemNode.has("recursive") ||
+                IncludeFileData includeFileData = new IncludeFileData();
+                includeFileData.rootDir = itemNode.get("root-dir").asText();
+                includeFileData.trim = !itemNode.has("trim") || itemNode.get("trim").asBoolean(true);
+                includeFileData.recursive = !itemNode.has("recursive") ||
                         itemNode.get("recursive").asBoolean(false);
-                dataMap.put(marker, wrapCodeData);
+                includeFileData.substringer = new SmartSubstringer(
+                        itemNode.has("start-with") ? itemNode.get("start-with").asText("") : "",
+                        itemNode.has("end-with") ? itemNode.get("end-with").asText("") : "",
+                        itemNode.has("start-marker") ? itemNode.get("start-marker").asText("") : "",
+                        itemNode.has("end-marker") ? itemNode.get("end-marker").asText("") : ""
+                );
+                dataMap.put(marker, includeFileData);
             }
             this.data = dataMap;
         }
@@ -83,6 +91,9 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
                 () -> getCachedString(includeFile, Utils::readStringFromUtf8File),
                 "Error processing page metadata block"
         );
+
+        content = markerData.substringer.substring(content);
+
         if (markerData.trim) {
             content = content.trim();
         }

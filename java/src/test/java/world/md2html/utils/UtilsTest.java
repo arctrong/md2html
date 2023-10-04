@@ -1,11 +1,20 @@
 package world.md2html.utils;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.Stream;
+
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UtilsTest {
 
     @Test
@@ -30,7 +39,7 @@ class UtilsTest {
         assertNull(Utils.firstNotNull(null, null));
         assertNull(Utils.firstNotNull());
         Object o = new String[0];
-        assertEquals(o, Utils.firstNotNull(o, new String[] {"1", "2"}));
+        assertEquals(o, Utils.firstNotNull(o, new String[]{"1", "2"}));
     }
 
     @Test
@@ -71,7 +80,7 @@ class UtilsTest {
 
     @Test
     void relativizeRelativeResource() throws CheckedIllegalArgumentException {
-        
+
         assertThrows(CheckedIllegalArgumentException.class,
                 () -> Utils.relativizeRelativeResource("styles.css", ""));
         assertThrows(CheckedIllegalArgumentException.class,
@@ -103,13 +112,13 @@ class UtilsTest {
     void relativizeRelativePath() throws CheckedIllegalArgumentException {
 
         assertThrows(CheckedIllegalArgumentException.class,
-            () -> Utils.relativizeRelativePath("doc/", ""));
+                () -> Utils.relativizeRelativePath("doc/", ""));
         assertThrows(CheckedIllegalArgumentException.class,
-            () -> Utils.relativizeRelativePath("doc/", "path/"));
+                () -> Utils.relativizeRelativePath("doc/", "path/"));
         assertThrows(CheckedIllegalArgumentException.class,
-            () -> Utils.relativizeRelativePath("doc", "index.html"));
+                () -> Utils.relativizeRelativePath("doc", "index.html"));
         assertThrows(CheckedIllegalArgumentException.class,
-            () -> Utils.relativizeRelativePath("/", "index.html"));
+                () -> Utils.relativizeRelativePath("/", "index.html"));
 
         assertEquals("../", Utils.relativizeRelativePath("../", "index.html"));
         assertEquals("", Utils.relativizeRelativePath("", "index.html"));
@@ -136,5 +145,54 @@ class UtilsTest {
         assertEquals("{field1=value1, field2=value2}", Utils.refineToString(object));
     }
 
-}
+    @Test
+    void maskRegexChars() {
+        assertEquals("no replacements", Utils.maskRegexChars("no replacements"));
+        assertEquals("\\[x\\]", Utils.maskRegexChars("[x]"));
+        assertEquals("\\?\\^\\\\\\$\\.\\|\\*\\+\\]\\[\\)\\(\\}\\{",
+                Utils.maskRegexChars("?^\\$.|*+][)(}{"));
+    }
 
+    public Stream<Arguments> testSmartSubstringer() {
+        return Stream.of(
+                Arguments.of(" do not substring ", "", "", "", "", " do not substring "),
+                Arguments.of("xxx SW yyy", "SW", "", "", "", "SW yyy"),
+                Arguments.of("xxx EW yyy", "", "EW", "", "", "xxx EW"),
+                Arguments.of("xxx SM yyy", "", "", "SM", "", " yyy"),
+                Arguments.of("xxx EM yyy", "", "", "", "EM", "xxx "),
+                Arguments.of("xxx SW yyy EW zzz", "SW", "EW", "", "", "SW yyy EW"),
+                Arguments.of("xxx SM yyy EM zzz", "", "", "SM", "EM", " yyy "),
+                Arguments.of("aaa SW bbb SM ccc", "SW", "", "SM", "", "SW bbb SM ccc"),
+                Arguments.of("aaa SM bbb SW ccc", "SW", "", "SM", "", " bbb SW ccc"),
+                Arguments.of("aaa EW bbb EM ccc", "", "EW", "", "EM", "aaa EW"),
+                Arguments.of("aaa EM bbb EW ccc", "", "EW", "", "EM", "aaa "),
+                Arguments.of("no start_with", "SW", "", "", "", ""),
+                Arguments.of("no start_marker", "", "", "SM", "", ""),
+                Arguments.of("no end_with", "", "EW", "", "", "no end_with"),
+                Arguments.of("no end_marker", "", "", "", "EM", "no end_marker"),
+                Arguments.of("SW at start ", "SW", "", "", "", "SW at start "),
+                Arguments.of("SM at start ", "", "", "SM", "", " at start "),
+                Arguments.of(" at end EW", "", "EW", "", "", " at end EW"),
+                Arguments.of(" at end EM", "", "", "", "EM", " at end "),
+                Arguments.of("EW at start", "", "EW", "", "", "EW"),
+                Arguments.of("EM at start", "", "", "", "EM", ""),
+                Arguments.of(" at end SW", "SW", "", "", "", "SW"),
+                Arguments.of(" at end SM", "", "", "SM", "", ""),
+                Arguments.of("uuu EW after SW www", "SW", "EW", "", "", ""),
+                Arguments.of("uuu EM after SM www", "", "", "SM", "EM", ""),
+                Arguments.of("start with ?^\\$.|*+][)(}{ all RE chars", "?^\\$.|*+][)(}{",
+                        "", "", "", "?^\\$.|*+][)(}{ all RE chars"),
+                Arguments.of("a }SM{ some RE chars ]EM[ b", "", "", "}SM{", "]EM[",
+                        " some RE chars ")
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource
+    void testSmartSubstringer(String input, String startWith, String endWith, String startMarker,
+                              String endMarker, String expected) {
+        SmartSubstringer substringer = new SmartSubstringer(startWith, endWith, startMarker,
+                endMarker);
+        assertEquals(expected, substringer.substring(input));
+    }
+}

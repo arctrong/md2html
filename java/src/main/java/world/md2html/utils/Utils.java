@@ -40,6 +40,8 @@ public class Utils {
     }
 
     private static final Pattern JSON_COMMENT_BLANKING_PATTERN = Pattern.compile("[^\\s]");
+    private static final Pattern REGEX_MASKING_PATTERN =
+            Pattern.compile("([?^\\\\$.|*+\\[\\](){}])");
 
     private Utils() {
     }
@@ -257,5 +259,9 @@ public class Utils {
             throw new RuntimeException(e);
         }
         return result;
+    }
+
+    public static String maskRegexChars(String string) {
+        return REGEX_MASKING_PATTERN.matcher(string).replaceAll("\\\\$1");
     }
 }
