@@ -620,17 +620,8 @@ variables | object | No | *empty* | additional variables to be used in the templ
 
 **Usage**
 
-Let's say there's the file `projects/hello/Main.java` with the content:
-
-````code
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hi!");
-    }
-}
-````
-
-To link this file in a source text, use something like this: 
+Let's say there's the file `projects/hello/Main.java` with some content. To link this file in
+a source text, use something like this: 
 
 ````
 The main class is [here](<!--ignore wrap_java hello/Main.java-->).
@@ -640,11 +631,7 @@ As the result, the new file `doc/code/hello/Main.java.html` will be generated ba
 following transformed content:
 
     ````code
-    public class Main {
-        public static void main(String[] args) {
-            System.out.println("Hi!");
-        }
-    }
+    <the file content here>
     ````
 
 The source text will be transformed like this:
@@ -690,7 +677,8 @@ The plugin is defined the following way:
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
             { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/",
-                "recursive": true }
+                "recursive": true, "start-with": "<body>", "end-with": "</body>",
+                "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" }
         ],
         . . .
     }
@@ -704,7 +692,15 @@ In this example:
 - `sample_code/` and `sample_text/` define the places where to take the source code files;
 - `"trim": true` defines whether to trim leading and trailing white spaces (`true` by default).
 - `"recursive": true` (`false` by default) means that if the included file content contains
-    *metadata* blocks, like `<!--ignore path pict-->`, then these *metadata* blocks will be processed.
+    *metadata* blocks, like `<!--ignore path pict-->`, then these *metadata* blocks will be
+    processed;
+- partial inclusion. Not only the whole file may be included but also a fragment of it:
+    - `start-with` and `start-marker` parameters specify the text that will be the fragment start.
+        The `start-with` text will be present in the included fragment while the `start-marker`
+        text will not be included. The first of these markers will be used. If ether of these
+        parameters are specified and they are not found in the file then nothing will be included;
+    - `end-with` and `end-marker` specify the text that will be the fragment end. If no text
+        defined by these parameters are found then the fragment will be to the end of the file.
 
 
 **Usage**
@@ -713,14 +709,14 @@ By adding the following content on the page:
 
 `````
 ````code
-<!--ignore include_code hello/Main.java-->
+<!--ignore include_code_part hello/Main.java-->
 ````
 `````
 
 we will get the following output:
 
 ````code
-<!--include_code hello/Main.java-->
+<!--include_code_part hello/Main.java-->
 ````
 
 ----------------------------------------------------------------------------------------------------

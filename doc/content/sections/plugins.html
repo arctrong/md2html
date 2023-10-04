@@ -806,22 +806,13 @@ absent descriptions.</p>
 </tbody>
 </table>
 <p><strong>Usage</strong></p>
-<p>Let's say there's the file <code>projects/hello/Main.java</code> with the content:</p>
-<pre class="highlight"><code class="language-code">public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hi!");
-    }
-}</code></pre>
-<p>To link this file in a source text, use something like this: </p>
+<p>Let's say there's the file <code>projects/hello/Main.java</code> with some content. To link this file in
+a source text, use something like this: </p>
 <pre class="highlight"><code>The main class is [here](&lt;!--wrap_java hello/Main.java--&gt;).</code></pre>
 <p>As the result, the new file <code>doc/code/hello/Main.java.html</code> will be generated based on the
 following transformed content:</p>
 <pre><code>````code
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hi!");
-    }
-}
+&lt;the file content here&gt;
 ````
 </code></pre>
 <p>The source text will be transformed like this:</p>
@@ -868,7 +859,8 @@ where it's described. This plugin does such kind of inclusion.</p>
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
             { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/",
-                "recursive": true }
+                "recursive": true, "start-with": "&lt;body&gt;", "end-with": "&lt;/body&gt;",
+                "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" }
         ],
         . . .
     }</code></pre>
@@ -880,12 +872,22 @@ where it's described. This plugin does such kind of inclusion.</p>
 <li><code>sample_code/</code> and <code>sample_text/</code> define the places where to take the source code files;</li>
 <li><code>"trim": true</code> defines whether to trim leading and trailing white spaces (<code>true</code> by default).</li>
 <li><code>"recursive": true</code> (<code>false</code> by default) means that if the included file content contains
-    <em>metadata</em> blocks, like <code>&lt;!--path pict--&gt;</code>, then these <em>metadata</em> blocks will be processed.</li>
+    <em>metadata</em> blocks, like <code>&lt;!--path pict--&gt;</code>, then these <em>metadata</em> blocks will be
+    processed;</li>
+<li>partial inclusion. Not only the whole file may be included but also a fragment of it:<ul>
+<li><code>start-with</code> and <code>start-marker</code> parameters specify the text that will be the fragment start.
+    The <code>start-with</code> text will be present in the included fragment while the <code>start-marker</code>
+    text will not be included. The first of these markers will be used. If ether of these
+    parameters are specified and they are not found in the file then nothing will be included;</li>
+<li><code>end-with</code> and <code>end-marker</code> specify the text that will be the fragment end. If no text
+    defined by these parameters are found then the fragment will be to the end of the file.</li>
+</ul>
+</li>
 </ul>
 <p><strong>Usage</strong></p>
 <p>By adding the following content on the page:</p>
 <pre class="highlight"><code>````code
-&lt;!--include_code hello/Main.java--&gt;
+&lt;!--include_code_part hello/Main.java--&gt;
 ````</code></pre>
 <p>we will get the following output:</p>
 <pre class="highlight"><code class="language-code">public class Main {

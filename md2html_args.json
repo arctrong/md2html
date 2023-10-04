@@ -64,7 +64,11 @@
             "wrap_java": {"style": "code", "input-root": "sample_code/", "output-root": "doc/content/code/",
                           "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
         },
-        "include-file": [{ "markers": ["include_code"], "root-dir": "sample_code/" }],
+        "include-file": [
+            { "markers": ["include_code"], "root-dir": "sample_code/" },
+            { "markers": ["include_code_part"], "root-dir": "sample_code/", 
+                "start-marker": "// INCLUDE FROM HERE" }
+        ],
         "replace": [{ "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" }]
     }
 }
