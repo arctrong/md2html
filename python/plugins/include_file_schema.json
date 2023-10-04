@@ -11,7 +11,11 @@
             },
             "root-dir": { "type": "string" },
             "trim": { "type": "boolean" },
-            "recursive": { "type": "boolean" }
+            "recursive": { "type": "boolean" },
+            "start-with": { "type": "string" },
+            "end-with": { "type": "string" },
+            "start-marker": { "type": "string" },
+            "end-marker": { "type": "string" }
         },
         "additionalProperties": false,
         "required": ["markers", "root-dir"]

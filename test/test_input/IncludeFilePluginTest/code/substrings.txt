@@ -1,0 +1,6 @@
+
+[body]text inside body[/body]
+
+// INCLUDE FROM HERE
+Inclusion with markered substring
+// INCLUDE UP TO HERE

@@ -6,16 +6,23 @@ from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
 from page_metadata_utils import apply_metadata_handlers
 from plugins.md2html_plugin import Md2HtmlPlugin
-from utils import read_lines_from_cached_file, UserError
+from utils import read_lines_from_cached_file, UserError, SmartSubstringer
 
 MODULE_DIR = Path(__file__).resolve().parent
 
 
 class IncludeFileData:
-    def __init__(self, root_dir: str, trim: bool, recursive):
+    def __init__(self, root_dir: str, trim: bool, recursive: bool,
+                 # start_with: str, end_with: str, start_marker: str, end_marker: str
+                 subsringer: SmartSubstringer):
         self.root_dir: str = root_dir
         self.trim: bool = trim
         self.recursive: bool = recursive
+        self.subsringer: SmartSubstringer = subsringer
+        # self.start_with = start_with
+        # self.end_with = end_with
+        # self.start_marker = start_marker
+        # self.end_marker = end_marker
 
 
 class IncludeFilePlugin(Md2HtmlPlugin):
@@ -34,8 +41,16 @@ class IncludeFilePlugin(Md2HtmlPlugin):
                 marker = marker.upper()
                 if marker in self.data:
                     raise UserError(f"Marker duplication (case-insensitively): {marker}")
-                self.data[marker] = IncludeFileData(item["root-dir"], item.get("trim", True),
-                                                    item.get("recursive", False))
+                substringer = SmartSubstringer(start_with=item.get("start-with", ""),
+                                               end_with=item.get("end-with", ""),
+                                               start_marker=item.get("start-marker", ""),
+                                               end_marker=item.get("end-marker", ""),
+                                               )
+                self.data[marker] = IncludeFileData(root_dir=item["root-dir"],
+                                                    trim=item.get("trim", True),
+                                                    recursive=item.get("recursive", False),
+                                                    subsringer=substringer,
+                                                    )
 
     def is_blank(self) -> bool:
         return not bool(self.data)
@@ -56,6 +71,12 @@ class IncludeFilePlugin(Md2HtmlPlugin):
             content = read_lines_from_cached_file(include_file)
         except FileNotFoundError as e:
             raise UserError(f"Error processing page metadata block: {type(e).__name__}: {e}")
+
+        content = marker_data.subsringer.substring(content)
+
+        # content = smart_substring(content, marker_data.start_with, marker_data.end_with,
+        #                           marker_data.start_marker, marker_data.end_marker)
+
         if marker_data.trim:
             content = content.strip()
 

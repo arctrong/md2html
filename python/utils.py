@@ -14,6 +14,7 @@ class UserError(Exception):
 
 CACHED_FILES = {}
 JSON_COMMENT_BLANKING_PATTERN = re.compile(r'[^\s]')
+REGEX_MASKING_PATTERN = re.compile("([?^\\\\$.|*+\\[\\](){}])")
 
 
 def reduce_json_validation_error_message(error_message: str) -> str:
@@ -181,3 +182,90 @@ class VariableReplacer:
             else:
                 result.append(part)
         return "".join(result)
+
+
+def mask_regex_chars(string):
+    return REGEX_MASKING_PATTERN.sub("\\\\\\1", string)
+
+
+class SmartSubstringer:
+
+    def __init__(self, start_with, end_with, start_marker, end_marker):
+        if not (start_with or end_with or start_marker or end_marker):
+            self.empty = True
+            return
+        self.empty = False
+        self.start_with = start_with
+        self.end_with = end_with
+        self.start_marker = start_marker
+        self.end_marker = end_marker
+        delimiters = (self.start_with, self.end_with, self.start_marker, self.end_marker)
+        delimiters = (delimiter for delimiter in delimiters if delimiter)
+        self.pattern = re.compile("|".join(mask_regex_chars(delimiter) for delimiter in delimiters))
+
+    def substring(self, string):
+        if self.empty:
+            return string
+
+        start_position = 0
+        end_position = len(string)
+        start_with_found = False
+        end_with_found = False
+        start_marker_found = False
+        end_marker_found = False
+
+        for found in self.pattern.finditer(string):
+            if found[0] == self.start_with and not start_with_found and not start_marker_found:
+                start_with_found = True
+                start_position = found.start()
+            elif found[0] == self.end_with and not end_with_found and not end_marker_found:
+                end_with_found = True
+                end_position = found.end() if found.end() < end_position else end_position
+            elif found[0] == self.start_marker and not start_with_found and not start_marker_found:
+                start_marker_found = True
+                start_position = found.end()
+            elif found[0] == self.end_marker and not end_with_found and not end_marker_found:
+                end_marker_found = True
+                end_position = found.start()
+
+        if (self.start_with or self.start_marker) and not (start_with_found or start_marker_found):
+            return ""
+        if start_position > 0 or end_position < len(string):
+            return string[start_position:end_position]
+        else:
+            return string
+
+# TODO delete later
+# def smart_substring(string, start_with, end_with, start_marker, end_marker):
+#     start_position = 0
+#     end_position = len(string)
+#     if start_with:
+#         found_start = string.find(start_with)
+#         if found_start >= 0:
+#             start_position = found_start if found_start > start_position else start_position
+#         else:
+#             start_position = end_position
+#     if end_with:
+#         found_start = string.find(end_with)
+#         if found_start >= 0:
+#             found_end = found_start + len(end_with)
+#             end_position = found_end if found_end < end_position else end_position
+#     if start_marker:
+#         found_start = string.find(start_marker)
+#         if found_start >= 0:
+#             found_end = found_start + len(start_marker)
+#             start_position = found_end if found_end > start_position else start_position
+#         else:
+#             start_position = end_position
+#     if end_marker:
+#         found_start = string.find(end_marker)
+#         if found_start >= 0:
+#             end_position = found_start if found_start < end_position else end_position
+#
+#     if start_position >= end_position:
+#         return ""
+#     if start_position > 0 or end_position < len(string):
+#         return string[start_position:end_position]
+#     else:
+#         return string
+

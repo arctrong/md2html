@@ -41,6 +41,12 @@ class Md2htmlIncludeFilePluginIntegralTest(unittest.TestCase):
 
         p = p.find_next_sibling('p')
         self.assertEqual('Include recursive: some text 1, [[some text 2]]', p.text)
+        
+        p = p.find_next_sibling('p')
+        self.assertEqual('Include partially (text): [body]text inside body[/body]', p.text)
+        
+        p = p.find_next_sibling('p')
+        self.assertEqual('Include partially (markers): Inclusion with markered substring', p.text)
 
 
 if __name__ == '__main__':

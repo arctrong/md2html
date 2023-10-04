@@ -16,7 +16,11 @@
             { "markers": ["include_java"], "root-dir": "test_input/IncludeFilePluginTest/code/java/" },
             { "markers": ["include_shell"], "root-dir": "test_input/IncludeFilePluginTest/code/shell/", "trim": false },
             { "markers": ["include_code1", "include_code2"], "root-dir": "test_input/IncludeFilePluginTest/code/" },
-            { "markers": ["recursive"], "root-dir": "test_input/IncludeFilePluginTest/code/", "recursive": true }
+            { "markers": ["recursive"], "root-dir": "test_input/IncludeFilePluginTest/code/", "recursive": true },
+            { "markers": ["sub_text"], "root-dir": "test_input/IncludeFilePluginTest/code/", 
+                "start-with": "[body]", "end-with": "[/body]" },
+            { "markers": ["sub_marker"], "root-dir": "test_input/IncludeFilePluginTest/code/", 
+                "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" }
         ]
     }
 }

@@ -163,3 +163,69 @@ class UtilTest(unittest.TestCase):
                     replacer = VariableReplacer(test_case[1])
                     replacer.replace(test_case[2])
                 self.assertTrue(test_case[3] in str(cm.exception))
+
+    # TODO delete later
+    # def test_smart_substring(self):
+    #     for case in (
+    #         ("xxx SW yyy", "SW", "", "", "", "SW yyy"),
+    #         ("xxx EW yyy", "", "EW", "", "", "xxx EW"),
+    #         ("xxx SM yyy", "", "", "SM", "", " yyy"),
+    #         ("xxx EM yyy", "", "", "", "EM", "xxx "),
+    #         ("aaa SW bbb SM ccc", "SW", "", "SM", "", " ccc"),
+    #         ("aaa SM bbb SW ccc", "SW", "", "SM", "", "SW ccc"),
+    #         ("aaa EW bbb EM ccc", "", "EW", "", "EM", "aaa EW"),
+    #         ("aaa EM bbb EW ccc", "", "EW", "", "EM", "aaa "),
+    #         ("aaa SW bbb EW ccc", "SW", "EW", "", "", "SW bbb EW"),
+    #         ("aaa SM bbb EM ccc", "", "", "SM", "EM", " bbb "),
+    #         ("no start_with", "SW", "", "", "", ""),
+    #         ("no start_marker", "", "", "SM", "", ""),
+    #         ("no end_with", "", "EW", "", "", "no end_with"),
+    #         ("no end_marker", "", "", "", "EM", "no end_marker"),
+    #     ):
+    #         with self.subTest(test_name=case[0]):
+    #             self.assertEqual(case[5],
+    #                              smart_substring(case[0], case[1], case[2], case[3], case[4]))
+
+    def test_mask_regex_chars(self):
+        for case in (
+            ("no replacements", "no replacements"),
+            (r"?^\$.|*+][)(}{", r"\?\^\\\$\.\|\*\+\]\[\)\(\}\{"),
+            (r"[x]", r"\[x\]"),
+        ):
+            with self.subTest(test_name=case[0]):
+                self.assertEqual(case[1], mask_regex_chars(case[0]))
+
+    def test_smart_substringer(self):
+        for case in (
+            (" do not substring ", "", "", "", "", " do not substring "),
+            ("xxx SW yyy", "SW", "", "", "", "SW yyy"),
+            ("xxx EW yyy", "", "EW", "", "", "xxx EW"),
+            ("xxx SM yyy", "", "", "SM", "", " yyy"),
+            ("xxx EM yyy", "", "", "", "EM", "xxx "),
+            ("xxx SW yyy EW zzz", "SW", "EW", "", "", "SW yyy EW"),
+            ("xxx SM yyy EM zzz", "", "", "SM", "EM", " yyy "),
+            ("aaa SW bbb SM ccc", "SW", "", "SM", "", "SW bbb SM ccc"),
+            ("aaa SM bbb SW ccc", "SW", "", "SM", "", " bbb SW ccc"),
+            ("aaa EW bbb EM ccc", "", "EW", "", "EM", "aaa EW"),
+            ("aaa EM bbb EW ccc", "", "EW", "", "EM", "aaa "),
+            ("no start_with", "SW", "", "", "", ""),
+            ("no start_marker", "", "", "SM", "", ""),
+            ("no end_with", "", "EW", "", "", "no end_with"),
+            ("no end_marker", "", "", "", "EM", "no end_marker"),
+            ("SW at start ", "SW", "", "", "", "SW at start "),
+            ("SM at start ", "", "", "SM", "", " at start "),
+            (" at end EW", "", "EW", "", "", " at end EW"),
+            (" at end EM", "", "", "", "EM", " at end "),
+            ("EW at start", "", "EW", "", "", "EW"),
+            ("EM at start", "", "", "", "EM", ""),
+            (" at end SW", "SW", "", "", "", "SW"),
+            (" at end SM", "", "", "SM", "", ""),
+            ("uuu EW after SW www", "SW", "EW", "", "", ""),
+            ("uuu EM after SM www", "", "", "SM", "EM", ""),
+            (r"start with ?^\$.|*+][)(}{ all RE chars", r"?^\$.|*+][)(}{", "", "", "",
+             r"?^\$.|*+][)(}{ all RE chars"),
+            (r"a }SM{ some RE chars ]EM[ b", "", "", r"}SM{", r"]EM[", " some RE chars "),
+        ):
+            with self.subTest(test_name=case[0]):
+                substringer = SmartSubstringer(case[1], case[2], case[3], case[4])
+                self.assertEqual(case[5], substringer.substring(case[0]))

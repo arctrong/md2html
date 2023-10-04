@@ -8,3 +8,8 @@ Include Code 1: [<!--include_code1 source.code.txt-->]
 Include Code 2: [<!--include_code2 source.code.txt-->]
 
 Include recursive: <!--recursive recursive.txt-->
+
+Include partially (text): <!--sub_text substrings.txt-->
+
+Include partially (markers): <!--sub_marker substrings.txt-->
+

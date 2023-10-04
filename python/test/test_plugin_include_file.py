@@ -207,3 +207,28 @@ class IncludeFilePluginTest(unittest.TestCase):
         page_text = "before <!--include recursive1.txt --> after"
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 3, text 1, [[text 2]] after", processed_page)
+
+    def test_substring_with_text(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"include-file": ['
+            '    {"markers": ["include_text"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "start-with": "<body>", "end-with": "</body>"},'
+            '    {"markers": ["include_marker"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "start-marker": "<body>", "end-marker": "</body>"}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before <!--include_text substrings.txt --> after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before <body>BODY</body> after", processed_page)
+
+        page_text = "before <!--include_marker substrings.txt --> after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before BODY after", processed_page)
