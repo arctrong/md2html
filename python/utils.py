@@ -220,7 +220,7 @@ class SmartSubstringer:
                 start_position = found.start()
             elif found[0] == self.end_with and not end_with_found and not end_marker_found:
                 end_with_found = True
-                end_position = found.end() if found.end() < end_position else end_position
+                end_position = found.end()
             elif found[0] == self.start_marker and not start_with_found and not start_marker_found:
                 start_marker_found = True
                 start_position = found.end()

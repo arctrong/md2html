@@ -208,7 +208,7 @@ class IncludeFilePluginTest(unittest.TestCase):
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 3, text 1, [[text 2]] after", processed_page)
 
-    def test_substring_with_text(self):
+    def test_substring(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.txt"}], '
             '"plugins": {'
