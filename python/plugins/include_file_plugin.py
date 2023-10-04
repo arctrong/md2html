@@ -19,10 +19,6 @@ class IncludeFileData:
         self.trim: bool = trim
         self.recursive: bool = recursive
         self.subsringer: SmartSubstringer = subsringer
-        # self.start_with = start_with
-        # self.end_with = end_with
-        # self.start_marker = start_marker
-        # self.end_marker = end_marker
 
 
 class IncludeFilePlugin(Md2HtmlPlugin):
@@ -73,9 +69,6 @@ class IncludeFilePlugin(Md2HtmlPlugin):
             raise UserError(f"Error processing page metadata block: {type(e).__name__}: {e}")
 
         content = marker_data.subsringer.substring(content)
-
-        # content = smart_substring(content, marker_data.start_with, marker_data.end_with,
-        #                           marker_data.start_marker, marker_data.end_marker)
 
         if marker_data.trim:
             content = content.strip()

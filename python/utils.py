@@ -234,38 +234,3 @@ class SmartSubstringer:
             return string[start_position:end_position]
         else:
             return string
-
-# TODO delete later
-# def smart_substring(string, start_with, end_with, start_marker, end_marker):
-#     start_position = 0
-#     end_position = len(string)
-#     if start_with:
-#         found_start = string.find(start_with)
-#         if found_start >= 0:
-#             start_position = found_start if found_start > start_position else start_position
-#         else:
-#             start_position = end_position
-#     if end_with:
-#         found_start = string.find(end_with)
-#         if found_start >= 0:
-#             found_end = found_start + len(end_with)
-#             end_position = found_end if found_end < end_position else end_position
-#     if start_marker:
-#         found_start = string.find(start_marker)
-#         if found_start >= 0:
-#             found_end = found_start + len(start_marker)
-#             start_position = found_end if found_end > start_position else start_position
-#         else:
-#             start_position = end_position
-#     if end_marker:
-#         found_start = string.find(end_marker)
-#         if found_start >= 0:
-#             end_position = found_start if found_start < end_position else end_position
-#
-#     if start_position >= end_position:
-#         return ""
-#     if start_position > 0 or end_position < len(string):
-#         return string[start_position:end_position]
-#     else:
-#         return string
-
