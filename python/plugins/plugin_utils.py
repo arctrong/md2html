@@ -27,3 +27,19 @@ def list_from_string_or_array(string: str):
     else:
         result = [string]
     return result
+
+
+def dict_from_string_or_object(string: str, key: str, schema=None):
+    if string.startswith('{'):
+        try:
+            result = json.loads(string)
+            if schema:
+                validate(instance=result, schema=schema)
+        except JSONDecodeError as e:
+            raise UserError(f"Incorrect JSON: {type(e).__name__}: {str(e)}")
+        except ValidationError as e:
+            raise UserError(f"Validation error: {type(e).__name__}: " +
+                            reduce_json_validation_error_message(str(e)))
+    else:
+        result = {key: string}
+    return result

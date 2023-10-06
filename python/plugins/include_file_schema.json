@@ -10,7 +10,7 @@
                 "minItems": 1
             },
             "root-dir": { "type": "string" },
-            "trim": { "type": "boolean" },
+            "trim": { "type": "string", "enum": ["all", "empty-lines", "none"] },
             "recursive": { "type": "boolean" },
             "start-with": { "type": "string" },
             "end-with": { "type": "string" },

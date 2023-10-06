@@ -14,13 +14,16 @@
         "replace": [{"markers": ["replace"], "replace-with": "[[${1}]]"}],
         "include-file": [
             { "markers": ["include_java"], "root-dir": "test_input/IncludeFilePluginTest/code/java/" },
-            { "markers": ["include_shell"], "root-dir": "test_input/IncludeFilePluginTest/code/shell/", "trim": false },
+            { "markers": ["include_shell"], "root-dir": "test_input/IncludeFilePluginTest/code/shell/", "trim": "none" },
             { "markers": ["include_code1", "include_code2"], "root-dir": "test_input/IncludeFilePluginTest/code/" },
             { "markers": ["recursive"], "root-dir": "test_input/IncludeFilePluginTest/code/", "recursive": true },
             { "markers": ["sub_text"], "root-dir": "test_input/IncludeFilePluginTest/code/", 
                 "start-with": "[body]", "end-with": "[/body]" },
             { "markers": ["sub_marker"], "root-dir": "test_input/IncludeFilePluginTest/code/", 
-                "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" }
+                "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" },
+            { "markers": ["sub_per_file"], "root-dir": "test_input/IncludeFilePluginTest/code/", 
+                "start-marker": "// START HERE", "end-marker": "// END HERE" }
+
         ]
     }
 }

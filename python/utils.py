@@ -191,17 +191,28 @@ def mask_regex_chars(string):
 class SmartSubstringer:
 
     def __init__(self, start_with, end_with, start_marker, end_marker):
-        if not (start_with or end_with or start_marker or end_marker):
-            self.empty = True
-            return
         self.empty = False
         self.start_with = start_with
         self.end_with = end_with
         self.start_marker = start_marker
         self.end_marker = end_marker
+        if not (start_with or end_with or start_marker or end_marker):
+            self.empty = True
+            return
         delimiters = (self.start_with, self.end_with, self.start_marker, self.end_marker)
         delimiters = (delimiter for delimiter in delimiters if delimiter)
         self.pattern = re.compile("|".join(mask_regex_chars(delimiter) for delimiter in delimiters))
+
+    def smart_copy(self, start_with, end_with, start_marker, end_marker):
+        start_with = self.start_with if start_with is None else start_with
+        end_with = self.end_with if end_with is None else end_with
+        start_marker = self.start_marker if start_marker is None else start_marker
+        end_marker = self.end_marker if end_marker is None else end_marker
+        if (start_with == self.start_with and end_with == self.end_with and
+                start_marker == self.start_marker and end_marker == self.end_marker):
+            return self
+        else:
+            return SmartSubstringer(start_with, end_with, start_marker, end_marker)
 
     def substring(self, string):
         if self.empty:
@@ -234,3 +245,35 @@ class SmartSubstringer:
             return string[start_position:end_position]
         else:
             return string
+
+
+def _find_first_non_empty_line(string: str):
+    start = 0
+    pos = -1
+    for c in string:
+        pos += 1
+        if c in ["\r", "\n"]:
+            start = pos + 1
+        elif not c.isspace():
+            return start
+    return len(string)
+
+
+def _find_last_non_empty_line(string: str):
+    end = len(string)
+    for pos in range(len(string) - 1, -1, -1):
+        c = string[pos]
+        if c in ["\r", "\n"]:
+            end = pos
+        elif not c.isspace():
+            return end
+    return 0
+
+
+def strip_empty_lines(string: str):
+    return string[_find_first_non_empty_line(string):_find_last_non_empty_line(string)]
+
+
+
+
+

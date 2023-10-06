@@ -51,7 +51,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '"include-file": ['
             '    {"markers": ["marker1"], '
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
-            '     "trim": false'
+            '     "trim": "none"'
             '    }'
             ']}}')
         args = parse_argument_file(argument_file_dict, CliArgDataObject())
@@ -62,6 +62,25 @@ class IncludeFilePluginTest(unittest.TestCase):
         page_text = "before <!--marker1  code1.txt --> after"
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before \nSample text 1\n\n after", processed_page)
+
+    def test_with_trimmed_empty_lines(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"include-file": ['
+            '    {"markers": ["marker1"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "trim": "empty-lines"'
+            '    }'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before<!--marker1  trim_empty_lines.txt -->after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before   Sample text 1   after", processed_page)
 
     def test_several_markers(self):
         argument_file_dict = load_json_argument_file(
@@ -230,5 +249,29 @@ class IncludeFilePluginTest(unittest.TestCase):
         self.assertEqual("before <body>BODY</body> after", processed_page)
 
         page_text = "before <!--include_marker substrings.txt --> after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before BODY after", processed_page)
+
+    def test_substring_with_per_file_delimiters(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"include-file": ['
+            '    {"markers": ["include"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
+            '     "start-marker": "// START HERE", "end-marker": "// END HERE"}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = ('before <!--include {"file": "per_file_delimiters.txt", "start-marker": "", '
+                     '"start-with": "<body>", "end-with": "</body>"}--> after')
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before <body>BODY</body> after", processed_page)
+
+        page_text = ('before <!--include {"file": "per_file_delimiters.txt", '
+                     '"start-marker": "<body>", "end-marker": "</body>"}--> after')
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before BODY after", processed_page)

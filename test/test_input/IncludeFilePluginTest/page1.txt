@@ -13,3 +13,10 @@ Include partially (text): <!--sub_text substrings.txt-->
 
 Include partially (markers): <!--sub_marker substrings.txt-->
 
+Include partially (per file, text): <!--sub_per_file {"file": "substrings_per_file.txt",
+                   "start-marker": "", "start-with": "[body]", "end-with": "[/body]"}-->
+
+Include partially (per file, markers): <!--sub_per_file {"file": "substrings_per_file.txt",
+                   "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE"}-->
+
+

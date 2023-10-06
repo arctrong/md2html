@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "file": { "type": "string" },
+        "trim": { "type": "string", "enum": ["all", "empty-lines", "none"] },
+        "recursive": { "type": "boolean" },
+        "start-with": { "type": "string" },
+        "end-with": { "type": "string" },
+        "start-marker": { "type": "string" },
+        "end-marker": { "type": "string" }
+    },
+    "required": ["file"],
+    "additionalProperties": false
+}

@@ -200,6 +200,8 @@ class UtilTest(unittest.TestCase):
             (" at end SM", "", "", "SM", "", ""),
             ("uuu EW after SW www", "SW", "EW", "", "", ""),
             ("uuu EM after SM www", "", "", "SM", "EM", ""),
+            ("with limits SW with EW spaces", " SW ", " EW ", "", "", " SW with EW "),
+            ("markers SM with EM spaces", "", "", " SM ", " EM ", "with"),
             (r"start with ?^\$.|*+][)(}{ all RE chars", r"?^\$.|*+][)(}{", "", "", "",
              r"?^\$.|*+][)(}{ all RE chars"),
             (r"a }SM{ some RE chars ]EM[ b", "", "", r"}SM{", r"]EM[", " some RE chars "),
@@ -207,3 +209,18 @@ class UtilTest(unittest.TestCase):
             with self.subTest(test_name=case[0]):
                 substringer = SmartSubstringer(case[1], case[2], case[3], case[4])
                 self.assertEqual(case[5], substringer.substring(case[0]))
+
+    def test_strip_empty_lines(self):
+        for case in (
+            ("empty string", "", ""),
+            ("all spaces", " ", ""),
+            ("no EOFs nor spaces", "no EOFs", "no EOFs"),
+            ("no EOFs", "   text   ", "   text   "),
+            ("different EOFs", "\rline 1\r\nline 2\n\rline 3\n", "line 1\r\nline 2\n\rline 3"),
+            ("all spaces with EOFs", "   \r\n   ", ""),
+            ("EOFs at start", "\r\n   text   ", "   text   "),
+            ("EOFs at end", "   text   \r\n", "   text   "),
+            ("multiline string", "  \n   line 1 \n line 2   \n   ", "   line 1 \n line 2   "),
+        ):
+            with self.subTest(test_name=case[0]):
+                self.assertEqual(case[2], strip_empty_lines(case[1]))
