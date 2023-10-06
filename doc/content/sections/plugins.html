@@ -857,7 +857,7 @@ where it's described. This plugin does such kind of inclusion.</p>
 <pre class="highlight"><code>    "plugins": {
         . . .
         "include-file": [
-            { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
+            { "markers": ["include_code"], "root-dir": "sample_code/", "trim": "all" },
             { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/",
                 "recursive": true, "start-with": "&lt;body&gt;", "end-with": "&lt;/body&gt;",
                 "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" }
@@ -870,7 +870,8 @@ where it's described. This plugin does such kind of inclusion.</p>
 <li><code>include_code</code> is the marker to be used in the placeholders (see below);
     There may be several markers;</li>
 <li><code>sample_code/</code> and <code>sample_text/</code> define the places where to take the source code files;</li>
-<li><code>"trim": true</code> defines whether to trim leading and trailing white spaces (<code>true</code> by default).</li>
+<li><code>"trim": "all"</code> defines whether to trim leading and trailing white spaces (<code>all</code> by default).
+    Other options are <code>empty-lines</code> and <code>none</code>;</li>
 <li><code>"recursive": true</code> (<code>false</code> by default) means that if the included file content contains
     <em>metadata</em> blocks, like <code>&lt;!--path pict--&gt;</code>, then these <em>metadata</em> blocks will be
     processed;</li>
@@ -891,10 +892,21 @@ where it's described. This plugin does such kind of inclusion.</p>
 ````</code></pre>
 <p>we will get the following output:</p>
 <pre class="highlight"><code class="language-code">public class Main {
+    // method start
     public static void main(String[] args) {
         System.out.println("Hi!");
     }
+    // method end
 }</code></pre>
+<p>For a certain file, custom parameters may be defined the following way:</p>
+<pre class="highlight"><code>````code
+&lt;!--include_code_part {"file": "hello/Main.java", "start-marker": "// method start",
+"end-marker": "// method end", "trim": "empty-lines"}--&gt;
+````</code></pre>
+<p>The result will look like this:</p>
+<pre class="highlight"><code class="language-code">    public static void main(String[] args) {
+        System.out.println("Hi!");
+    }</code></pre>
 <hr />
 <h1 id="replace-plugin">"replace" plugin</h1>
 <p><strong>Motivation</strong></p>

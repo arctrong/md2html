@@ -675,7 +675,7 @@ The plugin is defined the following way:
     "plugins": {
         . . .
         "include-file": [
-            { "markers": ["include_code"], "root-dir": "sample_code/", "trim": true },
+            { "markers": ["include_code"], "root-dir": "sample_code/", "trim": "all" },
             { "markers": ["include_text1", "include_text2"], "root-dir": "sample_text/",
                 "recursive": true, "start-with": "<body>", "end-with": "</body>",
                 "start-marker": "// INCLUDE FROM HERE", "end-marker": "// INCLUDE UP TO HERE" }
@@ -690,7 +690,8 @@ In this example:
 - `include_code` is the marker to be used in the placeholders (see below);
     There may be several markers;
 - `sample_code/` and `sample_text/` define the places where to take the source code files;
-- `"trim": true` defines whether to trim leading and trailing white spaces (`true` by default).
+- `"trim": "all"` defines whether to trim leading and trailing white spaces (`all` by default).
+    Other options are `empty-lines` and `none`;
 - `"recursive": true` (`false` by default) means that if the included file content contains
     *metadata* blocks, like `<!--ignore path pict-->`, then these *metadata* blocks will be
     processed;
@@ -717,6 +718,22 @@ we will get the following output:
 
 ````code
 <!--include_code_part hello/Main.java-->
+````
+
+For a certain file, custom parameters may be defined the following way:
+
+`````
+````code
+<!--ignore include_code_part {"file": "hello/Main.java", "start-marker": "// method start",
+"end-marker": "// method end", "trim": "empty-lines"}-->
+````
+`````
+
+The result will look like this:
+
+````code
+<!--include_code_part {"file": "hello/Main.java", "start-marker": "// method start",
+"end-marker": "// method end", "trim": "empty-lines"}-->
 ````
 
 ----------------------------------------------------------------------------------------------------
