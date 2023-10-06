@@ -264,4 +264,49 @@ public class Utils {
     public static String maskRegexChars(String string) {
         return REGEX_MASKING_PATTERN.matcher(string).replaceAll("\\\\$1");
     }
+
+    public static <K, V> Map<K, V> mapOf(Object... keysValues) {
+        Map<K, V> result = new HashMap<>();
+        for (int i = 0; i < keysValues.length; i += 2) {
+            //noinspection unchecked
+            result.put((K) keysValues[i], (V) keysValues[i + 1]);
+        }
+        return result;
+    }
+
+    private static int findFirstNonEmptyLine(String string) {
+        int start = 0;
+        for (int pos = 0; pos < string.length(); ++pos) {
+            char c = string.charAt(pos);
+            if (c == '\r' || c == '\n') {
+                start = pos + 1;
+            } else if (!Character.isSpaceChar(c)) {
+                return start;
+            }
+        }
+        return string.length();
+    }
+
+    private static int findLastNonEmptyLine(String string) {
+        int end = string.length();
+        for (int pos = string.length() - 1; pos >= 0; --pos) {
+            char c = string.charAt(pos);
+            if (c == '\r' || c == '\n') {
+                end = pos;
+            } else if (!Character.isSpaceChar(c)) {
+                return end;
+            }
+        }
+        return 0;
+    }
+
+    public static String stripEmptyLines(String string) {
+        int start = findFirstNonEmptyLine(string);
+        int end = findLastNonEmptyLine(string);
+        if (start > end) {
+            return "";
+        } else {
+            return string.substring(start, end);
+        }
+    }
 }

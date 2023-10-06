@@ -35,6 +35,20 @@ public class SmartSubstringer {
         this.pattern = Pattern.compile(patternString);
     }
 
+    public SmartSubstringer smartCopy(String startWith, String endWith, String startMarker,
+                                      String endMarker) {
+        startWith = startWith == null ? this.startWith : startWith;
+        endWith = endWith == null ? this.endWith : endWith;
+        startMarker = startMarker == null ? this.startMarker : startMarker;
+        endMarker = endMarker == null ? this.endMarker : endMarker;
+        if (startWith.equals(this.startWith) && endWith.equals(this.endWith) &&
+                startMarker.equals(this.startMarker) && endMarker.equals(this.endMarker)) {
+            return this;
+        } else {
+            return new SmartSubstringer(startWith, endWith, startMarker, endMarker);
+        }
+    }
+
     public String substring(String string) {
         if (this.empty || string == null) {
             return string;

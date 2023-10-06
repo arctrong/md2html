@@ -1,20 +1,16 @@
 package world.md2html.utils;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UtilsTest {
 
     @Test
@@ -153,7 +149,7 @@ class UtilsTest {
                 Utils.maskRegexChars("?^\\$.|*+][)(}{"));
     }
 
-    public Stream<Arguments> testSmartSubstringer() {
+    public static Stream<Arguments> testSmartSubstringer() {
         return Stream.of(
                 Arguments.of(" do not substring ", "", "", "", "", " do not substring "),
                 Arguments.of("xxx SW yyy", "SW", "", "", "", "SW yyy"),
@@ -179,6 +175,9 @@ class UtilsTest {
                 Arguments.of(" at end SW", "SW", "", "", "", "SW"),
                 Arguments.of(" at end SM", "", "", "SM", "", ""),
                 Arguments.of("uuu EW after SW www", "SW", "EW", "", "", ""),
+                Arguments.of("with limits SW with EW spaces", " SW ", " EW ", "", "",
+                        " SW with EW "),
+                Arguments.of("markers SM with EM spaces", "", "", " SM ", " EM ", "with"),
                 Arguments.of("uuu EM after SM www", "", "", "SM", "EM", ""),
                 Arguments.of("start with ?^\\$.|*+][)(}{ all RE chars", "?^\\$.|*+][)(}{",
                         "", "", "", "?^\\$.|*+][)(}{ all RE chars"),
@@ -194,5 +193,27 @@ class UtilsTest {
         SmartSubstringer substringer = new SmartSubstringer(startWith, endWith, startMarker,
                 endMarker);
         assertEquals(expected, substringer.substring(input));
+    }
+
+    public static Stream<Arguments> stripEmptyLines() {
+        return Stream.of(
+                Arguments.of("empty string", "", ""),
+                Arguments.of("all spaces", " ", ""),
+                Arguments.of("no EOFs nor spaces", "no EOFs", "no EOFs"),
+                Arguments.of("no EOFs", "   text   ", "   text   "),
+                Arguments.of("different EOFs", "\rline 1\r\nline 2\n\rline 3\n",
+                        "line 1\r\nline 2\n\rline 3"),
+                Arguments.of("all spaces with EOFs", "   \r\n   ", ""),
+                Arguments.of("EOFs at start", "\r\n   text   ", "   text   "),
+                Arguments.of("EOFs at end", "   text   \r\n", "   text   "),
+                Arguments.of("multiline string", "  \n   line 1 \n line 2   \n   ",
+                        "   line 1 \n line 2   ")
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource
+    void stripEmptyLines(String name, String input, String expected) {
+        assertEquals(expected, Utils.stripEmptyLines(input));
     }
 }

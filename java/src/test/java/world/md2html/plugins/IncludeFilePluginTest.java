@@ -76,7 +76,7 @@ class IncludeFilePluginTest {
                         "\"include-file\": [" +
                         "    {\"markers\": [\"marker1\"], " +
                         "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
-                        "     \"trim\": false" +
+                        "     \"trim\": \"none\"" +
                         "    }" +
                         "]}}", DUMMY_CLI_OPTIONS);
         Document doc = argFile.getDocuments().get(0);
@@ -265,6 +265,52 @@ class IncludeFilePluginTest {
         assertEquals("before <body>BODY</body> after", processedPage);
 
          pageText = "before <!--include_marker substrings.txt --> after";
+        processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before BODY after", processedPage);
+    }
+
+    @Test
+    public void test_with_trimmed_empty_lines() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+            "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+            "\"plugins\": {" +
+            "\"include-file\": [" +
+            "    {\"markers\": [\"marker1\"], " +
+            "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+            "     \"trim\": \"empty-lines\"" +
+            "    }" +
+            "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before<!--marker1  trim_empty_lines.txt -->after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before   Sample text 1   after", processedPage);
+    }
+
+    @Test
+    public void test_substring_with_per_file_delimiters() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+            "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+            "\"plugins\": {" +
+            "\"include-file\": [" +
+            "    {\"markers\": [\"include\"], " +
+            "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"," +
+            "     \"start-marker\": \"// START HERE\", \"end-marker\": \"// END HERE\"}" +
+            "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--include {\"file\": \"per_file_delimiters.txt\", " +
+                "\"start-marker\": \"\", \"start-with\": \"<body>\", " +
+                "\"end-with\": \"</body>\"}--> after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before <body>BODY</body> after", processedPage);
+
+        pageText = "before <!--include {\"file\": \"per_file_delimiters.txt\", " +
+                "\"start-marker\": \"<body>\", \"end-marker\": \"</body>\"}--> after";
         processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
         assertEquals("before BODY after", processedPage);
     }

@@ -2,10 +2,12 @@ package world.md2html.plugins;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.networknt.schema.JsonSchema;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.utils.JsonUtils;
 import world.md2html.utils.SmartSubstringer;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
@@ -18,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static world.md2html.plugins.PluginUtils.mapFromStringOrObject;
+import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
@@ -25,13 +29,15 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
 
     private static class IncludeFileData {
         private String rootDir = "";
-        private boolean trim = true;
+        private String trim = "all";
         private boolean recursive = true;
         private SmartSubstringer substringer;
     }
 
     private Map<String, IncludeFileData> data;
     private PageMetadataHandlersWrapper metadataHandlers;
+    private JsonSchema metadataSchema =
+            loadJsonSchemaFromResource("plugins/include_file_metadata_schema.json");
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
@@ -48,7 +54,8 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
                 }
                 IncludeFileData includeFileData = new IncludeFileData();
                 includeFileData.rootDir = itemNode.get("root-dir").asText();
-                includeFileData.trim = !itemNode.has("trim") || itemNode.get("trim").asBoolean(true);
+                includeFileData.trim = itemNode.has("trim") ?
+                        itemNode.get("trim").asText("all") : "all";
                 includeFileData.recursive = !itemNode.has("recursive") ||
                         itemNode.get("recursive").asBoolean(false);
                 includeFileData.substringer = new SmartSubstringer(
@@ -81,22 +88,46 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String filePath,
+    public String acceptPageMetadata(Document document, String marker, String metadata,
                                      String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
+
         IncludeFileData markerData = this.data.get(marker);
-        filePath = filePath.trim();
+        SmartSubstringer substringer = markerData.substringer;
+
+        Map<String, String> metadataMap;
+        try {
+            //noinspection unchecked
+            metadataMap = (Map<String, String>)
+                    JsonUtils.deJson(mapFromStringOrObject(metadata.trim(),
+                    "file", this.metadataSchema));
+        } catch (UserError e) {
+            throw new UserError("Error in inclusion: " + e.getMessage() + ", page: '" +
+                    document.getInput());
+        }
+
+        substringer = substringer.smartCopy(
+                metadataMap.get("start-with"),
+                metadataMap.get("end-with"),
+                metadataMap.get("start-marker"),
+                metadataMap.get("end-marker")
+        );
+        String filePath = metadataMap.get("file").trim();
         Path includeFile = Paths.get(markerData.rootDir, filePath);
         String content = supplyWithFileExceptionAsUserError(
                 () -> getCachedString(includeFile, Utils::readStringFromUtf8File),
                 "Error processing page metadata block"
         );
 
-        content = markerData.substringer.substring(content);
+        content = substringer.substring(content);
 
-        if (markerData.trim) {
+        String trim = metadataMap.getOrDefault("trim", markerData.trim);
+        if ("all".equals(trim)) {
             content = content.trim();
+        } else if ("empty-lines".equals(trim)) {
+            content = Utils.stripEmptyLines(content);
         }
+
         return markerData.recursive ?
                 metadataHandlers.applyMetadataHandlers(content, document, visitedMarkers,
                         "INCLUDE_FILE_PLUGIN:" + includeFile) :

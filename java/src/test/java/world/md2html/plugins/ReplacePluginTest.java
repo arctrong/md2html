@@ -2,7 +2,6 @@ package world.md2html.plugins;
 
 import org.junit.jupiter.api.Test;
 import world.md2html.options.argfile.ArgFileParseException;
-import world.md2html.options.cli.CliArgumentsException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
