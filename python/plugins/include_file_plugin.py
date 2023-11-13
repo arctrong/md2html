@@ -95,7 +95,8 @@ class IncludeFilePlugin(Md2HtmlPlugin):
         elif trim == "empty-lines":
             content = strip_empty_lines(content)
 
-        if marker_data.recursive:
+        recursive = metadata.get("recursive", marker_data.recursive)
+        if recursive:
             content = apply_metadata_handlers(content, self.all_metadata_handlers, doc,
                                               visited_markers=visited_markers,
                                               recursive_marker=f"INCLUDE_FILE_PLUGIN:{include_file}")

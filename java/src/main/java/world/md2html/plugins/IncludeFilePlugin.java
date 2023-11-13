@@ -56,8 +56,8 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
                 includeFileData.rootDir = itemNode.get("root-dir").asText();
                 includeFileData.trim = itemNode.has("trim") ?
                         itemNode.get("trim").asText("all") : "all";
-                includeFileData.recursive = !itemNode.has("recursive") ||
-                        itemNode.get("recursive").asBoolean(false);
+                includeFileData.recursive = itemNode.has("recursive") &&
+                        itemNode.get("recursive").asBoolean();
                 includeFileData.substringer = new SmartSubstringer(
                         itemNode.has("start-with") ? itemNode.get("start-with").asText("") : "",
                         itemNode.has("end-with") ? itemNode.get("end-with").asText("") : "",
@@ -95,10 +95,10 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         IncludeFileData markerData = this.data.get(marker);
         SmartSubstringer substringer = markerData.substringer;
 
-        Map<String, String> metadataMap;
+        Map<String, Object> metadataMap;
         try {
             //noinspection unchecked
-            metadataMap = (Map<String, String>)
+            metadataMap = (Map<String, Object>)
                     JsonUtils.deJson(mapFromStringOrObject(metadata.trim(),
                     "file", this.metadataSchema));
         } catch (UserError e) {
@@ -107,12 +107,12 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         }
 
         substringer = substringer.smartCopy(
-                metadataMap.get("start-with"),
-                metadataMap.get("end-with"),
-                metadataMap.get("start-marker"),
-                metadataMap.get("end-marker")
+                (String) metadataMap.get("start-with"),
+                (String) metadataMap.get("end-with"),
+                (String) metadataMap.get("start-marker"),
+                (String) metadataMap.get("end-marker")
         );
-        String filePath = metadataMap.get("file").trim();
+        String filePath = ((String) metadataMap.get("file")).trim();
         Path includeFile = Paths.get(markerData.rootDir, filePath);
         String content = supplyWithFileExceptionAsUserError(
                 () -> getCachedString(includeFile, Utils::readStringFromUtf8File),
@@ -121,14 +121,20 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
 
         content = substringer.substring(content);
 
-        String trim = metadataMap.getOrDefault("trim", markerData.trim);
+        String trim = (String) metadataMap.getOrDefault("trim", markerData.trim);
         if ("all".equals(trim)) {
             content = content.trim();
         } else if ("empty-lines".equals(trim)) {
             content = Utils.stripEmptyLines(content);
         }
 
-        return markerData.recursive ?
+        boolean recursive;
+        if (metadataMap.containsKey("recursive")) {
+            recursive = (Boolean) metadataMap.get("recursive");
+        } else {
+            recursive = markerData.recursive;
+        }
+        return recursive ?
                 metadataHandlers.applyMetadataHandlers(content, document, visitedMarkers,
                         "INCLUDE_FILE_PLUGIN:" + includeFile) :
                 content;

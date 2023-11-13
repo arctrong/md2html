@@ -275,3 +275,26 @@ class IncludeFilePluginTest(unittest.TestCase):
                      '"start-marker": "<body>", "end-marker": "</body>"}--> after')
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before BODY after", processed_page)
+
+    def test_with_per_file_recursive(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"replace": [{"markers": ["replace"], "replace-with": "[[${1}]]"}],'
+            '"include-file": ['
+            '    {"markers": ["marker1"], '
+            '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/"}'
+            ']}}')
+        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = "before <!--marker1 recursive.txt --> after"
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before text 1, <!--replace text 2--> after", processed_page)
+
+        page_text = 'before <!--marker1 {"file": "recursive.txt", "recursive": true}--> after'
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before text 1, [[text 2]] after", processed_page)
+

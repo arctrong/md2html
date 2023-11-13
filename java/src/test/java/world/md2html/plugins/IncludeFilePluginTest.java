@@ -314,4 +314,27 @@ class IncludeFilePluginTest {
         processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
         assertEquals("before BODY after", processedPage);
     }
+
+    @Test
+    public void test_with_per_file_recursive() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+                "\"plugins\": {" +
+                    "\"replace\": [{\"markers\": [\"replace\"], \"replace-with\": \"[[${1}]]\"}]," +
+                    "\"include-file\": [" +
+                    "    {\"markers\": [\"marker1\"], " +
+                    "     \"root-dir\": \"" + THIS_DIR + "for_include_file_plugin_test/\"}" +
+                "]}}", DUMMY_CLI_OPTIONS);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--marker1 recursive.txt --> after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before text 1, <!--replace text 2--> after", processedPage);
+
+         pageText = "before <!--marker1 {\"file\": \"recursive.txt\", \"recursive\": true}--> after";
+        processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before text 1, [[text 2]] after", processedPage);
+    }
 }
