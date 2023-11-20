@@ -27,8 +27,8 @@ class="header_item{{#current}} selected{{/current}} toggle_wide_only_inline"
 href="{{link}}">{{#title}}<span class="{{{title_class}}}">{{{.}}}</span>{{/title}}{{#image}}<img 
 class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" />{{/image}}</a>{{/header_wide_only}}
 {{#show_source_link}}
-{{#source_file}}<a href="{{{.}}}" class="header_item_source toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>{{/source_file}}
-{{^source_file}}<span class="header_item_source inactive toggle_wide_only_inline">&lt;/&gt;</span>{{/source_file}}
+{{#source_file}}<a href="{{{.}}}" class="source_file toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>{{/source_file}}
+{{^source_file}}<span class="source_file inactive toggle_wide_only_inline">&lt;/&gt;</span>{{/source_file}}
 {{/show_source_link}}
 {{#nav.previous}}<a href="{{link}}" title="Previous: {{title}}"><img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h21px.png"/></a>{{/nav.previous}}
 {{^nav.previous}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h21px_inactive.png"/>{{/nav.previous}}
