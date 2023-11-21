@@ -17,8 +17,8 @@
 <body>
 
 <div class="header">
-<img id="burger" src="{{resource_path}}/layout/pict/burger.png" 
-onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" alt="Sidebar">
+{{#burger_open_image}}<img id="burger" src="{{resource_path}}{{{.}}}" 
+onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" alt="Sidebar">{{/burger_open_image}}
 {{#logo}}<span class="toggle_wide_only_inline">{{{.}}}</span>{{/logo}}
 {{#header}}<a 
 class="header_item{{#current}} selected{{/current}} {{{class}}}"
@@ -35,7 +35,7 @@ class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" />{{/image}}</a>{{/head
 {{#nav.previous}}<a href="{{link}}" title="Previous: {{title}}"><img class="headerNavArrows"
 src="{{resource_path}}layout/pict/previous_page_h21px.png" alt="Back"></a>{{/nav.previous}}
 {{^nav.previous}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/previous_page_h21px_inactive.png"
-alt="No back">{{/nav.previous}}
+alt="No back">{{/nav.previous}} 
 {{#nav.next}}<a href="{{link}}" title="Next: {{title}}"><img class="headerNavArrows"
 src="{{resource_path}}layout/pict/next_page_h21px.png" alt="Next"></a>{{/nav.next}}
 {{^nav.next}}<img class="headerNavArrows" src="{{resource_path}}layout/pict/next_page_h21px_inactive.png"

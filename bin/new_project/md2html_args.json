@@ -19,6 +19,7 @@
     "plugins": {
         "variables": {
             "html_lang": "en",
+            "burger_open_image": "layout/pict/burger.png",
             "show_source_link": true,
             "theme": "light"
         },
