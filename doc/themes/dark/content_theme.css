@@ -21,15 +21,33 @@ code, .code {
 }
 
 pre>code.language-shell, pre>code.language-wrapped-shell {
-    background-color: #323232;
     color: #bee582;
+    background-color: #323232;
     border-color: #bee582;
 }
 
 pre>code.language-code, pre>code.language-wrapped-code {
-    background-color: #5d4431;
     color: beige;
+    background-color: #5d4431;
     border-color: beige;
+}
+
+pre > code.language-xml, pre > code.language-wrapped-xml {
+  color: aliceblue;
+  background-color: #4646b5;
+  border-color: beige;
+}
+
+pre > code.language-json, pre > code.language-wrapped-json {
+  color: #fff;
+  background-color: #af7474;
+  border-color: #fff;
+}
+
+pre > code.language-conf, pre > code.language-wrapped-conf {
+  color: honeydew;
+  background-color: #3f7c3f;
+  border-color: honeydew;
 }
 
 blockquote {

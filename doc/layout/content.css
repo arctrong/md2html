@@ -49,6 +49,8 @@ pre>code, div.code {
     white-space: pre;
     padding: 10px;
     overflow-x: auto;
+    border-style: solid;
+    border-width: 1px;
 }
 
 pre>code.language-wrapped {
@@ -61,12 +63,6 @@ pre>code.language-text {
     background-color: unset;
     padding: 0;
     border: none;
-}
-
-pre>code.language-shell, pre>code.language-wrapped-shell,
-pre>code.language-code, pre>code.language-wrapped-code {
-    border-style: solid;
-    border-width: 1px;
 }
 
 pre>code.language-wrapped-shell, pre>code.language-wrapped-code {

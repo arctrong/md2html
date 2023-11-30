@@ -371,18 +371,45 @@ This is a light code block example.
     but has no background.
 ````
 
-There are also shell code block (marked as `shell`):
+There are also the following block types.
+
+Shell code block (marked as `shell`):
 
 ````shell
 $ echo "This block demonstrates operations in a shell"
 This block demonstrates operations in a shell
 ````
 
-and program language code block (marked as `code`):
+Program language code block (marked as `code`):
 
 ````code
 System.out.println("This block demonstrates " + 
     "a source code in a program language.");
+````
+
+XML (or HTML) content (marked as `xml`):
+
+````xml
+<body>
+    <p>Some HTML or XML content</p>
+</body>
+````
+
+Configuration file content (marked as `conf`):
+
+````conf
+spring.h2.console.enabled=true
+spring.datasource.generate-unique-name=false
+spring.jpa.hibernate.ddl-auto=update
+````
+
+JSON content (marked as `json`):
+
+````json
+{
+    "content-type": "JSON",
+    "values": ["some", "values", "in", "list"]
+}
 ````
 
 !!! note
