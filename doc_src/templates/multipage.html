@@ -25,7 +25,7 @@ class="header_item{{#current}} selected{{/current}} {{{class}}}"
 href="{{link}}">{{#title}}<span class="{{{title_class}}}">{{{.}}}</span>{{/title}}{{#image}}<img 
 class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" {{#image_alt}}alt="{{{.}}}"{{/image_alt}}>{{/image
 }}</a>{{/header}}{{#header_wide_only}}<a 
-class="header_item{{#current}} selected{{/current}} toggle_wide_only_inline"
+class="header_item{{#current}} selected{{/current}} toggle_wide_only_inline {{{class}}}"
 href="{{link}}">{{#title}}<span class="{{{title_class}}}">{{{.}}}</span>{{/title}}{{#image}}<img 
 class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" />{{/image}}</a>{{/header_wide_only}}
 {{#show_source_link}}
