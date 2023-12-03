@@ -65,7 +65,10 @@ pre>code.language-text {
     border: none;
 }
 
-pre>code.language-wrapped-shell, pre>code.language-wrapped-code {
+pre>code.language-wrapped-shell, pre>code.language-wrapped-code,
+pre>code.language-wrapped-xml, pre>code.language-wrapped-json,
+pre>code.language-wrapped-conf
+{
     white-space: pre-wrap;
     word-break: break-word;
     min-width: unset;
