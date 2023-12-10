@@ -42,7 +42,7 @@ The following steps may be done for customization.
 - Look into the file `md2html_args.json`. Particularly "Useful links" section items may be
     redefined there.
 
-- Consider using alternative themes. Have a look in at the variable `"theme": "light_default"`
+- Consider using alternative themes. Have a look in at the variable `"theme": "light"`
     in the `md2html_args.json` file. The themes are stored in the `doc/themes` directory.
     Alternative themes may be created from scratch (using the existing ones as examples)
     or taken from the `md2html` program installation directory.

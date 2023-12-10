@@ -20,7 +20,6 @@
         "variables": {
             "html_lang": "en",
             "burger_open_image": "layout/pict/burger.png",
-#            "logo": "<b><span style=\"color:#ff7f2a;\">M</span><sub style=\"color:burlywood;\">2</sub><span style=\"color:#59f;margin-right:7px;\">H</span></b>",
             "show_source_link": true,
             "theme": "light"
         },
