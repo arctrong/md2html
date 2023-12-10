@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" href="../../layout/content.css">
 <link rel="stylesheet" type="text/css" href="../../layout/more_prog_langs.css">
-<link rel="stylesheet" type="text/css" href="../../themes/dark/content_theme.css">
-<link rel="stylesheet" type="text/css" href="../../themes/dark/more_prog_langs_theme.css">
+<link rel="stylesheet" type="text/css" href="../../themes/light/content_theme.css">
+<link rel="stylesheet" type="text/css" href="../../themes/light/more_prog_langs_theme.css">
 <link rel="stylesheet" type="text/css" href="../../layout/layout.css">
-<link rel="stylesheet" type="text/css" href="../../themes/dark/layout_theme.css">
+<link rel="stylesheet" type="text/css" href="../../themes/light/layout_theme.css">
 <link rel="stylesheet" type="text/css" href="../../custom.css">
 
 <link rel="stylesheet" type="text/css" href="../../layout/flex.css">
@@ -39,7 +39,7 @@ class="header_item toggle_wide_only_inline "
 href="https://github.com/arctrong/md2html"><span class="">GitHub</span></a>
 <a href="../../../doc_src/sections/templates.txt" class="source_file toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>
 
-<a href="page_content.html" title="Previous: Page content"><img class="headerNavArrows"
+<a href="page_content_dark.html" title="Previous: Page content (dark)"><img class="headerNavArrows"
 src="../../layout/pict/previous_page_h21px.png" alt="Back"></a>
  
 <a href="plugins.html" title="Next: Plugins"><img class="headerNavArrows"
@@ -69,6 +69,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="installation.html">Installation</a>
             <a class="sidebar_item " href="usage.html">Usage</a>
             <a class="sidebar_item " href="page_content.html">Page content</a>
+            <a class="sidebar_item " href="page_content_dark.html">Page content (dark)</a>
             <a class="sidebar_item selected " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
             <a class="sidebar_item " href="reference.html">Reference</a>
@@ -92,7 +93,6 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 
 <div class="toc">
 <ul>
-<li><a href="#why-is-this-page-dark">Why is this page dark?</a></li>
 <li><a href="#preliminary-note">Preliminary note</a></li>
 <li><a href="#what-is-template">What is template?</a></li>
 <li><a href="#provided-templates">Provided templates</a></li>
@@ -100,10 +100,6 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#color-themes">Color themes</a></li>
 </ul>
 </div>
-<hr />
-<h1 id="why-is-this-page-dark">Why is this page dark?</h1>
-<p>This page describes color <a href="#themes"><em>themes</em></a> usage and that's why itself uses the dark theme
-for demonstration.</p>
 <hr />
 <h1 id="preliminary-note">Preliminary note</h1>
 <p>As for now the program provides a <em>quick start script</em> described <a href="quick_start.html">here</a>.
@@ -205,7 +201,8 @@ the directory <code>doc/themes/</code>. The theme subdirectory name is the theme
 <p>The theme name is specified by the variable <code>theme</code> in the <em>argument file</em> <code>md2html_args.json</code>.
 The complete declaration may look like this: <code>"theme": "light"</code>, where <code>light</code> is the desired
 theme name. As for now, two themes are defined: <code>light</code> and <code>dark</code>.</p>
-<p>The <a href="quick_start.html"><em>quick start script</em></a> creates and defines the light theme only.
+<p><a name="index_entry_index_4"></a>
+The <a href="quick_start.html"><em>quick start script</em></a> creates and defines the light theme only.
 To use the dark theme:</p>
 <ul>
 <li>copy the directory <code>dark</code> to the <code>doc/themes</code> directory;</li>
@@ -213,21 +210,15 @@ To use the dark theme:</p>
 <li>fulfill forcible full documentation regeneration;</li>
 <li>the dark theme will be applied.</li>
 </ul>
-<p><a name="index_entry_index_4"></a>
-In this page, variable <code>"theme": "dark"</code> is defined in the <em>page variables section</em>, 
-so this <strong>single</strong> page is rendered using the dark theme.</p>
-<p>Using the dark scheme, the following problem may be encountered (also see
-<a href="page_content.html#handling_images_on_dark_background">here</a>):</p>
-<p><img src="../../pict/light_only.png" />
-<img src="../../pict/light_only.png" class="light_only" /></p>
-<p>The first picture has thin black elements (arms, hands, feet and hair) that doesn't look well
-on the dark background. The second picture has local white underlying plate and probably
-looks better.</p>
+<p>A page may be separately rendered using the dark theme. For this, variable <code>"theme": "dark"</code>
+may be defined in the <em>page variables section</em>.</p>
+<p>This documentation contains one page rendered in the dark color scheme as an example, 
+see <a href="page_content_dark.html">here</a>.</p>
 <p>&nbsp;</p>
 <hr />
 
-<p style="margin-top:0px;margin-bottom:0px;text-align:right;"><a href="page_content.html" 
-title="Previous: Page content"><img src="../../layout/pict/previous_page.png"
+<p style="margin-top:0px;margin-bottom:0px;text-align:right;"><a href="page_content_dark.html" 
+title="Previous: Page content (dark)"><img src="../../layout/pict/previous_page.png"
 alt="Back"></a>
 <a href="plugins.html" title="Next: Plugins"><img 
 src="../../layout/pict/next_page.png" alt="Next"></a>

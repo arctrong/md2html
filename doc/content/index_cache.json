@@ -1,4 +1,11 @@
 {
+  "readme.html": [
+    {
+      "entry": "Markdown",
+      "link": "../../readme.html#index_entry_index_1",
+      "title": "Home"
+    }
+  ],
   "doc/content/sections/overview.html": [],
   "doc/content/sections/quick_start.html": [
     {
@@ -72,6 +79,28 @@
       "title": "Page content"
     }
   ],
+  "doc/content/sections/page_content_dark.html": [
+    {
+      "entry": "tables",
+      "link": "sections/page_content_dark.html#index_entry_index_1",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "fenced code blocks",
+      "link": "sections/page_content_dark.html#index_entry_index_2",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "admonitions",
+      "link": "sections/page_content_dark.html#index_entry_index_3",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "attribute lists",
+      "link": "sections/page_content_dark.html#index_entry_index_4",
+      "title": "Page content (dark)"
+    }
+  ],
   "doc/content/sections/templates.html": [
     {
       "entry": "template",
@@ -143,13 +172,6 @@
       "entry": "E2E tests",
       "link": "sections/development.html#index_entry_index_1",
       "title": "Development"
-    }
-  ],
-  "readme.html": [
-    {
-      "entry": "Markdown",
-      "link": "../../readme.html#index_entry_index_1",
-      "title": "Home"
     }
   ]
 }

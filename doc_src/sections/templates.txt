@@ -1,12 +1,6 @@
-<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates", "theme": "dark"}-->
+<!--VARIABLES {"title": "Templates", "SORT_ORDER": "070", "code": "templates"}-->
 
 [TOC]
-
-----------------------------------------------------------------------------------------------------
-# Why is this page dark?
-
-This page describes color [*themes*](#themes) usage and that's why itself uses the dark theme
-for demonstration.
 
 ----------------------------------------------------------------------------------------------------
 # Preliminary note
@@ -96,6 +90,7 @@ The theme name is specified by the variable `theme` in the *argument file* `md2h
 The complete declaration may look like this: `"theme": "light"`, where `light` is the desired
 theme name. As for now, two themes are defined: `light` and `dark`.
 
+<!--index ["dark theme", "theme, dark"]-->
 The [*quick start script*](<!--page quick_start-->) creates and defines the light theme only.
 To use the dark theme:
 
@@ -104,19 +99,10 @@ To use the dark theme:
 - fulfill forcible full documentation regeneration;
 - the dark theme will be applied.
 
-<!--index ["dark theme", "theme, dark"]-->
-In this page, variable `"theme": "dark"` is defined in the *page variables section*, 
-so this **single** page is rendered using the dark theme.
+A page may be separately rendered using the dark theme. For this, variable `"theme": "dark"`
+may be defined in the *page variables section*.
 
-Using the dark scheme, the following problem may be encountered (also see
-[here](<!--page page_content-->#handling_images_on_dark_background)):
-
-<img src="<!--path pict-->light_only.png" />
-<img src="<!--path pict-->light_only.png" class="light_only" />
-
-The first picture has thin black elements (arms, hands, feet and hair) that doesn't look well
-on the dark background. The second picture has local white underlying plate and probably
-looks better.
-
+This documentation contains one page rendered in the dark color scheme as an example, 
+see [here](<!--page page_content_dark-->).
 
 

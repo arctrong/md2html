@@ -1,0 +1,5 @@
+<!--VARIABLES {"title": "Page content (dark)", "SORT_ORDER": "062", "code": "page_content_dark",
+"theme": "dark"}-->
+
+<!--include_src parts/page_content.txt-->
+

@@ -656,7 +656,7 @@ Variable | Description
     for more details).
 
 ----------------------------------------------------------------------------------------------------
-# "include-file" plugin
+# "include-file" plugin {#include_file_plugin}
 
 **Motivation**
 

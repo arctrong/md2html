@@ -1,0 +1,633 @@
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About this section
+
+This section describes documentation source text writing and covers such topics as Markdown
+syntax, formatting examples and tricks. The templates and styling, as well as the 
+documentation structuring, are discussed in the other sections.
+
+The complete Markdown guide is not provided here, so see 
+[the original syntax description](https://daringfireball.net/projects/markdown/syntax)
+for more details.
+
+----------------------------------------------------------------------------------------------------
+# Example source texts
+
+This documentation is written solely using the **M<sub>2</sub>H** program and itself demonstrates
+the possible obtainable result. The source Markdown text files might be viewed using the 
+"Source text" link ("&lt;/&gt;") in the page title block... But not for this page. This page is 
+generated in in two [color schemes](<!--page templates-->#themes) using
+[inclusion](<!--page plugins-->#include_file_plugin), so the actual source text may be viewed only
+[here](<!--path doc_src-->parts/page_content.txt).
+
+The two versions of this page are:
+
+- [in the light color scheme](<!--page page_content-->);
+- [in the dark color scheme](<!--page page_content_dark-->).
+
+----------------------------------------------------------------------------------------------------
+# Text effects
+
+<div class="tableGridded"></div>
+
+Text effect | Markdown/HTML syntax | Comments
+---|---|:---:
+**bold** | `__bold__` or `**bold**` |  |
+*italic* | `_italic_` or `*italic*` |  | 
+`in-line <code> fragment` | `` `in-line <code> fragment` `` |   |
+<span class="code">escaped &lt;code&gt; fragment</span> | `<span class="code">escaped &lt;code&gt; fragment</span>` | 1
+<del>deleted</del> | `<del>deleted</del>` | 2
+<ins>inserted</ins> | `<ins>inserted</ins>` | 2
+<s>stricken through</s> | `<s>stricken through</s>` | 3
+Normal text<sub>subscript</sub> | `Normal text<sub>subscript</sub>` | 3
+Normal text<sup>superscript</sup> | `Normal text<sup>superscript</sup>` | 3
+--- (em-dash, `&mdash;`) | `---` |   |
+
+!!! note "Comments"
+    1. This method was used as a workaround for preventing conflicts with the plugin markers
+        preprocessing. As for now, there's 
+        [the "ignore" plugin](<!--page plugins-->#ignore_plugin) that is easier to use.
+    2. Special markdown syntax for inserted (`++inserted++`) and deleted (`~~deleted~~`)
+        text is not activated in this program. First, these effects must not be required very
+        often. Second, such markup may cause problems if we write text like "C++", or `++i`.
+        The used direct HTML markup lets achieve these effects more safely.
+    3. Stricken through text, subscript and superscript are not in the Markdown syntax.
+        Here direct HTML markup is used as a possible workaround.
+
+----------------------------------------------------------------------------------------------------
+# Horizontal line
+
+Horizontal line (`<hr />`) may be inserted by placing several dashes (`----`).
+
+----------------------------------------------------------------------------------------------------
+# Paragraphs and line breaks
+
+A paragraph (`<p>`) is inserted by an empty line.    
+A line break (`<br />`) may be inserted by leaving more than two spaces at the end of line
+(as it's done in the previous line).
+
+----------------------------------------------------------------------------------------------------
+<a name="headers"></a>
+# Headers
+
+Headers are inserted using one to six pound symbols (`#`) at the beginning of line. This
+makes headers from `<h1>` to `<h6>` respectively. Other ways are described
+[here](https://daringfireball.net/projects/markdown/syntax#header).
+
+Dashes and equal signs may be interpreted as header marks of the previous line, so to avoid this
+markup it's better, and sometimes required, to leave an empty line before these sequences.
+
+----------------------------------------------------------------------------------------------------
+# Table of contents {id=table_of_contents}
+
+`[TOC]` element in the Markdown document will resolve into the document's table of contents in
+the generated HTML. The example can be seen at the top of this and other pages. The ToC is
+composed of the [headers](#headers) found on the page.
+
+!!! note "Notes"
+    1. Unfortunately by now there's no way to insert a local ToC, i.e. a ToC for a certain header 
+        that would contain only the sub-headers of this header.
+    1. The Python and the Java versions give slightly different ToC appearance. The Java version
+        preserves the header text formatting while the Python version removes this formatting. So
+        if a header contains e.g. an `inline code block` the Python version will reflect this
+        code block as unformatted text in the corresponding ToC item.
+
+----------------------------------------------------------------------------------------------------
+# Links
+
+The link syntax is:
+
+````
+[link text](path/to/doc.html "title")
+````
+
+where `"title"` is not required. If `link text` is omitted the link will be not visible.
+There's the other syntax:
+
+````
+<path/to/doc.html>
+````
+
+that will make the link text equal the link location.
+
+!!! tip
+    [The "page-links" plugin](<!--page plugins-->#page_links_plugin) may be used for creating
+    relative internal links within the documentation.
+
+----------------------------------------------------------------------------------------------------
+<a name="anchor_demo"></a>
+# Anchors
+
+!!! note
+    Since the version 1.0.6, [*attribute lists*](#attribute_lists) may be used for the tag IDs
+    definition.
+
+The header tags have their automatically generated `id`s so they can be referenced by the links. 
+But these `id`s are uncontrolled and will change if the the header changes. Anchors may be added
+at the arbitrary places on the page with the syntax:
+
+````
+<a name="anchor_name"></a>
+````
+
+`id` attribute instead of `name` attribute will also work. Then this anchor may be referenced as:
+
+````
+[link text](#anchor_name)
+````
+
+from the same page, or:
+
+````
+[link text](this_page.html#anchor_name)
+````
+
+from the same or the other page.
+
+!!! tip
+    Also see [the "page-links" plugin](<!--page plugins-->#page_links_plugin).
+
+----------------------------------------------------------------------------------------------------
+# Images
+
+<p><img src="<!--path pict-->penrose.png" alt="Penrose" title="Penrose" class="floatRight" /></p>
+
+A picture is inserted the following ways:
+
+- `![](path/to/image.png)` --- the simplest form;
+- `![ALT](path/to/image.png "title")` --- with optional alternative text and hint;
+
+In this example the other method is used that allows placing images
+on the page side with the text floating around, that may be very useful with small images. 
+This method uses direct HTML inclusion:
+
+<p style="clear: both;"></p>
+
+<div class="code">&lt;p>&lt;img src="&lt;!--path pict-->target.png" class="floatRight" />&lt;/p></div>
+
+!!! important
+    The image tag is enclosed by a paragraph that is required for the currently used styles.
+    The Python version does this enclosing itself, but the Java version does not. Though the
+    Python version does not do extra enclosing if it's already done. So it's better to always
+    add the paragraph.
+    
+!!! note
+    This example also uses a path substitution `<!--ignore path pict-->`.
+    See ["relative-paths" plugin](<!--page plugins-->#relative_paths_plugin) for more details.
+
+To stop the text float the following empty paragraph may be used:
+
+````
+<p style="clear: both;"></p>
+````
+
+An image may be used as a link text like this:
+
+````
+[![](<!--path pict-->target.png)](page.html)
+````
+
+Then we will get a clickable image that works as a link:
+
+[![](<!--path pict-->penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
+
+There's one point that should be taken into account when working with images. Usually images are
+intended to be shown on a light background. When using a 
+[*dark theme*](<!--page templates-->#themes), some images may not look well on a dark background.
+Such images may be marked the following way:
+
+````
+<div class="light_only"></div>
+
+![](path/to/image.png)
+````
+
+Alternatively the class `light_only` may be added to the `<img>` HTML tag. In dark themes these
+images may be put on a white background (particularly, this is defined in the `dark`
+theme).
+
+<a name="images_on_dark_background_example"></a>
+Here is an example:
+
+<img src="<!--path pict-->light_only.png" /> &nbsp;
+<img src="<!--path pict-->light_only.png" class="light_only" />
+
+The first picture has thin black elements (arms, hands, feet and hair) that
+[don't look well on the dark background](<!--page page_content_dark-->#images_on_dark_background_example).
+The second picture has local white underlying plate and probably looks better.
+
+----------------------------------------------------------------------------------------------------
+# Lists
+
+The following markup:
+
+````
+1. This is a __first-level__ _ordered_ list item.
+    
+    Another paragraph may be added by adding one empty line above and indenting by 4 spaces.
+    
+    > Other elements, like `<blockquote>`, may be included into a list item.
+    
+    - This is a __second-level__ _unordered_ list sub-item. The long lines may be wrapped
+        with extra 4 space indent without an empty line above.
+        3. This is a __third-level__ _ordered_ list sub-item. Any numbers may be used as
+            _ordered_ list item markers.
+        3. This is another __third-level__ _ordered_ list sub-item.
+    - This is another __second-level__ _unordered_ list sub-item.
+
+1. This is another __first-level__ _unordered_ list item. Though `1.` is used as the
+    item number this item marker will be "2.".
+````
+
+gives the following output:
+
+1. This is a __first-level__ _ordered_ list item.
+    
+    Another paragraph may be added by adding one empty line above and indenting by 4 spaces.
+    
+    > Other elements, like `<blockquote>`, may be included into a list item.
+    
+    - This is a __second-level__ _unordered_ list sub-item. The long lines may be wrapped
+        with extra 4 space indent without an empty line above.
+        3. This is a __third-level__ _ordered_ list sub-item. Any numbers may be used as
+            _ordered_ list item markers.
+        3. This is another __third-level__ _ordered_ list sub-item.
+    - This is another __second-level__ _unordered_ list sub-item.
+
+1. This is another __first-level__ _ordered_ list item. Though `1.` is used as the
+    item number this item marker will be "2.".
+
+----------------------------------------------------------------------------------------------------
+# Blockquotes
+
+Blockquotes are inserted by starting each line with `> `.
+
+> Links, images and some other Markdown elements may be used inside `blockquote`s:
+> 
+> - Here's a link with a clickable image:    
+>   [![TARGET](<!--path pict-->pointing_right.png)](#anchor_demo "How to add an anchor.")
+> - Also a list inside this `blockquote` is used for demonstration.
+
+----------------------------------------------------------------------------------------------------
+<!--index tables-->
+# Tables
+
+Tables are added with the syntax like this:
+
+````
+Item No | Name  | Description   | Price
+:------:|-------|---------------|------:
+1       | Chair | Kitchen chair |  87.50
+2       | Table | Kitchen table | 450.00
+3       | Lamp  | Standard lamp | 120.75
+````
+
+Currently used styles define the following default table appearance:
+
+Item No | Name  | Description   | Price
+:------:|-------|---------------|------:
+1       | Chair | Kitchen chair |  87.50
+2       | Table | Kitchen table | 450.00
+3       | Lamp  | Standard lamp | 120.75
+
+Markdown doesn't have syntax for different table styles, but some trick may be used to achieve 
+this. We can add an invisible element (an empty `<div>` in this case) right before the
+table and then define the appearance using some simple CSS magic. So the following invisible
+element right before a table:
+
+````
+<div class="tableLight"></div>
+````
+
+Will give the following table style:
+
+<div class="tableLight"></div>
+
+|Item No | Name  | Description   | Price |
+|:------:|:------|:--------------|------:|
+|1       | Chair | Kitchen chair |  87.50|
+|2       | Table | Kitchen table | 450.00|
+|3       | Lamp  | Standard lamp | 120.75|
+
+If we want a table without a header, we can use:
+
+````
+<div class="tableHeaderless"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+````
+
+This will give:
+
+<div class="tableHeaderless"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+
+We also can combine the CSS classes like this:
+
+````
+<div class="tableLight tableHeaderless"></div>
+````
+
+<div class="tableLight tableHeaderless"></div>
+
+| | | | |
+|---:|---: |---: |---: |
+| 10 | 20  | 30  | 40  |
+| 50 | 60  | 70  | 80  |
+| 90 | 100 | 110 | 120 |
+
+----------------------------------------------------------------------------------------------------
+<!--index fenced code blocks -->
+# Fenced code blocks
+
+Fenced code blocks may be set up by four-space indent, or by four backticks (` ```` `), i.e.
+the following markup:
+
+    ````
+    Example of
+        preformatted 
+        text
+    ````
+
+will look like:
+
+    Example of
+        preformatted 
+        text
+
+This type of block visually correlates with `inline` code fragments. 
+
+Style may be specified the following way:
+
+    ````text
+    This is a light code block example.
+        It is also preformatted
+        but has no background.
+    ````
+
+The result will be:
+
+````text
+This is a light code block example.
+    It is also preformatted
+    but has no background.
+````
+
+There are also the following block types.
+
+Shell code block (marked as `shell`):
+
+````shell
+$ echo "This block demonstrates operations in a shell"
+This block demonstrates operations in a shell
+````
+
+Program language code block (marked as `code`):
+
+````code
+System.out.println("This block demonstrates " + 
+    "a source code in a program language.");
+````
+
+XML (or HTML) content (marked as `xml`):
+
+````xml
+<body>
+    <p>Some HTML or XML content</p>
+</body>
+````
+
+Configuration file content (marked as `conf`):
+
+````conf
+spring.h2.console.enabled=true
+spring.datasource.generate-unique-name=false
+spring.jpa.hibernate.ddl-auto=update
+````
+
+JSON content (marked as `json`):
+
+````json
+{
+    "content-type": "JSON",
+    "values": ["some", "values", "in", "list"]
+}
+````
+
+!!! note
+    Program language source code syntax highlighting is not implemented yet.
+
+> Fenced blocks may be inserted inside other blocks, like `blockquote`s:
+> 
+> ````shell
+> $ echo Fenced blocks inside a blockquote
+> Fenced blocks inside a blockquote
+> ```` 
+> 
+> Also, for instance, lists inside `blockquote`s may contain fenced code blocks:
+> 
+> - Item 1:
+>     ````
+>     Fenced block, line 1
+>     Fenced block, line 2
+>     ````
+> - Item 2
+
+
+## Wrapping
+
+Sometimes it's required to have long lines inside code blocks wrapped, but the above code
+blocks don't wrap the lines automatically. Of cause we can break the lines manually but this 
+may make the content inconvenient for copy-pasting. To address this cases, additional markers
+`wrapped`, `wrapped-code` and `wrapped-shell` were defined. Here's an example:
+
+````wrapped-code
+This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
+````
+
+Just for comparison, a similar content will be scrolled in not wrapped fenced blocks:
+
+````code
+This is a long line that doesn't contain line breaks inside itself and that we want to be scrolled so that the fenced code block doesn't exceed the page width.
+````
+
+
+## Using HTML
+
+!!! note
+    As for now, there's [the "ignore" plugin](<!--page plugins-->#ignore_plugin) that is easier
+    to use. So the following method must be needed less often.
+
+The following code may be used in order to avoid plugin substitutions:
+
+````
+<div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
+````
+
+The result will be like this:
+
+<div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
+
+----------------------------------------------------------------------------------------------------
+<!--index admonitions -->
+# Admonitions
+
+!!! info
+    Admonitions are specially formatted blocks whose purpose is drawing attention to some pieces
+    of information. To add such a block the following syntax is used:
+ 
+    ````
+    !!! qualifier "Optional title"
+        block content
+        with 4 space indent on each line
+    ````
+ 
+!!! note
+    There are defined the following qualifiers:
+    
+    - `note`;
+    - tips: `tip`, `hint`, `important`;
+    - danger: `danger`, `error`;
+    - warning: `warning`, `attention`, `caution`.
+ 
+!!! important
+    Other qualifiers may be used (like `info` qualifier above). CSS need to be edited to
+    add special formatting for this admonitions, otherwise the default formatting is used.
+ 
+!!! warning "Don't overuse!"
+    This highlighting method should not be overused. If there are a lot of such blocks then 
+    important information may be easily missed by the reader.
+ 
+    BTW, in this block a custom title is used.
+ 
+!!! hint ""
+    To place an admonition without a header empty quotes may be set as the title:
+ 
+    ````
+    !!! hint ""
+        This admonition will not have a title.
+    ````
+!!! danger
+    Admonitions are not supported in GitHub and StackOverflow.
+ 
+    !!! note
+        When a default title is used, its first character is capitalized.
+
+----------------------------------------------------------------------------------------------------
+<!--index attribute lists-->
+# Attribute lists {#attribute_lists}
+
+Attribute lists let add attributes to HTML tags. More details may be found at:
+
+- [Attribute Lists extension](https://python-markdown.github.io/extensions/attr_list/)
+    for the Python library;
+- [Attributes Extension](https://github.com/vsch/flexmark-java/wiki/Extensions#attributes)
+    for the Java library.
+
+The above libraries have some differences in their interpretation, so Python and Java versions
+may work differently. The below are the usage examples that must work the same way.
+
+The following header:
+
+````
+# Header title {#custom_id}
+````
+
+will be converted into something like:
+
+````
+<h1 id="custom_id">Header title</h1>
+````
+
+!!! important
+    Mind the space between the header title and the opening curly brace `{` --- it's mandatory.
+
+Alternatively an ID may be assigned by expression `{id=custom_id}` or `{id='custom_id'}` or
+`{id="custom_id"}`.
+    
+This `id` will be also set in the corresponding [table of contents](#table_of_contents) item.
+
+A paragraph and a list item may be styled by assigning CSS classes like this:
+
+````
+Paragraph content.
+{ .blue .underlined }
+
+- List item 1
+    { class=blue }
+- List item 2
+    { class='green' }
+````
+
+The generated HTML will be like:
+
+````
+<p class="blue underlined">Paragraph content.</p>
+<ul>
+<li class="blue">List item 1</li>
+<li class="green">List item 2</li>
+</ul>
+````
+
+As we can see, a dot `.` may be replaced by `class=` with optional single or double quotes.
+Also note that the attributes must be specified at a separate line in the end of the element.
+
+!!! note
+    To make the document be rendered similarly in the Python and the Java versions, it's better
+    to follow the examples above. See the above links at the extensions (libraries)
+    descriptions.
+
+Here's a way a table cell may be formatted:
+
+````
+Header 1 | Header 2
+---------|--------
+Cell 1 {style="background-color: cadetblue;"} | Cell 2 {name=cell2}
+````
+
+!!! important
+    Mind the space between the header title and the opening curly brace `{` --- it's mandatory.
+
+The generated HTML code will be like this:
+
+````
+<table>
+<thead>
+<tr><th>Header 1</th><th>Header 2</th></tr>
+</thead>
+<tbody>
+<tr>
+<td style="background-color: cadetblue;">Cell 1</td>
+<td name="cell2">Cell 2</td>
+</tr>
+</tbody>
+</table>
+````
+
+In this example an arbitrary attribute `name=cell2` is added. This may be done for other elements
+as well. Single or double quotes may be used, and ether of them *must* be used if the attribute 
+value contains spaces. Of cause alternatively a class might be assigned instead of the direct
+CSS parameters.
+
+The table will look like this:
+
+Header 1 | Header 2
+---------|--------
+Cell 1 {style="background-color: cadetblue;"} | Cell 2 {name=cell2}
+
+
+
+
+
+
+

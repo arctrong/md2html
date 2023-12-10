@@ -29,7 +29,8 @@
             "markers": ["path"],
             "paths": {
                 "resource_path": "doc/",
-                "pict": "doc/pict/"
+                "pict": "doc/pict/",
+                "doc_src": "doc_src/"
             }
         },
         "page-flows": {
@@ -68,7 +69,8 @@
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/" },
             { "markers": ["include_code_part"], "root-dir": "sample_code/", 
-                "start-marker": "// INCLUDE FROM HERE" }
+                "start-marker": "// INCLUDE FROM HERE" },
+            { "markers": ["include_src"], "root-dir": "doc_src/", "recursive": true }
         ],
         "replace": [{ "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" }]
     }
