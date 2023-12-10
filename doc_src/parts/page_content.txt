@@ -372,7 +372,7 @@ Style may be specified the following way:
     ````text
     This is a light code block example.
         It is also preformatted
-        but has no background.
+        but has no background (and probably no border).
     ````
 
 The result will be:
@@ -380,7 +380,7 @@ The result will be:
 ````text
 This is a light code block example.
     It is also preformatted
-    but has no background.
+    but has no background (and probably no border).
 ````
 
 There are also the following block types.
@@ -388,41 +388,19 @@ There are also the following block types.
 Shell code block (marked as `shell`):
 
 ````shell
-$ echo "This block demonstrates operations in a shell"
-This block demonstrates operations in a shell
+>>> print("This may be any shell where Python IDLE works.")
+This may be any shell where Python IDLE works.
 ````
 
 Program language code block (marked as `code`):
 
 ````code
 System.out.println("This block demonstrates " + 
-    "a source code in a program language.");
+    "a source code in SOME program language.");
 ````
 
-XML (or HTML) content (marked as `xml`):
-
-````xml
-<body>
-    <p>Some HTML or XML content</p>
-</body>
-````
-
-Configuration file content (marked as `conf`):
-
-````conf
-spring.h2.console.enabled=true
-spring.datasource.generate-unique-name=false
-spring.jpa.hibernate.ddl-auto=update
-````
-
-JSON content (marked as `json`):
-
-````json
-{
-    "content-type": "JSON",
-    "values": ["some", "values", "in", "list"]
-}
-````
+The above are the basic code blocks styles defined by default. The other styles will be discussed
+[later](#other_fenced_block_styles).
 
 !!! note
     Program language source code syntax highlighting is not implemented yet.
@@ -432,7 +410,7 @@ JSON content (marked as `json`):
 > ````shell
 > $ echo Fenced blocks inside a blockquote
 > Fenced blocks inside a blockquote
-> ```` 
+> ````
 > 
 > Also, for instance, lists inside `blockquote`s may contain fenced code blocks:
 > 
@@ -452,7 +430,7 @@ may make the content inconvenient for copy-pasting. To address this cases, addit
 `wrapped`, `wrapped-code` and `wrapped-shell` were defined. Here's an example:
 
 ````wrapped-code
-This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.
+This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block is not scrolled.
 ````
 
 Just for comparison, a similar content will be scrolled in not wrapped fenced blocks:
@@ -477,6 +455,271 @@ The following code may be used in order to avoid plugin substitutions:
 The result will be like this:
 
 <div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
+
+
+## Fenced block source specification
+
+Sometimes it's useful to specify the file or some other source of the code inside the fenced block.
+This may be done the following way:
+
+`````
+<div class="blockSrc">Sample.java</div>
+
+````code
+...
+System.out.println("This block demonstrates " + 
+    "a source code in a program language.");
+...
+````
+`````
+
+The result will look like this:
+
+<div class="blockSrc">Sample.java</div>
+
+````code
+...
+System.out.println("This block demonstrates " + 
+    "a source code in a program language.");
+...
+````
+
+!!! note
+    A link may be inserted inside the `<div>` but due to specific Markdown processing this link 
+    may be defined only using pure HTML.
+
+
+## The other fenced block styles {#other_fenced_block_styles}
+
+The following is the extended set of fenced block styles that are enabled by default but may
+be disabled by setting the variable `"add_more_prog_langs": false` in the *argument file*.
+If the writing work does not need these styles, disabling them may give slightly faster pages
+rendering in the browser.
+
+The corresponding markers are shown under the blocks.
+
+<div class="blockSrc">py</div>
+
+````py
+def factorial(n):
+    if n == 0:
+        return 1
+    return factorial(n - 1) * n
+````
+
+<div class="blockSrc">java</div>
+
+````java
+BiPredicate<String, String> bp1 = String::startsWith;
+System.out.println(bp1.test("abcde", "abc")); // true
+````
+
+<div class="blockSrc">c</div>
+
+````c
+#include <stdio.h>
+
+int main(void) {
+    printf("hello, world\n");
+}
+````
+
+<div class="blockSrc">cpp</div>
+
+````cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, world!\n";
+}
+````
+
+<div class="blockSrc">js</div>
+
+````js
+let testSuite = [
+    {label: "Summing zeros",      body: () => {return sum(0, 0) == 0}},
+    {label: "Summing non-zeros",  body: () => {return sum(1, 1) == 2}}
+]
+````
+
+<div class="blockSrc">sql</div>
+
+````sql
+create table employee (
+    dept_id      int,
+    employee_id  int primary key,
+    salary       decimal
+);
+````
+
+<div class="blockSrc">alg</div>
+
+````alg
+DFS(s): // s is the starting node
+    mark s as explored 
+    for each unexplored neighbor v of s:
+        DFS(v) 
+````
+
+<div class="blockSrc">xml</div>
+
+````xml
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>3.8.1</version>
+    <scope>test</scope>
+</dependency>
+````
+
+<div class="blockSrc">html</div>
+
+````html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Hello world!</title>
+    </head>
+    <body>
+        <h1>Hello</h1>
+        <p>Hello world!</p>
+    </body>
+</html>
+````
+
+<div class="blockSrc">css</div>
+
+````css
+pre>code, div.code {
+    display: block;
+    white-space: pre;
+    padding: 10px;
+    overflow-x: auto;
+}
+````
+
+<div class="blockSrc">json</div>
+
+````json
+{
+    "name": "Kitchen chair",
+    "price": 87.5,
+    "available": true
+}
+````
+
+<div class="blockSrc">ini</div>
+
+````ini
+[owner]
+name = John Doe
+organization = Acme Widgets Inc.
+
+[database]
+; use IP address in case network name resolution is not working
+server = 192.0.2.62     
+port = 143
+file = "bom.dat"
+````
+
+<div class="blockSrc">prop</div>
+
+````prop
+# A .properties file example
+website=https://en.wikipedia.org/
+language:English
+# Keys with the same name will be overwritten by the key that is the furthest in a file
+duplicateKey = first
+duplicateKey = second
+````
+
+Here is a configuration of some other kind:
+
+<div class="blockSrc">conf</div>
+
+````conf
+services:
+  frontend:
+    image: example/webapp
+    networks:
+      - front-tier
+      - back-tier
+````
+
+<div class="blockSrc">unixscript</div>
+
+````unixscript
+#!/bin/sh
+if [ -z $1 ]; then
+    echo a{1,2,3}
+else
+    echo b{5,6,7}
+fi
+# will output: "a{1,2,3}" or "b{5,6,7}"
+````
+
+<div class="blockSrc">bash</div>
+
+````bash
+#!/bin/bash
+if [ -z $1 ]; then
+    echo a{1,2,3}
+else
+    echo b{5,6,7}
+fi
+# will output: "a1 a2 a3" or "b5 b6 b7"
+````
+
+<div class="blockSrc">cmd</div>
+
+````cmd
+@echo off
+
+set CANNOT_PROCEED=
+call :check_file_or_dir doc_src
+if [%CANNOT_PROCEED%]==[Y] (
+    echo Some problems found (see above^). Nothing has been done
+    exit /b
+)
+xcopy %MD2HTML_HOME%\bin\new_project\doc_src doc_src\ /e
+exit /b
+
+:check_file_or_dir
+if exist %1 (
+    echo File or directory '%1' already exists
+    set CANNOT_PROCEED=Y
+)
+exit /b
+````
+
+<div class="blockSrc">bat</div>
+
+````bat
+@echo off
+echo BAT and CMD files are considered to be the same.
+````
+
+<div class="blockSrc">unixshell</div>
+
+````unixshell
+$ for i in {1..6..2}; do echo "Welcome person #$i!"; done
+Welcome person #1!
+Welcome person #3!
+Welcome person #5!
+````
+
+<div class="blockSrc">winshell</div>
+
+````winshell
+>cd %TEMP%
+
+>echo I write a file > temp_file.txt
+
+>type temp_file.txt
+I write a file
+````
 
 ----------------------------------------------------------------------------------------------------
 <!--index admonitions -->

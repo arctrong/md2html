@@ -109,6 +109,8 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#fenced-code-blocks">Fenced code blocks</a><ul>
 <li><a href="#wrapping">Wrapping</a></li>
 <li><a href="#using-html">Using HTML</a></li>
+<li><a href="#fenced-block-source-specification">Fenced block source specification</a></li>
+<li><a href="#other_fenced_block_styles">The other fenced block styles</a></li>
 </ul>
 </li>
 <li><a href="#admonitions">Admonitions</a></li>
@@ -559,33 +561,22 @@ Example of
 <pre><code>````text
 This is a light code block example.
     It is also preformatted
-    but has no background.
+    but has no background (and probably no border).
 ````
 </code></pre>
 <p>The result will be:</p>
 <pre class="highlight"><code class="language-text">This is a light code block example.
     It is also preformatted
-    but has no background.</code></pre>
+    but has no background (and probably no border).</code></pre>
 <p>There are also the following block types.</p>
 <p>Shell code block (marked as <code>shell</code>):</p>
-<pre class="highlight"><code class="language-shell">$ echo "This block demonstrates operations in a shell"
-This block demonstrates operations in a shell</code></pre>
+<pre class="highlight"><code class="language-shell">&gt;&gt;&gt; print("This may be any shell where Python IDLE works.")
+This may be any shell where Python IDLE works.</code></pre>
 <p>Program language code block (marked as <code>code</code>):</p>
 <pre class="highlight"><code class="language-code">System.out.println("This block demonstrates " + 
-    "a source code in a program language.");</code></pre>
-<p>XML (or HTML) content (marked as <code>xml</code>):</p>
-<pre class="highlight"><code class="language-xml">&lt;body&gt;
-    &lt;p&gt;Some HTML or XML content&lt;/p&gt;
-&lt;/body&gt;</code></pre>
-<p>Configuration file content (marked as <code>conf</code>):</p>
-<pre class="highlight"><code class="language-conf">spring.h2.console.enabled=true
-spring.datasource.generate-unique-name=false
-spring.jpa.hibernate.ddl-auto=update</code></pre>
-<p>JSON content (marked as <code>json</code>):</p>
-<pre class="highlight"><code class="language-json">{
-    "content-type": "JSON",
-    "values": ["some", "values", "in", "list"]
-}</code></pre>
+    "a source code in SOME program language.");</code></pre>
+<p>The above are the basic code blocks styles defined by default. The other styles will be discussed
+<a href="#other_fenced_block_styles">later</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Program language source code syntax highlighting is not implemented yet.</p>
@@ -607,7 +598,7 @@ Fenced block, line 2</code></pre></li>
 blocks don't wrap the lines automatically. Of cause we can break the lines manually but this 
 may make the content inconvenient for copy-pasting. To address this cases, additional markers
 <code>wrapped</code>, <code>wrapped-code</code> and <code>wrapped-shell</code> were defined. Here's an example:</p>
-<pre class="highlight"><code class="language-wrapped-code">This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block doesn't exceed the page width.</code></pre>
+<pre class="highlight"><code class="language-wrapped-code">This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block is not scrolled.</code></pre>
 <p>Just for comparison, a similar content will be scrolled in not wrapped fenced blocks:</p>
 <pre class="highlight"><code class="language-code">This is a long line that doesn't contain line breaks inside itself and that we want to be scrolled so that the fenced code block doesn't exceed the page width.</code></pre>
 <h2 id="using-html">Using HTML</h2>
@@ -621,6 +612,197 @@ to use. So the following method must be needed less often.</p>
 <p>The result will be like this:</p>
 <div class="code">![](&lt;!--path pict--&gt;logo.png)</div>
 
+<h2 id="fenced-block-source-specification">Fenced block source specification</h2>
+<p>Sometimes it's useful to specify the file or some other source of the code inside the fenced block.
+This may be done the following way:</p>
+<pre class="highlight"><code>&lt;div class="blockSrc"&gt;Sample.java&lt;/div&gt;
+
+````code
+...
+System.out.println("This block demonstrates " + 
+    "a source code in a program language.");
+...
+````</code></pre>
+<p>The result will look like this:</p>
+<div class="blockSrc">Sample.java</div>
+
+<pre class="highlight"><code class="language-code">...
+System.out.println("This block demonstrates " + 
+    "a source code in a program language.");
+...</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A link may be inserted inside the <code>&lt;div&gt;</code> but due to specific Markdown processing this link 
+may be defined only using pure HTML.</p>
+</div>
+<h2 id="other_fenced_block_styles">The other fenced block styles</h2>
+<p>The following is the extended set of fenced block styles that are enabled by default but may
+be disabled by setting the variable <code>"add_more_prog_langs": false</code> in the <em>argument file</em>.
+If the writing work does not need these styles, disabling them may give slightly faster pages
+rendering in the browser.</p>
+<p>The corresponding markers are shown under the blocks.</p>
+<div class="blockSrc">py</div>
+
+<pre class="highlight"><code class="language-py">def factorial(n):
+    if n == 0:
+        return 1
+    return factorial(n - 1) * n</code></pre>
+<div class="blockSrc">java</div>
+
+<pre class="highlight"><code class="language-java">BiPredicate&lt;String, String&gt; bp1 = String::startsWith;
+System.out.println(bp1.test("abcde", "abc")); // true</code></pre>
+<div class="blockSrc">c</div>
+
+<pre class="highlight"><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf("hello, world\n");
+}</code></pre>
+<div class="blockSrc">cpp</div>
+
+<pre class="highlight"><code class="language-cpp">#include &lt;iostream&gt;
+
+int main() {
+    std::cout &lt;&lt; "Hello, world!\n";
+}</code></pre>
+<div class="blockSrc">js</div>
+
+<pre class="highlight"><code class="language-js">let testSuite = [
+    {label: "Summing zeros",      body: () =&gt; {return sum(0, 0) == 0}},
+    {label: "Summing non-zeros",  body: () =&gt; {return sum(1, 1) == 2}}
+]</code></pre>
+<div class="blockSrc">sql</div>
+
+<pre class="highlight"><code class="language-sql">create table employee (
+    dept_id      int,
+    employee_id  int primary key,
+    salary       decimal
+);</code></pre>
+<div class="blockSrc">alg</div>
+
+<pre class="highlight"><code class="language-alg">DFS(s): // s is the starting node
+    mark s as explored 
+    for each unexplored neighbor v of s:
+        DFS(v) </code></pre>
+<div class="blockSrc">xml</div>
+
+<pre class="highlight"><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;junit&lt;/groupId&gt;
+    &lt;artifactId&gt;junit&lt;/artifactId&gt;
+    &lt;version&gt;3.8.1&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+<div class="blockSrc">html</div>
+
+<pre class="highlight"><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;Hello world!&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello&lt;/h1&gt;
+        &lt;p&gt;Hello world!&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<div class="blockSrc">css</div>
+
+<pre class="highlight"><code class="language-css">pre&gt;code, div.code {
+    display: block;
+    white-space: pre;
+    padding: 10px;
+    overflow-x: auto;
+}</code></pre>
+<div class="blockSrc">json</div>
+
+<pre class="highlight"><code class="language-json">{
+    "name": "Kitchen chair",
+    "price": 87.5,
+    "available": true
+}</code></pre>
+<div class="blockSrc">ini</div>
+
+<pre class="highlight"><code class="language-ini">[owner]
+name = John Doe
+organization = Acme Widgets Inc.
+
+[database]
+; use IP address in case network name resolution is not working
+server = 192.0.2.62     
+port = 143
+file = "bom.dat"</code></pre>
+<div class="blockSrc">prop</div>
+
+<pre class="highlight"><code class="language-prop"># A .properties file example
+website=https://en.wikipedia.org/
+language:English
+# Keys with the same name will be overwritten by the key that is the furthest in a file
+duplicateKey = first
+duplicateKey = second</code></pre>
+<p>Here is a configuration of some other kind:</p>
+<div class="blockSrc">conf</div>
+
+<pre class="highlight"><code class="language-conf">services:
+  frontend:
+    image: example/webapp
+    networks:
+      - front-tier
+      - back-tier</code></pre>
+<div class="blockSrc">unixscript</div>
+
+<pre class="highlight"><code class="language-unixscript">#!/bin/sh
+if [ -z $1 ]; then
+    echo a{1,2,3}
+else
+    echo b{5,6,7}
+fi
+# will output: "a{1,2,3}" or "b{5,6,7}"</code></pre>
+<div class="blockSrc">bash</div>
+
+<pre class="highlight"><code class="language-bash">#!/bin/bash
+if [ -z $1 ]; then
+    echo a{1,2,3}
+else
+    echo b{5,6,7}
+fi
+# will output: "a1 a2 a3" or "b5 b6 b7"</code></pre>
+<div class="blockSrc">cmd</div>
+
+<pre class="highlight"><code class="language-cmd">@echo off
+
+set CANNOT_PROCEED=
+call :check_file_or_dir doc_src
+if [%CANNOT_PROCEED%]==[Y] (
+    echo Some problems found (see above^). Nothing has been done
+    exit /b
+)
+xcopy %MD2HTML_HOME%\bin\new_project\doc_src doc_src\ /e
+exit /b
+
+:check_file_or_dir
+if exist %1 (
+    echo File or directory '%1' already exists
+    set CANNOT_PROCEED=Y
+)
+exit /b</code></pre>
+<div class="blockSrc">bat</div>
+
+<pre class="highlight"><code class="language-bat">@echo off
+echo BAT and CMD files are considered to be the same.</code></pre>
+<div class="blockSrc">unixshell</div>
+
+<pre class="highlight"><code class="language-unixshell">$ for i in {1..6..2}; do echo "Welcome person #$i!"; done
+Welcome person #1!
+Welcome person #3!
+Welcome person #5!</code></pre>
+<div class="blockSrc">winshell</div>
+
+<pre class="highlight"><code class="language-winshell">&gt;cd %TEMP%
+
+&gt;echo I write a file &gt; temp_file.txt
+
+&gt;type temp_file.txt
+I write a file</code></pre>
 <hr />
 <p><a name="index_entry_index_3"></a></p>
 <h1 id="admonitions">Admonitions</h1>
