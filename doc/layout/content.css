@@ -53,25 +53,48 @@ pre>code, div.code {
     border-width: 1px;
 }
 
-pre>code.language-wrapped {
-    white-space: pre-wrap;
-    word-break: break-word;
-    min-width: unset;
-}
-
 pre>code.language-text {
     background-color: unset;
     padding: 0;
     border: none;
 }
 
-pre>code.language-wrapped-shell, pre>code.language-wrapped-code,
-pre>code.language-wrapped-xml, pre>code.language-wrapped-json,
-pre>code.language-wrapped-conf
+pre>code.language-wrapped, pre>code.language-wrapped-text,
+pre>code.language-wrapped-code, pre>code.language-wrapped-shell
 {
     white-space: pre-wrap;
     word-break: break-word;
     min-width: unset;
+}
+
+pre>code.language-wrapped-shell, pre>code.language-shell {
+  padding-top: 40px;
+}
+
+pre>code.language-shell::before, pre>code.language-wrapped-shell::before {
+    display: block;
+    position: absolute;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 0.8rem;
+    margin-top: -32px;
+    padding-right: 7px;
+    padding-bottom: 3px;
+}
+
+pre>code.language-shell::before, pre>code.language-wrapped-shell::before {
+    content: "Shell";
+}
+
+.blockSrc {
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.blockSrc+pre {
+    margin-top: 5px;
 }
 
 blockquote {

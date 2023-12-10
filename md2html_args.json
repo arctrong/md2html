@@ -21,7 +21,8 @@
             "html_lang": "en",
             "burger_open_image": "layout/pict/burger.png",
             "show_source_link": true,
-            "theme": "light"
+            "theme": "light",
+            "add_more_prog_langs": true
         },
         "page-variables": {},
         "relative-paths": {

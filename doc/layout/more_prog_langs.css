@@ -1,0 +1,163 @@
+
+pre>code.language-wrapped-py, pre>code.language-wrapped-java,
+pre>code.language-wrapped-c,pre>code.language-wrapped-cpp,
+pre>code.language-wrapped-js, pre>code.language-wrapped-sql,
+pre>code.language-wrapped-alg,
+pre>code.language-wrapped-xml, pre>code.language-wrapped-html,
+pre>code.language-wrapped-css,
+pre>code.language-wrapped-json,
+pre>code.language-wrapped-conf,
+pre>code.language-wrapped-ini, pre>code.language-wrapped-prop,
+pre>code.language-wrapped-unixscript, pre>code.language-wrapped-bash,
+pre>code.language-wrapped-cmd, pre>code.language-wrapped-bat,
+pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
+{
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-width: unset;
+}
+
+
+pre>code.language-py, pre>code.language-java,
+pre>code.language-c, pre>code.language-cpp,
+pre>code.language-js, pre>code.language-sql,
+pre>code.language-alg,
+pre>code.language-xml, pre>code.language-html,
+pre>code.language-css,
+pre>code.language-json,
+pre>code.language-conf,
+pre>code.language-ini, pre>code.language-prop,
+pre>code.language-unixscript, pre>code.language-bash,
+pre>code.language-cmd, pre>code.language-bat,
+pre>code.language-unixshell, pre>code.language-winshell,
+pre>code.language-wrapped-py, pre>code.language-wrapped-java,
+pre>code.language-wrapped-c, pre>code.language-wrapped-cpp,
+pre>code.language-wrapped-js, pre>code.language-wrapped-sql,
+pre>code.language-wrapped-alg,
+pre>code.language-wrapped-xml, pre>code.language-wrapped-html,
+pre>code.language-wrapped-css,
+pre>code.language-wrapped-json,
+pre>code.language-wrapped-conf,
+pre>code.language-wrapped-ini, pre>code.language-wrapped-prop,
+pre>code.language-wrapped-unixscript, pre>code.language-wrapped-bash,
+pre>code.language-wrapped-cmd, pre>code.language-wrapped-bat,
+pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
+{
+  padding-top: 40px;
+}
+
+pre>code.language-py::before, pre>code.language-java::before,
+pre>code.language-c::before, pre>code.language-cpp::before,
+pre>code.language-js::before, pre>code.language-sql::before,
+pre>code.language-alg::before,
+pre>code.language-xml::before, pre>code.language-html::before,
+pre>code.language-css::before,
+pre>code.language-json::before,
+pre>code.language-conf::before,
+pre>code.language-ini::before, pre>code.language-prop::before,
+pre>code.language-unixscript::before, pre>code.language-bash::before,
+pre>code.language-cmd::before, pre>code.language-bat::before,
+pre>code.language-unixshell::before, pre>code.language-winshell::before,
+pre>code.language-wrapped-py::before, pre>code.language-wrapped-java::before,
+pre>code.language-wrapped-c::before, pre>code.language-wrapped-cpp::before,
+pre>code.language-wrapped-js::before, pre>code.language-wrapped-sql::before,
+pre>code.language-wrapped-alg::before,
+pre>code.language-wrapped-xml::before, pre>code.language-wrapped-html::before,
+pre>code.language-wrapped-css::before,
+pre>code.language-wrapped-json::before,
+pre>code.language-wrapped-conf::before,
+pre>code.language-wrapped-ini::before, pre>code.language-wrapped-prop::before,
+pre>code.language-wrapped-unixscript::before, pre>code.language-wrapped-bash::before,
+pre>code.language-wrapped-cmd::before, pre>code.language-wrapped-bat::before,
+pre>code.language-wrapped-unixshell::before, pre>code.language-wrapped-winshell::before
+{
+    display: block;
+    position: absolute;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 0.8rem;
+    margin-top: -32px;
+    padding-right: 7px;
+    padding-bottom: 3px;
+}
+
+pre>code.language-py::before, pre>code.language-wrapped-py::before {
+    content: "Python";
+}
+
+pre>code.language-java::before, pre>code.language-wrapped-java::before {
+    content: "Java";
+}
+
+pre>code.language-c::before, pre>code.language-wrapped-c::before {
+    content: "C";
+}
+
+pre>code.language-cpp::before, pre>code.language-wrapped-cpp::before {
+    content: "C++";
+}
+
+pre>code.language-js::before, pre>code.language-wrapped-js::before {
+    content: "JavaScript";
+}
+
+pre>code.language-sql::before, pre>code.language-wrapped-sql::before {
+    content: "SQL";
+}
+
+pre>code.language-alg::before, pre>code.language-wrapped-alg::before {
+    content: "Algorithm";
+}
+
+pre>code.language-xml::before, pre>code.language-wrapped-xml::before {
+    content: "XML";
+}
+
+pre>code.language-html::before, pre>code.language-wrapped-html::before {
+    content: "HTML";
+}
+
+pre>code.language-css::before, pre>code.language-wrapped-css::before {
+    content: "CSS";
+}
+
+pre>code.language-json::before, pre>code.language-wrapped-json::before {
+    content: "JSON";
+}
+
+pre>code.language-conf::before, pre>code.language-wrapped-conf::before {
+    content: "Configuration";
+}
+
+pre>code.language-ini::before, pre>code.language-wrapped-ini::before {
+    content: "INI";
+}
+
+pre>code.language-prop::before, pre>code.language-wrapped-prop::before {
+    content: "properties";
+}
+
+pre>code.language-unixscript::before, pre>code.language-wrapped-unixscript::before {
+    content: "Unix script";
+}
+
+pre>code.language-bash::before, pre>code.language-wrapped-bash::before {
+    content: "Bash script";
+}
+
+pre>code.language-cmd::before, pre>code.language-wrapped-cmd::before {
+    content: "CMD script";
+}
+
+pre>code.language-bat::before, pre>code.language-wrapped-bat::before {
+    content: "BAT script";
+}
+
+pre>code.language-unixshell::before, pre>code.language-wrapped-unixshell::before {
+    content: "Unix shell";
+}
+
+pre>code.language-winshell::before, pre>code.language-wrapped-winshell::before {
+    content: "Windows shell";
+}

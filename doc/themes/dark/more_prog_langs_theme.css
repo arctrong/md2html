@@ -1,0 +1,101 @@
+pre>code.language-py, pre>code.language-wrapped-py {
+    color: #f0fcd7;
+    border-color: #f0fcd7;
+    background-color: #33453d;
+}
+
+pre>code.language-java, pre>code.language-wrapped-java {
+    color: beige;
+    border-color: beige;
+    background-color: #5f4939;
+}
+
+pre>code.language-c, pre>code.language-wrapped-c,
+pre>code.language-cpp, pre>code.language-wrapped-cpp
+{
+    color: #f1f1f1;
+    border-color: #f1f1f1;
+    background-color: #323276;
+}
+
+pre>code.language-js, pre>code.language-wrapped-js {
+    color: mintcream;
+    border-color: mintcream;
+    background-color: #45647d;
+}
+
+pre>code.language-sql, pre>code.language-wrapped-sql {
+    color: #ece9d5;
+    border-color: #ece9d5;
+    background-color: #484521;
+}
+
+pre>code.language-alg, pre>code.language-wrapped-alg {
+    color: white;
+    border-color: white;
+    background-color: #316161;
+}
+
+pre>code.language-xml, pre>code.language-wrapped-xml,
+pre>code.language-html, pre>code.language-wrapped-html
+{
+    color: #fff9dc;
+    border-color: #fff9dc;
+    background-color: #4646b5;
+}
+
+pre>code.language-css, pre>code.language-wrapped-css {
+    color: #cdfee9;
+    border-color: #cdfee9;
+    background-color: #5c5477;
+}
+
+pre>code.language-json, pre>code.language-wrapped-json {
+    color: #fffced;
+    border-color: #fffced;
+    background-color: #7b5959;
+}
+
+pre>code.language-conf, pre>code.language-wrapped-conf,
+pre>code.language-ini, pre>code.language-wrapped-ini,
+pre>code.language-prop, pre>code.language-wrapped-prop
+{
+    color: honeydew;
+    border-color: honeydew;
+    background-color: #425d42;
+}
+
+pre>code.language-unixscript, pre>code.language-wrapped-unixscript,
+pre>code.language-bash, pre>code.language-wrapped-bash
+{
+    color: white;
+    border-color: white;
+    background-color: #847d7d;
+}
+
+pre>code.language-cmd, pre>code.language-wrapped-cmd,
+pre>code.language-bat, pre>code.language-wrapped-bat
+{
+    color: white;
+    border-color: white;
+    background-color: #7a7f86;
+}
+
+pre>code.language-unixshell, pre>code.language-wrapped-unixshell,
+pre>code.language-winshell, pre>code.language-wrapped-winshell
+{
+    background-color: #323232;
+}
+
+pre>code.language-unixshell, pre>code.language-wrapped-unixshell {
+    color: #edfd9f;
+    border-color: #edfd9f;
+}
+
+pre>code.language-winshell, pre>code.language-wrapped-winshell {
+    color: aliceblue;
+    border-color: aliceblue;
+}
+
+
+

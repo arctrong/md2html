@@ -20,34 +20,20 @@ code, .code {
     border-color: lightgray;
 }
 
-pre>code.language-shell, pre>code.language-wrapped-shell {
-    color: floralwhite;
-    background-color: darkslategray;
-    border-color: darkslategray;
-}
-
 pre>code.language-code, pre>code.language-wrapped-code {
     color: darkred;
-    background-color: beige;
     border-color: darkred;
+    background-color: beige;
 }
 
-pre>code.language-xml, pre>code.language-wrapped-xml {
-    color: darkblue;
-    background-color: aliceblue;
-    border-color: darkblue;
+pre>code.language-shell, pre>code.language-wrapped-shell {
+    color: floralwhite;
+    border-color: darkslategray;
+    background-color: darkslategray;
 }
 
-pre>code.language-json, pre>code.language-wrapped-json {
-    color: #a50e0e;
-    background-color: #fff8ea;
-    border-color: #a50e0e;
-}
-
-pre>code.language-conf, pre>code.language-wrapped-conf {
-    color: darkgreen;
-    background-color: honeydew;
-    border-color: darkgreen;
+.blockSrc {
+    color: darkslategray;
 }
 
 blockquote {

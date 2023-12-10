@@ -1,0 +1,104 @@
+pre>code.language-py, pre>code.language-wrapped-py {
+    color: #173737;
+    border-color: #173737;
+    background-color: #d9ecd9;
+}
+
+pre>code.language-java, pre>code.language-wrapped-java {
+    color: #4e190a;
+    border-color: #4e190a;
+    background-color: #faf8dd;
+}
+
+pre>code.language-java::before, pre>code.language-wrapped-java::before {
+    content: "Java";
+}
+
+pre>code.language-c, pre>code.language-wrapped-c,
+pre>code.language-cpp, pre>code.language-wrapped-cpp
+{
+    color: #000080;
+    border-color: #000080;
+    background-color: #eeeeee;
+}
+
+pre>code.language-js, pre>code.language-wrapped-js {
+    color: #000080;
+    border-color: #000080;
+    background-color: #f2f4ff;
+}
+
+pre>code.language-sql, pre>code.language-wrapped-sql {
+    color: #282603;
+    border-color: #282603;
+    background-color: #ece9d5;
+}
+
+pre>code.language-alg, pre>code.language-wrapped-alg {
+    color: #880000;
+    border-color: #880000;
+    background-color: #eeeeee;
+}
+
+pre>code.language-xml, pre>code.language-wrapped-xml,
+pre>code.language-html, pre>code.language-wrapped-html
+{
+    color: darkblue;
+    border-color: darkblue;
+    background-color: aliceblue;
+}
+
+pre>code.language-css, pre>code.language-wrapped-css {
+    color: #001819;
+    border-color: #001819;
+    background-color: #e4feff;
+}
+
+pre>code.language-json, pre>code.language-wrapped-json {
+    color: #a50e0e;
+    border-color: #a50e0e;
+    background-color: #fff8ea;
+}
+
+pre>code.language-conf, pre>code.language-wrapped-conf,
+pre>code.language-ini, pre>code.language-wrapped-ini,
+pre>code.language-prop, pre>code.language-wrapped-prop
+{
+    color: #004d00;
+    border-color: #004d00;
+    background-color: #f5fff5;
+}
+
+pre>code.language-unixscript, pre>code.language-wrapped-unixscript,
+pre>code.language-bash, pre>code.language-wrapped-bash
+{
+    color: #310f0f;
+    border-color: #310f0f;
+    background-color: #eee6e6;
+}
+
+pre>code.language-cmd, pre>code.language-wrapped-cmd,
+pre>code.language-bat, pre>code.language-wrapped-bat
+{
+    color: #0a3e3e;
+    border-color: #0a3e3e;
+    background-color: #e7eeee;
+}
+
+pre>code.language-unixshell, pre>code.language-wrapped-unixshell,
+pre>code.language-winshell, pre>code.language-wrapped-winshell
+{
+    color: floralwhite;
+    border-color: darkslategray;
+    background-color: darkslategray;
+}
+
+pre>code.language-unixshell, pre>code.language-wrapped-unixshell {
+    color: #edfd9f;
+}
+
+pre>code.language-winshell, pre>code.language-wrapped-winshell {
+    color: floralwhite;
+}
+
+

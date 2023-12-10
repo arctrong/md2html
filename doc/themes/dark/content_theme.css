@@ -16,38 +16,24 @@ ins {
 }
 
 code, .code {
-    background-color: #656565;
     border-color: #747474;
+    background-color: #656565;
 }
 
 pre>code.language-shell, pre>code.language-wrapped-shell {
-    color: #bee582;
+    color: aliceblue;
+    border-color: aliceblue;
     background-color: #323232;
-    border-color: #bee582;
 }
 
 pre>code.language-code, pre>code.language-wrapped-code {
-    color: beige;
-    background-color: #5d4431;
-    border-color: beige;
+    color: #f8e9a6;
+    border-color: #f8e9a6;
+    background-color: #404040;
 }
 
-pre > code.language-xml, pre > code.language-wrapped-xml {
-  color: aliceblue;
-  background-color: #4646b5;
-  border-color: beige;
-}
-
-pre > code.language-json, pre > code.language-wrapped-json {
-  color: #fff;
-  background-color: #af7474;
-  border-color: #fff;
-}
-
-pre > code.language-conf, pre > code.language-wrapped-conf {
-  color: honeydew;
-  background-color: #3f7c3f;
-  border-color: honeydew;
+.blockSrc {
+    color: #ecf3f9;
 }
 
 blockquote {
