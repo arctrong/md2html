@@ -14,7 +14,7 @@ class RelativePathsPluginTest(unittest.TestCase):
     def test_notDefined(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.md"}], "plugins": {}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         self.assertIsNone(plugin)
 
@@ -24,7 +24,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": {'
             '    "relative-paths": {}'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         self.assertIsNone(plugin)
 
@@ -34,7 +34,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": {'
             '    "relative-paths": {"markers": ["p1", "p2"], "paths": {}}'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         self.assertIsNone(plugin)
 
@@ -44,7 +44,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": {'
             '    "relative-paths": {"markers": ["path"], "paths": {"pict": "doc/pict/"}}'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         rel_paths = plugin.variables(Document(output_file="root.html"))
         self.assertDictEqual({"pict": "doc/pict/"}, rel_paths)
@@ -55,23 +55,23 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": {"relative-paths": { "down1": "down1/", "down11": "down1/down11/", '
             '"down2": "down2/", "down22": "down2/down22/", "root": "", '
             '"up1": "../", "up2": "../../" }}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        
+
         rel_paths = plugin.variables(Document(output_file="root.html"))
-        self.assertDictEqual({"down1": "down1/", "down11": "down1/down11/", 
-                              "down2": "down2/", "down22": "down2/down22/", 
+        self.assertDictEqual({"down1": "down1/", "down11": "down1/down11/",
+                              "down2": "down2/", "down22": "down2/down22/",
                               "root": "", "up1": "../", "up2": "../../"}, rel_paths)
-        
+
         rel_paths = plugin.variables(Document(output_file="down1/doc.html"))
-        self.assertDictEqual({"down1": "", "down11": "down11/", 
-                              "down2": "../down2/", "down22": "../down2/down22/", 
-                              "root": "../", "up1": "../../", "up2": "../../../" }, rel_paths)
-        
+        self.assertDictEqual({"down1": "", "down11": "down11/",
+                              "down2": "../down2/", "down22": "../down2/down22/",
+                              "root": "../", "up1": "../../", "up2": "../../../"}, rel_paths)
+
         rel_paths = plugin.variables(Document(output_file="down2/down22/doc.html"))
-        self.assertDictEqual({"down1": "../../down1/", "down11": "../../down1/down11/", 
-                              "down2": "../", "down22": "", 
-                              "root": "../../", "up1": "../../../", "up2": "../../../../" },
+        self.assertDictEqual({"down1": "../../down1/", "down11": "../../down1/down11/",
+                              "down2": "../", "down22": "",
+                              "root": "../../", "up1": "../../../", "up2": "../../../../"},
                              rel_paths)
 
     def test_substitution_minimal(self):
@@ -80,7 +80,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "relative-paths": {"markers": ["path1"], "paths": {"pict1": "doc/pict/"}} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -98,7 +98,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "relative-paths": {"markers": ["path2"], "paths": {"pict2": "doc/pict/"}} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc1 = args.documents[0]
         doc2 = args.documents[1]
@@ -117,7 +117,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "relative-paths": {"markers": ["path2"], "paths": {"pict2": "doc/pict/"}} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc1 = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -133,7 +133,7 @@ class RelativePathsPluginTest(unittest.TestCase):
             '    "relative-paths": {"markers": ["p1", "p2"], \n'
             '        "paths": {"pict2": "doc/pict/", "pict3": "doc/layout/pict/"}} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)

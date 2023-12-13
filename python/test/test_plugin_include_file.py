@@ -2,7 +2,7 @@ import unittest
 
 from md2html import *
 from plugins.include_file_plugin import IncludeFilePlugin
-from .utils_for_tests import find_single_instance_of_type, relative_to_current_dir
+from .utils_for_tests import find_single_instance_of_type, relative_to_current_dir, parse_argument_file_for_test
 
 THIS_DIR = relative_to_current_dir(Path(__file__).parent)
 
@@ -16,14 +16,14 @@ class IncludeFilePluginTest(unittest.TestCase):
     def test_notActivated_no_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.txt"}], "plugins": {}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_with_empty_plugin_def_must_raise_error(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.txt"}], "plugins": {"include-file": [] }}')
         with self.assertRaises(UserError) as cm:
-            parse_argument_file(argument_file_dict, CliArgDataObject())
+            parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertTrue('IncludeFilePlugin' in str(cm.exception))
         self.assertTrue('ValidationError' in str(cm.exception))
 
@@ -35,7 +35,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '    {"markers": ["marker1"], '
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/"}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -54,7 +54,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "trim": "none"'
             '    }'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -73,7 +73,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "trim": "empty-lines"'
             '    }'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -90,7 +90,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '    {"markers": ["marker1", "marker2"], '
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/"}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -115,7 +115,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/folder1/"'
             '    }'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -137,7 +137,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '    {"markers": ["marker2", "Marker1"], "root-dir": "whatever/path2" }'
             ']}}')
         with self.assertRaises(UserError) as cm:
-            parse_argument_file(argument_file_dict, CliArgDataObject())
+            parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertTrue('duplication' in str(cm.exception))
         self.assertTrue('MARKER1' in str(cm.exception))
 
@@ -151,7 +151,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
             '     "recursive": true}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -171,7 +171,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
             '     "recursive": true}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -195,7 +195,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
             '     "recursive": true}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -218,7 +218,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
             '     "recursive": true}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -239,7 +239,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
             '     "start-marker": "<body>", "end-marker": "</body>"}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -261,7 +261,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/",'
             '     "start-marker": "// START HERE", "end-marker": "// END HERE"}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -285,7 +285,7 @@ class IncludeFilePluginTest(unittest.TestCase):
             '    {"markers": ["marker1"], '
             '     "root-dir": "' + THIS_DIR + 'for_include_file_plugin_test/"}'
             ']}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)

@@ -2,7 +2,7 @@ import unittest
 
 from md2html import *
 from plugins.wrap_code_plugin import WrapCodePlugin
-from .utils_for_tests import find_single_instance_of_type
+from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
 def _find_single_plugin(plugins) -> WrapCodePlugin:
@@ -14,13 +14,13 @@ class WrapCodePluginTest(unittest.TestCase):
     def test_notActivated_no_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_notActivated_with_empty_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {"wrap-code": {} }}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_minimal(self):
@@ -30,7 +30,7 @@ class WrapCodePluginTest(unittest.TestCase):
             '"wrap-code": {'
             '    "marker1": {"input-root": "input/path/", "output-root": "output/path/"}'
             '}}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         plugin.dry_run = True
 
@@ -49,7 +49,7 @@ class WrapCodePluginTest(unittest.TestCase):
             '    "marker1": {"input-root": "input/path1/", "output-root": "output/path1/"},'
             '    "marker2": {"input-root": "input/path2/", "output-root": "output/path2/"}'
             '}}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         plugin.dry_run = True
 
@@ -71,7 +71,7 @@ class WrapCodePluginTest(unittest.TestCase):
             '"wrap-code": {'
             '    "marker1": {"input-root": "input/path/", "output-root": "output/path/"}'
             '}}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         plugin.dry_run = True
 

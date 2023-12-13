@@ -1,16 +1,15 @@
 import unittest
 
 from argument_file_utils import *
-from md2html import parse_argument_file
 from plugins.page_variables_plugin import PageVariablesPlugin
-from .utils_for_tests import find_single_instance_of_type
+from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
 def _parse_metadata(metadata):
     argument_file_dict = load_json_argument_file(
         '{"documents": [{"input": "about.md"}], '
         '"plugins": {"page-variables": {"VARIABLES": {"only-at-page-start": false}}}}')
-    args = parse_argument_file(argument_file_dict, CliArgDataObject())
+    args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
     plugin = find_single_instance_of_type(args.plugins, PageVariablesPlugin)
     metadata_handlers = register_page_metadata_handlers(args.plugins)
     page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
@@ -28,7 +27,7 @@ class PageMetadataUtilsTest(unittest.TestCase):
         with self.assertRaises(UserError) as cm:
             _parse_metadata('[]')
         self.assertIn('object', str(cm.exception))
-  
+
     def test_emptyString(self):
         with self.assertRaises(UserError) as cm:
             _parse_metadata('')

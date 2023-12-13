@@ -2,7 +2,7 @@ import unittest
 
 from md2html import *
 from plugins.replace_plugin import ReplacePlugin
-from .utils_for_tests import find_single_instance_of_type
+from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
 def _find_single_plugin(plugins):
@@ -14,7 +14,7 @@ class ReplacePluginTest(unittest.TestCase):
     def test_notActivated_no_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_single_value(self):
@@ -23,7 +23,7 @@ class ReplacePluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "replace": [{"markers": ["marker1"], "replace-with": "[[${1}]]"}] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -38,7 +38,7 @@ class ReplacePluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "replace": [{"markers": ["marker1"], "replace-with": "[[${1}-${2}]]"}] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -57,7 +57,7 @@ class ReplacePluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "replace": [{"markers": ["marker1", "marker2"], "replace-with": "[[${1}]]"}] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -79,7 +79,7 @@ class ReplacePluginTest(unittest.TestCase):
             '        {"markers": ["marker2"], "replace-with": "s2 ${1} e2"}\n'
             '    ] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -102,7 +102,7 @@ class ReplacePluginTest(unittest.TestCase):
             '        {"markers": ["m3"], "replace-with": "${1} m3 <!--m1 v1-->"}\n'
             '    ] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -123,7 +123,7 @@ class ReplacePluginTest(unittest.TestCase):
             '        {"markers": ["m1"], "replace-with": "${1} <!--m1 v1-->", "recursive": true}\n'
             '    ] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)
@@ -145,7 +145,7 @@ class ReplacePluginTest(unittest.TestCase):
             '        {"markers": ["m3"], "replace-with": "${1} <!--m1 v1-->", "recursive": true}\n'
             '    ] \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
 
         doc = args.documents[0]
         metadata_handlers = register_page_metadata_handlers(args.plugins)

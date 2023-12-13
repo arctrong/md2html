@@ -2,7 +2,7 @@ import unittest
 
 from md2html import *
 from plugins.page_links_plugin import PageLinksPlugin
-from .utils_for_tests import find_single_instance_of_type
+from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
 def _find_single_plugin(plugins):
@@ -14,14 +14,14 @@ class PageLinksPluginTest(unittest.TestCase):
     def test_notActivated_no_plugin_def(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], "plugins": {}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_notActivated_with_no_page_code(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "index.txt"}], '
             '"plugins": {"page-links": {} }}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertIsNone(_find_single_plugin(args.plugins))
 
     def test_minimal(self):
@@ -32,7 +32,7 @@ class PageLinksPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "page-links": {} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
 
         doc = args.documents[0]
@@ -52,7 +52,7 @@ class PageLinksPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "page-links": {} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
 
         doc1 = args.documents[0]
@@ -80,7 +80,7 @@ class PageLinksPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "page-links": {} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
 
         doc1 = args.documents[0]
@@ -99,7 +99,7 @@ class PageLinksPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "page-links": {"markers": ["marker1"]} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
 
         doc = args.documents[0]
@@ -123,7 +123,7 @@ class PageLinksPluginTest(unittest.TestCase):
             '"plugins": { \n'
             '    "page-links": {"markers": ["marker1", "marker2"]} \n'
             '}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
 
         doc = args.documents[0]

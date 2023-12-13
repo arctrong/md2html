@@ -2,6 +2,7 @@ import contextlib
 import unittest
 
 from md2html import *
+from test.utils_for_tests import parse_argument_file_for_test
 
 
 class NonWritable:
@@ -23,12 +24,12 @@ class CliArgParseTest(unittest.TestCase):
         self.assertEqual(o1.force, o2.force)
         self.assertEqual(o1.verbose, o2.verbose)
         self.assertEqual(o1.report, o2.report)
-        
+
     def _assert_cli_error(self, arguments: list):
         try:
             parse_cli_arguments(arguments)
             self.fail("Exception expected")
-        except CliError as e:
+        except CliError:
             pass
 
     def test_helpRequested(self):
@@ -49,7 +50,7 @@ class CliArgParseTest(unittest.TestCase):
 
     def test_minimalArgumentSet(self):
         md2html_args = parse_cli_arguments(['-i', '../doc/notes.md'])
-        args = parse_argument_file({"documents": [{}]}, md2html_args)
+        args = parse_argument_file_for_test({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
         self.assertEqual('../doc/notes.md', doc.input_file)
         self.assertEqual('../doc/notes.html', doc.output_file)
@@ -64,7 +65,7 @@ class CliArgParseTest(unittest.TestCase):
     def test_maxArguments(self):
         # Short form
         md2html_args = parse_cli_arguments(
-                ['--input-root', 'input/root', '--output-root', 'output/root', 
+                ['--input-root', 'input/root', '--output-root', 'output/root',
                  '-i', 'input.md', '-o', 'doc/output.htm', '-t', 'someTitle', '--template',
                  '../templateDir', '--link-css=someStyles.css', '-fv'])
         self.assertEqual('input/root', md2html_args.input_root)
@@ -81,7 +82,7 @@ class CliArgParseTest(unittest.TestCase):
         self.assertFalse(md2html_args.report)
         # Long form
         md2html_args1 = parse_cli_arguments(
-            ['--input-root', 'input/root', '--output-root', 'output/root', 
+            ['--input-root', 'input/root', '--output-root', 'output/root',
              '--input', 'input.md', '--output=doc/output.htm', '--title', 'someTitle', '--template',
              '../templateDir', '--link-css', 'someStyles.css', '--force', '--verbose'])
         self._assertMd2HtmlOptionsEquals(md2html_args, md2html_args1)
@@ -112,7 +113,7 @@ class CliArgParseTest(unittest.TestCase):
 
     def test_defaultCss(self):
         md2html_args = parse_cli_arguments(['-i', 'input.md'])
-        args = parse_argument_file({"documents": [{}]}, md2html_args)
+        args = parse_argument_file_for_test({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
         self.assertFalse(doc.link_css)
         self.assertEqual(1, len(doc.include_css))

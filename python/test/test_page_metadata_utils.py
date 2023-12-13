@@ -10,7 +10,7 @@ class PageMetadataUtilsTest(unittest.TestCase):
         self.assertEqual(mo1.metadata, mo2.metadata)
         self.assertEqual(mo1.metadata_block, mo2.metadata_block)
         self.assertEqual(mo1.end_position, mo2.end_position)
-        
+
     def test_metadata_finder_trivial(self):
         page_content = '    <!--metadata{"key": "value"}--> other ' + \
             'text <!--variables{"question": "answer"} --> some more text'
@@ -22,7 +22,7 @@ class PageMetadataUtilsTest(unittest.TestCase):
         self._assertMetadataMatchObjectsEqual(MetadataMatchObject(
             ' other text ', 'variables', '{"question": "answer"} ',
             '<!--variables{"question": "answer"} -->', 86), match_objects[1])
-            
+
     def test_metadata_finder_marginPositions(self):
         page_content = '<!--m1 d1--> t2 <!--m2 d2--> t3 <!--m3 d3-->'
         match_objects = [md for md in metadata_finder(page_content)]

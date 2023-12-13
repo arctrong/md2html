@@ -14,7 +14,7 @@ class VariablesPluginTest(unittest.TestCase):
     def test_notActivated(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.md"}], "plugins": {}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         self.assertIsNone(plugin)
 
@@ -23,10 +23,10 @@ class VariablesPluginTest(unittest.TestCase):
             '{"documents": [{"input": "whatever.md"}], '
             '"plugins": {"variables": {"var1": "val1", "_var2": "val2", '
             '"strange": "Don\'t do it yourself! -\u002D>" }}}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         variables = plugin.variables({})
-        self.assertDictEqual({"var1": "val1", "_var2": "val2", 
+        self.assertDictEqual({"var1": "val1", "_var2": "val2",
                               "strange": "Don\'t do it yourself! -->"}, variables)
 
 

@@ -1,7 +1,7 @@
 import unittest
 
 from md2html import *
-from test.utils_for_tests import relative_to_current_dir
+from test.utils_for_tests import relative_to_current_dir, parse_argument_file_for_test
 
 # This is required to make it work when running from different directories
 THIS_DIR = relative_to_current_dir(Path(__file__).parent)
@@ -12,7 +12,7 @@ class GlobsProcessingTest(unittest.TestCase):
     def test_minimal_scenario(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input-glob": "' + THIS_DIR + 'for_globs_processing_test/*.txt"}]}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         input_files_to_check = [d.input_file[len(THIS_DIR):] for d in args.documents]
         # Here the order is undefined.
         self.assertCountEqual(['for_globs_processing_test/file02.txt',
@@ -22,7 +22,7 @@ class GlobsProcessingTest(unittest.TestCase):
     def test_recursive(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input-glob": "' + THIS_DIR + 'for_globs_processing_test/**/*.txt"}]}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         input_files_to_check = [d.input_file[len(THIS_DIR):] for d in args.documents]
         # Here the order is undefined.
         self.assertCountEqual(['for_globs_processing_test/recursive/recursive_file01.txt',
@@ -35,7 +35,7 @@ class GlobsProcessingTest(unittest.TestCase):
             '{"documents": [{"input-glob": "' + THIS_DIR +
             'for_globs_processing_test/**/*.txt", '
             '"sort-by-file-path": true}]}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         input_files_to_check = [d.input_file[len(THIS_DIR):] for d in args.documents]
         self.assertListEqual(['for_globs_processing_test/file01.txt',
                               'for_globs_processing_test/file02.txt',
@@ -49,7 +49,7 @@ class GlobsProcessingTest(unittest.TestCase):
             '    "sort-by-title": true}], \n'
             '"plugins": {"page-variables": {}} \n'
             '}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         input_files_to_check = [d.input_file[len(THIS_DIR):] for d in args.documents]
         self.assertListEqual(['for_globs_processing_test/file02.txt',
                               'for_globs_processing_test/recursive/recursive_file01.txt',
@@ -62,7 +62,7 @@ class GlobsProcessingTest(unittest.TestCase):
             '    "sort-by-variable": "SORTORDER"}], \n'
             '"plugins": {"page-variables": {}} \n'
             '}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         input_files_to_check = [d.input_file[len(THIS_DIR):] for d in args.documents]
         self.assertListEqual(['for_globs_processing_test/file02.txt',
                               'for_globs_processing_test/file01.txt',
@@ -77,7 +77,7 @@ class GlobsProcessingTest(unittest.TestCase):
             '    }], \n'
             '"plugins": {"page-variables": {}} \n'
             '}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         input_files_to_check = [d.input_file[len(THIS_DIR):] for d in args.documents]
         # Here the order is undefined.
         self.assertCountEqual(['for_globs_processing_test/file02.txt',
@@ -98,7 +98,7 @@ class GlobsProcessingTest(unittest.TestCase):
             '    "sort-by-variable": "SORTORDER"}], \n'
             '"plugins": {"page-variables": {}} \n'
             '}')
-        args = parse_argument_file(argument_file_dict, CliArgDataObject())
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         self.assertEqual("title 1", args.documents[0].title)
         self.assertEqual("title 3", args.documents[1].title)
         self.assertEqual("code02", args.documents[0].code)
