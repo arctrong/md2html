@@ -177,7 +177,6 @@ div.sidebar h3 {
 
 *[id]:target::before, *[name]:target::before {
     position: absolute;
-    z-index: -10;
     margin-left: -15px;
     margin-top: -7px;
     animation: blink 400ms;
