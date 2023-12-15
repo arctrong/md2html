@@ -60,7 +60,7 @@ In a project directory create the following artifacts.
 
 - *Argument file* `md2html_args.json` with a content like this:
 
-    ````
+    ````json
     {
         "options": {
             "verbose": true
@@ -78,7 +78,7 @@ In a project directory create the following artifacts.
     
 - Template file `template.html` with a content like this:
 
-    ````
+    ````html
     <!DOCTYPE html>
     <html style="font-size: 20px;">
     <head>

@@ -53,7 +53,7 @@ substitution of such paths inside the documents.
 
 Here's an example of the plugin definition:
 
-````
+````json
 {
     "documents": [
         { "input": "readme.txt", "output": "readme.html", "title": "Home" },
@@ -74,7 +74,7 @@ Here's an example of the plugin definition:
 This is the new syntax. The previous syntax (that doesn't support substitution inside documents)
 is also supported:
 
-````
+````json
         "relative-paths": { "resource_path": "doc/" }
 ````
 
@@ -94,7 +94,7 @@ calculates the path with the code `resource_path` then:
 
 Include the following _tag_ to the template:
 
-````
+````html
 <link rel="stylesheet" type="text/css" href="{{resource_path}}styles.css"/>
 ````
 
@@ -134,7 +134,7 @@ This plugin defines such pages sequences and and provides them for easy manipula
     
 In the `"plugins"` sections:
 
-````
+````json
 {
     "documents": [
         { "input": "page1.txt", "output": "page1.html", "title": "Page 1" },
@@ -161,7 +161,7 @@ and `highlight`) may be added and then used in the templates (will be discussed 
 In the above example the three pages are defined twice. To avoid such repetition the page flows 
 may be defined directly in the `"documents"` section:
 
-````
+````json
 {
     "documents": [
         { "input": "page1.txt", "title": "Page 1", "page-flows": ["sidebar"] },
@@ -245,7 +245,7 @@ understanding of correspondence between the plugin's definition and usage.
 
 In version 1.0.3 new syntax was introduced. The following example demonstrates the differences:
 
-````
+````json
 .  .  .
     "plugins": {
         "page-flows": {
@@ -280,7 +280,7 @@ defined solely in the argument file and the template file in the documentation p
 may be updated with the other one taken from the outside without subsequent customization.
 Here's a sidebar block that may be defined for the above argument file fragment:
 
-````
+````html
 {{#sidebar}}
 {{#title}}<h3>{{.}}</h3>{{/title}}
 {{#.}}<a class="sidebar_item{{#current}} selected{{/current}}" href="{{link}}">{{title}}</a>
@@ -305,7 +305,7 @@ used in the template.
 
 **Definition**
 
-````
+````json
     "plugins": {
         "page-variables": {"variables": {"only-at-page-start": true} }
     }
@@ -354,7 +354,7 @@ different projects may substitute using their _argument files_.
 
 **Definition**
 
-````
+````json
 "variables": {"logo": "<img src=\"logo.png\" />" }
 ````
 
@@ -377,7 +377,7 @@ _index page_. See the [index page](../index_page.html) of this documentation as 
 
 **Definition**
 
-````
+````json
 "plugins": {
     "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                         "index-cache-relative": true, "letters": true, "letters-block": true }
@@ -441,19 +441,19 @@ will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order
 In the index page, the term list will be included into a `<div class="index-content">` element.
 The term first letter delimiters will look like this:
 
-````
+````html
 <p class="index-letter" id="index_letter_A">A</p>
 ````
 
 The terms themselves will look like this:
 
-````
+````html
 <p class="index-entry"><a href="usage.html#index_entry_1" title="Usage">argument file</a></p>
 ````
 
 The first letter link block will look like this:
 
-````
+````html
 <p class="index_letters">
     <a href="#index_letter_A">A</a>
     <a href="#index_letter_C">C</a>
@@ -479,7 +479,7 @@ link target pages location thus eliminating the need of specifying them manually
 To make this plugin work the target document must have a `code`. Here is an example of an argument
 file that uses this plugin:
 
-````
+````json
 {
     "documents": [
         { "input": "page1.txt", "code": "p1" },
@@ -528,7 +528,7 @@ way of doing that.
 
 Here is an example of an *argument file* that uses this plugin:
 
-````
+````json
 {
     "documents": [
         { "input": "page1.txt" }
@@ -581,7 +581,7 @@ wrapping pages.
 
 The plugin definition may look like this:
 
-````
+````json
     "plugins": {
         . . .
         "wrap-code": {
@@ -671,7 +671,7 @@ where it's described. This plugin does such kind of inclusion.
 
 The plugin is defined the following way:
 
-````
+````json
     "plugins": {
         . . .
         "include-file": [
@@ -755,7 +755,7 @@ may be addressed by this plugin.
 
 The plugin is defined the following way:
 
-````
+````json
     "plugins": {
         . . .
         "replace": [

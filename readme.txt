@@ -24,7 +24,7 @@ You write a Markdown text like this:
 
 **M<sub>2</sub>H** converts it into HTML code like this:
 
-````wrapped
+````wrapped-html
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A <strong>monad</strong> is just a <em>monoid</em> in the category of <code>endofunctors</code>.</p>

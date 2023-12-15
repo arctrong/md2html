@@ -124,7 +124,7 @@ Here are some additional explanations:
 
 Here is a very simple example of an _argument file_ content:
 
-````
+````json
 {
     "documents": [
         { "input": "index.txt", "title": "Home" },
@@ -136,7 +136,7 @@ Here is a very simple example of an _argument file_ content:
 Here is a quite complex example of an _argument file_ content:
 
 <a name="argument_file_example"></a>
-````
+````json
 {
     "options": {
         # This only affects the whole run verbosity, for now only printing execution duration.

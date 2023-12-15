@@ -78,7 +78,7 @@ The _argument file_ allows to define:
 
 Here is a simplest example of an _argument file_:
 
-````
+````json
 {
     "documents": [
         { "input": "index.txt", "title": "Home" },

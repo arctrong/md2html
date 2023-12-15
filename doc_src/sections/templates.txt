@@ -16,7 +16,7 @@ creation or the existing templates modification.
 In this program [Mustache](https://mustache.github.io/) template engine is used for HTML
 templates processing. A simple template file may look like this:
 
-````
+````html
 <!DOCTYPE html>
 <html>
 <head><title>{{title}}</title>

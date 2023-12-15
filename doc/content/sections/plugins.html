@@ -142,7 +142,7 @@ and avoids manual definition of these paths for every page individually. It also
 substitution of such paths inside the documents.</p>
 <p><strong>Definition</strong></p>
 <p>Here's an example of the plugin definition:</p>
-<pre class="highlight"><code>{
+<pre class="highlight"><code class="language-json">{
     "documents": [
         { "input": "readme.txt", "output": "readme.html", "title": "Home" },
         { "input": "doc_src/about.txt", "output": "doc/about.html", "title": "About" }
@@ -159,7 +159,7 @@ substitution of such paths inside the documents.</p>
 }</code></pre>
 <p>This is the new syntax. The previous syntax (that doesn't support substitution inside documents)
 is also supported:</p>
-<pre class="highlight"><code>        "relative-paths": { "resource_path": "doc/" }</code></pre>
+<pre class="highlight"><code class="language-json">        "relative-paths": { "resource_path": "doc/" }</code></pre>
 <p>In this example, <code>resource_path</code> and <code>pict</code> are path <em>codes</em>, and the corresponding values are 
 paths themselves.</p>
 <p>The plugin considers the paths and the current page location being relative to the
@@ -172,7 +172,7 @@ calculates the path with the code <code>resource_path</code> then:</p>
 </ul>
 <p><strong>Usage</strong></p>
 <p>Include the following <em>tag</em> to the template:</p>
-<pre class="highlight"><code>&lt;link rel="stylesheet" type="text/css" href="{{resource_path}}styles.css"/&gt;</code></pre>
+<pre class="highlight"><code class="language-html">&lt;link rel="stylesheet" type="text/css" href="{{resource_path}}styles.css"/&gt;</code></pre>
 <p>That's it. When a document using this template is generated, this tag will be replaced with
 the desired path.</p>
 <p>For substitution inside a document insert the text like this:</p>
@@ -207,7 +207,7 @@ cumbersome and error-prone.</p>
 <a href="plugins.html#page_flows_new_syntax">here</a>.</p>
 </div>
 <p>In the <code>"plugins"</code> sections:</p>
-<pre class="highlight"><code>{
+<pre class="highlight"><code class="language-json">{
     "documents": [
         { "input": "page1.txt", "output": "page1.html", "title": "Page 1" },
         { "input": "page2.txt", "output": "doc/page2.html", "title": "Page 2" },
@@ -229,7 +229,7 @@ has main attributes <code>link</code>, <code>title</code>, <code>external</code>
 and <code>highlight</code>) may be added and then used in the templates (will be discussed below).</p>
 <p>In the above example the three pages are defined twice. To avoid such repetition the page flows 
 may be defined directly in the <code>"documents"</code> section:</p>
-<pre class="highlight"><code>{
+<pre class="highlight"><code class="language-json">{
     "documents": [
         { "input": "page1.txt", "title": "Page 1", "page-flows": ["sidebar"] },
         { "input": "page2.txt", "title": "Page 2", "page-flows": ["sidebar"] },
@@ -346,7 +346,7 @@ understanding of correspondence between the plugin's definition and usage.</p>
 <p><a name="page_flows_new_syntax"></a>
 <strong>New syntax</strong></p>
 <p>In version 1.0.3 new syntax was introduced. The following example demonstrates the differences:</p>
-<pre class="highlight"><code>.  .  .
+<pre class="highlight"><code class="language-json">.  .  .
     "plugins": {
         "page-flows": {
             "sections": { "groups": ["sidebar"] },
@@ -374,7 +374,7 @@ that makes the previously written documentation compatible with the new version 
 defined solely in the argument file and the template file in the documentation project
 may be updated with the other one taken from the outside without subsequent customization.
 Here's a sidebar block that may be defined for the above argument file fragment:</p>
-<pre class="highlight"><code>{{#sidebar}}
+<pre class="highlight"><code class="language-html">{{#sidebar}}
 {{#title}}&lt;h3&gt;{{.}}&lt;/h3&gt;{{/title}}
 {{#.}}&lt;a class="sidebar_item{{#current}} selected{{/current}}" href="{{link}}"&gt;{{title}}&lt;/a&gt;
 {{/.}}
@@ -391,7 +391,7 @@ with the <code>selected</code> CSS class.</p>
 <p>This plugin extracts variables from document source texts and provides these variables to be
 used in the template.</p>
 <p><strong>Definition</strong></p>
-<pre class="highlight"><code>    "plugins": {
+<pre class="highlight"><code class="language-json">    "plugins": {
         "page-variables": {"variables": {"only-at-page-start": true} }
     }</code></pre>
 <p><a name="index_entry_index_3"></a>
@@ -425,7 +425,7 @@ included directly into the template with no need of using this plugin. But when 
 is used by several projects it may be convenient to define some template variable parts that
 different projects may substitute using their <em>argument files</em>.</p>
 <p><strong>Definition</strong></p>
-<pre class="highlight"><code>"variables": {"logo": "&lt;img src=\"logo.png\" /&gt;" }</code></pre>
+<pre class="highlight"><code class="language-json">"variables": {"logo": "&lt;img src=\"logo.png\" /&gt;" }</code></pre>
 <p><strong>Usage</strong></p>
 <p>Tag (or tags) <code>{{{logo}}}</code> in the template will be substituted in the template. (Note that in
 this case three pairs of curly braces are used to avoid HTML-escaping on substitution.)</p>
@@ -439,7 +439,7 @@ especially if the documentation is large. This plugin allows marking such points
 as <em>index entries</em> and then collects these entries and put them together on a separate 
 <em>index page</em>. See the <a href="../index_page.html">index page</a> of this documentation as an example.</p>
 <p><strong>Definition</strong></p>
-<pre class="highlight"><code>"plugins": {
+<pre class="highlight"><code class="language-json">"plugins": {
     "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
                         "index-cache-relative": true, "letters": true, "letters-block": true }
             }
@@ -605,11 +605,11 @@ and the further forceful full documents regeneration may resolve the problem.</p
 will be generated with terms "term 1", "Term 2" and "term 3" in the sorted order.</p>
 <p>In the index page, the term list will be included into a <code>&lt;div class="index-content"&gt;</code> element.
 The term first letter delimiters will look like this:</p>
-<pre class="highlight"><code>&lt;p class="index-letter" id="index_letter_A"&gt;A&lt;/p&gt;</code></pre>
+<pre class="highlight"><code class="language-html">&lt;p class="index-letter" id="index_letter_A"&gt;A&lt;/p&gt;</code></pre>
 <p>The terms themselves will look like this:</p>
-<pre class="highlight"><code>&lt;p class="index-entry"&gt;&lt;a href="usage.html#index_entry_1" title="Usage"&gt;argument file&lt;/a&gt;&lt;/p&gt;</code></pre>
+<pre class="highlight"><code class="language-html">&lt;p class="index-entry"&gt;&lt;a href="usage.html#index_entry_1" title="Usage"&gt;argument file&lt;/a&gt;&lt;/p&gt;</code></pre>
 <p>The first letter link block will look like this:</p>
-<pre class="highlight"><code>&lt;p class="index_letters"&gt;
+<pre class="highlight"><code class="language-html">&lt;p class="index_letters"&gt;
     &lt;a href="#index_letter_A"&gt;A&lt;/a&gt;
     &lt;a href="#index_letter_C"&gt;C&lt;/a&gt;
     .  .  .
@@ -626,7 +626,7 @@ link target pages location thus eliminating the need of specifying them manually
 <p><strong>Definition</strong></p>
 <p>To make this plugin work the target document must have a <code>code</code>. Here is an example of an argument
 file that uses this plugin:</p>
-<pre class="highlight"><code>{
+<pre class="highlight"><code class="language-json">{
     "documents": [
         { "input": "page1.txt", "code": "p1" },
         { "input": "subdir/page2.txt", "code-from-variable": "code" }
@@ -664,7 +664,7 @@ inclusions and masking, but they are quite tedious and cumbersome. This plugin g
 way of doing that.</p>
 <p><strong>Definition</strong></p>
 <p>Here is an example of an <em>argument file</em> that uses this plugin:</p>
-<pre class="highlight"><code>{
+<pre class="highlight"><code class="language-json">{
     "documents": [
         { "input": "page1.txt" }
     ],
@@ -695,7 +695,7 @@ documentation usage.</p>
 wrapping pages.</p>
 <p><strong>Definition</strong></p>
 <p>The plugin definition may look like this:</p>
-<pre class="highlight"><code>    "plugins": {
+<pre class="highlight"><code class="language-json">    "plugins": {
         . . .
         "wrap-code": {
             "wrap_java": {"style": "code", "input-root": "projects/", "output-root": "doc/code",
@@ -857,7 +857,7 @@ for this code. But if the source text is small it may be better to show it direc
 where it's described. This plugin does such kind of inclusion.</p>
 <p><strong>Definition</strong></p>
 <p>The plugin is defined the following way:</p>
-<pre class="highlight"><code>    "plugins": {
+<pre class="highlight"><code class="language-json">    "plugins": {
         . . .
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/", "trim": "all" },
@@ -924,7 +924,7 @@ readability and compatibility in source text.</p>
 </div>
 <p><strong>Definition</strong></p>
 <p>The plugin is defined the following way:</p>
-<pre class="highlight"><code>    "plugins": {
+<pre class="highlight"><code class="language-json">    "plugins": {
         . . .
         "replace": [
             { "markers": ["red"], "replace-with": "&lt;span style=\"color:red;\"&gt;${1}&lt;/span&gt;" },
