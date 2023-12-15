@@ -20,6 +20,7 @@
         "variables": {
             "html_lang": "en",
             "burger_open_image": "layout/pict/burger.png",
+            "add_powered_by": false, "ad_exec_version": true, "add_generation_timestamp": false,
             "show_source_link": true,
             "theme": "light",
             "add_more_prog_langs": true

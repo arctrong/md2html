@@ -70,8 +70,12 @@ alt="No next">{{/nav.next}}
             {{/.}}
             </div>{{/sidebar}}
         </td></tr>
-        <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
-            href="https://github.com/arctrong/md2html">{{exec_name}}</a> {{exec_version}}</span>
+        <tr><td class="bottom valign_bottom">{{#add_powered_by
+            }}<span class="poweredBy">Powered by <a class="poweredByLink"
+            href="https://github.com/arctrong/md2html">{{exec_name}}</a>{{#ad_exec_version
+            }} {{exec_version}}{{/ad_exec_version}}{{#add_generation_timestamp
+            }}{{generation_date}} {{generation_time}}{{/add_generation_timestamp}}</span>
+            {{/add_powered_by}}
         </td></tr>
     </table>
 </div>
