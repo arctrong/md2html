@@ -1,5 +1,8 @@
 @echo off
 
+chcp 65001
+set PYTHONUTF8=1
+
 echo.
 
 set INPUT_FILE=
