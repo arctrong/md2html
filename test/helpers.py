@@ -53,6 +53,6 @@ if IMPLEMENTATION == 'py':
 elif IMPLEMENTATION == 'java':
     EXEC = ['java', '-jar', os.environ['MD2HTML_HOME'] + '/java/target/md2html-bin.jar']
 else:
-    raise Exception('Unknown implementation')
+    raise Exception(f'Unknown implementation: {IMPLEMENTATION}')
 
 OUTPUT_DIR = str(WORKING_DIR.joinpath(f'test_output/{IMPLEMENTATION}'))

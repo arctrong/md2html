@@ -23,9 +23,8 @@ The following steps may be done for customization.
 - If just one implementation, Python or Java, is going to be used, one of the files 
     `generate_doc_py.bat` or `generate_doc_java.bat` may be deleted.
 
-- Edit this home page, or delete it if it's not required. In case of deletion:
-
-    - also delete it from the `documents` section in the file `md2html_args.json`.
+- Edit this home page, or delete it if it's not required. In case of deletion, also delete it
+    from the `documents` section in the file `md2html_args.json`.
 
 - The picture in this page is added just for demonstration. If it's removed then the image
     file must probably be deleted from the folder `doc/pict`.
@@ -39,14 +38,13 @@ The following steps may be done for customization.
 
 - Write your own pages using the existing sample pages as examples.
 
-- Look into the file `md2html_args.json`. Particularly "Useful links" section items may be
-    redefined there.
+- Look into the file `md2html_args.json`. Particularly, commented GitHub link may be defined and
+    uncommented if the writing worked if published there.
 
 - Consider using alternative themes. Have a look in at the variable `"theme": "light"`
     in the `md2html_args.json` file. The themes are stored in the `doc/themes` directory.
     Alternative themes may be created from scratch (using the existing ones as examples)
-    or taken from the `md2html` program installation directory.
-    For example:
+    or taken from the `md2html` program installation directory. For example:
 
     - copy the directory `dark` to the `doc/themes` directory;
     - assign the value `dark` to the variable `theme` in the file `md2html_args.json`;
