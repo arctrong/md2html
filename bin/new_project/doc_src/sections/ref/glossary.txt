@@ -1,0 +1,23 @@
+<!--VARIABLES {"title": "Glossary", "SORT_ORDER": "010", "code": "glossary"}-->
+
+This section contains:
+
+- definitions and abbreviations that cannot be adhered to certain sections;
+- additional information about the terms that is too verbose for the section where these terms
+    are described.
+
+For the full list of terms see [the index](<!--path resource_path-->content/index_page.html).
+
+----------------------------------------------------------------------------------------------------
+
+<!--index ["study notes"]-->
+**Study notes**. This term refers to a concise summary or outline of material, often used for study
+purposes.
+
+<!--index ["sidesteps"]-->
+**Sidesteps** --- a terms that conveys the idea of exploring tangential topics related to the main
+subject matter of some study notes.
+
+
+
+

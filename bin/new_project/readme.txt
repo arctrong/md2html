@@ -3,7 +3,7 @@
 <p><img src="<!--path pict-->sample_picture.jpg" class="floatRight" /></p>
 
 <!--index Home page -->
-This is an automatically created documentation template.
+This is an automatically generated documentation template.
 
 [TOC]
 
@@ -31,25 +31,19 @@ The following steps may be done for customization.
     
 - If required, create your own `doc/favicon.png` image and replace the existing one.
     
-- If required, add custom styles to the file `doc/custom.css`. It's not recommended to modify
-    the content of the directory `doc/layout`. If improvements are done in the `md2html`
-    program then the directory `doc/layout` may be entirely copied from there with replacement
-    while the custom styles will stay untouched.
+- If required, add custom styles to the file `doc/custom.css`.
 
-- Write your own pages using the existing sample pages as examples.
+- Write your own pages using the existing sample pages in the directory `doc_src\sections`
+    as examples.
 
 - Look into the file `md2html_args.json`. Particularly, commented GitHub link may be defined and
     uncommented if the writing worked if published there.
 
-- Consider using alternative themes. Have a look in at the variable `"theme": "light"`
-    in the `md2html_args.json` file. The themes are stored in the `doc/themes` directory.
-    Alternative themes may be created from scratch (using the existing ones as examples)
-    or taken from the `md2html` program installation directory. For example:
+- In the directory `doc_src/sections/ref/` delete the pages `references.txt` and `glossary.txt`
+    if they are not going to be used. Some cleanup may be done in the argument file
+    `md2html_args.json`, but this is not necessary.
 
-    - copy the directory `dark` to the `doc/themes` directory;
-    - assign the value `dark` to the variable `theme` in the file `md2html_args.json`;
-    - fulfill forcible full documentation regeneration;
-    - the dark theme will be applied.
+- Consider using alternative *color themes*.
 
 Consult the [instructions](https://arctrong.github.io/md2html/readme.html) if any questions.
 

@@ -7,7 +7,7 @@
 
 This page contains some information about cats.
 
-Also see [Wikipedia](https://en.wikipedia.org/wiki/Cat).
+Also see [<!--ref cat_wiki-->].
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["cute"]-->

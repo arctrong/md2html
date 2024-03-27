@@ -1,0 +1,8 @@
+<!--VARIABLES {"title": "References", "SORT_ORDER": "020", "code": "refs"}-->
+
+<!--refdef squirrel_wiki--> Wikipedia: [Squirrel](https://en.wikipedia.org/wiki/Squirrel)
+
+<!--refdef cat_wiki--> Wikipedia: [Cat](https://en.wikipedia.org/wiki/Cat)
+
+
+

@@ -7,7 +7,7 @@
 
 This page contains some information about squirrels.
 
-Also see [Wikipedia](https://en.wikipedia.org/wiki/Squirrel).
+Also see [<!--ref squirrel_wiki-->].
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["cute"]-->
