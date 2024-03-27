@@ -173,5 +173,18 @@
       "link": "sections/development.html#index_entry_index_1",
       "title": "Development"
     }
-  ]
+  ],
+  "doc/content/sections/ref/glossary.html": [
+    {
+      "entry": "study notes",
+      "link": "sections/ref/glossary.html#index_entry_index_1",
+      "title": "Glossary"
+    },
+    {
+      "entry": "sidesteps",
+      "link": "sections/ref/glossary.html#index_entry_index_2",
+      "title": "Glossary"
+    }
+  ],
+  "doc/content/sections/ref/references.html": []
 }

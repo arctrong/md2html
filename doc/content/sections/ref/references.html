@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>References</title>
+<meta charset="utf-8">
+<link rel="shortcut icon" type="image/png" href="../../../favicon.png">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../../../layout/content.css">
+<link rel="stylesheet" type="text/css" href="../../../layout/more_prog_langs.css">
+<link rel="stylesheet" type="text/css" href="../../../themes/light/content_theme.css">
+<link rel="stylesheet" type="text/css" href="../../../themes/light/more_prog_langs_theme.css">
+<link rel="stylesheet" type="text/css" href="../../../layout/layout.css">
+<link rel="stylesheet" type="text/css" href="../../../themes/light/layout_theme.css">
+<link rel="stylesheet" type="text/css" href="../../../custom.css">
+
+<link rel="stylesheet" type="text/css" href="../../../layout/flex.css">
+</head>
+<body>
+
+<div class="header">
+<img id="burger" src="../../../layout/pict/burger.png" 
+onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" alt="Sidebar">
+
+<a 
+class="header_item "
+href="../../../../readme.html"><img 
+class="logo_image" src="../../../favicon.png" alt="Logo"></a><a 
+class="header_item toggle_wide_only_inline"
+href="../../../../readme.html"><span class="">Home</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="../installation.html"><span class="">Installation</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="../usage.html"><span class="">Usage</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="../../index_page.html"><span class="">Index</span></a><a 
+class="header_item toggle_narrow_only_inline"
+href="../../index_page.html"><img 
+class="header_image index_image" src="../../../layout/pict/search.png" alt="Index"></a><a 
+class="header_item toggle_wide_only_inline "
+href="https://github.com/arctrong/md2html"><span class="">GitHub</span></a>
+<a href="../../../../doc_src/sections/ref/references.txt" class="source_file toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>
+
+<a href="glossary.html" title="Previous: Glossary"><img class="headerNavArrows"
+src="../../../layout/pict/previous_page_h21px.png" alt="Back"></a>
+ 
+
+<img class="headerNavArrows" src="../../../layout/pict/next_page_h21px_inactive.png"
+alt="No next">
+
+<span class="headerTitle">References</span>
+
+</div>
+
+<div class="sidebarWrapper">
+<div class="sidebar">
+    <table class="sidebarAligner">
+        <tr><td class="valign_top">
+            <div class="align_right toggle_narrow_only_block">
+            <a class="sidebar_item_inline align_right" href="https://github.com/arctrong/md2html">GitHub</a>
+            
+            <a href="../../../../doc_src/sections/ref/references.txt" class="sidebar_item_inline source_file align_right" 
+                title="Source text">&lt;/&gt;</a>
+            
+            </div>
+            <div class="sidebar_block">
+            
+            <a class="sidebar_item " href="../../../../readme.html">Home</a>
+            <a class="sidebar_item " href="../overview.html">Overview</a>
+            <a class="sidebar_item " href="../quick_start.html">Quick start</a>
+            <a class="sidebar_item " href="../installation.html">Installation</a>
+            <a class="sidebar_item " href="../usage.html">Usage</a>
+            <a class="sidebar_item " href="../page_content.html">Page content</a>
+            <a class="sidebar_item " href="../page_content_dark.html">Page content (dark)</a>
+            <a class="sidebar_item " href="../templates.html">Templates</a>
+            <a class="sidebar_item " href="../plugins.html">Plugins</a>
+            <a class="sidebar_item " href="../reference.html">Reference</a>
+            <a class="sidebar_item " href="../development.html">Development</a>
+            </div><div class="sidebar_block">
+            
+            <a class="sidebar_item " href="glossary.html">Glossary</a>
+            <a class="sidebar_item selected " href="references.html">References</a>
+            </div>
+        </td></tr>
+        <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
+            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.7</span>
+        </td></tr>
+    </table>
+</div>
+</div>
+
+<p style="font-size:44px;font-weight:bold;margin:0 0 30px 0;">References</p>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This form of a <em>page of references</em> is by now proved to be convenient and simple in use.
+It is created using existing functionality of the program. Further improvements may add
+functionality like reference codes control and back references to the places where a reference
+is used. But these improvements will most likely need the program modification (like adding
+a new specialized plugin). For now that is not in priority.</p>
+</div>
+<p><a name="markdown"></a><span class="refDef">[markdown]</span> <a href="https://daringfireball.net/projects/markdown/">Markdown</a></p>
+<p><a name="mustache"></a><span class="refDef">[mustache]</span> Mustache: <a href="https://mustache.github.io/">https://mustache.github.io/</a></p>
+<p><a name="json"></a><span class="refDef">[json]</span> JSON: <a href="https://json.org/">https://json.org/</a></p>
+<p><a name="glob_wiki"></a><span class="refDef">[glob_wiki]</span> Wikipedia: <a href="https://en.wikipedia.org/wiki/Glob_(programming)">glob (programming)</a></p>
+<p><a name="chat_gpt"></a><span class="refDef">[chat_gpt]</span> ChatGPT: <a href="https://chat.openai.com/">https://chat.openai.com/</a></p>
+<p>&nbsp;</p>
+<hr />
+
+<p style="margin-top:0px;margin-bottom:0px;text-align:right;"><a href="glossary.html" 
+title="Previous: Glossary"><img src="../../../layout/pict/previous_page.png"
+alt="Back"></a>
+
+<img src="../../../layout/pict/next_page_inactive.png" alt="No next"></p>
+
+<script>
+function toggleSidebar() {
+    let sidebar = document.getElementsByClassName("sidebarWrapper")[0]
+    let display = sidebar.style.display
+    if (!display || display == "none") {
+        sidebar.style.display = "block"
+    } else {
+        sidebar.style.display = ""
+    }
+}
+</script>
+
+</body>
+</html>
