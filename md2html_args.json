@@ -14,6 +14,10 @@
             "page-flows": ["sections", "nav"] },
         { "input-glob": "sections/*.txt", "page-flows": ["sections", "nav"], 
             "title-from-variable": "title", "code-from-variable": "code", 
+        "sort-by-variable": "SORT_ORDER" },
+            
+        { "input-glob": "sections/ref/*.txt", "page-flows": ["ref", "nav"], 
+            "title-from-variable": "title", "code-from-variable": "code", 
             "sort-by-variable": "SORT_ORDER" }
     ],
     "plugins": {
@@ -50,12 +54,7 @@
                 { "link": "https://github.com/arctrong/md2html", "title": "GitHub", "external": true }
             ],
             "sections": { "groups": ["sidebar"] },
-            "useful_links": { "title": "Useful links", "groups": ["sidebar"], "items": [
-                { "link": "https://daringfireball.net/projects/markdown/", "title": "Markdown", "external": true },
-                { "link": "https://mustache.github.io/", "title": "Mustache", "external": true },
-                { "link": "https://json.org/", "title": "JSON", "external": true },
-                { "link": "https://en.wikipedia.org/wiki/Glob_(programming)", "title": "GLOB", "external": true }
-            ]}
+            "ref": { "groups": ["sidebar"] }
         },
         "ignore": { "markers": ["ignore"] },
         "index": {"index": {"output": "index_page.html", "title": "Index", "index-cache": "index_cache.json", 
@@ -73,6 +72,13 @@
                 "start-marker": "// INCLUDE FROM HERE" },
             { "markers": ["include_src"], "root-dir": "doc_src/", "recursive": true }
         ],
-        "replace": [{ "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" }]
+        "replace": [
+            { "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" },
+            { "markers": ["ref"], "replace-with":
+                "<a class=\"ref\" href=\"<!--page refs-->#${1}\">${1}</a>",
+                "recursive": true },
+            { "markers": ["refdef"], "replace-with":
+                "<a name=\"${1}\"></a><span class=\"refDef\">[${1}]</span>" }
+        ]
     }
 }

@@ -93,8 +93,7 @@ Here are some additional explanations:
     required. See the [recommended project structure](#typical_project_structure) for the
     example.
     
-- <!--index GLOB--><a name="input_glob"></a>The `--input-glob` argument. See the 
-    [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming)) Wikipedia article.
+- <!--index GLOB--><a name="input_glob"></a>The `--input-glob` argument. See [<!--ref glob_wiki-->].
     This syntax helps defining input file set like this: `doc_src/*.txt` that means "all files 
     with `txt` extension in directory `doc_src`". `doc_src/**/*.txt` will mean the same but also
     subdirectories of directory `doc_src` will be scanned recursively.
@@ -176,8 +175,7 @@ Here is a quite complex example of an _argument file_ content:
 }
 ````
 
-_Argument file_ format is JSON ([home page](https://json.org/), 
-[Wikipedia](https://en.wikipedia.org/wiki/JSON)).
+_Argument file_ format is JSON [<!--ref json-->].
 
 !!! note
     Comments are not allowed in JSON syntax, but in this program, whole-line comments may be added

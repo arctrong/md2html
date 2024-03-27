@@ -43,7 +43,7 @@ There are more details described in the [Overview section](<!--page overview-->)
 <!--index Markdown -->
 # Markdown
 
-[Markdown](https://daringfireball.net/projects/markdown/syntax) is a formatting syntax whose
+[Markdown](<!--page refs-->#markdown) is a formatting syntax whose
 main goal is making texts that are as readable as possible in *plain text*.
 
 This syntax is very simple and allows writing very fast. It has enough features for writing

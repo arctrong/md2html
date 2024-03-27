@@ -332,7 +332,7 @@ this page is processed.
 The _page metadata_ blocks will be removed from the source text if they are recognized and
 processed by the defined markers.
 
-The metadata content must be a valid [JSON](https://json.org/).
+The metadata content must be a valid JSON [<!--ref json-->].
 
 !!! Note
     Opening `<!--` and closing markers `-->` must not be used inside the metadata

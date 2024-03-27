@@ -26,7 +26,7 @@ The following subsections describe the above artifacts in more details.
 ## Source Markdown texts
 
 These texts comprise the main documentation content written by the author. They are written in 
-the [Markdown](https://daringfireball.net/projects/markdown/syntax) markup language. The 
+the Markdown language [<!--ref markdown-->]. The 
 [Page content section](<!--page page_content-->) describes the methods, tricks and elements that
 may be used in process of the content writing.
 

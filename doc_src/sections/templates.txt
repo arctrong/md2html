@@ -13,7 +13,7 @@ creation or the existing templates modification.
 <!--index ["template", "Mustache"] -->
 # What is template?
 
-In this program [Mustache](https://mustache.github.io/) template engine is used for HTML
+In this program Mustache template engine [<!--ref mustache-->] is used for HTML
 templates processing. A simple template file may look like this:
 
 ````html
