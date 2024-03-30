@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 from typing import Any, Dict, Union
@@ -9,6 +10,7 @@ from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import output_page, MARKDOWN
 from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.plugin_utils import dict_from_string_or_object
 from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -31,6 +33,9 @@ class WrapCodePlugin(Md2HtmlPlugin):
         self.plugins_for_output = []
         self.app_options = None
         self.dry_run = False
+        with open(MODULE_DIR.joinpath('wrap_code_metadata_schema.json'), 'r',
+                  encoding="utf-8") as schema_file:
+            self.metadata_schema = json.load(schema_file)
 
     def accept_data(self, data):
         self.assure_accept_data_once()
@@ -42,7 +47,8 @@ class WrapCodePlugin(Md2HtmlPlugin):
             wrapped_document_data.document_dict.pop('style', None)
             wrapped_document_data.document_dict.pop('variables', None)
             wrapped_document_data.style = data_dict.get("style", wrapped_document_data.style)
-            wrapped_document_data.variables = data_dict.get("variables", wrapped_document_data.variables)
+            wrapped_document_data.variables = data_dict.get("variables",
+                                                            wrapped_document_data.variables)
             self.data[marker.upper()] = wrapped_document_data
 
     def pre_initialize(self, argument_file: dict, cli_args: CliArgDataObject,
@@ -68,7 +74,8 @@ class WrapCodePlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return not bool(self.data)
 
-    def accept_app_data(self, plugins: list, options: Options, metadata_handlers: PageMetadataHandlers):
+    def accept_app_data(self, plugins: list, options: Options,
+                        metadata_handlers: PageMetadataHandlers):
         self.plugins_for_output = plugins
         self.app_options = options
 
@@ -79,15 +86,23 @@ class WrapCodePlugin(Md2HtmlPlugin):
                              visited_markers: Union[Dict[str, None]] = None):
         marker = marker.upper()
         marker_data = self.data[marker]
-        metadata_str = metadata_str.strip()
         document_obj = marker_data.document_obj
 
-        input_file = Path(document_obj.input_file).joinpath(metadata_str)
+        try:
+            metadata = dict_from_string_or_object(metadata_str.strip(), "file",
+                                                  self.metadata_schema)
+        except UserError as e:
+            raise UserError(f"Error in inclusion: {str(e)}")
+
+        file_path = metadata["file"]
+        style = metadata.get("style", marker_data.style)
+
+        input_file = Path(document_obj.input_file).joinpath(file_path)
         input_file_str = str(input_file).replace("\\", "/")
         cache_key = marker + "|" + input_file_str
         output_file_str = self.processed_cache.get(cache_key)
         if not output_file_str:
-            output_file = Path(document_obj.output_file).joinpath(metadata_str + ".html")
+            output_file = Path(document_obj.output_file).joinpath(file_path + ".html")
             output_file_str = str(output_file).replace("\\", "/")
 
             need_to_generate = True
@@ -100,18 +115,20 @@ class WrapCodePlugin(Md2HtmlPlugin):
                         need_to_generate = False
 
             if need_to_generate and not self.dry_run:
-                document_obj = document_obj.copy(input_file=input_file_str, output_file=output_file_str)
+                document_obj = document_obj.copy(input_file=input_file_str,
+                                                 output_file=output_file_str)
 
                 try:
                     content = read_lines_from_cached_file(document_obj.input_file)
                 except FileNotFoundError as e:
-                    raise UserError(f"Error processing page metadata block: {type(e).__name__}: {e}")
-                doc_content = ("````" + marker_data.style + "\n" + content + "\n" + "````")
+                    raise UserError(
+                        f"Error processing page metadata block: {type(e).__name__}: {e}")
+                doc_content = ("````" + style + "\n" + content + "\n" + "````")
                 substitutions = {'content': MARKDOWN.convert(source=doc_content)}
 
                 variables = marker_data.variables.copy()
-                file_name = str(Path(metadata_str).name)
-                variables.update({"title": file_name, "wrap_code_path": metadata_str,
+                file_name = str(Path(file_path).name)
+                variables.update({"title": file_name, "wrap_code_path": file_path,
                                   "wrap_code_file_name": file_name})
 
                 output_page(document_obj, self.plugins_for_output, substitutions,

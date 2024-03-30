@@ -1,0 +1,48 @@
+pre > code, div.code {
+  font-size: 0.889rem;
+  display: block;
+  line-height: 1.4;
+  border-radius: 0;
+  white-space: pre;
+  padding: 10px;
+  /* padding-top: 10px; */
+  overflow-x: auto;
+  border-style: solid;
+  border-width: 1px;
+}
+
+pre > code.language-code::before, pre > code.language-shell::before {
+  display: block;
+  position: absolute;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  margin-top: -32px;
+  padding-right: 7px;
+  padding-bottom: 3px;
+}
+
+pre > code.language-code::before {
+  content: "Java";
+}
+
+pre > code.language-shell::before {
+  content: "Shell";
+}
+
+pre > code.language-shell {
+  color: floralwhite;
+  border-color: darkslategray;
+  background-color: darkslategray;
+  padding-top: 40px;
+}
+
+pre > code.language-code {
+  color: #4e190a;
+  border-color: #4e190a;
+  background-color: #faf8dd;
+  padding-top: 40px;
+}
+
+

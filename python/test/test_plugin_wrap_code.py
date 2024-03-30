@@ -41,6 +41,24 @@ class WrapCodePluginTest(unittest.TestCase):
         processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before output/path/path/to/file.csv.html after", processed_page)
 
+    def test_minimal_with_json_metadata(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "whatever.txt"}], '
+            '"plugins": {'
+            '"wrap-code": {'
+            '    "marker1": {"input-root": "input/path/", "output-root": "output/path/"}'
+            '}}}')
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+        plugin.dry_run = True
+
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        page_text = 'before <!--marker1 {"file": "path/to/file.csv", "style": "code"} --> after'
+        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("before output/path/path/to/file.csv.html after", processed_page)
+
     def test_several_markers(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.txt"}], '

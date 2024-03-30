@@ -46,6 +46,13 @@ class Md2htmlWrapCodePluginIntegralTest(unittest.TestCase):
 
         p = p.find_next_sibling('p')
         elements = p.contents
+        self.assertEqual('Link 3 to Java: ', elements[0])
+        a = elements[1]
+        self.assertEqual('source2.java', a.text)
+        self.assertEqual('code/java/source2.java.html', a['href'])
+
+        p = p.find_next_sibling('p')
+        elements = p.contents
         self.assertEqual('Link 1 to Shell: ', elements[0])
         a = elements[1]
         self.assertEqual('source1.shell.txt', a.text)
@@ -54,6 +61,13 @@ class Md2htmlWrapCodePluginIntegralTest(unittest.TestCase):
         p = p.find_next_sibling('p')
         elements = p.contents
         self.assertEqual('Link 2 to Shell: ', elements[0])
+        a = elements[1]
+        self.assertEqual('source1.shell.txt', a.text)
+        self.assertEqual('code/shell/source1.shell.txt.html', a['href'])
+
+        p = p.find_next_sibling('p')
+        elements = p.contents
+        self.assertEqual('Link 3 to Shell: ', elements[0])
         a = elements[1]
         self.assertEqual('source1.shell.txt', a.text)
         self.assertEqual('code/shell/source1.shell.txt.html', a['href'])
