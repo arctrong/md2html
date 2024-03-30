@@ -36,7 +36,7 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
 
     private Map<String, IncludeFileData> data;
     private PageMetadataHandlersWrapper metadataHandlers;
-    private JsonSchema metadataSchema =
+    private final JsonSchema metadataSchema =
             loadJsonSchemaFromResource("plugins/include_file_metadata_schema.json");
 
     @Override

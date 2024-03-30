@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
+import com.networknt.schema.JsonSchema;
 import world.md2html.Md2Html;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
@@ -14,6 +15,8 @@ import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
+import world.md2html.utils.JsonUtils;
+import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
 import java.io.IOException;
@@ -33,8 +36,10 @@ import java.util.stream.Collectors;
 import static world.md2html.Md2HtmlUtils.generateHtml;
 import static world.md2html.options.argfile.ArgFileParsingHelper.completeArgFileProcessing;
 import static world.md2html.options.argfile.ArgFileParsingHelper.mergeAndCanonizeArgFileRaw;
+import static world.md2html.plugins.PluginUtils.mapFromStringOrObject;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER_FOR_BUILDERS;
 import static world.md2html.utils.JsonUtils.deJson;
+import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
@@ -50,6 +55,8 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
 
     private Map<String, WrapCodeData> data;
     private final Map<String, String> processedCache = new HashMap<>();
+    private final JsonSchema metadataSchema =
+            loadJsonSchemaFromResource("plugins/wrap_code_metadata_schema.json");
 
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
@@ -159,16 +166,30 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
 
         marker = marker.toUpperCase();
         WrapCodeData markerData = this.data.get(marker);
-        metadata = metadata.trim();
+
+        Map<String, Object> metadataMap;
+        try {
+            //noinspection unchecked
+            metadataMap = (Map<String, Object>)
+                    JsonUtils.deJson(mapFromStringOrObject(metadata.trim(),
+                            "file", this.metadataSchema));
+        } catch (UserError e) {
+            throw new UserError("Error in inclusion: " + e.getMessage() + ", page: '" +
+                    document.getInput());
+        }
+
+        String filePath = (String) metadataMap.get("file");
+        String style = (String) metadataMap.getOrDefault("style", markerData.style);
+
         Document documentObj = markerData.documentObj;
 
-        Path inputFile = Paths.get(documentObj.getInput(), metadata);
+        Path inputFile = Paths.get(documentObj.getInput(), filePath);
         String inputFileStr = inputFile.toString().replace("\\", "/");
         String cacheKey = marker + "|" + inputFileStr;
 
         String outputFileStr = this.processedCache.get(cacheKey);
         if (outputFileStr == null) {
-            Path outputFile = Paths.get(documentObj.getOutput(), metadata + ".html");
+            Path outputFile = Paths.get(documentObj.getOutput(), filePath + ".html");
             outputFileStr = outputFile.toString().replace("\\", "/");
 
             boolean needToGenerate = true;
@@ -200,16 +221,15 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                         () -> getCachedString(inputFile, Utils::readStringFromUtf8File),
                         "Error processing page metadata block"
                 );
-                String docContent = "````" + markerData.style + "\n" +
-                         content + "\n" + "````";
+                String docContent = "````" + style + "\n" + content + "\n" + "````";
 
                 Map<String, Object> substitutions = new HashMap<>();
                 substitutions.put("content", generateHtml(docContent));
 
                 Map<String, Object> variables = new HashMap<>(markerData.variables);
-                String fileName = Paths.get(metadata).getFileName().toString();
+                String fileName = Paths.get(filePath).getFileName().toString();
                 variables.put("title", fileName);
-                variables.put("wrap_code_path", metadata);
+                variables.put("wrap_code_path", filePath);
                 variables.put("wrap_code_file_name", fileName);
 
                 Md2Html.outputPage(documentObj, this.plugins, substitutions, this.options,

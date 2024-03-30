@@ -61,6 +61,27 @@ class WrapCodePluginTest {
     }
 
     @Test
+    public void test_minimal_with_json_metadata() throws ArgFileParseException {
+        ArgFile argFile = parseArgumentFile("{\"documents\": [{\"input\": \"whatever.txt\"}], " +
+                "\"plugins\": {" +
+                "\"wrap-code\": {" +
+                "    \"marker1\": {\"input-root\": \"input/path/\", " +
+                "                  \"output-root\": \"output/path/\"}" +
+                "}}}", DUMMY_CLI_OPTIONS);
+        WrapCodePlugin plugin = findSinglePlugin(argFile.getPlugins());
+        plugin.setDryRun(true);
+
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        String  pageText = "before <!--marker1 {\"file\": \"path/to/file.csv\"," +
+                "\"style\": \"code\"} --> after";
+        String processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
+        assertEquals("before output/path/path/to/file.csv.html after", processedPage);
+    }
+
+    @Test
     public void test_several_markers() throws ArgFileParseException {
         ArgFile argFile = parseArgumentFile("{\"documents\": [{\"input\": \"whatever.txt\"}], " +
                 "\"plugins\": {" +
