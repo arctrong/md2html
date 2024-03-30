@@ -37,7 +37,7 @@ The following steps may be done for customization.
     as examples.
 
 - Look into the file `md2html_args.json`. Particularly, commented GitHub link may be defined and
-    uncommented if the writing worked if published there.
+    uncommented if the writing work if published there.
 
 - In the directory `doc_src/sections/ref/` delete the pages `references.txt` and `glossary.txt`
     if they are not going to be used. Some cleanup may be done in the argument file

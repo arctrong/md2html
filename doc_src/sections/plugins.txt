@@ -598,6 +598,10 @@ In this example `wrap_java` and `wrap_xml` are markers to be used in the placeho
 The markers define the wrapping HTML page generation options: where to take the source code files, 
 where to place the wrapping HTML pages, which rendering style and template to use.
 
+!!! note
+    The `style` parameter may be defined directly per each page metadata, see below. So just one
+    `wrap-code` definition may be used and customized directly in place.
+
 All possible properties are listed in the table below. They are mostly the same as those 
 of the [`documents` section](<!--page reference-->#documents_section) so see that section for the
 absent descriptions.
@@ -625,6 +629,12 @@ a source text, use something like this:
 
 ````
 The main class is [here](<!--ignore wrap_java hello/Main.java-->).
+````
+
+The alternative form is:
+
+````
+The main class is [here](<!--ignore wrap_java {"file": "hello/Main.java", "style": "code"}-->).
 ````
 
 As the result, the new file `doc/code/hello/Main.java.html` will be generated based on the

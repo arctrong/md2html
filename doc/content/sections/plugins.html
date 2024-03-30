@@ -706,6 +706,11 @@ wrapping pages.</p>
 <p>In this example <code>wrap_java</code> and <code>wrap_xml</code> are markers to be used in the placeholders (see below).
 The markers define the wrapping HTML page generation options: where to take the source code files, 
 where to place the wrapping HTML pages, which rendering style and template to use.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>style</code> parameter may be defined directly per each page metadata, see below. So just one
+<code>wrap-code</code> definition may be used and customized directly in place.</p>
+</div>
 <p>All possible properties are listed in the table below. They are mostly the same as those 
 of the <a href="reference.html#documents_section"><code>documents</code> section</a> so see that section for the
 absent descriptions.</p>
@@ -810,6 +815,8 @@ absent descriptions.</p>
 <p>Let's say there's the file <code>projects/hello/Main.java</code> with some content. To link this file in
 a source text, use something like this: </p>
 <pre class="highlight"><code>The main class is [here](&lt;!--wrap_java hello/Main.java--&gt;).</code></pre>
+<p>The alternative form is:</p>
+<pre class="highlight"><code>The main class is [here](&lt;!--wrap_java {"file": "hello/Main.java", "style": "code"}--&gt;).</code></pre>
 <p>As the result, the new file <code>doc/code/hello/Main.java.html</code> will be generated based on the
 following transformed content:</p>
 <pre><code>````code
