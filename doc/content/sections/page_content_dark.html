@@ -741,15 +741,26 @@ language:English
 # Keys with the same name will be overwritten by the key that is the furthest in a file
 duplicateKey = first
 duplicateKey = second</code></pre>
-<p>Here is a configuration of some other kind:</p>
-<div class="blockSrc">conf</div>
+<div class="blockSrc">jaml</div>
 
-<pre class="highlight"><code class="language-conf">services:
+<pre class="highlight"><code class="language-jaml">services:
   frontend:
     image: example/webapp
     networks:
       - front-tier
       - back-tier</code></pre>
+<p>Here is a configuration of some other kind:</p>
+<div class="blockSrc">conf</div>
+
+<pre class="highlight"><code class="language-conf">UAT_DB =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = UATSERVER)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = UAT_DB)
+    )
+  )</code></pre>
 <div class="blockSrc">unixscript</div>
 
 <pre class="highlight"><code class="language-unixscript">#!/bin/sh

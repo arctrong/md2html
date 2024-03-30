@@ -7,7 +7,7 @@ pre>code.language-wrapped-xml, pre>code.language-wrapped-html,
 pre>code.language-wrapped-css,
 pre>code.language-wrapped-json,
 pre>code.language-wrapped-conf,
-pre>code.language-wrapped-ini, pre>code.language-wrapped-prop,
+pre>code.language-wrapped-ini, pre>code.language-wrapped-prop, pre>code.language-wrapped-jaml,
 pre>code.language-wrapped-unixscript, pre>code.language-wrapped-bash,
 pre>code.language-wrapped-cmd, pre>code.language-wrapped-bat,
 pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
@@ -26,7 +26,7 @@ pre>code.language-xml, pre>code.language-html,
 pre>code.language-css,
 pre>code.language-json,
 pre>code.language-conf,
-pre>code.language-ini, pre>code.language-prop,
+pre>code.language-ini, pre>code.language-prop, pre>code.language-jaml,
 pre>code.language-unixscript, pre>code.language-bash,
 pre>code.language-cmd, pre>code.language-bat,
 pre>code.language-unixshell, pre>code.language-winshell,
@@ -38,7 +38,7 @@ pre>code.language-wrapped-xml, pre>code.language-wrapped-html,
 pre>code.language-wrapped-css,
 pre>code.language-wrapped-json,
 pre>code.language-wrapped-conf,
-pre>code.language-wrapped-ini, pre>code.language-wrapped-prop,
+pre>code.language-wrapped-ini, pre>code.language-wrapped-prop, pre>code.language-wrapped-jaml,
 pre>code.language-wrapped-unixscript, pre>code.language-wrapped-bash,
 pre>code.language-wrapped-cmd, pre>code.language-wrapped-bat,
 pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
@@ -54,7 +54,7 @@ pre>code.language-xml::before, pre>code.language-html::before,
 pre>code.language-css::before,
 pre>code.language-json::before,
 pre>code.language-conf::before,
-pre>code.language-ini::before, pre>code.language-prop::before,
+pre>code.language-ini::before, pre>code.language-prop::before, pre>code.language-jaml::before,
 pre>code.language-unixscript::before, pre>code.language-bash::before,
 pre>code.language-cmd::before, pre>code.language-bat::before,
 pre>code.language-unixshell::before, pre>code.language-winshell::before,
@@ -68,6 +68,7 @@ pre>code.language-wrapped-css::before,
 pre>code.language-wrapped-json::before,
 pre>code.language-wrapped-conf::before,
 pre>code.language-wrapped-ini::before, pre>code.language-wrapped-prop::before,
+pre>code.language-wrapped-jaml::before,
 pre>code.language-wrapped-unixscript::before, pre>code.language-wrapped-bash::before,
 pre>code.language-wrapped-cmd::before, pre>code.language-wrapped-bat::before,
 pre>code.language-wrapped-unixshell::before, pre>code.language-wrapped-winshell::before
@@ -141,6 +142,10 @@ pre>code.language-ini::before, pre>code.language-wrapped-ini::before {
 
 pre>code.language-prop::before, pre>code.language-wrapped-prop::before {
     content: "properties";
+}
+
+pre>code.language-jaml::before, pre>code.language-wrapped-jaml::before {
+    content: "YAML";
 }
 
 pre>code.language-unixscript::before, pre>code.language-wrapped-unixscript::before {

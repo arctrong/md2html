@@ -643,17 +643,31 @@ duplicateKey = first
 duplicateKey = second
 ````
 
-Here is a configuration of some other kind:
+<div class="blockSrc">jaml</div>
 
-<div class="blockSrc">conf</div>
-
-````conf
+````jaml
 services:
   frontend:
     image: example/webapp
     networks:
       - front-tier
       - back-tier
+````
+
+Here is a configuration of some other kind:
+
+<div class="blockSrc">conf</div>
+
+````conf
+UAT_DB =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = UATSERVER)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = UAT_DB)
+    )
+  )
 ````
 
 <div class="blockSrc">unixscript</div>

@@ -64,7 +64,8 @@ pre>code.language-json, pre>code.language-wrapped-json {
 
 pre>code.language-conf, pre>code.language-wrapped-conf,
 pre>code.language-ini, pre>code.language-wrapped-ini,
-pre>code.language-prop, pre>code.language-wrapped-prop
+pre>code.language-prop, pre>code.language-wrapped-prop,
+pre>code.language-jaml, pre>code.language-wrapped-jaml
 {
     color: #004d00;
     border-color: #004d00;
