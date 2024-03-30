@@ -10,8 +10,10 @@ pre>code.language-java, pre>code.language-wrapped-java {
     background-color: #faf8dd;
 }
 
-pre>code.language-java::before, pre>code.language-wrapped-java::before {
-    content: "Java";
+pre>code.language-kt, pre>code.language-wrapped-kt {
+    color: darkblue;
+    border-color: darkblue;
+    background-color: beige;
 }
 
 pre>code.language-c, pre>code.language-wrapped-c,

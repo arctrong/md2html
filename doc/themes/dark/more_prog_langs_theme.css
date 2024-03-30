@@ -10,6 +10,12 @@ pre>code.language-java, pre>code.language-wrapped-java {
     background-color: #5f4939;
 }
 
+pre>code.language-kt, pre>code.language-wrapped-kt {
+    color: #b9ebff;
+    border-color: #b9ebff;
+    background-color: #574435;
+}
+
 pre>code.language-c, pre>code.language-wrapped-c,
 pre>code.language-cpp, pre>code.language-wrapped-cpp
 {

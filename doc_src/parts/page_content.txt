@@ -514,6 +514,14 @@ BiPredicate<String, String> bp1 = String::startsWith;
 System.out.println(bp1.test("abcde", "abc")); // true
 ````
 
+
+<div class="blockSrc">kt</div>
+
+````kt
+val bp1: BiPredicate<String, String> = BiPredicate { str, prefix -> str.startsWith(prefix) }
+println(bp1.test("abcde", "abc")) // true
+````
+
 <div class="blockSrc">c</div>
 
 ````c

@@ -1,5 +1,5 @@
 
-pre>code.language-wrapped-py, pre>code.language-wrapped-java,
+pre>code.language-wrapped-py, pre>code.language-wrapped-java, pre>code.language-wrapped-kt,
 pre>code.language-wrapped-c,pre>code.language-wrapped-cpp,
 pre>code.language-wrapped-js, pre>code.language-wrapped-sql,
 pre>code.language-wrapped-alg,
@@ -18,7 +18,7 @@ pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
 }
 
 
-pre>code.language-py, pre>code.language-java,
+pre>code.language-py, pre>code.language-java, pre>code.language-kt,
 pre>code.language-c, pre>code.language-cpp,
 pre>code.language-js, pre>code.language-sql,
 pre>code.language-alg,
@@ -30,7 +30,7 @@ pre>code.language-ini, pre>code.language-prop,
 pre>code.language-unixscript, pre>code.language-bash,
 pre>code.language-cmd, pre>code.language-bat,
 pre>code.language-unixshell, pre>code.language-winshell,
-pre>code.language-wrapped-py, pre>code.language-wrapped-java,
+pre>code.language-wrapped-py, pre>code.language-wrapped-java, pre>code.language-wrapped-kt,
 pre>code.language-wrapped-c, pre>code.language-wrapped-cpp,
 pre>code.language-wrapped-js, pre>code.language-wrapped-sql,
 pre>code.language-wrapped-alg,
@@ -46,7 +46,7 @@ pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
   padding-top: 40px;
 }
 
-pre>code.language-py::before, pre>code.language-java::before,
+pre>code.language-py::before, pre>code.language-java::before, pre>code.language-kt::before,
 pre>code.language-c::before, pre>code.language-cpp::before,
 pre>code.language-js::before, pre>code.language-sql::before,
 pre>code.language-alg::before,
@@ -59,6 +59,7 @@ pre>code.language-unixscript::before, pre>code.language-bash::before,
 pre>code.language-cmd::before, pre>code.language-bat::before,
 pre>code.language-unixshell::before, pre>code.language-winshell::before,
 pre>code.language-wrapped-py::before, pre>code.language-wrapped-java::before,
+pre>code.language-wrapped-kt::before,
 pre>code.language-wrapped-c::before, pre>code.language-wrapped-cpp::before,
 pre>code.language-wrapped-js::before, pre>code.language-wrapped-sql::before,
 pre>code.language-wrapped-alg::before,
@@ -88,6 +89,10 @@ pre>code.language-py::before, pre>code.language-wrapped-py::before {
 
 pre>code.language-java::before, pre>code.language-wrapped-java::before {
     content: "Java";
+}
+
+pre>code.language-kt::before, pre>code.language-wrapped-kt::before {
+    content: "Kotlin";
 }
 
 pre>code.language-c::before, pre>code.language-wrapped-c::before {

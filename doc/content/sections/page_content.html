@@ -649,6 +649,10 @@ rendering in the browser.</p>
 
 <pre class="highlight"><code class="language-java">BiPredicate&lt;String, String&gt; bp1 = String::startsWith;
 System.out.println(bp1.test("abcde", "abc")); // true</code></pre>
+<div class="blockSrc">kt</div>
+
+<pre class="highlight"><code class="language-kt">val bp1: BiPredicate&lt;String, String&gt; = BiPredicate { str, prefix -&gt; str.startsWith(prefix) }
+println(bp1.test("abcde", "abc")) // true</code></pre>
 <div class="blockSrc">c</div>
 
 <pre class="highlight"><code class="language-c">#include &lt;stdio.h&gt;
