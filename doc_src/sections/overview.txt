@@ -72,6 +72,17 @@ look like.
 <img src="<!--path pict-->box.png" style="cursor: pointer;" onclick="alert(
 'This is just a message but might be any JavaScript code.');return false;" />
 
+----------------------------------------------------------------------------------------------------
+<!--index ["Pelican static site generator"]-->
+# Similar solution
+
+Among other static site generators, "Pelican" [<!--ref pelican-->] may be called as quite close
+to this program by its functionality. "Pelican" looks like more mature and feature-rich. It uses
+the same Python-Markdown module [<!--ref py_markdown-->] and has a similar motivation, see
+[Some history about Pelican](https://docs.getpelican.com/en/stable/report.html).
+
+Still this program has some unique features and its relative simplicity may be seen as an
+advantage.
 
 
 

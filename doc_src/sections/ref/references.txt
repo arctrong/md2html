@@ -17,5 +17,7 @@
 
 <!--refdef chat_gpt--> ChatGPT: <https://chat.openai.com/>
 
+<!--refdef pelican--> Pelican static site generator: <https://getpelican.com/>
 
+<!--refdef py_markdown--> Python-Markdown module: <https://python-markdown.github.io/>
 

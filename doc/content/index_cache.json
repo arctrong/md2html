@@ -6,7 +6,13 @@
       "title": "Home"
     }
   ],
-  "doc/content/sections/overview.html": [],
+  "doc/content/sections/overview.html": [
+    {
+      "entry": "Pelican static site generator",
+      "link": "sections/overview.html#index_entry_index_1",
+      "title": "Overview"
+    }
+  ],
   "doc/content/sections/quick_start.html": [
     {
       "entry": "quick start script",
