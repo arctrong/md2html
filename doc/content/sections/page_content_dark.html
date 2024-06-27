@@ -945,6 +945,18 @@ CSS parameters.</p>
 </tr>
 </tbody>
 </table>
+<p>Attribute lists may be used with images:</p>
+<pre class="highlight"><code>![](../../pict/light_only.png
+){.light_only style="border: solid orange 5px; padding: 5px;"}</code></pre>
+<p>The generated HTML code will be like this:</p>
+<pre class="highlight"><code class="language-wrapped-html">&lt;img alt="" class="light_only" src="../../pict/light_only.png" style="border: solid orange 5px; padding: 5px;"&gt;</code></pre>
+<p>And it will look like this:</p>
+<p><img alt="" class="light_only" src="../../pict/light_only.png" style="border: solid orange 5px; padding: 5px" /></p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The opening curly brace must follow right after the closing round brace, otherwise the
+attributes will be assigned to the enclosing paragraph.</p>
+</div>
 <p>&nbsp;</p>
 <hr />
 

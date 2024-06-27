@@ -890,9 +890,27 @@ Header 1 | Header 2
 ---------|--------
 Cell 1 {style="background-color: cadetblue;"} | Cell 2 {name=cell2}
 
+Attribute lists may be used with images:
 
+````
+![](<!--path pict-->light_only.png
+){.light_only style="border: solid orange 5px; padding: 5px;"}
+````
 
+The generated HTML code will be like this:
 
+````wrapped-html
+<img alt="" class="light_only" src="../../pict/light_only.png" style="border: solid orange 5px; padding: 5px;">
+````
+
+And it will look like this:
+
+![](<!--path pict-->light_only.png
+){.light_only style="border: solid orange 5px; padding: 5px"}
+
+!!! important
+    The opening curly brace must follow right after the closing round brace, otherwise the
+    attributes will be assigned to the enclosing paragraph.
 
 
 
