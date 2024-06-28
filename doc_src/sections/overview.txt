@@ -7,7 +7,7 @@
 
 <p><img src="<!--path pict-->md2html_schema.png" title="md2html" class="floatRight light_only" /></p>
 
-The program accepts the following artifacts as its input:
+**M<sub>2</sub>H** accepts the following artifacts as its input:
 
 - source Markdown texts;
 - one or several HTML templates;
@@ -58,7 +58,7 @@ These are usually [plugins](<!--page plugins-->) that perform these adjustments.
 ----------------------------------------------------------------------------------------------------
 # Restrictions and security
 
-The program doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
+**M<sub>2</sub>H** doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
 may contain JavaScript that will be translated unchanged into the generated HTML page. This
 must not be a problem for personal use but may be a security issue when converting and
 publishing source texts from untrusted third-parties. Click the image below to see how it may
@@ -73,15 +73,30 @@ look like.
 'This is just a message but might be any JavaScript code.');return false;" />
 
 ----------------------------------------------------------------------------------------------------
-<!--index ["Pelican static site generator"]-->
-# Similar solution
+<!--index ["History"]-->
+# History
 
-Among other static site generators, "Pelican" [<!--ref pelican-->] may be called as quite close
-to this program by its functionality. "Pelican" looks like more mature and feature-rich. It uses
+**M<sub>2</sub>H** was born in about 2019 as a Python script of about 50 lines of code written
+in about one hour. It was used for writing notes on a computer science study course.
+Then this solution was used for the other writing works. As the requirements grew the solution
+developed up to its current state.
+
+<!--index ["Java implementation"]-->
+As for the Java implementation, it appeared as the response to the lack of Python in the environment
+where the program was going to be used. For now the Java implementation slows down the development as
+it needs writing the same things in two languages, and it's considered to be abandoned sometime.
+Still as for now the final decision is not made and the Java implementation is fully supported.
+
+----------------------------------------------------------------------------------------------------
+<!--index ["Pelican static site generator"]-->
+# Alternative solution
+
+Among other static site generators "Pelican" [<!--ref pelican-->] may be called as quite close
+to **M<sub>2</sub>H** by its functionality though being more mature and feature-rich. It uses
 the same Python-Markdown module [<!--ref py_markdown-->] and has a similar motivation, see
 [Some history about Pelican](https://docs.getpelican.com/en/stable/report.html).
 
-Still this program has some unique features and its relative simplicity may be seen as an
+Still **M<sub>2</sub>H** has some unique features and its relative simplicity may be seen as an
 advantage.
 
 

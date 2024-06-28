@@ -8,8 +8,18 @@
   ],
   "doc/content/sections/overview.html": [
     {
-      "entry": "Pelican static site generator",
+      "entry": "History",
       "link": "sections/overview.html#index_entry_index_1",
+      "title": "Overview"
+    },
+    {
+      "entry": "Java implementation",
+      "link": "sections/overview.html#index_entry_index_2",
+      "title": "Overview"
+    },
+    {
+      "entry": "Pelican static site generator",
+      "link": "sections/overview.html#index_entry_index_3",
       "title": "Overview"
     }
   ],
