@@ -114,6 +114,20 @@ that will make the link text equal the link location.
 !!! tip
     [The "page-links" plugin](<!--page plugins-->#page_links_plugin) may be used for creating
     relative internal links within the documentation.
+    
+[*Attribute lists*](#attribute_lists) may be used with links the following ways:
+
+- `[Some title](https://some.url.org){attributes}`
+- `<https://some.url.org>{attributes}`
+
+The following classes are defined in the provided CSS:
+
+Link example | Attributes
+----|-----
+[HTML class Attribute](https://www.w3schools.com/html/html_classes.asp){.external} | `{.external}`
+[HTML 4.0 Specification (PDF)](https://www.w3.org/TR/1998/REC-html40-19980424/html40.pdf){.doc} | `{.doc}`
+<https://icons.getbootstrap.com/>{.folder} | `{.folder}`
+[The first video on YouTube](https://www.youtube.com/watch?v=jNQXAC9IVRw){.video} | `{.video}`
 
 ----------------------------------------------------------------------------------------------------
 <a name="anchor_demo"></a>
@@ -156,15 +170,21 @@ from the same or the other page.
 A picture is inserted the following ways:
 
 - `![](path/to/image.png)` --- the simplest form;
-- `![ALT](path/to/image.png "title")` --- with optional alternative text and hint;
+- `![ALT](path/to/image.png "title")` --- with optional alternative text and hint.
 
-In this example the other method is used that allows placing images
-on the page side with the text floating around, that may be very useful with small images. 
-This method uses direct HTML inclusion:
+The above syntax is simple enough so it's not going to be demonstrated here. Instead, the other
+method was used above that allows placing images on the page side with the text wrapping around.
+That may be very useful with small images. This method uses direct HTML inclusion:
 
 <p style="clear: both;"></p>
 
-<div class="code">&lt;p>&lt;img src="&lt;!--path pict-->target.png" class="floatRight" />&lt;/p></div>
+````
+<p><img src="<!--ignore path pict-->target.png" class="floatRight" /></p>
+
+Here is the text that must wrap around the image on the left.
+
+<p style="clear: both;"></p>
+````
 
 !!! important
     The image tag is enclosed by a paragraph that is required for the currently used styles.
@@ -176,11 +196,7 @@ This method uses direct HTML inclusion:
     This example also uses a path substitution `<!--ignore path pict-->`.
     See ["relative-paths" plugin](<!--page plugins-->#relative_paths_plugin) for more details.
 
-To stop the text float the following empty paragraph may be used:
-
-````
-<p style="clear: both;"></p>
-````
+To stop the text float the `<p style="clear: both;"></p>` HTML element was used.
 
 An image may be used as a link text like this:
 
@@ -192,8 +208,37 @@ Then we will get a clickable image that works as a link:
 
 [![](<!--path pict-->penrose_small.png)](https://en.wikipedia.org/wiki/Penrose_tiling "Penrose")
 
-There's one point that should be taken into account when working with images. Usually images are
-intended to be shown on a light background. When using a 
+<!--index ["wide image", "fit image"]-->
+When an image is too wide we may want it to fit into the page width.
+[*Attribute lists*](#attribute_lists) may be used for this with the following classes defined
+in the provided CSS:
+
+````
+![](<!--ignore path pict-->wide_image.png){.w-fit .img-frame}
+````
+
+The result is:
+
+![](<!--path pict-->wide_image.png){.w-fit .img-frame}
+
+<!--index ["image frame", "frame, image"]-->
+The `img-frame` class is optional. An image may have the same background as the page and because
+of its content its borders may be unclear. In such cases a frame may show it explicitly. Here are
+the other examples:
+{#fake_image}
+
+![](<!--path pict-->light_fake_text.png){.img-frame width=285px} --- for the [light scheme](<!--page page_content-->#fake_image).
+
+![](<!--path pict-->dark_fake_text.png){.img-frame width=285px} --- for the [dark scheme](<!--page page_content_dark-->#fake_image).
+
+And here how it's done:
+
+````
+![](<!--ignore path pict-->light_fake_text.png){.img-frame width=285px}
+````
+
+There's one point that should be taken into account when working with images. Often images are
+intended to be shown on a light background. If we use a 
 [*dark theme*](<!--page templates-->#themes), some images may not look well on a dark background.
 Such images may be marked the following way:
 
@@ -278,18 +323,22 @@ Tables are added with the syntax like this:
 ````
 Item No | Name  | Description   | Price
 :------:|-------|---------------|------:
-1       | Chair | Kitchen chair |  87.50
-2       | Table | Kitchen table | 450.00
-3       | Lamp  | Standard lamp | 120.75
+1 {.th} | Chair | Kitchen chair |  87.50
+2 {.th} | Table | Kitchen table | 450.00
+3 {.th} | Lamp  | Standard lamp | 120.75
 ````
 
 Currently used styles define the following default table appearance:
 
 Item No | Name  | Description   | Price
 :------:|-------|---------------|------:
-1       | Chair | Kitchen chair |  87.50
-2       | Table | Kitchen table | 450.00
-3       | Lamp  | Standard lamp | 120.75
+1 {.th} | Chair | Kitchen chair |  87.50
+2 {.th} | Table | Kitchen table | 450.00
+3 {.th} | Lamp  | Standard lamp | 120.75
+
+In this example, using [*attribute lists*](#attribute_lists) we specify the class `{.th}` that 
+makes the table sidebar have the same format as the table header. The class `.th` is defined in
+the provided CSS.
 
 Markdown doesn't have syntax for different table styles, but some trick may be used to achieve 
 this. We can add an invisible element (an empty `<div>` in this case) right before the
@@ -913,4 +962,28 @@ And it will look like this:
     attributes will be assigned to the enclosing paragraph.
 
 
+## Some useful classes defined
+
+> If the fool would persist in his folly, he would become wise.
+> 
+> --- *William Blake, "Proverbs of Hell"*
+> {.right}
+
+<!--index ["right align", "align right"]-->
+The source of the above quote is aligned to the right. Here's how it is done:
+
+````
+> If the fool would persist in his folly, he would become wise.
+> 
+> --- *William Blake, "Proverbs of Hell"*
+> {.right}
+````
+
+<!--index ["hide"]-->
+In some cases an element must be hidden. For example: _Do you see a **gopher**{.hide}?
+But it still exists!_ Here's what actually was written:
+
+````
+_Do you see a **gopher**{.hide}? But it still exists!_
+````
 

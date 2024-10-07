@@ -75,45 +75,115 @@
   ],
   "doc/content/sections/page_content.html": [
     {
-      "entry": "tables",
+      "entry": "wide image",
       "link": "sections/page_content.html#index_entry_index_1",
       "title": "Page content"
     },
     {
-      "entry": "fenced code blocks",
+      "entry": "fit image",
+      "link": "sections/page_content.html#index_entry_index_1",
+      "title": "Page content"
+    },
+    {
+      "entry": "image frame",
       "link": "sections/page_content.html#index_entry_index_2",
       "title": "Page content"
     },
     {
-      "entry": "admonitions",
+      "entry": "frame, image",
+      "link": "sections/page_content.html#index_entry_index_2",
+      "title": "Page content"
+    },
+    {
+      "entry": "tables",
       "link": "sections/page_content.html#index_entry_index_3",
       "title": "Page content"
     },
     {
-      "entry": "attribute lists",
+      "entry": "fenced code blocks",
       "link": "sections/page_content.html#index_entry_index_4",
+      "title": "Page content"
+    },
+    {
+      "entry": "admonitions",
+      "link": "sections/page_content.html#index_entry_index_5",
+      "title": "Page content"
+    },
+    {
+      "entry": "attribute lists",
+      "link": "sections/page_content.html#index_entry_index_6",
+      "title": "Page content"
+    },
+    {
+      "entry": "right align",
+      "link": "sections/page_content.html#index_entry_index_7",
+      "title": "Page content"
+    },
+    {
+      "entry": "align right",
+      "link": "sections/page_content.html#index_entry_index_7",
+      "title": "Page content"
+    },
+    {
+      "entry": "hide",
+      "link": "sections/page_content.html#index_entry_index_8",
       "title": "Page content"
     }
   ],
   "doc/content/sections/page_content_dark.html": [
     {
-      "entry": "tables",
+      "entry": "wide image",
       "link": "sections/page_content_dark.html#index_entry_index_1",
       "title": "Page content (dark)"
     },
     {
-      "entry": "fenced code blocks",
+      "entry": "fit image",
+      "link": "sections/page_content_dark.html#index_entry_index_1",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "image frame",
       "link": "sections/page_content_dark.html#index_entry_index_2",
       "title": "Page content (dark)"
     },
     {
-      "entry": "admonitions",
+      "entry": "frame, image",
+      "link": "sections/page_content_dark.html#index_entry_index_2",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "tables",
       "link": "sections/page_content_dark.html#index_entry_index_3",
       "title": "Page content (dark)"
     },
     {
-      "entry": "attribute lists",
+      "entry": "fenced code blocks",
       "link": "sections/page_content_dark.html#index_entry_index_4",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "admonitions",
+      "link": "sections/page_content_dark.html#index_entry_index_5",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "attribute lists",
+      "link": "sections/page_content_dark.html#index_entry_index_6",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "right align",
+      "link": "sections/page_content_dark.html#index_entry_index_7",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "align right",
+      "link": "sections/page_content_dark.html#index_entry_index_7",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "hide",
+      "link": "sections/page_content_dark.html#index_entry_index_8",
       "title": "Page content (dark)"
     }
   ],

@@ -122,4 +122,36 @@ div.light_only+p>img, img.light_only {
     padding: 7px;
 }
 
+.w-fit {
+    max-width: 50rem;
+}
+
+.img-frame {
+    border-color: white;
+}
+
+.video::before {
+    content: url("video_link_dark.png");
+}
+
+.external::before {
+    content: url("external_link_dark.png");
+}
+
+.doc::before {
+    content: url("document_link_dark.png");
+}
+
+.folder::before {
+    content: url("folder_link_dark.png");
+}
+
+.th {
+    background-color: #374e65;
+}
+
+
+
+
+
 

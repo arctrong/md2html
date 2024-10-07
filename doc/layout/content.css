@@ -182,4 +182,52 @@ img.floatLeft {
     font-size: 0.734rem;
 }
 
+.w-fit {
+    max-width: 50rem;
+}
+
+.img-frame {
+    border-style: dashed;
+    border-width: 1px;
+}
+
+.w-fit.img-frame {
+    max-width: 49.88rem;
+}
+
+.video::before {
+    position: relative;
+    bottom: -2px;
+    margin-right: 3px;
+}
+
+.external::before {
+    position: relative;
+    bottom: -2px;
+    margin-right: 3px;
+}
+
+.doc::before {
+    position: relative;
+    bottom: -2px;
+    margin-right: 3px;
+}
+
+.folder::before {
+    position: relative;
+    bottom: -2px;
+    margin-right: 3px;
+}
+
+.right {
+    text-align: right;
+}
+
+.th {
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+}
 

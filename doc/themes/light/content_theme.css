@@ -107,4 +107,31 @@ div.admonition.note>p.admonition-title {
     color: dimgray;
 }
 
+.w-fit {
+    max-width: 50rem;
+}
+
+.img-frame {
+    border-color: black;
+}
+
+.video::before {
+    content: url("video_link.png");
+}
+
+.external::before {
+    content: url("external_link.png");
+}
+
+.doc::before {
+    content: url("document_link.png");
+}
+
+.folder::before {
+    content: url("folder_link.png");
+}
+
+.th {
+    background-color: #e9f0f2;
+}
 
