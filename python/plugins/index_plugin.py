@@ -12,7 +12,7 @@ from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import output_page
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.plugin_utils import list_from_string_or_array
-from utils import UserError, relativize_relative_resource
+from utils import UserError, relativize_relative_resource, UniqueIndexer, slugify
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -22,6 +22,7 @@ INDEX_ENTRY_CLASS = "index-entry"
 INDEX_LETTER_ID_PREFIX = "index_letter_"
 INDEX_LETTER_CLASS = "index-letter"
 INDEX_LETTERS_BLOCK_CLASS = "index_letters"
+ANCHOR_NAME_LENGTH_LIMIT = 50
 
 
 def _create_title_attr(title):
@@ -84,7 +85,7 @@ class IndexData:
         self.document = None
 
         self.current_link_page = ''
-        self.current_anchor_number = 0
+        self.unique_indexer: Any[UniqueIndexer, None] = None
         self.index_cache = {}
         self.cached_page_resets = set()
 
@@ -160,19 +161,23 @@ class IndexPlugin(Md2HtmlPlugin):
                              metadata_section,
                              visited_markers: Union[Dict[str, None]] = None):
         try:
-            metadata = list_from_string_or_array(metadata_str.strip())
+            terms = list_from_string_or_array(metadata_str.strip())
         except UserError as e:
             raise UserError(f"Error in index entry: {str(e)}")
 
         index_data = self.index_data[marker.upper()]
-        anchors = index_data.index_cache[doc.output_file]
-        index_data.current_anchor_number += 1
-        anchor_name = f'{INDEX_ENTRY_ANCHOR_PREFIX}{marker.lower()}_' \
-                      f'{index_data.current_anchor_number}'
+
+        anchor_name = "_".join(terms)
+        anchor_name = slugify(anchor_name)[:ANCHOR_NAME_LENGTH_LIMIT]
+        anchor_name = index_data.unique_indexer.get_unique(anchor_name)
+        anchor_name = f'{INDEX_ENTRY_ANCHOR_PREFIX}{marker.lower()}_{anchor_name}'
+
         anchor_text = f'<a name="{anchor_name}"></a>'
 
-        for entry in metadata:
-            normalized_entry = entry.strip()
+        anchors = index_data.index_cache[doc.output_file]
+
+        for term in terms:
+            normalized_entry = term.strip()
             anchors.append({"entry": normalized_entry,
                             "link": f'{index_data.current_link_page}#{anchor_name}',
                             "title": doc.title})
@@ -187,7 +192,7 @@ class IndexPlugin(Md2HtmlPlugin):
             index_data.cached_page_resets.add(doc.output_file)
             index_data.current_link_page = relativize_relative_resource(
                 doc.output_file, index_data.document.output_file)
-            index_data.current_anchor_number = 0
+            index_data.unique_indexer = UniqueIndexer()
 
     def finalize(self):
         self.finalization_started = True

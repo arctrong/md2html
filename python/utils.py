@@ -16,6 +16,9 @@ CACHED_FILES = {}
 JSON_COMMENT_BLANKING_PATTERN = re.compile(r'[^\s]')
 REGEX_MASKING_PATTERN = re.compile("([?^\\\\$.|*+\\[\\](){}])")
 
+NON_LATIN_ALPHANUMERIC_REGEX = re.compile(r'[^a-z0-9]')
+MULTIPLE_UNDERSCORES_REGEX = re.compile(r'__+')
+
 
 def reduce_json_validation_error_message(error_message: str) -> str:
     return error_message.splitlines()[0]
@@ -274,6 +277,32 @@ def strip_empty_lines(string: str):
     return string[_find_first_non_empty_line(string):_find_last_non_empty_line(string)]
 
 
+def slugify(string):
+
+    def replace_non_latin(match):
+        code = ord(match.group())
+        if code > 127:
+            return chr((code % 26) + 97)
+        else:
+            return "_"
+
+    string = NON_LATIN_ALPHANUMERIC_REGEX.sub(replace_non_latin, string.lower())
+    return MULTIPLE_UNDERSCORES_REGEX.sub('_', string).strip("_")
+
+
+class UniqueIndexer:
+    def __init__(self):
+        self.unique_map = {}
+
+    def get_unique(self, string):
+        index = self.unique_map.get(string)
+        if index is None:
+            self.unique_map[string] = 0
+        else:
+            index += 1
+            self.unique_map[string] = index
+            string = f"{string}_{index}"
+        return string
 
 
 

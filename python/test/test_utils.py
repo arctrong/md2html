@@ -224,3 +224,31 @@ class UtilTest(unittest.TestCase):
         ):
             with self.subTest(test_name=case[0]):
                 self.assertEqual(case[2], strip_empty_lines(case[1]))
+
+    def test_slugify(self):
+        test_cases = [
+            ("Hello, World!", "hello_world"),
+            ("Привет", "vwoily"),
+            ("123 Numbers", "123_numbers"),
+            ("Mixed Русский and English", "mixed_wzxxqop_and_english"),
+            ("Special & Characters@Test", "special_characters_test"),
+            ("ALLCAPS", "allcaps"),
+            ("", ""),
+        ]
+        for input_text, expected_output in test_cases:
+            with self.subTest(input_text=input_text):
+                self.assertEqual(expected_output, slugify(input_text))
+
+    def test_unique_indexer(self):
+        unique_indexer = UniqueIndexer()
+        inputs = [
+            "hello", "hello", "hello",
+            "test", "test", "test",
+        ]
+        expected_outputs = [
+            "hello", "hello_1", "hello_2",
+            "test", "test_1", "test_2",
+        ]
+        results = [unique_indexer.get_unique(text) for text in inputs]
+        self.assertEqual(expected_outputs, results)
+
