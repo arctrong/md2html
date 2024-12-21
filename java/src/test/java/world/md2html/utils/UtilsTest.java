@@ -3,6 +3,7 @@ package world.md2html.utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
@@ -215,5 +216,19 @@ class UtilsTest {
     @MethodSource
     void stripEmptyLines(String name, String input, String expected) {
         assertEquals(expected, Utils.stripEmptyLines(input));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'Hello, World!', hello_world",
+            "Привет, vwoily",
+            "123 Numbers, 123_numbers",
+            "Mixed Русский and English, mixed_wzxxqop_and_english",
+            "Special & Characters@Test, special_characters_test",
+            "ALLCAPS, allcaps",
+            "'', ''"
+    })
+    void slugify(String inputText, String expectedOutput) {
+        assertEquals(expectedOutput, Utils.slugify(inputText));
     }
 }

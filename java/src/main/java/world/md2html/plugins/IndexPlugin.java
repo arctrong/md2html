@@ -26,6 +26,7 @@ import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
+import world.md2html.utils.UniqueIndexer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,6 +53,7 @@ import static world.md2html.utils.JsonUtils.OBJECT_MAPPER_FOR_BUILDERS;
 import static world.md2html.utils.JsonUtils.deJson;
 import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
+import static world.md2html.utils.Utils.slugify;
 
 public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
@@ -71,7 +73,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         private ObjectNode documentJson;
         private Document document;
         private String currentLinkPage;
-        private int currentAnchorNumber;
+        private UniqueIndexer uniqueIndexer;
         private Map<String, List<IndexEntry>> indexCache;
         private final Set<String> cachedPageResets = new HashSet<>();
     }
@@ -82,6 +84,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private static final String INDEX_LETTER_ID_PREFIX = "index_letter_";
     private static final String INDEX_LETTER_CLASS = "index-letter";
     private static final String INDEX_LETTERS_BLOCK_CLASS = "index_letters";
+    private static final int ANCHOR_NAME_LENGTH_LIMIT = 50;
 
     private Map<String, IndexData> indexData;
 
@@ -231,7 +234,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                         indexData.getDocument().getOutput() + "' against '" +
                         document.getOutput() + "': " + e.getMessage(), e);
             }
-            indexData.setCurrentAnchorNumber(0);
+            indexData.setUniqueIndexer(new UniqueIndexer());
         }
     }
 
@@ -302,11 +305,17 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
         }
 
         List<IndexEntry> anchors = indexCache.get(document.getOutput());
-        int currentAnchorNumber = indexData.getCurrentAnchorNumber() + 1;
-        String anchorName = INDEX_ENTRY_ANCHOR_PREFIX + marker.toLowerCase() + "_" +
-                currentAnchorNumber;
+
+        UniqueIndexer uniqueIndexer = indexData.getUniqueIndexer();
+
+        String anchorName = String.join("_", terms);
+        anchorName = slugify(anchorName);
+        if (anchorName.length() > ANCHOR_NAME_LENGTH_LIMIT) {
+            anchorName = slugify(anchorName).substring(0, ANCHOR_NAME_LENGTH_LIMIT);
+        }
+        anchorName = uniqueIndexer.getUnique(anchorName);
+        anchorName = INDEX_ENTRY_ANCHOR_PREFIX + marker.toLowerCase() + "_" + anchorName;
         String anchorText = "<a name=\"" + anchorName + "\"></a>";
-        indexData.setCurrentAnchorNumber(currentAnchorNumber);
 
         for (String term : terms) {
             String normalizedTerm = term.trim();

@@ -29,6 +29,9 @@ public class Utils {
         R apply() throws Exception;
     }
 
+    private static final Pattern NON_LATIN_ALPHANUMERIC_REGEX = Pattern.compile("[^a-z0-9]");
+    private static final Pattern MULTIPLE_UNDERSCORES_REGEX = Pattern.compile("__+");
+
     public static final Map<Path, String> CACHED_FILES = new HashMap<>();
 
     public static boolean isNullOrFalse(Object object) {
@@ -309,4 +312,26 @@ public class Utils {
             return string.substring(start, end);
         }
     }
+
+    public static String slugify(String string) {
+        Matcher matcher = NON_LATIN_ALPHANUMERIC_REGEX.matcher(string.toLowerCase());
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            String match = matcher.group();
+            char replacement;
+            int code = match.charAt(0);
+            if (code > 127) {
+                replacement = (char) ((code % 26) + 97);
+            } else {
+                replacement = '_';
+            }
+            matcher.appendReplacement(result, String.valueOf(replacement));
+        }
+        matcher.appendTail(result);
+
+        String processed = MULTIPLE_UNDERSCORES_REGEX.matcher(result.toString())
+                .replaceAll("_");
+        return processed.replaceAll("^_+|_+$", "");
+    }
+
 }
