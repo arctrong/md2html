@@ -352,14 +352,14 @@ See <a href="plugins.html#relative_paths_plugin">"relative-paths" plugin</a> for
 <pre class="highlight"><code>[![](../../pict/target.png)](page.html)</code></pre>
 <p>Then we will get a clickable image that works as a link:</p>
 <p><a href="https://en.wikipedia.org/wiki/Penrose_tiling" title="Penrose"><img alt="" src="../../pict/penrose_small.png" /></a></p>
-<p><a name="index_entry_index_1"></a>
+<p><a name="index_entry_index_wide_image_fit_image"></a>
 When an image is too wide we may want it to fit into the page width.
 <a href="#attribute_lists"><em>Attribute lists</em></a> may be used for this with the following classes defined
 in the provided CSS:</p>
 <pre class="highlight"><code>![](&lt;!--path pict--&gt;wide_image.png){.w-fit .img-frame}</code></pre>
 <p>The result is:</p>
 <p><img alt="" class="w-fit img-frame" src="../../pict/wide_image.png" /></p>
-<p id="fake_image"><a name="index_entry_index_2"></a>
+<p id="fake_image"><a name="index_entry_index_image_frame_frame_image"></a>
 The <code>img-frame</code> class is optional. An image may have the same background as the page and because
 of its content its borders may be unclear. In such cases a frame may show it explicitly. Here are
 the other examples:</p>
@@ -438,7 +438,7 @@ The second picture has local white underlying plate and probably looks better.</
 </ul>
 </blockquote>
 <hr />
-<p><a name="index_entry_index_3"></a></p>
+<p><a name="index_entry_index_tables"></a></p>
 <h1 id="tables">Tables</h1>
 <p>Tables are added with the syntax like this:</p>
 <pre class="highlight"><code>Item No | Name  | Description   | Price
@@ -594,7 +594,7 @@ element right before a table:</p>
 </tbody>
 </table>
 <hr />
-<p><a name="index_entry_index_4"></a></p>
+<p><a name="index_entry_index_fenced_code_blocks"></a></p>
 <h1 id="fenced-code-blocks">Fenced code blocks</h1>
 <p>Fenced code blocks may be set up by four-space indent, or by four backticks (<code>````</code>), i.e.
 the following markup:</p>
@@ -872,7 +872,7 @@ Welcome person #5!</code></pre>
 &gt;type temp_file.txt
 I write a file</code></pre>
 <hr />
-<p><a name="index_entry_index_5"></a></p>
+<p><a name="index_entry_index_admonitions"></a></p>
 <h1 id="admonitions">Admonitions</h1>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
@@ -917,7 +917,7 @@ important information may be easily missed by the reader.</p>
 </div>
 </div>
 <hr />
-<p><a name="index_entry_index_6"></a></p>
+<p><a name="index_entry_index_attribute_lists"></a></p>
 <h1 id="attribute_lists">Attribute lists</h1>
 <p>Attribute lists let add attributes to HTML tags. More details may be found at:</p>
 <ul>
@@ -1017,13 +1017,13 @@ attributes will be assigned to the enclosing paragraph.</p>
 <p>If the fool would persist in his folly, he would become wise.</p>
 <p class="right">&mdash; <em>William Blake, "Proverbs of Hell"</em></p>
 </blockquote>
-<p><a name="index_entry_index_7"></a>
+<p><a name="index_entry_index_right_align_align_right"></a>
 The source of the above quote is aligned to the right. Here's how it is done:</p>
 <pre class="highlight"><code>&gt; If the fool would persist in his folly, he would become wise.
 &gt; 
 &gt; --- *William Blake, "Proverbs of Hell"*
 &gt; {.right}</code></pre>
-<p><a name="index_entry_index_8"></a>
+<p><a name="index_entry_index_hide"></a>
 In some cases an element must be hidden. For example: <em>Do you see a <strong class="hide">gopher</strong>?
 But it still exists!</em> Here's what actually was written:</p>
 <pre class="highlight"><code>_Do you see a **gopher**{.hide}? But it still exists!_</code></pre>

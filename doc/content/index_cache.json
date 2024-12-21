@@ -2,36 +2,36 @@
   "readme.html": [
     {
       "entry": "Markdown",
-      "link": "../../readme.html#index_entry_index_1",
+      "link": "../../readme.html#index_entry_index_markdown",
       "title": "Home"
     }
   ],
   "doc/content/sections/overview.html": [
     {
       "entry": "History",
-      "link": "sections/overview.html#index_entry_index_1",
+      "link": "sections/overview.html#index_entry_index_history",
       "title": "Overview"
     },
     {
       "entry": "Java implementation",
-      "link": "sections/overview.html#index_entry_index_2",
+      "link": "sections/overview.html#index_entry_index_java_implementation",
       "title": "Overview"
     },
     {
       "entry": "Pelican static site generator",
-      "link": "sections/overview.html#index_entry_index_3",
+      "link": "sections/overview.html#index_entry_index_pelican_static_site_generator",
       "title": "Overview"
     }
   ],
   "doc/content/sections/quick_start.html": [
     {
       "entry": "quick start script",
-      "link": "sections/quick_start.html#index_entry_index_1",
+      "link": "sections/quick_start.html#index_entry_index_quick_start_script",
       "title": "Quick start"
     },
     {
       "entry": "quick start, manual",
-      "link": "sections/quick_start.html#index_entry_index_2",
+      "link": "sections/quick_start.html#index_entry_index_quick_start_manual",
       "title": "Quick start"
     }
   ],
@@ -39,236 +39,236 @@
   "doc/content/sections/usage.html": [
     {
       "entry": "Linux",
-      "link": "sections/usage.html#index_entry_index_1",
+      "link": "sections/usage.html#index_entry_index_linux",
       "title": "Usage"
     },
     {
       "entry": "argument file",
-      "link": "sections/usage.html#index_entry_index_2",
+      "link": "sections/usage.html#index_entry_index_argument_file",
       "title": "Usage"
     },
     {
       "entry": "command scripts",
-      "link": "sections/usage.html#index_entry_index_3",
+      "link": "sections/usage.html#index_entry_index_command_scripts_double_click_script",
       "title": "Usage"
     },
     {
       "entry": "double-click script",
-      "link": "sections/usage.html#index_entry_index_3",
+      "link": "sections/usage.html#index_entry_index_command_scripts_double_click_script",
       "title": "Usage"
     },
     {
       "entry": "context menu items",
-      "link": "sections/usage.html#index_entry_index_4",
+      "link": "sections/usage.html#index_entry_index_context_menu_items",
       "title": "Usage"
     },
     {
       "entry": "legacy mode",
-      "link": "sections/usage.html#index_entry_index_5",
+      "link": "sections/usage.html#index_entry_index_legacy_mode",
       "title": "Usage"
     },
     {
       "entry": "legacy mode",
-      "link": "sections/usage.html#index_entry_index_6",
+      "link": "sections/usage.html#index_entry_index_legacy_mode_1",
       "title": "Usage"
     }
   ],
   "doc/content/sections/page_content.html": [
     {
       "entry": "wide image",
-      "link": "sections/page_content.html#index_entry_index_1",
+      "link": "sections/page_content.html#index_entry_index_wide_image_fit_image",
       "title": "Page content"
     },
     {
       "entry": "fit image",
-      "link": "sections/page_content.html#index_entry_index_1",
+      "link": "sections/page_content.html#index_entry_index_wide_image_fit_image",
       "title": "Page content"
     },
     {
       "entry": "image frame",
-      "link": "sections/page_content.html#index_entry_index_2",
+      "link": "sections/page_content.html#index_entry_index_image_frame_frame_image",
       "title": "Page content"
     },
     {
       "entry": "frame, image",
-      "link": "sections/page_content.html#index_entry_index_2",
+      "link": "sections/page_content.html#index_entry_index_image_frame_frame_image",
       "title": "Page content"
     },
     {
       "entry": "tables",
-      "link": "sections/page_content.html#index_entry_index_3",
+      "link": "sections/page_content.html#index_entry_index_tables",
       "title": "Page content"
     },
     {
       "entry": "fenced code blocks",
-      "link": "sections/page_content.html#index_entry_index_4",
+      "link": "sections/page_content.html#index_entry_index_fenced_code_blocks",
       "title": "Page content"
     },
     {
       "entry": "admonitions",
-      "link": "sections/page_content.html#index_entry_index_5",
+      "link": "sections/page_content.html#index_entry_index_admonitions",
       "title": "Page content"
     },
     {
       "entry": "attribute lists",
-      "link": "sections/page_content.html#index_entry_index_6",
+      "link": "sections/page_content.html#index_entry_index_attribute_lists",
       "title": "Page content"
     },
     {
       "entry": "right align",
-      "link": "sections/page_content.html#index_entry_index_7",
+      "link": "sections/page_content.html#index_entry_index_right_align_align_right",
       "title": "Page content"
     },
     {
       "entry": "align right",
-      "link": "sections/page_content.html#index_entry_index_7",
+      "link": "sections/page_content.html#index_entry_index_right_align_align_right",
       "title": "Page content"
     },
     {
       "entry": "hide",
-      "link": "sections/page_content.html#index_entry_index_8",
+      "link": "sections/page_content.html#index_entry_index_hide",
       "title": "Page content"
     }
   ],
   "doc/content/sections/page_content_dark.html": [
     {
       "entry": "wide image",
-      "link": "sections/page_content_dark.html#index_entry_index_1",
+      "link": "sections/page_content_dark.html#index_entry_index_wide_image_fit_image",
       "title": "Page content (dark)"
     },
     {
       "entry": "fit image",
-      "link": "sections/page_content_dark.html#index_entry_index_1",
+      "link": "sections/page_content_dark.html#index_entry_index_wide_image_fit_image",
       "title": "Page content (dark)"
     },
     {
       "entry": "image frame",
-      "link": "sections/page_content_dark.html#index_entry_index_2",
+      "link": "sections/page_content_dark.html#index_entry_index_image_frame_frame_image",
       "title": "Page content (dark)"
     },
     {
       "entry": "frame, image",
-      "link": "sections/page_content_dark.html#index_entry_index_2",
+      "link": "sections/page_content_dark.html#index_entry_index_image_frame_frame_image",
       "title": "Page content (dark)"
     },
     {
       "entry": "tables",
-      "link": "sections/page_content_dark.html#index_entry_index_3",
+      "link": "sections/page_content_dark.html#index_entry_index_tables",
       "title": "Page content (dark)"
     },
     {
       "entry": "fenced code blocks",
-      "link": "sections/page_content_dark.html#index_entry_index_4",
+      "link": "sections/page_content_dark.html#index_entry_index_fenced_code_blocks",
       "title": "Page content (dark)"
     },
     {
       "entry": "admonitions",
-      "link": "sections/page_content_dark.html#index_entry_index_5",
+      "link": "sections/page_content_dark.html#index_entry_index_admonitions",
       "title": "Page content (dark)"
     },
     {
       "entry": "attribute lists",
-      "link": "sections/page_content_dark.html#index_entry_index_6",
+      "link": "sections/page_content_dark.html#index_entry_index_attribute_lists",
       "title": "Page content (dark)"
     },
     {
       "entry": "right align",
-      "link": "sections/page_content_dark.html#index_entry_index_7",
+      "link": "sections/page_content_dark.html#index_entry_index_right_align_align_right",
       "title": "Page content (dark)"
     },
     {
       "entry": "align right",
-      "link": "sections/page_content_dark.html#index_entry_index_7",
+      "link": "sections/page_content_dark.html#index_entry_index_right_align_align_right",
       "title": "Page content (dark)"
     },
     {
       "entry": "hide",
-      "link": "sections/page_content_dark.html#index_entry_index_8",
+      "link": "sections/page_content_dark.html#index_entry_index_hide",
       "title": "Page content (dark)"
     }
   ],
   "doc/content/sections/templates.html": [
     {
       "entry": "template",
-      "link": "sections/templates.html#index_entry_index_1",
+      "link": "sections/templates.html#index_entry_index_template_mustache",
       "title": "Templates"
     },
     {
       "entry": "Mustache",
-      "link": "sections/templates.html#index_entry_index_1",
+      "link": "sections/templates.html#index_entry_index_template_mustache",
       "title": "Templates"
     },
     {
       "entry": "CSS",
-      "link": "sections/templates.html#index_entry_index_2",
+      "link": "sections/templates.html#index_entry_index_css",
       "title": "Templates"
     },
     {
       "entry": "themes",
-      "link": "sections/templates.html#index_entry_index_3",
+      "link": "sections/templates.html#index_entry_index_themes",
       "title": "Templates"
     },
     {
       "entry": "dark theme",
-      "link": "sections/templates.html#index_entry_index_4",
+      "link": "sections/templates.html#index_entry_index_dark_theme_theme_dark",
       "title": "Templates"
     },
     {
       "entry": "theme, dark",
-      "link": "sections/templates.html#index_entry_index_4",
+      "link": "sections/templates.html#index_entry_index_dark_theme_theme_dark",
       "title": "Templates"
     }
   ],
   "doc/content/sections/plugins.html": [
     {
       "entry": "plugins",
-      "link": "sections/plugins.html#index_entry_index_1",
+      "link": "sections/plugins.html#index_entry_index_plugins",
       "title": "Plugins"
     },
     {
       "entry": "page flows",
-      "link": "sections/plugins.html#index_entry_index_2",
+      "link": "sections/plugins.html#index_entry_index_page_flows",
       "title": "Plugins"
     },
     {
       "entry": "page metadata",
-      "link": "sections/plugins.html#index_entry_index_3",
+      "link": "sections/plugins.html#index_entry_index_page_metadata",
       "title": "Plugins"
     },
     {
       "entry": "index",
-      "link": "sections/plugins.html#index_entry_index_4",
+      "link": "sections/plugins.html#index_entry_index_index",
       "title": "Plugins"
     }
   ],
   "doc/content/sections/reference.html": [
     {
       "entry": "GLOB",
-      "link": "sections/reference.html#index_entry_index_1",
+      "link": "sections/reference.html#index_entry_index_glob",
       "title": "Reference"
     }
   ],
   "doc/content/sections/development.html": [
     {
       "entry": "end-to-end tests",
-      "link": "sections/development.html#index_entry_index_1",
+      "link": "sections/development.html#index_entry_index_end_to_end_tests_e2e_tests",
       "title": "Development"
     },
     {
       "entry": "E2E tests",
-      "link": "sections/development.html#index_entry_index_1",
+      "link": "sections/development.html#index_entry_index_end_to_end_tests_e2e_tests",
       "title": "Development"
     }
   ],
   "doc/content/sections/ref/glossary.html": [
     {
       "entry": "study notes",
-      "link": "sections/ref/glossary.html#index_entry_index_1",
+      "link": "sections/ref/glossary.html#index_entry_index_study_notes",
       "title": "Glossary"
     },
     {
       "entry": "sidesteps",
-      "link": "sections/ref/glossary.html#index_entry_index_2",
+      "link": "sections/ref/glossary.html#index_entry_index_sidesteps",
       "title": "Glossary"
     }
   ],
