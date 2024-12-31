@@ -10,7 +10,7 @@ pre>code.language-wrapped-conf,
 pre>code.language-wrapped-ini, pre>code.language-wrapped-prop, pre>code.language-wrapped-jaml,
 pre>code.language-wrapped-unixscript, pre>code.language-wrapped-bash,
 pre>code.language-wrapped-cmd, pre>code.language-wrapped-bat,
-pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
+pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell, pre>code.language-wrapped-shell-error
 {
     white-space: pre-wrap;
     word-break: break-word;
@@ -29,7 +29,7 @@ pre>code.language-conf,
 pre>code.language-ini, pre>code.language-prop, pre>code.language-jaml,
 pre>code.language-unixscript, pre>code.language-bash,
 pre>code.language-cmd, pre>code.language-bat,
-pre>code.language-unixshell, pre>code.language-winshell,
+pre>code.language-unixshell, pre>code.language-winshell, pre>code.language-shell-error,
 pre>code.language-wrapped-py, pre>code.language-wrapped-java, pre>code.language-wrapped-kt,
 pre>code.language-wrapped-c, pre>code.language-wrapped-cpp,
 pre>code.language-wrapped-js, pre>code.language-wrapped-sql,
@@ -41,7 +41,7 @@ pre>code.language-wrapped-conf,
 pre>code.language-wrapped-ini, pre>code.language-wrapped-prop, pre>code.language-wrapped-jaml,
 pre>code.language-wrapped-unixscript, pre>code.language-wrapped-bash,
 pre>code.language-wrapped-cmd, pre>code.language-wrapped-bat,
-pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell
+pre>code.language-wrapped-unixshell, pre>code.language-wrapped-winshell, pre>code.language-wrapped-shell-error
 {
   padding-top: 40px;
 }
@@ -57,7 +57,7 @@ pre>code.language-conf::before,
 pre>code.language-ini::before, pre>code.language-prop::before, pre>code.language-jaml::before,
 pre>code.language-unixscript::before, pre>code.language-bash::before,
 pre>code.language-cmd::before, pre>code.language-bat::before,
-pre>code.language-unixshell::before, pre>code.language-winshell::before,
+pre>code.language-unixshell::before, pre>code.language-winshell::before, pre>code.language-shell-error::before,
 pre>code.language-wrapped-py::before, pre>code.language-wrapped-java::before,
 pre>code.language-wrapped-kt::before,
 pre>code.language-wrapped-c::before, pre>code.language-wrapped-cpp::before,
@@ -71,7 +71,7 @@ pre>code.language-wrapped-ini::before, pre>code.language-wrapped-prop::before,
 pre>code.language-wrapped-jaml::before,
 pre>code.language-wrapped-unixscript::before, pre>code.language-wrapped-bash::before,
 pre>code.language-wrapped-cmd::before, pre>code.language-wrapped-bat::before,
-pre>code.language-wrapped-unixshell::before, pre>code.language-wrapped-winshell::before
+pre>code.language-wrapped-unixshell::before, pre>code.language-wrapped-winshell::before, pre>code.language-wrapped-shell-error::before
 {
     display: block;
     position: absolute;
@@ -170,4 +170,8 @@ pre>code.language-unixshell::before, pre>code.language-wrapped-unixshell::before
 
 pre>code.language-winshell::before, pre>code.language-wrapped-winshell::before {
     content: "Windows shell";
+}
+
+pre>code.language-shell-error::before, pre>code.language-wrapped-shell-error::before {
+    content: "Shell";
 }

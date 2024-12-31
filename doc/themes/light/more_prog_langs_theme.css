@@ -89,7 +89,8 @@ pre>code.language-bat, pre>code.language-wrapped-bat
 }
 
 pre>code.language-unixshell, pre>code.language-wrapped-unixshell,
-pre>code.language-winshell, pre>code.language-wrapped-winshell
+pre>code.language-winshell, pre>code.language-shell-error,
+pre>code.language-wrapped-winshell, pre>code.language-wrapped-shell-error
 {
     color: floralwhite;
     border-color: darkslategray;
@@ -102,6 +103,11 @@ pre>code.language-unixshell, pre>code.language-wrapped-unixshell {
 
 pre>code.language-winshell, pre>code.language-wrapped-winshell {
     color: floralwhite;
+}
+
+pre>code.language-shell-error, pre>code.language-wrapped-shell-error {
+    color: #ff6b68;
+    border-color: #ff6b68;
 }
 
 

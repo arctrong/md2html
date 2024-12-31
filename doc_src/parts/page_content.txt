@@ -792,6 +792,12 @@ Welcome person #5!
 I write a file
 ````
 
+<div class="blockSrc">shell-error</div>
+
+````wrapped-shell-error
+Exception in thread "main" java.lang.IllegalArgumentException: Cannot invoke beanutilsdemo.MyBean.setEnumValue on bean class 'class beanutilsdemo.MyBean' - argument type mismatch - had objects of type "java.lang.String" but expected signature "beanutilsdemo.MyEnum"
+````
+
 ----------------------------------------------------------------------------------------------------
 <!--index admonitions -->
 # Admonitions
