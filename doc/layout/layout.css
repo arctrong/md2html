@@ -195,4 +195,10 @@ div.sidebar h3 {
     vertical-align: top;
 }
 
+.page-title {
+    font-size: 44px;
+    font-weight: bold;
+    margin: 0 0 30px 0;
+}
+
 
