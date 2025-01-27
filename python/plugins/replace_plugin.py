@@ -41,7 +41,8 @@ class ReplacePlugin(Md2HtmlPlugin):
     def is_blank(self) -> bool:
         return not bool(self.metadata_handlers)
 
-    def accept_app_data(self, plugins: list, options: Options, metadata_handlers: PageMetadataHandlers):
+    def accept_app_data(self, plugins: list, options: Options,
+                        metadata_handlers: PageMetadataHandlers):
         self.all_metadata_handlers = metadata_handlers
 
     def page_metadata_handlers(self):

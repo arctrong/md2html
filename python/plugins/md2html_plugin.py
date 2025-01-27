@@ -40,7 +40,8 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def accept_app_data(self, plugins: list, options: Options, metadata_handlers: PageMetadataHandlers):
+    def accept_app_data(self, plugins: list, options: Options,
+                        metadata_handlers: PageMetadataHandlers):
         pass
 
     def accept_document_list(self, docs: List[Document]):
@@ -90,7 +91,8 @@ class Md2HtmlPlugin(ABC):
         If the plugin itself processes metadata in its own content, it must:
 
         - send forward the provided `visited_markers` collection
-        - and state the key that must be used for cycle detection (see the existing plugins for examples).
+        - and state the key that must be used for cycle detection (see the existing plugins
+            for examples).
         """
         return metadata_section
 

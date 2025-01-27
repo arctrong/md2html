@@ -76,7 +76,7 @@ public class PageMetadataHandlersWrapper {
             visitedMarkers = visitedMarkers == null ? new LinkedHashSet<>() : visitedMarkers;
             if (visitedMarkers.contains(recursiveMarker)) {
                 throw new UserError("Cycle detected at marker: " + recursiveMarker +
-                        ", path is [" + String.join(",", visitedMarkers) + "]");
+                        ", the path is [" + String.join(",", visitedMarkers) + "]");
             }
             visitedMarkers.add(recursiveMarker);
             // Different plugin may have their peculiarities, so we cannot be completely sure
@@ -84,7 +84,7 @@ public class PageMetadataHandlersWrapper {
             if (visitedMarkers.size() > RECURSIVE_MAX_DEPTH) {
                 throw new UserError("Cycle SUSPECTED with recursive depth " + RECURSIVE_MAX_DEPTH +
                         "at marker: " + recursiveMarker +
-                        ", path is [" + String.join("\n", visitedMarkers) + "]");
+                        ", the path is [" + String.join("\n", visitedMarkers) + "]");
             }
         }
 

@@ -64,8 +64,8 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
                 done = end + METADATA_END_LEN
 
 
-def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, doc: Union[Document, None],
-                            extract_only=False,
+def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers,
+                            doc: Union[Document, None], extract_only=False,
                             # Using a `dict` as there's no standard ordered set
                             visited_markers: Union[Dict[str, None], None] = None,
                             recursive_marker: Union[str, None] = None
@@ -74,14 +74,14 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers, 
         visited_markers = visited_markers or {}
         if recursive_marker in visited_markers:
             raise UserError(f"Cycle detected at marker: {recursive_marker}, "
-                            f"path is [{','.join(visited_markers)}]")
+                            f"the path is [{','.join(visited_markers)}]")
         visited_markers[recursive_marker] = None
         # Different plugin may have their peculiarities, so we cannot be completely sure
         # that ALL cycles are detected in ALL possible cases.
         if len(visited_markers) > RECURSIVE_MAX_DEPTH:
             cycle_path = '\n'.join(visited_markers)
             raise UserError(f"Cycle SUSPECTED with recursive depth {RECURSIVE_MAX_DEPTH} "
-                            f"at marker: {recursive_marker}, path is [{cycle_path}]")
+                            f"at marker: {recursive_marker}, the path is [{cycle_path}]")
 
     marker_handlers = page_metadata_handlers.marker_handlers
     new_md_lines_list = []
