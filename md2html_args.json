@@ -1,4 +1,7 @@
 {
+    "title": "MD2HTML",
+    "logo": "doc/favicon.png",
+    "home-page": "readme.html",
     "options": {
         "verbose": true
     },

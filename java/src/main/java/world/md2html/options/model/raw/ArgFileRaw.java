@@ -13,6 +13,10 @@ import java.util.Map;
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = ArgFileRaw.ArgFileRawBuilder.class)
 public class ArgFileRaw {
+    String title;
+    String logo;
+    @JsonProperty("home-page")
+    String homePage;
     ArgFileOptionsRaw options;
     @JsonProperty("default")
     ArgFileDocumentRaw defaultSection;

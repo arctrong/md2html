@@ -185,16 +185,22 @@ _Argument file_ format is JSON [<!--ref json-->].
     For example, if `"plugins"` is replaced with `"plugins1"` then all plugins will be disabled.
     Still the _argument file_ format defines necessary elements and other rules that will
     be checked before processing.
-    
+
 <a name="section_list"></a>
 The following is the detailed _argument file_ format description by sections:
 
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
+title\* | string | No | Writing work title
+logo\* | string | No | Logo image (relative the the project root)
+home-page\* | string | No | Writing work start page (relative the the project root)
 [options](#options_section) | object | No | Options for the whole program run
 [default](#default_section) | object | No | Default options for the documents
 [documents](#documents_section) | array of objects | Yes | Documents that will be processed
 [plugins](#plugins_section) | object | No | Plugins that will be used for the documents processing
+
+\* As for now, the "title", "logo" and "home-page" properties are not processed by the program.
+This metadata may be used by other programs, e.g., for cataloguing purpose.
 
 
 <a name="options_section"></a>
