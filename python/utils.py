@@ -111,7 +111,11 @@ def strip_extension(path):
 
 
 def first_not_none(*values):
-    return next((v for v in values if v is not None), None)
+    """Returns the first value that is not None, or None if all are None."""
+    for v in values:
+        if v is not None:
+            return v
+    return None
 
 
 def read_lines_from_cached_file(file):

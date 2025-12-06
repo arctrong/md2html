@@ -90,137 +90,137 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
 
 def merge_and_canonize_document(document_item: dict, defaults_item: dict,
                                 cli_args: CliArgDataObject) -> dict:
+    """
+    Merges document definitions with priority: CLI args > documents section > default section.
+    """
 
-    canonized_document_item = {}
+    def get_value(cli_attr_name, doc_key, default_key=None, default_value=None):
+        """Helper to get value with proper priority order."""
+        cli_val = getattr(cli_args, cli_attr_name, None) if cli_attr_name else None
+        doc_val = document_item.get(doc_key)
+        def_key = default_key if default_key else doc_key
+        def_val = defaults_item.get(def_key) if def_key else None
+        return first_not_none(cli_val, doc_val, def_val, default_value)
 
-    input_file = first_not_none(cli_args.input_file,
-                                document_item.get("input"),
-                                defaults_item.get("input"))
-    input_glob = first_not_none(cli_args.input_glob,
-                                document_item.get("input-glob"),
-                                defaults_item.get("input-glob"))
+    def get_bool_flag(cli_attr_name, doc_key, default_key=None, default_value=False):
+        """Helper for boolean flags that can come from CLI."""
+        cli_val = getattr(cli_args, cli_attr_name, None) if cli_attr_name else None
+        cli_bool = True if cli_val else None
+        doc_val = document_item.get(doc_key)
+        def_key = default_key if default_key else doc_key
+        def_val = defaults_item.get(def_key) if def_key else None
+        return first_not_none(cli_bool, doc_val, def_val, default_value)
+
+    input_file = get_value('input_file', 'input')
+    input_glob = get_value('input_glob', 'input-glob')
+
     if input_glob and input_file:
         raise UserError(f"Both input file GLOB and input file name are defined "
                         f"for 'documents' item: {document_item}.")
     elif not input_glob and not input_file:
         raise UserError(f"None of the input file name or input file GLOB is specified "
                         f"for 'documents' item: {document_item}.")
-    canonized_document_item['input'] = input_file
-    canonized_document_item['input-glob'] = input_glob
-    if input_glob:
-        sort_by_file_path = first_not_none(
-            True if cli_args.sort_by_file_path else None,
-            document_item.get("sort-by-file-path"), defaults_item.get("sort-by-file-path"))
-        sort_by_variable = first_not_none(
-            cli_args.sort_by_variable, document_item.get("sort-by-variable"),
-            defaults_item.get("sort-by-variable"))
-        sort_by_title = first_not_none(
-            True if cli_args.sort_by_title else None,
-            document_item.get("sort-by-title"), defaults_item.get("sort-by-title"))
 
-        sorts = []
-        if sort_by_file_path:
-            sorts.append("'sort-by-file-path'")
-        if sort_by_variable:
-            sorts.append("'sort-by-variable'")
-        if sort_by_title:
-            sorts.append("'sort-by-title'")
-        if len(sorts) > 1:
-            raise UserError(f"Incompatible sort options {', '.join(sorts)} for 'documents' "
-                            f"item: {document_item}.")
+    canonized = {
+        'input': input_file,
+        'input-glob': input_glob,
+        'input-root': get_value('input_root', 'input-root', default_value=""),
+        'output-root': get_value('output_root', 'output-root', default_value=""),
+        'output': get_value('output_file', 'output'),
+        'title': get_value('title', 'title'),
+        'code': document_item.get('code'),
+        'title-from-variable': get_value('title_from_variable', 'title-from-variable'),
+        'code-from-variable': get_value(None, 'code-from-variable'),
+        'template': get_value('template', 'template'),
+        'force': get_bool_flag('force', 'force'),
+        'verbose': get_bool_flag('verbose', 'verbose'),
+        'report': get_bool_flag('report', 'report'),
+    }
 
-        canonized_document_item["sort-by-file-path"] = sort_by_file_path
-        canonized_document_item["sort-by-variable"] = sort_by_variable
-        canonized_document_item["sort-by-title"] = sort_by_title
-    canonized_document_item['output'] = first_not_none(cli_args.output_file,
-                                                       document_item.get("output"),
-                                                       defaults_item.get("output"))
-    canonized_document_item['input-root'] = first_not_none(cli_args.input_root,
-                                                           document_item.get("input-root"),
-                                                           defaults_item.get('input-root'),
-                                                           "")
-    canonized_document_item['output-root'] = first_not_none(cli_args.output_root,
-                                                            document_item.get("output-root"),
-                                                            defaults_item.get('output-root'),
-                                                            "")
-    canonized_document_item['title'] = first_not_none(cli_args.title,
-                                                      document_item.get('title'),
-                                                      defaults_item.get('title'))
-    canonized_document_item['code'] = document_item.get('code')
-    canonized_document_item['title-from-variable'] = first_not_none(
-        cli_args.title_from_variable,
-        document_item.get('title-from-variable'),
-        defaults_item.get('title-from-variable'))
-    canonized_document_item['code-from-variable'] = first_not_none(
-        document_item.get('code-from-variable'),
-        defaults_item.get('code-from-variable'))
-    canonized_document_item['template'] = first_not_none(cli_args.template,
-                                                         document_item.get('template'),
-                                                         defaults_item.get('template'))
-    link_css = []
-    include_css = []
-    no_css = False
-    if cli_args.no_css or cli_args.link_css or cli_args.include_css:
-        if cli_args.no_css:
-            no_css = True
-        else:
-            link_css.extend(first_not_none(cli_args.link_css, []))
-            include_css.extend(first_not_none(cli_args.include_css, []))
-    else:
-        link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
-        # TODO Looks like if any of the CSS options is defined in the command line then
-        #  all CSS options are taken from the command line. Need to check whether it's correct.
-        if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
-            q = '\''
-            raise UserError(f"'no-css' parameter incompatible with any of "
-                            f"[{', '.join([q + a + q for a in link_args])}] "
-                            f"in `documents` item: {document_item}.")
-
-        no_css = first_not_none(document_item.get('no-css'), defaults_item.get('no-css'),
-                                False)
-
-        link_css.extend(first_not_none(document_item.get('link-css'),
-                                       defaults_item.get('link-css'), []))
-        link_css.extend(first_not_none(document_item.get('add-link-css'), []))
-        include_css.extend(first_not_none(document_item.get('include-css'),
-                                          defaults_item.get('include-css'), []))
-        include_css.extend(first_not_none(document_item.get('add-include-css'), []))
-
-        if link_css or include_css:
-            no_css = False
-
-    canonized_document_item['link-css'] = link_css
-    canonized_document_item['include-css'] = include_css
-    canonized_document_item['no-css'] = no_css
-    canonized_document_item['force'] = first_not_none(True if cli_args.force else None,
-                                                      document_item.get('force'),
-                                                      defaults_item.get('force'), False)
-    verbose = first_not_none(True if cli_args.verbose else None,
-                             document_item.get('verbose'),
-                             defaults_item.get('verbose'), False)
-    report = first_not_none(True if cli_args.report else None,
-                            document_item.get('report'),
-                            defaults_item.get('report'), False)
-    if verbose and report:
+    if canonized['verbose'] and canonized['report']:
         raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
                         f"item: {document_item}.")
-    canonized_document_item['verbose'] = verbose
-    canonized_document_item['report'] = report
-    # Page flows must be ignored if the 'page-flows' plugin is not defined.
-    # But this is not checked here and must be checked at the following steps.
-    if ((1 if 'page-flows' in document_item else 0) +
-            (1 if 'add-page-flows' in document_item else 0) > 1):
+
+    if input_glob:
+        sort_by_file_path = get_bool_flag('sort_by_file_path', 'sort-by-file-path')
+        sort_by_variable = get_value('sort_by_variable', 'sort-by-variable')
+        sort_by_title = get_bool_flag('sort_by_title', 'sort-by-title')
+
+        active_sorts = []
+        if sort_by_file_path:
+            active_sorts.append("'sort-by-file-path'")
+        if sort_by_variable:
+            active_sorts.append("'sort-by-variable'")
+        if sort_by_title:
+            active_sorts.append("'sort-by-title'")
+
+        if len(active_sorts) > 1:
+            raise UserError(f"Incompatible sort options {', '.join(active_sorts)} for 'documents' "
+                            f"item: {document_item}.")
+
+        canonized.update({
+            "sort-by-file-path": sort_by_file_path,
+            "sort-by-variable": sort_by_variable,
+            "sort-by-title": sort_by_title,
+        })
+
+    css_options = _merge_css_options(document_item, defaults_item, cli_args)
+    canonized.update(css_options)
+
+    if {'page-flows', 'add-page-flows'}.issubset(document_item):
         raise UserError(f"Incompatible 'page-flows' and 'add-page-flows' "
                         f"parameters in the 'documents' item: {document_item}.")
     page_flows = first_not_none(document_item.get('page-flows'),
                                 defaults_item.get('page-flows'), [])
-    canonized_document_item['page-flows'] = page_flows
     add_page_flows = document_item.get("add-page-flows")
     if add_page_flows is not None:
-        for page_flow in add_page_flows:
-            page_flows.append(page_flow)
+        page_flows.extend(add_page_flows)
+    canonized['page-flows'] = page_flows
 
-    return canonized_document_item
+    return canonized
+
+
+def _merge_css_options(document_item: dict, defaults_item: dict,
+                       cli_args: CliArgDataObject) -> dict:
+    """Handles CSS option merging with proper priority (CLI > document > default)."""
+
+    if cli_args.no_css or cli_args.link_css or cli_args.include_css:
+        if cli_args.no_css:
+            return {'no-css': True, 'link-css': [], 'include-css': []}
+        return {
+            'no-css': False,
+            'link-css': cli_args.link_css or [],
+            'include-css': cli_args.include_css or []
+        }
+
+    link_args = ["link-css", "add-link-css", "include-css", "add-include-css"]
+    # TODO Looks like if any of the CSS options is defined in the command line then
+    #  all CSS options are taken from the command line. Need to check whether it's correct.
+    if 'no-css' in document_item and any(document_item.get(k) for k in link_args):
+        q = '\''
+        raise UserError(f"'no-css' parameter incompatible with any of "
+                        f"[{', '.join([q + a + q for a in link_args])}] "
+                        f"in `documents` item: {document_item}.")
+
+    no_css = first_not_none(document_item.get('no-css'),
+                            defaults_item.get('no-css'), False)
+
+    link_css = list(first_not_none(document_item.get('link-css'),
+                                   defaults_item.get('link-css'), []))
+    link_css.extend(first_not_none(document_item.get('add-link-css'), []))
+
+    include_css = list(first_not_none(document_item.get('include-css'),
+                                      defaults_item.get('include-css'), []))
+    include_css.extend(first_not_none(document_item.get('add-include-css'), []))
+
+    if link_css or include_css:
+        no_css = False
+
+    return {
+        'link-css': link_css,
+        'include-css': include_css,
+        'no-css': no_css
+    }
 
 
 def expand_document_globs(documents_item, plugins) -> list:
