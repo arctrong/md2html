@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Dict, Union
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from utils import relativize_relative_resource_path
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -50,6 +50,7 @@ class RelativePathsMetadataHandler:
 
         path = self.paths.get(metadata_str.strip())
         if path is None:
-            return metadata_section
+            return MetadataProcessingResult(metadata_section)
         else:
-            return relativize_relative_resource_path(path, doc.output_file)
+            return MetadataProcessingResult(
+                relativize_relative_resource_path(path, doc.output_file))

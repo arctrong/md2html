@@ -10,7 +10,7 @@ from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import output_page
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from plugins.plugin_utils import list_from_string_or_array
 from utils import UserError, relativize_relative_resource, UniqueIndexer, slugify
 
@@ -182,7 +182,7 @@ class IndexPlugin(Md2HtmlPlugin):
                             "link": f'{index_data.current_link_page}#{anchor_name}',
                             "title": doc.title})
 
-        return anchor_text
+        return MetadataProcessingResult(anchor_text)
 
     def new_page(self, doc: Document):
         if self.finalization_started:

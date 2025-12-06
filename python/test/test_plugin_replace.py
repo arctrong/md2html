@@ -1,6 +1,7 @@
 import unittest
 
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.replace_plugin import ReplacePlugin
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
@@ -29,7 +30,7 @@ class ReplacePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning <!--MARKER1  some context  --> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning [[some context  ]] ending", processed_page)
 
     def test_several_values(self):
@@ -44,11 +45,11 @@ class ReplacePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = 'beginning <!--marker1 ["A", "B"]--> ending'
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning [[A-B]] ending", processed_page)
 
         page_text = 'beginning <!--marker1 ["C", "D"]--> ending'
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning [[C-D]] ending", processed_page)
 
     def test_several_markers(self):
@@ -63,11 +64,11 @@ class ReplacePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning <!--marker1 some-value--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning [[some-value]] ending", processed_page)
 
         page_text = "beginning <!--marker2 some-value--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning [[some-value]] ending", processed_page)
 
     def test_several_instances(self):
@@ -85,11 +86,11 @@ class ReplacePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning <!--marker1 VALUE--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning s1 VALUE e1 ending", processed_page)
 
         page_text = "beginning <!--marker2 VALUE--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning s2 VALUE e2 ending", processed_page)
 
     def test_recursive(self):
@@ -108,11 +109,11 @@ class ReplacePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning <!--m2 V2--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning V2 m2 v1 m1 ending", processed_page)
 
         page_text = "beginning <!--m3 V3--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning V3 m3 <!--m1 v1--> ending", processed_page)
 
     def test_recursive_direct_cycle_must_fail(self):
@@ -130,7 +131,7 @@ class ReplacePluginTest(unittest.TestCase):
 
         page_text = "beginning <!--m1 V1--> ending"
         with self.assertRaises(UserError) as cm:
-            apply_metadata_handlers(page_text, metadata_handlers, doc)
+            apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         message = str(cm.exception).upper()
         self.assertIn("CYCLE", message)
         self.assertIn("M1", message)
@@ -152,7 +153,7 @@ class ReplacePluginTest(unittest.TestCase):
 
         page_text = "beginning <!--m1 V1--> ending"
         with self.assertRaises(UserError) as cm:
-            apply_metadata_handlers(page_text, metadata_handlers, doc)
+            apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         message = str(cm.exception).upper()
         self.assertIn("CYCLE", message)
         self.assertIn("M1,M2,M3", message)

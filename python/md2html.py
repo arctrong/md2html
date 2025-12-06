@@ -9,7 +9,8 @@ from argument_file_utils import load_json_argument_file, complete_arguments_proc
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
 from models.arguments import Arguments
 from output_utils import output_page, MARKDOWN
-from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
+from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers, \
+    join_parsing_results
 from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_extra_plugin_data, \
     complete_plugins_initialization, feed_plugins_with_documents, feed_plugins_with_app_data
 from utils import UserError, read_lines_from_commented_json_file, read_lines_from_cached_file, \
@@ -38,7 +39,11 @@ def md2html(document, plugins, metadata_handlers, options):
     except FileNotFoundError as e:
         raise UserError(f"Error processing page: {type(e).__name__}: {e}")
 
-    md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
+    apply_metadata_result = apply_metadata_handlers(md_lines, metadata_handlers, document)
+    # TODO If deferred (apply_metadata_result.deferPage) postpone the result merging
+    #  and the page rendering
+    md_lines = join_parsing_results(apply_metadata_result.parsingResults, metadata_handlers,
+                                    document)
     MARKDOWN.reset()
     substitutions = {'content': MARKDOWN.convert(source=md_lines),
                      'source_file': relativize_relative_resource(document.input_file,

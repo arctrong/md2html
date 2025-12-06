@@ -1,6 +1,7 @@
 import unittest
 
 from argument_file_utils import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.page_variables_plugin import PageVariablesPlugin
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
@@ -14,7 +15,7 @@ def _parse_metadata(metadata):
     metadata_handlers = register_page_metadata_handlers(args.plugins)
     page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
     plugin.new_page({})
-    apply_metadata_handlers(page_content, metadata_handlers, args.documents[0])
+    apply_and_merge_metadata_handlers(page_content, metadata_handlers, args.documents[0])
     return plugin.variables({})
 
 

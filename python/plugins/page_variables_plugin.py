@@ -6,7 +6,7 @@ from typing import Union, Dict
 from jsonschema import validate, ValidationError
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from utils import UserError, reduce_json_validation_error_message, first_not_none
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -66,7 +66,7 @@ class PageVariablesCollectingMetadataHandler:
             raise UserError(f"Error validating page metadata: {type(e).__name__}: " +
                             reduce_json_validation_error_message(str(e)))
         self.page_variables.update(metadata)
-        return ''
+        return MetadataProcessingResult('')
 
     def variables(self) -> dict:
         return self.page_variables

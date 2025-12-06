@@ -9,7 +9,7 @@ from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import output_page, MARKDOWN
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from plugins.plugin_utils import dict_from_string_or_object
 from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
 
@@ -141,4 +141,5 @@ class WrapCodePlugin(Md2HtmlPlugin):
 
             self.processed_cache[cache_key] = output_file_str
 
-        return relativize_relative_resource(output_file_str, doc.output_file)
+        return MetadataProcessingResult(
+            relativize_relative_resource(output_file_str, doc.output_file))

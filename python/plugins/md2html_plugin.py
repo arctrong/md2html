@@ -15,6 +15,17 @@ class PluginDataUserError(UserError):
     pass
 
 
+class MetadataProcessingResult:
+
+    def __init__(self, result, defer=False):
+        """
+        `result` is the replacement text or an object that a plugin wants to use later
+                (in case of `defer`)
+         """
+        self.result = result
+        self.defer = defer
+
+
 class Md2HtmlPlugin(ABC):
 
     def __init__(self):
@@ -79,14 +90,19 @@ class Md2HtmlPlugin(ABC):
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata,
                              metadata_section: str,
-                             visited_markers: Union[Dict[str, None]] = None) -> str:
+                             visited_markers: Union[Dict[str, None]] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
         """
         Accepts document `doc` where the `metadata` was found, the metadata marker, the
         `metadata` itself (as a string) and the whole section `metadata_section` from
         which the `metadata` was extracted.
 
-        Adjusts the plugin's internal state accordingly, and returns the text that must replace
-        the metadata section in the source text.
+        Adjusts the plugin's internal state accordingly, and returns the processing result.
+
+        `phase=1` means that the method is called on the initial page parsing phase.
+        In this case the plugin may request to defer the page and return something that it
+        wants to receive on the next phase, via the `data_from_prev_phase` argument.
 
         If the plugin itself processes metadata in its own content, it must:
 
@@ -94,7 +110,7 @@ class Md2HtmlPlugin(ABC):
         - and state the key that must be used for cycle detection (see the existing plugins
             for examples).
         """
-        return metadata_section
+        return MetadataProcessingResult(metadata_section)
 
     def variables(self, doc: Document) -> dict:
         return {}

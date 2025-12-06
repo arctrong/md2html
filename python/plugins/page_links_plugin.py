@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Dict, Union
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from utils import relativize_relative_resource
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -45,6 +45,7 @@ class PageLinkMetadataHandler:
         metadata_str = metadata_str.strip()
         destination_page_output = self.pages.get(metadata_str)
         if destination_page_output is None:
-            return metadata_section
+            return MetadataProcessingResult(metadata_section)
         else:
-            return relativize_relative_resource(destination_page_output, doc.output_file)
+            return MetadataProcessingResult(
+                relativize_relative_resource(destination_page_output, doc.output_file))
