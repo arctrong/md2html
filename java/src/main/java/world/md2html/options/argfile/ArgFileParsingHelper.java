@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Value;
 import org.javatuples.Pair;
 import world.md2html.Constants;
 import world.md2html.options.model.ArgFile;
@@ -29,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -167,8 +169,7 @@ public class ArgFileParsingHelper {
     private static ArgFileDocumentRaw mergeAndCanonizeDocumentRaw(ArgFileDocumentRaw documentRaw,
             ArgFileDocumentRaw defaults, CliOptions cliOptions) {
 
-        ArgFileDocumentRaw.ArgFileDocumentRawBuilder argFileDocumentRawBuilder =
-                ArgFileDocumentRaw.builder();
+        ArgFileDocumentRaw.ArgFileDocumentRawBuilder builder = ArgFileDocumentRaw.builder();
 
         // TODO Consider simplification. Probably defaults may be applied first to the documents
         //  (maybe it's easier to do in the Jackson `ObjectNode`), then command line arguments
@@ -187,8 +188,8 @@ public class ArgFileParsingHelper {
                     "for 'documents' item: " + refineToString(documentRaw));
         }
 
-        argFileDocumentRawBuilder.input(inputFile);
-        argFileDocumentRawBuilder.inputGlob(inputGlob);
+        builder.input(inputFile);
+        builder.inputGlob(inputGlob);
 
         if (inputGlob != null) {
             boolean sortByFilePath = cliOptions.isSortByFilePath() ||
@@ -212,109 +213,44 @@ public class ArgFileParsingHelper {
                 throw new UserError("Incompatible sort options " + String.join(", ", sorts) +
                         " for 'documents' item: " + refineToString(documentRaw));
             }
-            argFileDocumentRawBuilder.sortByFilePath(sortByFilePath);
-            argFileDocumentRawBuilder.sortByVariable(sortByVariable);
-            argFileDocumentRawBuilder.sortByTitle(sortByTitle);
+            builder.sortByFilePath(sortByFilePath);
+            builder.sortByVariable(sortByVariable);
+            builder.sortByTitle(sortByTitle);
         }
 
-        String output = firstNotNull(cliOptions.getOutput(), documentRaw.getOutput(),
-                defaults.getOutput());
-        argFileDocumentRawBuilder.output(output);
-        String inputRoot = firstNotNull(cliOptions.getInputRoot(), documentRaw.getInputRoot(),
-                defaults.getInputRoot(), "");
-        argFileDocumentRawBuilder.inputRoot(inputRoot);
-        String outputRoot = firstNotNull(cliOptions.getOutputRoot(), documentRaw.getOutputRoot(),
-                defaults.getOutputRoot(), "");
-        argFileDocumentRawBuilder.outputRoot(outputRoot);
+        builder.output(firstNotNull(cliOptions.getOutput(), documentRaw.getOutput(),
+                defaults.getOutput()));
+        builder.inputRoot(firstNotNull(cliOptions.getInputRoot(), documentRaw.getInputRoot(),
+                defaults.getInputRoot(), ""));
+        builder.outputRoot(firstNotNull(cliOptions.getOutputRoot(), documentRaw.getOutputRoot(),
+                defaults.getOutputRoot(), ""));
+        builder.title(firstNotNull(cliOptions.getTitle(), documentRaw.getTitle(),
+                defaults.getTitle()));
+        builder.code(firstNotNull(documentRaw.getCode(), defaults.getCode()));
+        builder.titleFromVariable(firstNotNull(cliOptions.getTitleFromVariable(),
+                documentRaw.getTitleFromVariable(), defaults.getTitleFromVariable()));
+        builder.codeFromVariable(firstNotNull(documentRaw.getCodeFromVariable(),
+                defaults.getCodeFromVariable()));
+        builder.template(firstNotNull(cliOptions.getTemplate(), documentRaw.getTemplate(),
+                defaults.getTemplate()));
 
-        String title = firstNotNull(cliOptions.getTitle(), documentRaw.getTitle(),
-                defaults.getTitle());
-        argFileDocumentRawBuilder.title(title);
-        String code = firstNotNull(documentRaw.getCode(), defaults.getCode());
-        argFileDocumentRawBuilder.code(code);
-        String titleFromVariable = firstNotNull(cliOptions.getTitleFromVariable(),
-                documentRaw.getTitleFromVariable(), defaults.getTitleFromVariable());
-        argFileDocumentRawBuilder.titleFromVariable(titleFromVariable);
-        String codeFromVariable = firstNotNull(documentRaw.getCodeFromVariable(),
-                defaults.getCodeFromVariable());
-        argFileDocumentRawBuilder.codeFromVariable(codeFromVariable);
-        String templateFile = firstNotNull(cliOptions.getTemplate(), documentRaw.getTemplate(),
-                defaults.getTemplate());
-        argFileDocumentRawBuilder.template(templateFile);
-
-        List<String> linkCss = new ArrayList<>();
-        List<String> includeCss = new ArrayList<>();
-        boolean noCss = false;
-        // TODO Looks like if any of the CSS options is defined in the command line then
-        //  all CSS options are taken from the command line. Need to check whether it's correct.
-        if (cliOptions.isNoCss() || cliOptions.getLinkCss() != null ||
-                cliOptions.getIncludeCss() != null) {
-            if (cliOptions.isNoCss()) {
-                noCss = true;
-            } else {
-                if (cliOptions.getLinkCss() != null) {
-                    linkCss = cliOptions.getLinkCss();
-                }
-                if (cliOptions.getIncludeCss() != null) {
-                    includeCss = cliOptions.getIncludeCss();
-                }
-            }
-        } else {
-            List<String> cssOptions = new ArrayList<>();
-            if (documentRaw.getLinkCss() != null) {
-                cssOptions.add("link-css");
-            }
-            if (documentRaw.getAddLinkCss() != null) {
-                cssOptions.add("add-link-css");
-            }
-            if (documentRaw.getIncludeCss() != null) {
-                cssOptions.add("include-css");
-            }
-            if (documentRaw.getAddIncludeCss() != null) {
-                cssOptions.add("add-include-css");
-            }
-            if (documentRaw.isNoCss() && cssOptions.size() > 0) {
-                throw new UserError("'no-css' parameter incompatible with any of [" +
-                        cssOptions.stream().map(a -> "'" + a + "'")
-                                .collect(Collectors.joining(", ")) +
-                        "] in `documents` item: " + refineToString(documentRaw));
-            }
-            noCss = documentRaw.isNoCss() || defaults.isNoCss();
-
-            Optional.ofNullable(firstNotNull(documentRaw.getLinkCss(), defaults.getLinkCss()))
-                    .ifPresent(linkCss::addAll);
-            Optional.ofNullable(firstNotNull(documentRaw.getAddLinkCss()))
-                    .ifPresent(linkCss::addAll);
-
-            Optional.ofNullable(firstNotNull(documentRaw.getIncludeCss(), defaults.getIncludeCss()))
-                    .ifPresent(includeCss::addAll);
-            Optional.ofNullable(firstNotNull(documentRaw.getAddIncludeCss()))
-                    .ifPresent(includeCss::addAll);
-
-            if (!linkCss.isEmpty() || !includeCss.isEmpty()) {
-                noCss = false;
-            }
-        }
-        argFileDocumentRawBuilder.linkCss(linkCss);
-        argFileDocumentRawBuilder.includeCss(includeCss);
-        argFileDocumentRawBuilder.noCss(noCss);
-
-        argFileDocumentRawBuilder.force(cliOptions.isForce() || documentRaw.isForce() ||
-                defaults.isForce());
+        CssOptions cssOptions = mergeCssOptions(documentRaw, defaults, cliOptions);
+        builder.linkCss(cssOptions.linkCss);
+        builder.includeCss(cssOptions.includeCss);
+        builder.noCss(cssOptions.noCss);
 
         boolean verbose = cliOptions.isVerbose() || documentRaw.isVerbose() ||
                 defaults.isVerbose();
         boolean report = cliOptions.isReport() || documentRaw.isReport() ||
                 defaults.isReport();
         if (verbose && report) {
-            throw new UserError("Incompatible 'report' and 'verbose' parameters for 'documents " +
+            throw new UserError("Incompatible 'report' and 'verbose' parameters for 'documents' " +
                     "item: " + refineToString(documentRaw));
         }
-        argFileDocumentRawBuilder.verbose(verbose);
-        argFileDocumentRawBuilder.report(report);
+        builder.verbose(verbose);
+        builder.report(report);
+        builder.force(cliOptions.isForce() || documentRaw.isForce() || defaults.isForce());
 
-        //  Page flows must be ignored if the 'page-flows' plugin is not defined.
-        //  But this is not checked here and must be checked at the following steps.
         if (documentRaw.getPageFlows() != null && documentRaw.getAddPageFlows() != null) {
             throw new UserError("Incompatible 'page-flows' and 'add-page-flows' parameters " +
                     "in the 'documents' item: " + refineToString(documentRaw));
@@ -322,11 +258,71 @@ public class ArgFileParsingHelper {
         List<String> pageFlows = firstNotNull(documentRaw.getPageFlows(),
                 defaults.getPageFlows(), new ArrayList<>());
         if (documentRaw.getAddPageFlows() != null) {
-            Objects.requireNonNull(pageFlows).addAll(documentRaw.getAddPageFlows());
+            //noinspection ConstantConditions
+            pageFlows.addAll(documentRaw.getAddPageFlows());
         }
-        argFileDocumentRawBuilder.pageFlows(pageFlows);
+        builder.pageFlows(pageFlows);
 
-        return argFileDocumentRawBuilder.build();
+        return builder.build();
+    }
+
+    @Value
+    private static class CssOptions {
+        List<String> linkCss;
+        List<String> includeCss;
+        boolean noCss;
+    }
+
+    private static CssOptions mergeCssOptions(ArgFileDocumentRaw documentRaw,
+            ArgFileDocumentRaw defaults, CliOptions cliOptions) {
+
+        // TODO Looks like if any of the CSS options is defined in the command line then
+        //  all CSS options are taken from the command line. Need to check whether it's correct.
+
+        if (cliOptions.isNoCss() || cliOptions.getLinkCss() != null ||
+                cliOptions.getIncludeCss() != null) {
+            if (cliOptions.isNoCss()) {
+                return new CssOptions(new ArrayList<>(), new ArrayList<>(), true);
+            }
+            return new CssOptions(
+                    firstNotNull(cliOptions.getLinkCss(), new ArrayList<>()),
+                    firstNotNull(cliOptions.getIncludeCss(), new ArrayList<>()),
+                    false);
+        }
+
+        boolean hasLinkArgs = (documentRaw.getLinkCss() != null) ||
+                (documentRaw.getAddLinkCss() != null) ||
+                (documentRaw.getIncludeCss() != null) ||
+                (documentRaw.getAddIncludeCss() != null);
+
+        if (documentRaw.isNoCss() && hasLinkArgs) {
+            List<String> linkArgs = Arrays.asList("link-css", "add-link-css",
+                    "include-css", "add-include-css");
+            throw new UserError("'no-css' parameter incompatible with any of [" +
+                    linkArgs.stream().map(a -> "'" + a + "'")
+                            .collect(Collectors.joining(", ")) +
+                    "] in `documents` item: " + refineToString(documentRaw));
+        }
+
+        boolean noCss = documentRaw.isNoCss() || defaults.isNoCss();
+
+        List<String> linkCss = new ArrayList<>();
+        Optional.ofNullable(firstNotNull(documentRaw.getLinkCss(), defaults.getLinkCss()))
+                .ifPresent(linkCss::addAll);
+        Optional.ofNullable(firstNotNull(documentRaw.getAddLinkCss()))
+                .ifPresent(linkCss::addAll);
+
+        List<String> includeCss = new ArrayList<>();
+        Optional.ofNullable(firstNotNull(documentRaw.getIncludeCss(), defaults.getIncludeCss()))
+                .ifPresent(includeCss::addAll);
+        Optional.ofNullable(firstNotNull(documentRaw.getAddIncludeCss()))
+                .ifPresent(includeCss::addAll);
+
+        if (!linkCss.isEmpty() || !includeCss.isEmpty()) {
+            noCss = false;
+        }
+
+        return new CssOptions(linkCss, includeCss, noCss);
     }
 
     /**
