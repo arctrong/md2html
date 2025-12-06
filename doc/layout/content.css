@@ -219,6 +219,12 @@ img.floatLeft {
     margin-right: 3px;
 }
 
+.wiki::before {
+    position: relative;
+    bottom: -2px;
+    margin-right: 3px;
+}
+
 .right {
     text-align: right;
 }

@@ -146,6 +146,10 @@ div.light_only+p>img, img.light_only {
     content: url("folder_link_dark.png");
 }
 
+.wiki::before {
+    content: url("wiki_link_dark.png");
+}
+
 .th {
     background-color: #374e65;
 }

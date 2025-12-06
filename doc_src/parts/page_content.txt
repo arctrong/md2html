@@ -120,7 +120,10 @@ that will make the link text equal the link location.
 - `[Some title](https://some.url.org){attributes}`
 - `<https://some.url.org>{attributes}`
 
-The following classes are defined in the provided CSS:
+The following classes are defined in the provided CSS to indicate link kinds
+([light scheme](<!--page page_content-->#link_markers),
+[dark scheme](<!--page page_content_dark-->#link_markers)):
+{#link_markers}
 
 Link example | Attributes
 ----|-----
@@ -128,6 +131,7 @@ Link example | Attributes
 [HTML 4.0 Specification (PDF)](https://www.w3.org/TR/1998/REC-html40-19980424/html40.pdf){.doc} | `{.doc}`
 <https://icons.getbootstrap.com/>{.folder} | `{.folder}`
 [The first video on YouTube](https://www.youtube.com/watch?v=jNQXAC9IVRw){.video} | `{.video}`
+[About Wikipedia](https://www.wikipedia.org/){.wiki} | `{.wiki}`
 
 ----------------------------------------------------------------------------------------------------
 <a name="anchor_demo"></a>
@@ -258,9 +262,11 @@ Here is an example:
 <img src="<!--path pict-->light_only.png" /> &nbsp;
 <img src="<!--path pict-->light_only.png" class="light_only" />
 
-The first picture has thin black elements (arms, hands, feet and hair) that
-[don't look well on the dark background](<!--page page_content_dark-->#images_on_dark_background_example).
-The second picture has local white underlying plate and probably looks better.
+[light scheme](<!--page page_content-->#images_on_dark_background_example) |
+[dark scheme](<!--page page_content_dark-->#images_on_dark_background_example)
+
+The first picture has thin black elements (arms, hands, feet and hair) that don't look well on the
+dark background. The second picture has local white underlying plate and probably looks better.
 
 ----------------------------------------------------------------------------------------------------
 # Lists
