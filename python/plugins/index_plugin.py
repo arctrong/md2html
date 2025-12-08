@@ -157,11 +157,13 @@ class IndexPlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return [(self, marker, False) for marker in self.index_data.keys()]
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
-                             metadata_section,
-                             visited_markers: Union[Dict[str, None]] = None):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
         try:
-            terms = list_from_string_or_array(metadata_str.strip())
+            terms = list_from_string_or_array(metadata.strip())
         except UserError as e:
             raise UserError(f"Error in index entry: {str(e)}")
 

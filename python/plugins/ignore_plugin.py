@@ -27,10 +27,12 @@ class IgnorePlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return self.metadata_handlers
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
                              metadata_section: str,
-                             visited_markers: Union[Dict[str, None]] = None):
-        content_start = metadata_section.find(metadata_str)
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
+        content_start = metadata_section.find(metadata)
         prefix = metadata_section[:content_start - len(marker)]
-        suffix = metadata_section[content_start + len(metadata_str):]
-        return MetadataProcessingResult(prefix + metadata_str.lstrip() + suffix)
+        suffix = metadata_section[content_start + len(metadata):]
+        return MetadataProcessingResult(prefix + metadata.lstrip() + suffix)

@@ -48,13 +48,15 @@ class ReplacePlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return self.metadata_handlers
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
                              metadata_section: str,
-                             visited_markers: Union[Dict[str, None]] = None):
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
         # Preserving trailing spaces
-        metadata_str = metadata_str.lstrip()
+        metadata = metadata.lstrip()
         try:
-            metadata = list_from_string_or_array(metadata_str)
+            metadata = list_from_string_or_array(metadata)
         except UserError as e:
             raise UserError(f"Error in replace entry: {str(e)}")
 

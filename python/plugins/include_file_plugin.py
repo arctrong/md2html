@@ -62,14 +62,16 @@ class IncludeFilePlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return [(self, marker, False) for marker in self.data.keys()]
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section,
-                             visited_markers: Union[Dict[str, None]] = None):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
 
         marker_data = self.data[marker]
-
         subsringer = marker_data.subsringer
         try:
-            metadata = dict_from_string_or_object(metadata_str.strip(), "file", self.metadata_schema)
+            metadata = dict_from_string_or_object(metadata.strip(), "file", self.metadata_schema)
         except UserError as e:
             raise UserError(f"Error in inclusion: {str(e)}")
 

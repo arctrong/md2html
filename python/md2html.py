@@ -19,7 +19,7 @@ from utils import UserError, read_lines_from_commented_json_file, read_lines_fro
 WORKING_DIR = Path(__file__).resolve().parent
 
 
-def md2html(document, plugins, metadata_handlers, options):
+def md2html(document, plugins, metadata_handlers, options, deferred_pages):
 
     input_path = Path(document.input_file)
     output_path = Path(document.output_file)
@@ -40,8 +40,11 @@ def md2html(document, plugins, metadata_handlers, options):
         raise UserError(f"Error processing page: {type(e).__name__}: {e}")
 
     apply_metadata_result = apply_metadata_handlers(md_lines, metadata_handlers, document)
-    # TODO If deferred (apply_metadata_result.deferPage) postpone the result merging
-    #  and the page rendering
+
+    if apply_metadata_result.deferPage:
+        deferred_pages[document.output_file] = (document, apply_metadata_result)
+        return
+
     md_lines = join_parsing_results(apply_metadata_result.parsingResults, metadata_handlers,
                                     document)
     MARKDOWN.reset()
@@ -55,6 +58,33 @@ def md2html(document, plugins, metadata_handlers, options):
         print(f'Output file generated: {document.output_file}')
     if document.report:
         print(document.output_file)
+
+
+def md2html_phase2(arguments, deferred_pages):
+    for output_file, (document, apply_metadata_result) in deferred_pages.items():
+        try:
+            for plugin in arguments.plugins:
+                plugin.new_page(document)
+
+            md_lines = join_parsing_results(apply_metadata_result.parsingResults,
+                                            arguments.metadata_handlers, document)
+            MARKDOWN.reset()
+            substitutions = {
+                'content': MARKDOWN.convert(source=md_lines),
+                'source_file': relativize_relative_resource(document.input_file,
+                                                            document.output_file)
+            }
+
+            output_page(document, arguments.plugins, substitutions, arguments.options)
+
+            if document.verbose:
+                print(f'Output file generated: {document.output_file}')
+            if document.report:
+                print(document.output_file)
+
+        except UserError as e:
+            raise UserError(f"Error rendering deferred page '{document.output_file}': "
+                            f"{type(e).__name__}: {e}")
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> Arguments:
@@ -109,16 +139,18 @@ def main():
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
 
+        deferred_pages = {}
         for document in arguments.documents:
             try:
-
-                # TODO Consider removing `plugins` argument and using only `plugins.values()`.
-
-                md2html(document, arguments.plugins, arguments.metadata_handlers, arguments.options)
+                md2html(document, arguments.plugins, arguments.metadata_handlers,
+                        arguments.options, deferred_pages)
             except UserError as e:
                 error_input_file = document.input_file
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
+
+        if deferred_pages:
+            md2html_phase2(arguments, deferred_pages)
 
         for plugin in arguments.plugins:
             try:

@@ -88,9 +88,9 @@ class Md2HtmlPlugin(ABC):
         """
         pass
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata,
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
                              metadata_section: str,
-                             visited_markers: Union[Dict[str, None]] = None,
+                             visited_markers: Union[Dict[str, None], None] = None,
                              phase: int = 1, data_from_prev_phase=None
                              ) -> MetadataProcessingResult:
         """
