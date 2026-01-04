@@ -20,15 +20,16 @@ WORKING_DIR = Path(__file__).resolve().parent
 
 def md2html(document, plugins, metadata_handlers, options):
 
-    input_path = Path(document.input_file)
-    output_path = Path(document.output_file)
-    if not document.force and output_path.exists():
-        output_file_mtime = os.path.getmtime(output_path)
-        input_file_mtime = os.path.getmtime(input_path)
-        if output_file_mtime > input_file_mtime:
-            if document.verbose:
-                print(f'The output file is up-to-date. Skipping: {document.output_file}')
-            return
+    if not document.force:
+        output_path = Path(document.output_file)
+        if output_path.exists():
+            input_path = Path(document.input_file)
+            input_file_mtime = os.path.getmtime(input_path)
+            output_file_mtime = os.path.getmtime(output_path)
+            if output_file_mtime > input_file_mtime:
+                if document.verbose:
+                    print(f'The output file is up-to-date. Skipping: {document.output_file}')
+                return
 
     for plugin in plugins:
         plugin.new_page(document)
@@ -104,6 +105,18 @@ def main():
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
 
+
+        if arguments.options.cache_file:
+
+        # Determine cache file location (same directory as argument file)
+        if cli_args.argument_file:
+            cache_file = Path(cli_args.argument_file).parent / "md2html_cache.json"
+        else:
+            cache_file = WORKING_DIR / "md2html_cache.json"
+
+        # Load build cache
+        cache = BuildCache(cache_file)
+
         for document in arguments.documents:
             try:
 
@@ -121,6 +134,9 @@ def main():
             except UserError as e:
                 raise UserError(f"Error executing finalization action in plugin " +
                                 f"'{type(plugin).__name__}': {e}")
+
+        # Save build cache
+        cache.save()
 
         if arguments.options.verbose:
             end_moment = time.monotonic()

@@ -304,7 +304,9 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
     """
     options_item = canonized_argument_file['options']
     options = Options(verbose=options_item['verbose'],
-                      legacy_mode=options_item['legacy-mode'])
+                      legacy_mode=options_item['legacy-mode'],
+                      cache_file=options_item['cache-file'],
+                      )
 
     documents_page_flows_plugin = {}
     extra_plugin_items = {"page-flows": documents_page_flows_plugin}
