@@ -2,6 +2,7 @@ import glob
 import json
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from typing import Tuple
 
 from jsonschema import validate, ValidationError
 
@@ -293,7 +294,7 @@ def expand_document_globs(documents_item, plugins) -> list:
     return expanded_documents_item
 
 
-def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Arguments, dict):
+def complete_arguments_processing(canonized_argument_file: dict, plugins) -> Tuple[Arguments, dict]:
     """
     Returns a tuple:
 
@@ -305,7 +306,7 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
     options_item = canonized_argument_file['options']
     options = Options(verbose=options_item['verbose'],
                       legacy_mode=options_item['legacy-mode'],
-                      cache_file=options_item['cache-file'],
+                      cache_file=options_item.get('cache-file'),
                       )
 
     documents_page_flows_plugin = {}

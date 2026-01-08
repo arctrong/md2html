@@ -6,6 +6,7 @@ from pathlib import Path
 
 from argument_file_utils import load_json_argument_file, complete_arguments_processing, \
     merge_and_canonize_argument_file
+from build_cache import build_cache_manager_singleton
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
 from models.arguments import Arguments
 from output_utils import output_page, MARKDOWN
@@ -105,17 +106,11 @@ def main():
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
 
-
+        build_cache_manager = build_cache_manager_singleton
         if arguments.options.cache_file:
-
-        # Determine cache file location (same directory as argument file)
-        if cli_args.argument_file:
-            cache_file = Path(cli_args.argument_file).parent / "md2html_cache.json"
-        else:
-            cache_file = WORKING_DIR / "md2html_cache.json"
-
-        # Load build cache
-        cache = BuildCache(cache_file)
+            build_cache_manager.load_build_cache(arguments.options.cache_file,
+                                                 cli_args.argument_file)
+            build_cache_manager.process_build_cache(arguments.options.verbose, arguments.documents)
 
         for document in arguments.documents:
             try:
@@ -135,8 +130,7 @@ def main():
                 raise UserError(f"Error executing finalization action in plugin " +
                                 f"'{type(plugin).__name__}': {e}")
 
-        # Save build cache
-        cache.save()
+        build_cache_manager.save_build_cache(arguments.options.verbose)
 
         if arguments.options.verbose:
             end_moment = time.monotonic()
