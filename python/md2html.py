@@ -22,7 +22,7 @@ WORKING_DIR = Path(__file__).resolve().parent
 
 def configure_logging(verbose: bool):
     if verbose:
-        logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+        logging.basicConfig(level=logging.DEBUG, format="%(message)s", stream=sys.stdout)
     else:
         logging.disable(logging.CRITICAL)
 
