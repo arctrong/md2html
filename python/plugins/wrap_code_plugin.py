@@ -137,8 +137,6 @@ class WrapCodePlugin(Md2HtmlPlugin):
                             self.app_options, variables)
 
                 logger.info('Wrapped output file generated: %s', document_obj.output_file)
-                if document_obj.report:
-                    print(document_obj.output_file)
 
             self.processed_cache[cache_key] = output_file_str
 

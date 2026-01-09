@@ -55,8 +55,6 @@ def md2html(document, plugins, metadata_handlers, options):
     output_page(document, plugins, substitutions, options)
 
     logger.info(f'Output file generated: {document.output_file}')
-    if document.report:
-        print(document.output_file)
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> Arguments:

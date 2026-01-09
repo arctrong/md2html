@@ -219,5 +219,3 @@ class IndexPlugin(Md2HtmlPlugin):
                 json.dump(index_data.index_cache, cache_file, indent=2)
 
             logger.info('Index file generated: %s', index_data.document.output_file)
-            if index_data.document.report:
-                print(index_data.document.output_file)

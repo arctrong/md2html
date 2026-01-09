@@ -61,10 +61,6 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
         'plugins': argument_file_dict.get('plugins', {})
     }
 
-    if bool(options.get('verbose')) and bool(cli_args.report):
-        raise UserError("'verbose' parameter in 'options' section is incompatible "
-                        "with '--report' command line argument.")
-
     options['verbose'] = first_not_none(cli_args.verbose, options.get('verbose'), False)
     options['legacy-mode'] = first_not_none(cli_args.legacy_mode,
                                             options.get('legacy-mode'), False)
@@ -134,12 +130,7 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
         'template': get_value('template', 'template'),
         'force': get_bool_flag('force', 'force'),
         'verbose': get_bool_flag('verbose', 'verbose'),
-        'report': get_bool_flag('report', 'report'),
     }
-
-    if canonized['verbose'] and canonized['report']:
-        raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
-                        f"item: {document_item}.")
 
     if input_glob:
         sort_by_file_path = get_bool_flag('sort_by_file_path', 'sort-by-file-path')
@@ -334,7 +325,6 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
                                    no_css=document_item.get('no-css'),
                                    force=document_item.get('force'),
                                    verbose=document_item.get('verbose'),
-                                   report=document_item.get('report'),
                                    )
         documents.append(document_object)
 
