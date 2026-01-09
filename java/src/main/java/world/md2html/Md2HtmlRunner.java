@@ -15,6 +15,7 @@ import world.md2html.utils.UserError;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static world.md2html.options.argfile.ArgFileParsingHelper.readArgumentFileNode;
@@ -98,7 +99,9 @@ public class Md2HtmlRunner {
             }
         }
 
-        long end = System.nanoTime();
-        log.info("Finished in: " + formatNanoSeconds(end - start));
+        if (log.isLoggable(Level.INFO)) {
+            long end = System.nanoTime();
+            log.info("Finished in: " + formatNanoSeconds(end - start));
+        }
     }
 }

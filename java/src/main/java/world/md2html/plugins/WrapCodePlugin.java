@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -207,8 +208,10 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                     throw new RuntimeException(e);
                 }
                 if (outputFileTime.compareTo(inputFileTime) > 0) {
-                    log.info("Wrapped output file is up-to-date. Skipping: " +
-                            document.getOutput());
+                    if (log.isLoggable(Level.INFO)) {
+                        log.info("Wrapped output file is up-to-date. Skipping: " +
+                                document.getOutput());
+                    }
                     needToGenerate = false;
                 }
             }
@@ -237,7 +240,9 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 Md2Html.outputPage(documentObj, this.plugins, substitutions, this.options,
                         variables);
 
-                log.info("Wrapped output file generated: " + documentObj.getOutput());
+                if (log.isLoggable(Level.INFO)) {
+                    log.info("Wrapped output file generated: " + documentObj.getOutput());
+                }
                 if (documentObj.isReport()) {
                     System.out.println(documentObj.getOutput());
                 }

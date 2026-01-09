@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -253,8 +254,10 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
         for (IndexData indexData : this.indexData.values()) {
             if (indexData.getCachedPageResets().isEmpty()) {
-                log.info("Index file is up-to-date. Skipping: " +
-                        indexData.getDocument().getOutput());
+                if (log.isLoggable(Level.INFO)) {
+                    log.info("Index file is up-to-date. Skipping: " +
+                            indexData.getDocument().getOutput());
+                }
                 return;
             }
             for (Md2HtmlPlugin plugin : this.plugins) {
@@ -279,7 +282,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                         + indexData.getIndexCacheFile(), e);
             }
 
-            log.info("Index file generated: " + indexData.getDocument().getOutput());
+            if (log.isLoggable(Level.INFO)) {
+                log.info("Index file generated: " + indexData.getDocument().getOutput());
+            }
             if (indexData.getDocument().isReport()) {
                 System.out.println(indexData.getDocument().getOutput());
             }

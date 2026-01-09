@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static world.md2html.Md2HtmlUtils.generateDocumentStyles;
@@ -61,7 +62,9 @@ public class Md2Html {
             FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
             FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
             if (outputFileTime.compareTo(inputFileTime) > 0) {
-                log.info("The output file is up-to-date. Skipping: " + document.getOutput());
+                if (log.isLoggable(Level.INFO)) {
+                    log.info("The output file is up-to-date. Skipping: " + document.getOutput());
+                }
                 return;
             }
         }
@@ -91,7 +94,9 @@ public class Md2Html {
 
         outputPage(document, plugins, substitutions, options, null);
 
-        log.info("Output file generated: " + document.getOutput());
+        if (log.isLoggable(Level.INFO)) {
+            log.info("Output file generated: " + document.getOutput());
+        }
         if (document.isReport()) {
             System.out.println(document.getOutput());
         }
