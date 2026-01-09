@@ -199,15 +199,6 @@ public class ArgFileParsingTest {
     }
 
     @Test
-    public void documentVerboseAndReportFlags_NegativeScenario() {
-        UserError e = assertThrows(UserError.class,
-                () -> parseArgumentFile("{\"documents\": [{\"input\": \"index.txt\", " +
-                        "\"verbose\": true, \"report\": true}]}", DUMMY_CLI_OPTIONS));
-        assertTrue(e.getMessage().contains("verbose"));
-        assertTrue(e.getMessage().contains("report"));
-    }
-
-    @Test
     public void overridingWithCliArgs_PositiveScenario() throws Exception {
         ArgFile argFile = parseArgumentFile(
                 "{\"documents\": [{\"input-root\": \"doc_src\", \"output-root\": \"doc\", " +

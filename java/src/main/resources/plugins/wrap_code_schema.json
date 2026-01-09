@@ -15,8 +15,7 @@
                 "no-css": { "type": "boolean" },
                 "add-link-css": { "type": "array", "items": { "type": "string" } },
                 "add-include-css": { "type": "array", "items": { "type": "string" } },
-                "verbose": { "type": "boolean" },
-                "report": { "type": "boolean" }
+                "verbose": { "type": "boolean" }
             }
         }
     },

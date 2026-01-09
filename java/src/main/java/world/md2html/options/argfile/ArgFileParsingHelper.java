@@ -155,11 +155,6 @@ public class ArgFileParsingHelper {
         boolean verbose = cliOptions.isVerbose() || options.isVerbose();
         boolean legacyMode = cliOptions.isLegacyMode() || options.isLegacyMode();
 
-        if (verbose && cliOptions.isReport()) {
-            throw new UserError("'verbose' parameter in 'options' section is incompatible " +
-                    "with '--report' command line argument.");
-        }
-
         return ArgFileOptionsRaw.builder()
                 .verbose(verbose)
                 .legacyMode(legacyMode)
@@ -241,14 +236,7 @@ public class ArgFileParsingHelper {
 
         boolean verbose = cliOptions.isVerbose() || documentRaw.isVerbose() ||
                 defaults.isVerbose();
-        boolean report = cliOptions.isReport() || documentRaw.isReport() ||
-                defaults.isReport();
-        if (verbose && report) {
-            throw new UserError("Incompatible 'report' and 'verbose' parameters for 'documents' " +
-                    "item: " + refineToString(documentRaw));
-        }
         builder.verbose(verbose);
-        builder.report(report);
         builder.force(cliOptions.isForce() || documentRaw.isForce() || defaults.isForce());
 
         if (documentRaw.getPageFlows() != null && documentRaw.getAddPageFlows() != null) {
@@ -373,7 +361,6 @@ public class ArgFileParsingHelper {
                     .noCss(enrichedDocumentRaw.isNoCss())
                     .force(enrichedDocumentRaw.isForce())
                     .verbose(enrichedDocumentRaw.isVerbose())
-                    .report(enrichedDocumentRaw.isReport())
                     .build();
 
             if (uniqueCodes.contains(document.getCode())) {

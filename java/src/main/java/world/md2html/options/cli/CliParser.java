@@ -44,7 +44,6 @@ public class CliParser {
 
     private static final String FORCE = "f";
     private static final String VERBOSE = "v";
-    private static final String REPORT = "r";
     private static final String LEGACY_MODE = "legacy-mode";
 
     private static final int HELP_WIDTH = 80;
@@ -139,12 +138,6 @@ public class CliParser {
                 .hasArg(false)
                 .desc("outputs human readable information messages")
                 .build());
-        cliOptions.addOption(Option.builder(REPORT).longOpt("report")
-                .hasArg(false)
-                .desc("turns on formalized output that may be further automatically processed. " +
-                        "Only if HTML file is generated, the path of this file will be output." +
-                        "Incompatible with -v")
-                .build());
         cliOptions.addOption(Option.builder(null).longOpt(LEGACY_MODE)
                 .hasArg(false)
                 .desc("Allows processing documentation projects prepared for version of the " +
@@ -235,13 +228,7 @@ public class CliParser {
 
         cliOptionsBuilder.force(commandLine.hasOption(FORCE));
         boolean verbose = commandLine.hasOption(VERBOSE);
-        boolean report = commandLine.hasOption(REPORT);
-        if (report && verbose) {
-            throw errorAsException(cliOptions,
-                    "--report and --verbose arguments are not compatible");
-        }
         cliOptionsBuilder.verbose(verbose);
-        cliOptionsBuilder.report(report);
 
         cliOptionsBuilder.legacyMode(commandLine.hasOption(LEGACY_MODE));
 

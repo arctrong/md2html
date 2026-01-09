@@ -243,9 +243,6 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 if (log.isLoggable(Level.INFO)) {
                     log.info("Wrapped output file generated: " + documentObj.getOutput());
                 }
-                if (documentObj.isReport()) {
-                    System.out.println(documentObj.getOutput());
-                }
             }
             this.processedCache.put(cacheKey, outputFileStr);
         }

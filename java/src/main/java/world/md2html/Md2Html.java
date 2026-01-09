@@ -97,9 +97,6 @@ public class Md2Html {
         if (log.isLoggable(Level.INFO)) {
             log.info("Output file generated: " + document.getOutput());
         }
-        if (document.isReport()) {
-            System.out.println(document.getOutput());
-        }
     }
 
     public static void outputPage(Document document, List<Md2HtmlPlugin> plugins,

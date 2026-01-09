@@ -285,9 +285,6 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             if (log.isLoggable(Level.INFO)) {
                 log.info("Index file generated: " + indexData.getDocument().getOutput());
             }
-            if (indexData.getDocument().isReport()) {
-                System.out.println(indexData.getDocument().getOutput());
-            }
         }
     }
 
