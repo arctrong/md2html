@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import world.md2html.Md2Html;
 import world.md2html.options.argfile.ArgFileParseException;
@@ -55,6 +56,7 @@ import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.slugify;
 
+@Slf4j
 public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
     // TODO Consider using Jackson object mapper
@@ -249,10 +251,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
         for (IndexData indexData : this.indexData.values()) {
             if (indexData.getCachedPageResets().isEmpty()) {
-                if (indexData.getDocument().isVerbose()) {
-                    System.out.println("Index file is up-to-date. Skipping: "
-                            + indexData.getDocument().getOutput());
-                }
+                log.info("Index file is up-to-date. Skipping: {}",
+                        indexData.getDocument().getOutput());
                 return;
             }
             for (Md2HtmlPlugin plugin : this.plugins) {
@@ -277,10 +277,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                         + indexData.getIndexCacheFile(), e);
             }
 
-            if (indexData.getDocument().isVerbose()) {
-                System.out.println("Index file generated: " +
-                        indexData.getDocument().getOutput());
-            }
+            log.info("Index file generated: {}", indexData.getDocument().getOutput());
             if (indexData.getDocument().isReport()) {
                 System.out.println(indexData.getDocument().getOutput());
             }

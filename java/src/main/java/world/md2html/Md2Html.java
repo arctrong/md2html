@@ -1,6 +1,7 @@
 package world.md2html;
 
 import com.github.mustachejava.Mustache;
+import lombok.extern.slf4j.Slf4j;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
@@ -35,6 +36,7 @@ import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
+@Slf4j
 public class Md2Html {
 
     private static final String TITLE_PLACEHOLDER = "title";
@@ -57,10 +59,7 @@ public class Md2Html {
             FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
             FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
             if (outputFileTime.compareTo(inputFileTime) > 0) {
-                if (document.isVerbose()) {
-                    System.out.println("The output file is up-to-date. Skipping: "
-                            + document.getOutput());
-                }
+                log.info("The output file is up-to-date. Skipping: {}", document.getOutput());
                 return;
             }
         }
@@ -90,9 +89,7 @@ public class Md2Html {
 
         outputPage(document, plugins, substitutions, options, null);
 
-        if (document.isVerbose()) {
-            System.out.println("Output file generated: " + document.getOutput());
-        }
+        log.info("Output file generated: {}", document.getOutput());
         if (document.isReport()) {
             System.out.println(document.getOutput());
         }

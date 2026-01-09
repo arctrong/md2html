@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.networknt.schema.JsonSchema;
+import lombok.extern.slf4j.Slf4j;
 import world.md2html.Md2Html;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
@@ -44,6 +45,7 @@ import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
+@Slf4j
 public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
     private static class WrapCodeData {
@@ -203,11 +205,9 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                     throw new RuntimeException(e);
                 }
                 if (outputFileTime.compareTo(inputFileTime) > 0) {
-                    if (document.isVerbose()) {
-                        System.out.println("Wrapped output file is up-to-date. Skipping: "
-                                + document.getOutput());
-                        needToGenerate = false;
-                    }
+                    log.info("Wrapped output file is up-to-date. Skipping: {}",
+                            document.getOutput());
+                    needToGenerate = false;
                 }
             }
 
@@ -235,9 +235,7 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 Md2Html.outputPage(documentObj, this.plugins, substitutions, this.options,
                         variables);
 
-                if (documentObj.isVerbose()) {
-                    System.out.println("Wrapped output file generated: " + documentObj.getOutput());
-                }
+                log.info("Wrapped output file generated: {}", documentObj.getOutput());
                 if (documentObj.isReport()) {
                     System.out.println(documentObj.getOutput());
                 }
