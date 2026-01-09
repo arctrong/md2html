@@ -1,4 +1,5 @@
 import json
+import logging
 from html import escape
 from io import StringIO
 from pathlib import Path
@@ -13,6 +14,8 @@ from output_utils import output_page
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.plugin_utils import list_from_string_or_array
 from utils import UserError, relativize_relative_resource, UniqueIndexer, slugify
+
+logger = logging.getLogger(__name__)
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -199,8 +202,8 @@ class IndexPlugin(Md2HtmlPlugin):
 
         for index_data in self.index_data.values():
             if not index_data.cached_page_resets:
-                if index_data.document.verbose:
-                    print(f'Index file is up-to-date. Skipping: {index_data.document.output_file}')
+                logger.info('Index file is up-to-date. Skipping: %s',
+                            index_data.document.output_file)
                 return
 
             for plugin in self.all_plugins:
@@ -215,7 +218,6 @@ class IndexPlugin(Md2HtmlPlugin):
             with open(index_data.index_cache_file, 'w', encoding="utf-8") as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)
 
-            if index_data.document.verbose:
-                print(f'Index file generated: {index_data.document.output_file}')
+            logger.info('Index file generated: %s', index_data.document.output_file)
             if index_data.document.report:
                 print(index_data.document.output_file)

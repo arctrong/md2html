@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import time
@@ -15,7 +16,15 @@ from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_ext
 from utils import UserError, read_lines_from_commented_json_file, read_lines_from_cached_file, \
     relativize_relative_resource
 
+logger = logging.getLogger(__name__)
+
 WORKING_DIR = Path(__file__).resolve().parent
+
+def configure_logging(verbose: bool):
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+    else:
+        logging.disable(logging.CRITICAL)
 
 
 def md2html(document, plugins, metadata_handlers, options):
@@ -26,8 +35,7 @@ def md2html(document, plugins, metadata_handlers, options):
         output_file_mtime = os.path.getmtime(output_path)
         input_file_mtime = os.path.getmtime(input_path)
         if output_file_mtime > input_file_mtime:
-            if document.verbose:
-                print(f'The output file is up-to-date. Skipping: {document.output_file}')
+            logger.info(f'The output file is up-to-date. Skipping: {document.output_file}')
             return
 
     for plugin in plugins:
@@ -46,8 +54,7 @@ def md2html(document, plugins, metadata_handlers, options):
 
     output_page(document, plugins, substitutions, options)
 
-    if document.verbose:
-        print(f'Output file generated: {document.output_file}')
+    logger.info(f'Output file generated: {document.output_file}')
     if document.report:
         print(document.output_file)
 
@@ -103,6 +110,8 @@ def main():
         except UserError as e:
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
+        
+        configure_logging(arguments.options.verbose)
 
         for document in arguments.documents:
             try:
@@ -122,11 +131,10 @@ def main():
                 raise UserError(f"Error executing finalization action in plugin " +
                                 f"'{type(plugin).__name__}': {e}")
 
-        if arguments.options.verbose:
-            end_moment = time.monotonic()
-            print('Finished in: ' + str(timedelta(seconds=end_moment - start_moment)))
+        end_moment = time.monotonic()
+        logger.info('Finished in: %s', str(timedelta(seconds=end_moment - start_moment)))
     except UserError as ue:
-        print(str(ue))
+        logger.error(str(ue))
         sys.exit(1)
 
 
