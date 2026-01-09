@@ -1,12 +1,12 @@
 package world.md2html;
 
 import com.github.mustachejava.Mustache;
-import lombok.extern.slf4j.Slf4j;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.CheckedIllegalArgumentException;
+import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static world.md2html.Md2HtmlUtils.generateDocumentStyles;
 import static world.md2html.Md2HtmlUtils.generateHtml;
@@ -36,8 +37,9 @@ import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
-@Slf4j
 public class Md2Html {
+
+    private static final Logger log = Logging.getLogger();
 
     private static final String TITLE_PLACEHOLDER = "title";
     private static final String STYLES_PLACEHOLDER = "styles";
@@ -59,7 +61,7 @@ public class Md2Html {
             FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
             FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
             if (outputFileTime.compareTo(inputFileTime) > 0) {
-                log.info("The output file is up-to-date. Skipping: {}", document.getOutput());
+                log.info("The output file is up-to-date. Skipping: " + document.getOutput());
                 return;
             }
         }
@@ -89,7 +91,7 @@ public class Md2Html {
 
         outputPage(document, plugins, substitutions, options, null);
 
-        log.info("Output file generated: {}", document.getOutput());
+        log.info("Output file generated: " + document.getOutput());
         if (document.isReport()) {
             System.out.println(document.getOutput());
         }

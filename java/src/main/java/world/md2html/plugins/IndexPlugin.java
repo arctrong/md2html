@@ -15,7 +15,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.javatuples.Pair;
 import world.md2html.Md2Html;
 import world.md2html.options.argfile.ArgFileParseException;
@@ -27,6 +26,7 @@ import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
+import world.md2html.utils.Logging;
 import world.md2html.utils.UniqueIndexer;
 
 import java.io.IOException;
@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
@@ -56,8 +57,9 @@ import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.slugify;
 
-@Slf4j
 public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
+
+    private static final Logger log = Logging.getLogger();
 
     // TODO Consider using Jackson object mapper
     // TODO Remove all getters and setters and use direct field access. This is a nested class
@@ -251,7 +253,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
         for (IndexData indexData : this.indexData.values()) {
             if (indexData.getCachedPageResets().isEmpty()) {
-                log.info("Index file is up-to-date. Skipping: {}",
+                log.info("Index file is up-to-date. Skipping: " +
                         indexData.getDocument().getOutput());
                 return;
             }
@@ -277,7 +279,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                         + indexData.getIndexCacheFile(), e);
             }
 
-            log.info("Index file generated: {}", indexData.getDocument().getOutput());
+            log.info("Index file generated: " + indexData.getDocument().getOutput());
             if (indexData.getDocument().isReport()) {
                 System.out.println(indexData.getDocument().getOutput());
             }

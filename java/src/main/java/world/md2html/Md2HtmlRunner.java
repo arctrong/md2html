@@ -1,13 +1,5 @@
 package world.md2html;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.ConsoleAppender;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.cli.CliArgumentsException;
 import world.md2html.options.cli.CliParser;
@@ -17,18 +9,21 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
+import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 import static world.md2html.options.argfile.ArgFileParsingHelper.readArgumentFileNode;
 import static world.md2html.utils.Utils.formatNanoSeconds;
 import static world.md2html.utils.Utils.readStringFromCommentedFile;
 
-@Slf4j
 public class Md2HtmlRunner {
+
+    private static final Logger log = Logging.getLogger();
 
     public static void main(String[] args) throws Exception {
         try {
@@ -41,8 +36,6 @@ public class Md2HtmlRunner {
 
     private static void execute(String[] args) throws IOException {
         long start = System.nanoTime();
-
-        disableLogging();
 
         String usage = "java " + Md2Html.class.getSimpleName();
         CliOptions cliOptions;
@@ -81,7 +74,7 @@ public class Md2HtmlRunner {
                     e.getMessage());
         }
 
-        configureLogging(argFile.getOptions().isVerbose());
+        Logging.init(argFile.getOptions().isVerbose());
 
         PageMetadataHandlersWrapper metadataHandlersWrapper =
                 PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
@@ -90,10 +83,9 @@ public class Md2HtmlRunner {
             try {
                 Md2Html.execute(doc, argFile.getPlugins(), metadataHandlersWrapper,
                         argFile.getOptions());
-            } catch(UserError e) {
-                System.out.println("Error processing input file '" + doc.getInput() +
-                        "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                System.exit(1);
+            } catch(UserError ue) {
+                throw new UserError("Error processing input file '" + doc.getInput() +
+                        "': " + ue.getClass().getSimpleName() + ": " + ue.getMessage());
             }
         }
 
@@ -107,36 +99,6 @@ public class Md2HtmlRunner {
         }
 
         long end = System.nanoTime();
-        log.info("Finished in: {}", formatNanoSeconds(end - start));
-    }
-
-    private static void disableLogging() {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.reset();
-        Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.OFF);
-    }
-
-    private static void configureLogging(boolean verbose) {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.reset();
-
-        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-        encoder.setContext(context);
-        encoder.setPattern("%msg%n");
-        encoder.start();
-
-        ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<>();
-        appender.setContext(context);
-        appender.setEncoder(encoder);
-        appender.start();
-
-        Level level = verbose ? Level.INFO : Level.OFF;
-
-        // Enabling only our app loggers
-        Logger app = context.getLogger("world.md2html");
-        app.setLevel(level);
-        app.setAdditive(false);
-        app.addAppender(appender);
+        log.info("Finished in: " + formatNanoSeconds(end - start));
     }
 }
