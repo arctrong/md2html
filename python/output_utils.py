@@ -11,23 +11,10 @@ from models.document import Document
 from utils import relativize_relative_resource, read_lines_from_cached_file, UserError, \
     read_lines_from_file
 
-LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${(styles|content)}')
-LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN = re.compile(r'(^|[^$])\${([^}]+)}')
-
 CACHED_FILES = {}
 
 MARKDOWN = markdown.Markdown(extensions=["extra", "toc", "mdx_emdash",
                                          "pymdownx.superfences", "admonition"])
-
-
-def read_lines_from_cached_file_legacy(template_file):
-    lines = CACHED_FILES.get(template_file)
-    if lines is None:
-        lines = read_lines_from_file(template_file)
-        lines = re.sub(LEGACY_PLACEHOLDERS_UNESCAPED_REPLACEMENT_PATTERN, r'\1{{{\2}}}', lines)
-        lines = re.sub(LEGACY_PLACEHOLDERS_REPLACEMENT_PATTERN, r'\1{{\2}}', lines)
-        CACHED_FILES[template_file] = lines
-    return lines
 
 
 def output_page(document: Document, plugins: list, substitutions: dict, options,
@@ -36,6 +23,10 @@ def output_page(document: Document, plugins: list, substitutions: dict, options,
     substitutions = substitutions.copy()
 
     current_time = datetime.today()
+
+    # FIXME With current implementation the title may be later replaced by plugins, 
+    #  particularly by the VARIABLES plugin at the top of page. Need to decide whether
+    #  this behavior is correct... Probably yes :/
     substitutions.update({'title': document.title,
                           'exec_name': EXEC_NAME, 'exec_version': EXEC_VERSION,
                           'generation_date': current_time.strftime('%Y-%m-%d'),
@@ -56,14 +47,7 @@ def output_page(document: Document, plugins: list, substitutions: dict, options,
     for plugin in plugins:
         substitutions.update(plugin.variables(document))
 
-    if options.legacy_mode:
-        placeholders = substitutions.get('placeholders')
-        if placeholders is not None:
-            del substitutions['placeholders']
-            substitutions.update(placeholders)
-        template = read_lines_from_cached_file_legacy(document.template)
-    else:
-        template = read_lines_from_cached_file(document.template)
+    template = read_lines_from_cached_file(document.template)
 
     if substitutions['title'] is None:
         substitutions['title'] = ''

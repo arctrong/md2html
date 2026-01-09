@@ -185,16 +185,14 @@ class ArgFileParseTest(unittest.TestCase):
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         options = args.options
         self.assertFalse(options.verbose)
-        self.assertFalse(options.legacy_mode)
 
     def test_fullOptions_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
-            '{"options": {"verbose": true, "legacy-mode": true}, '
+            '{"options": {"verbose": true}, '
             '"documents": [{"input": "index.txt"}]}')
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         options = args.options
         self.assertTrue(options.verbose)
-        self.assertTrue(options.legacy_mode)
 
     def test_noPlugins_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')
