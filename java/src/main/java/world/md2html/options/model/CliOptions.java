@@ -34,6 +34,4 @@ public class CliOptions {
 
     boolean force;
     boolean verbose;
-    boolean legacyMode;
-
 }

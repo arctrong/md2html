@@ -62,7 +62,6 @@ class CliParserTest {
         assertNull(options.getLinkCss());
         assertFalse(options.isForce());
         assertFalse(options.isVerbose());
-        assertFalse(options.isLegacyMode());
     }
 
     @Test
@@ -167,12 +166,6 @@ class CliParserTest {
     public void wrongNoCssAndCss(String cssOption) {
         assertThrows(CliArgumentsException.class, () -> getParsingResult("-i", "readme.txt",
                 "--no-css", cssOption, "styles.css"));
-    }
-
-    @Test
-    public void legacyMode() throws CliArgumentsException {
-        CliOptions options = getParsingResult("-i", "input.md", "--legacy-mode");
-        assertTrue(options.isLegacyMode());
     }
 
 }

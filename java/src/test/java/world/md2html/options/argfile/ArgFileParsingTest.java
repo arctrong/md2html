@@ -214,7 +214,7 @@ public class ArgFileParsingTest {
                         "-t", "cli_title", "--template", "cli/custom.html",
                         "--include-css", "cli_include1.css", "--include-css", "cli_include2.css",
                         "--link-css", "cli_link1.css", "--link-css", "cli_link2.css",
-                        "-fv", "--legacy-mode"})
+                        "-fv"})
         );
         Document doc = argFile.getDocuments().get(0);
         assertEquals("cli_doc_src/cli_index.txt", doc.getInput());
@@ -228,7 +228,6 @@ public class ArgFileParsingTest {
         assertTrue(doc.isForce());
         assertTrue(doc.isVerbose());
         SessionOptions options = argFile.getOptions();
-        assertTrue(options.isLegacyMode());
         assertTrue(options.isVerbose());
     }
 
@@ -259,41 +258,17 @@ public class ArgFileParsingTest {
         ArgFile argFile = parseArgumentFile(
                 "{\"documents\": [{\"input\": \"index.txt\"}]}", DUMMY_CLI_OPTIONS);
         SessionOptions options = argFile.getOptions();
-        assertFalse(options.isLegacyMode());
         assertFalse(options.isVerbose());
     }
 
     @Test
     public void fullOptions_PositiveScenario() throws Exception {
         ArgFile argFile = parseArgumentFile(
-                "{\"options\": {\"verbose\": true, \"legacy-mode\": true}, " +
+                "{\"options\": {\"verbose\": true}, " +
                         "\"documents\": [{\"input\": \"index.txt\"}]}", DUMMY_CLI_OPTIONS)
                 ;
         SessionOptions options = argFile.getOptions();
-        assertTrue(options.isLegacyMode());
         assertTrue(options.isVerbose());
-    }
-
-    @Test
-    public void legacyMode_inCommandLine_PositiveScenario() throws Exception {
-        ArgFile argFile = parseArgumentFile(
-                "{\"options\": {\"verbose\": true}, " +
-                        "\"documents\": [{\"input\": \"index.txt\"}]}",
-                cliParser.parse(new String[]{"--argument-file", "unknown_arg_file.json",
-                        "-i", "input.txt", "-o", "output.html",
-                        "-t", "title", "--template", "unknown_template.html",
-                        "--include-css", "cli_include1.css", "--include-css", "cli_include2.css",
-                        "--link-css", "cli_link1.css", "--link-css", "cli_link2.css",
-                        "-fv", "--legacy-mode"}));
-        List<Md2HtmlPlugin> plugins = argFile.getPlugins();
-        assertTrue(argFile.getOptions().isLegacyMode());
-        PageVariablesPlugin plugin = findFirstElementOfType(plugins, PageVariablesPlugin.class);
-        PageMetadataHandlersWrapper metadataHandlers =
-                PageMetadataHandlersWrapper.fromPlugins(plugins);
-        String pageContent = "<!--METADATA {\"key\": \"value\"}-->";
-        metadataHandlers.applyMetadataHandlers(pageContent, ANY_DOCUMENT);
-        Map<String, Object> variables = plugin.variables(ANY_DOCUMENT);
-        assertEquals("value", variables.get("key"));
     }
 
     @Test

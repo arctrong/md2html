@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import static world.md2html.Md2HtmlUtils.generateDocumentStyles;
 import static world.md2html.Md2HtmlUtils.generateHtml;
 import static world.md2html.utils.MustacheUtils.createCachedMustacheRenderer;
-import static world.md2html.utils.MustacheUtils.createCachedMustacheRendererLegacy;
 import static world.md2html.utils.Utils.firstNotNull;
 import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
@@ -107,7 +106,11 @@ public class Md2Html {
 
         substitutions = new HashMap<>(substitutions);
 
+        // FIXME With current implementation the title may be later replaced by plugins,
+        //  particularly by the VARIABLES plugin at the top of page. Need to decide whether
+        //  this behavior is correct... Probably yes :/
         substitutions.put(TITLE_PLACEHOLDER, firstNotNull(document.getTitle(), ""));
+
         substitutions.put(EXEC_NAME_PLACEHOLDER, Constants.EXEC_NAME);
         substitutions.put(EXEC_VERSION_PLACEHOLDER, Constants.EXEC_VERSION);
 
@@ -121,20 +124,6 @@ public class Md2Html {
 
         for (Md2HtmlPlugin plugin : plugins) {
             substitutions.putAll(plugin.variables(document));
-        }
-
-        if (options.isLegacyMode()) {
-            Map<String, Object> placeholders = null;
-            try {
-                //noinspection unchecked
-                placeholders = (Map<String, Object>) substitutions.get("placeholders");
-            } catch (Exception e) {
-                // Intentional ignore.
-            }
-            if (placeholders != null) {
-                substitutions.remove("placeholders");
-                substitutions.putAll(placeholders);
-            }
         }
 
         // TODO Decide whether it's required.
@@ -157,11 +146,7 @@ public class Md2Html {
                 Files.newOutputStream(Paths.get(document.getOutput())), StandardCharsets.UTF_8))) {
             Mustache mustache;
             try {
-                if (options.isLegacyMode()) {
-                    mustache = createCachedMustacheRendererLegacy(Paths.get(document.getTemplate()));
-                } else {
-                    mustache = createCachedMustacheRenderer(Paths.get(document.getTemplate()));
-                }
+                mustache = createCachedMustacheRenderer(Paths.get(document.getTemplate()));
             } catch (FileNotFoundException e) {
                 throw new UserError(String.format("Error reading template file '%s': %s: %s",
                         document.getTemplate(), e.getClass().getSimpleName(),

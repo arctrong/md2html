@@ -8,8 +8,7 @@
         "options": {
             "type": "object",
             "properties": {
-                "verbose": { "type": "boolean" },
-                "legacy-mode": { "type": "boolean" }
+                "verbose": { "type": "boolean" }
             }
         },
         "default": {

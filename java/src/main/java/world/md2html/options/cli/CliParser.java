@@ -44,7 +44,6 @@ public class CliParser {
 
     private static final String FORCE = "f";
     private static final String VERBOSE = "v";
-    private static final String LEGACY_MODE = "legacy-mode";
 
     private static final int HELP_WIDTH = 80;
 
@@ -138,12 +137,6 @@ public class CliParser {
                 .hasArg(false)
                 .desc("outputs human readable information messages")
                 .build());
-        cliOptions.addOption(Option.builder(null).longOpt(LEGACY_MODE)
-                .hasArg(false)
-                .desc("Allows processing documentation projects prepared for version of the " +
-                        "program prior to 1.0.0. It's still recommended to migrate the " +
-                        "documentation projects to the newer version")
-                .build());
 
         return cliOptions;
     }
@@ -229,8 +222,6 @@ public class CliParser {
         cliOptionsBuilder.force(commandLine.hasOption(FORCE));
         boolean verbose = commandLine.hasOption(VERBOSE);
         cliOptionsBuilder.verbose(verbose);
-
-        cliOptionsBuilder.legacyMode(commandLine.hasOption(LEGACY_MODE));
 
         return cliOptionsBuilder.build();
     }
