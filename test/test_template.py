@@ -29,21 +29,11 @@ class Md2htmlTemplateIntegralTest(unittest.TestCase):
     def test_not_empty_title_metadata(self):
         output_file = f'{self.OUTPUT_DIR}/not_empty_title_metadata_test.html'
         root = h.execute(['-f', '-i', f'{h.INPUT_DIR}/not_empty_title_metadata_test.txt',
-                          '-o', output_file, '--legacy-mode',
+                          '-o', output_file,
                           '--template', f'{h.INPUT_DIR}/test_template_title.html'], 
                           output_file)
         
         self.assertEqual('test title from metadata', root.head.title.text)
-
-    def test_not_empty_title_cli_overridden(self):
-        output_file = f'{self.OUTPUT_DIR}/not_empty_title_cli_overridden_test.html'
-        root = h.execute(['-f', '-i', f'{h.INPUT_DIR}/not_empty_title_metadata_test.txt',
-                          '-o', output_file, 
-                          '--template', f'{h.INPUT_DIR}/test_template_title.html',
-                          '--title', 'test title from CLI overridden'], 
-                          output_file)
-        
-        self.assertEqual('test title from CLI overridden', root.head.title.text)
 
     def test_no_css(self):
         output_file = f'{self.OUTPUT_DIR}/no_css_test.html'
@@ -83,7 +73,7 @@ class Md2htmlTemplateIntegralTest(unittest.TestCase):
         output_file = f'{self.OUTPUT_DIR}/placeholders_test.html'
         root = h.execute(['-f', '-i', f'{h.INPUT_DIR}/placeholders_test.txt', '-o', output_file, 
                           '--template', f'{h.INPUT_DIR}/test_template_placeholders.html',
-                          '--no-css', '--legacy-mode'],
+                          '--no-css'],
                           output_file)
                           
         pattern = re.compile('\d')
