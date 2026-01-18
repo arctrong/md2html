@@ -52,7 +52,7 @@ def md2html(document, plugins, metadata_handlers, options):
                      'source_file': relativize_relative_resource(document.input_file,
                                                                  document.output_file)}
 
-    output_page(document, plugins, substitutions, options)
+    output_page(document, plugins, substitutions)
 
     logger.info(f'Output file generated: {document.output_file}')
 

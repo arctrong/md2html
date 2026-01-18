@@ -133,8 +133,7 @@ class WrapCodePlugin(Md2HtmlPlugin):
                 variables.update({"title": file_name, "wrap_code_path": file_path,
                                   "wrap_code_file_name": file_name})
 
-                output_page(document_obj, self.plugins_for_output, substitutions,
-                            self.app_options, variables)
+                output_page(document_obj, self.plugins_for_output, substitutions, variables)
 
                 logger.info('Wrapped output file generated: %s', document_obj.output_file)
 

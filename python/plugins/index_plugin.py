@@ -213,7 +213,7 @@ class IndexPlugin(Md2HtmlPlugin):
                                                           index_data.add_letters,
                                                           index_data.add_letters_block)}
 
-            output_page(index_data.document, self.all_plugins, substitutions, self.app_options)
+            output_page(index_data.document, self.all_plugins, substitutions)
 
             with open(index_data.index_cache_file, 'w', encoding="utf-8") as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)
