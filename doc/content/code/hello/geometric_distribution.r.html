@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><title>Main.java</title>
+<head><title>geometric_distribution.r</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" type="image/png" href="../../../favicon.png"/>
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
@@ -45,21 +45,19 @@ href="https://github.com/arctrong/md2html"><span class="">GitHub</span></a>
 
 <img class="headerNavArrows" src="../../../layout/pict/next_page_h21px_inactive.png"/>
 
-<span class="headerTitle">Main.java</span>
+<span class="headerTitle">geometric_distribution.r</span>
 
 </div>
 
-<p><strong>Path:</strong> hello/Main.java</p>
+<p><strong>Path:</strong> hello/geometric_distribution.r</p>
 
-<pre class="highlight"><code class="language-java">// This is an example of Java code.
-// INCLUDE FROM HERE
-public class Main {
-    // method start
-    public static void main(String[] args) {
-        System.out.println("Hi!");
-    }
-    // method end
-}
+<pre class="highlight"><code>x &lt;- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28)
+y &lt;- c(2441, 1914, 1426, 1034, 803, 615, 450, 322, 247, 202, 142, 89, 84, 65, 42, 29, 19, 20, 14, 6, 8, 5, 5, 5, 6, 3, 2, 0, 2)
+xLabel = "Random number"
+yLabel = "Number of hits"
+png(file = "geometric_distribution.png", width = 800, height = 600)
+plot(x, y, type = "o", xlab=xLabel, ylab=yLabel, main = "Geometric distribution")
+dev.off()
 </code></pre>
 
 <p><span class="poweredBy">Powered by <a class="poweredByLink" 

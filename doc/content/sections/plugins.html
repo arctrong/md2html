@@ -696,14 +696,14 @@ wrapping pages.</p>
 <pre class="highlight"><code class="language-json">    "plugins": {
         . . .
         "wrap-code": {
-            "wrap_java": {"style": "code", "input-root": "projects/", "output-root": "doc/code",
+            "wrap": {"input-root": "projects/", "output-root": "doc/code",
                 "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}},
             "wrap_xml": {"style": "xml", "input-root": "projects/", "output-root": "doc/code",
                 "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
         }
         . . .
     }</code></pre>
-<p>In this example <code>wrap_java</code> and <code>wrap_xml</code> are markers to be used in the placeholders (see below).
+<p>In this example <code>wrap</code> and <code>wrap_xml</code> are markers to be used in the placeholders (see below).
 The markers define the wrapping HTML page generation options: where to take the source code files, 
 where to place the wrapping HTML pages, which rendering style and template to use.</p>
 <div class="admonition note">
@@ -812,21 +812,23 @@ absent descriptions.</p>
 </tbody>
 </table>
 <p><strong>Usage</strong></p>
-<p>Let's say there's the file <code>projects/hello/Main.java</code> with some content. To link this file in
-a source text, use something like this: </p>
-<pre class="highlight"><code>The main class is [here](&lt;!--wrap_java hello/Main.java--&gt;).</code></pre>
-<p>The alternative form is:</p>
-<pre class="highlight"><code>The main class is [here](&lt;!--wrap_java {"file": "hello/Main.java", "style": "code"}--&gt;).</code></pre>
-<p>As the result, the new file <code>doc/code/hello/Main.java.html</code> will be generated based on the
-following transformed content:</p>
-<pre><code>````code
+<p>Let's say there's the file <code>projects/hello/geometric_distribution.r</code> with some content.
+To link this file in a source text, use something like this: </p>
+<pre class="highlight"><code>The main class is [here](&lt;!--wrap hello/geometric_distribution.r--&gt;).</code></pre>
+<p>As the result, a new file <code>doc/code/hello/geometric_distribution.r.html</code> will be generated based on
+the following transformed content:</p>
+<pre><code>````
 &lt;the file content here&gt;
 ````
 </code></pre>
 <p>The source text will be transformed like this:</p>
-<pre class="highlight"><code>The main class is [here](../code/hello/Main.java.html).</code></pre>
-<p>An example may be viewed <a href="../code/hello/Main.java.html">here</a>. Also see the argument file 
-<code>md2html_args.json</code> in this project.</p>
+<pre class="highlight"><code>The main class is [here](../code/hello/geometric_distribution.r.html).</code></pre>
+<p>The result may be viewed <a href="../code/hello/geometric_distribution.r.html">here</a>. Also see the argument
+file <code>md2html_args.json</code> in this project.</p>
+<p>The alternative form is:</p>
+<pre class="highlight"><code class="language-wrapped">The main class is [here](&lt;!--wrap {"file": "hello/Main.java", "style": "java"}--&gt;).</code></pre>
+<p>Here we redefined the <code>style</code> parameter so needed to use the more verbose definition.
+The result of this version is <a href="../code/hello/Main.java.html">here</a>.</p>
 <p>The following additional variables may be used in the template:</p>
 <table>
 <thead>
