@@ -61,13 +61,7 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
         'plugins': argument_file_dict.get('plugins', {})
     }
 
-    if bool(options.get('verbose')) and bool(cli_args.report):
-        raise UserError("'verbose' parameter in 'options' section is incompatible "
-                        "with '--report' command line argument.")
-
     options['verbose'] = first_not_none(cli_args.verbose, options.get('verbose'), False)
-    options['legacy-mode'] = first_not_none(cli_args.legacy_mode,
-                                            options.get('legacy-mode'), False)
 
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
@@ -79,11 +73,6 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
         canonized_document_items.append(
             merge_and_canonize_document(document_item, defaults_item, cli_args))
     merged_and_canonized_argument_file['documents'] = canonized_document_items
-
-    if merged_and_canonized_argument_file["options"]['legacy-mode']:
-        page_variables = merged_and_canonized_argument_file["plugins"].setdefault(
-            "page-variables", {})
-        page_variables.setdefault("METADATA", {"only-at-page-start": True})
 
     return merged_and_canonized_argument_file
 
@@ -134,12 +123,7 @@ def merge_and_canonize_document(document_item: dict, defaults_item: dict,
         'template': get_value('template', 'template'),
         'force': get_bool_flag('force', 'force'),
         'verbose': get_bool_flag('verbose', 'verbose'),
-        'report': get_bool_flag('report', 'report'),
     }
-
-    if canonized['verbose'] and canonized['report']:
-        raise UserError(f"Incompatible 'report' and 'verbose' parameters for 'documents' "
-                        f"item: {document_item}.")
 
     if input_glob:
         sort_by_file_path = get_bool_flag('sort_by_file_path', 'sort-by-file-path')
@@ -303,8 +287,7 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
     This method does not instantiate plugins.
     """
     options_item = canonized_argument_file['options']
-    options = Options(verbose=options_item['verbose'],
-                      legacy_mode=options_item['legacy-mode'])
+    options = Options(verbose=options_item['verbose'])
 
     documents_page_flows_plugin = {}
     extra_plugin_items = {"page-flows": documents_page_flows_plugin}
@@ -334,7 +317,6 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
                                    no_css=document_item.get('no-css'),
                                    force=document_item.get('force'),
                                    verbose=document_item.get('verbose'),
-                                   report=document_item.get('report'),
                                    )
         documents.append(document_object)
 

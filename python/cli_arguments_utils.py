@@ -29,8 +29,6 @@ class CliArgDataObject:
         self.include_css = None
         self.force = None
         self.verbose = None
-        self.report = None
-        self.legacy_mode = None
 
 
 def parse_cli_arguments(*args) -> CliArgDataObject:
@@ -100,14 +98,6 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
                                               "later than the input file", action='store_true')
     parser.add_argument("-v", "--verbose", help="outputs human readable information messages",
                         action='store_true')
-    parser.add_argument("-r", "--report",
-                        help="turns on formalized output that may be further automatically "
-                             "processed. Only if HTML file is generated, the path of this file "
-                             "will be output. Incompatible with -v", action='store_true')
-    parser.add_argument("--legacy-mode",
-                        help="Allows processing documentation projects prepared for version of "
-                             "the program prior to 1.0.0. It's still recommended to migrate the "
-                             "documentation projects to the newer version", action='store_true')
 
     args = parser.parse_args(*args)
 
@@ -168,13 +158,5 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
     cli_arg_data_object.force = args.force
     if bool(args.verbose):
         cli_arg_data_object.verbose = args.verbose
-    cli_arg_data_object.report = args.report
-
-    if cli_arg_data_object.report and cli_arg_data_object.verbose:
-        parser.print_usage()
-        print(f'--report and --verbose arguments are not compatible ({USE_HELP_TEXT})')
-        raise CliError()
-
-    cli_arg_data_object.legacy_mode = args.legacy_mode
 
     return cli_arg_data_object

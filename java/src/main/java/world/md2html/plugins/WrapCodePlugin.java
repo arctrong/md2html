@@ -16,6 +16,7 @@ import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.JsonUtils;
+import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
 import world.md2html.utils.Utils;
 
@@ -31,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static world.md2html.Md2HtmlUtils.generateHtml;
@@ -45,6 +48,8 @@ import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
 public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
+
+    private static final Logger log = Logging.getLogger();
 
     private static class WrapCodeData {
         private String style = "";
@@ -203,11 +208,11 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                     throw new RuntimeException(e);
                 }
                 if (outputFileTime.compareTo(inputFileTime) > 0) {
-                    if (document.isVerbose()) {
-                        System.out.println("Wrapped output file is up-to-date. Skipping: "
-                                + document.getOutput());
-                        needToGenerate = false;
+                    if (log.isLoggable(Level.INFO)) {
+                        log.info("Wrapped output file is up-to-date. Skipping: " +
+                                document.getOutput());
                     }
+                    needToGenerate = false;
                 }
             }
 
@@ -232,14 +237,10 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 variables.put("wrap_code_path", filePath);
                 variables.put("wrap_code_file_name", fileName);
 
-                Md2Html.outputPage(documentObj, this.plugins, substitutions, this.options,
-                        variables);
+                Md2Html.outputPage(documentObj, this.plugins, substitutions, variables);
 
-                if (documentObj.isVerbose()) {
-                    System.out.println("Wrapped output file generated: " + documentObj.getOutput());
-                }
-                if (documentObj.isReport()) {
-                    System.out.println(documentObj.getOutput());
+                if (log.isLoggable(Level.INFO)) {
+                    log.info("Wrapped output file generated: " + documentObj.getOutput());
                 }
             }
             this.processedCache.put(cacheKey, outputFileStr);

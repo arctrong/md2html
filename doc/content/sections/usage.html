@@ -99,11 +99,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#command_scripts">Command scripts</a></li>
 <li><a href="#win_explorer_context_menu">Windows Explorer context menu integration</a></li>
 <li><a href="#typical-project-structure">Typical project structure</a></li>
-<li><a href="#previous-versions-compatibility">Previous versions compatibility</a><ul>
-<li><a href="#legacy-projects-migration">Legacy projects migration</a></li>
-<li><a href="#legacy-mode">Legacy mode</a></li>
-</ul>
-</li>
+<li><a href="#previous-versions-compatibility">Previous versions compatibility</a></li>
 </ul>
 </div>
 <hr />
@@ -222,7 +218,7 @@ run (that is the Python version for now).</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The documentation projects prepared for versions of this program prior to 1.0.0 will not work
-with these scripts. See <a href="#legacy_compatibility">here</a> for possible workarounds.</p>
+with these scripts. See <a href="#legacy_compatibility">here</a> for migration instructions.</p>
 </div>
 <hr />
 <p><a name="index_entry_index_context_menu_items"></a></p>
@@ -352,26 +348,29 @@ source texts location.</p>
 </li>
 </ul>
 <hr />
-<p><a name="legacy_compatibility"></a><a name="index_entry_index_legacy_mode"></a></p>
+<p><a name="legacy_compatibility"></a></p>
 <h1 id="previous-versions-compatibility">Previous versions compatibility</h1>
-<p>The version 1.0.0 of the program introduced the following significant changes: </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section describes a very improbable case as the new version of this program exists
+about 5 years already, and legacy documentation projects hardly exist.</p>
+</div>
+<p>Starting from version 1.0.0, this program introduced significant changes:</p>
 <ul>
 <li>More convenient and about ten times more efficient documents bulk processing mechanism;</li>
 <li>More versatile template engine.</li>
 </ul>
-<p>Those changes have made this program version incompatible with the documentation projects prepared
-for the previous versions. The following subsections describe the possible solutions in such
-situations.</p>
-<p>The descriptions contain not yet introduced terminology. See the <a href="../index_page.html">Index</a> and
-the further sections for clarification when it's required.</p>
-<h2 id="legacy-projects-migration">Legacy projects migration</h2>
-<p>This process consists of several steps.</p>
+<p>These changes made the program incompatible with documentation projects created for previous versions.
+Projects from older versions <strong>must be migrated</strong> using the steps described below.</p>
+<p>The descriptions contain terminology that may not yet be familiar. See the <a href="../index_page.html">Index</a>
+and other sections for clarification when needed.</p>
+<p>This migration process consists of several steps.</p>
 <ol>
 <li>
 <p>Migrate page generation templates. Replace placeholders <code>${content}</code> and <code>${styles}</code> with 
     <code>{{{content}}}</code> and <code>{{{styles}}}</code> (with <strong>three</strong> pairs of curly braces) respectively.
     Replace placeholders in format <code>${name}</code> with placeholders in format <code>{{name}}</code> (with
-    <strong>two</strong> pairs of curly braces).</p>
+    {{two}} pairs of curly braces).</p>
 </li>
 <li>
 <p>In the page metadata sections:</p>
@@ -386,34 +385,9 @@ the further sections for clarification when it's required.</p>
     page metadata was used, add plugin <code>"page-variables": {}</code> to the <code>"plugins"</code> sections.</p>
 </li>
 <li>
-<p>Replace the double-clock script <code>generate_html.bat</code> with the script <code>generate_doc.bat</code> or,
-    by choice, the other script from the section <a href="#command_scripts">"Command scripts"</a>.</p>
+<p>Use the script <code>generate_doc.bat</code> or the other scripts from the section <a href="#command_scripts">"Command scripts"</a>.</p>
 </li>
 </ol>
-<p><a name="legacy_mode"></a><a name="index_entry_index_legacy_mode_1"></a></p>
-<h2 id="legacy-mode">Legacy mode</h2>
-<p>The <code>--legacy-mode</code> command line argument or the <code>"legacy-mode: true</code> property in the
-<em>argument file</em> <code>"options"</code> section may make this program process the legacy projects.</p>
-<p>The command script <code>generate_html_legacy.bat</code> in the directory <code>legacy_scripts</code> is the version of
-the former script <code>generate_html.bat</code> with the legacy mode activated. Put it to the documentation
-project's directory and... hopefully... this must be enough.</p>
-<p>In this mode the following processing changes will be done:</p>
-<ul>
-<li>Template placeholders in format <code>${name}</code> will be considered as <code>{{name}}</code> of <code>{{{name}}}</code>
-    depending on the placeholder name.</li>
-<li>Plugin <code>"page-variables": {"metadata": {}}</code> will be implicitly added and in the pages metadata
-    sections, <code>"placeholders"</code> variable content will be moved one level up.</li>
-</ul>
-<p>These changes will not affect the project files and will be done virtually each time on
-processing.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The former versions of this program used very slow (about ten times slower) documents bulk 
-processing mechanism. So with large number of files it would be very helpful to at least replace
-the outdated <em>list file</em> <code>md2html_list.txt</code> with an <em>argument file</em> <code>md2html_args.json</code>.
-In this case use the <code>generate_doc.bat</code> script, and legacy mode may be activated
-ether in that script or in the <em>argument file</em>.</p>
-</div>
 <p>&nbsp;</p>
 <hr />
 

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Any, Dict, Union
@@ -12,6 +13,8 @@ from output_utils import output_page, MARKDOWN
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.plugin_utils import dict_from_string_or_object
 from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
+
+logger = logging.getLogger(__name__)
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -110,9 +113,8 @@ class WrapCodePlugin(Md2HtmlPlugin):
                 output_file_mtime = os.path.getmtime(output_file)
                 input_file_mtime = os.path.getmtime(input_file)
                 if output_file_mtime > input_file_mtime:
-                    if document_obj.verbose:
-                        print(f'Wrapped output file is up-to-date. Skipping: {output_file_str}')
-                        need_to_generate = False
+                    logger.info('Wrapped output file is up-to-date. Skipping: %s', output_file_str)
+                    need_to_generate = False
 
             if need_to_generate and not self.dry_run:
                 document_obj = document_obj.copy(input_file=input_file_str,
@@ -131,13 +133,9 @@ class WrapCodePlugin(Md2HtmlPlugin):
                 variables.update({"title": file_name, "wrap_code_path": file_path,
                                   "wrap_code_file_name": file_name})
 
-                output_page(document_obj, self.plugins_for_output, substitutions,
-                            self.app_options, variables)
+                output_page(document_obj, self.plugins_for_output, substitutions, variables)
 
-                if document_obj.verbose:
-                    print(f'Wrapped output file generated: {document_obj.output_file}')
-                if document_obj.report:
-                    print(document_obj.output_file)
+                logger.info('Wrapped output file generated: %s', document_obj.output_file)
 
             self.processed_cache[cache_key] = output_file_str
 

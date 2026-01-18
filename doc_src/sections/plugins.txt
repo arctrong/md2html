@@ -406,7 +406,6 @@ add-include-css | array of string | No |  | |
 page-flows | array of string | No |  | |
 add-page-flows | array of string | No |  | |
 verbose | boolean | No |  | |
-report | boolean | No |  | |
 index-cache | string | Yes |  | Index cache file (see the note below)
 index-cache-relative | boolean | No | false | `true` means that the index cache file location is defined relative to the index page location
 letters | boolean | No | false | `true` means that the index page content will be divided by the terms first letters
@@ -617,7 +616,6 @@ no-css | boolean | No |  | |
 add-link-css | array of string | No |  | |
 add-include-css | array of string | No |  | |
 verbose | boolean | No |  | |
-report | boolean | No |  | |
 style | string | No | *empty string* | style, like `code`, `shell`, etc. |
 variables | object | No | *empty* | additional variables to be used in the template |
 
