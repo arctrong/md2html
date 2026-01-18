@@ -66,8 +66,8 @@
         },
         "page-links": { "markers": ["page"] },
         "wrap-code": {
-            "wrap_java": {"style": "code", "input-root": "sample_code/", "output-root": "doc/content/code/",
-                          "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
+            "wrap": {"input-root": "sample_code/", "output-root": "doc/content/code/",
+                "template": "doc_src/templates/code.html", "variables": {"noPageTitle": true}}
         },
         "include-file": [
             { "markers": ["include_code"], "root-dir": "sample_code/" },
