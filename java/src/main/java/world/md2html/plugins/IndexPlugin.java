@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import com.networknt.schema.JsonSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,7 +53,6 @@ import static world.md2html.plugins.PluginUtils.listFromStringOrArray;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER_FOR_BUILDERS;
 import static world.md2html.utils.JsonUtils.deJson;
-import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.slugify;
 
@@ -97,10 +95,6 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private List<Md2HtmlPlugin> plugins;
 
     private boolean finalizationStarted = false;
-
-    // We are going to validate multiple metadata blocks, so preloading the schema.
-    private final JsonSchema metadataSchema =
-            loadJsonSchemaFromResource("plugins/string_or_array_schema.json");
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
@@ -268,8 +262,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             substitutions.put("content", generateIndexHtml(indexData.getIndexCache(),
                     indexData.isAddLetters(), indexData.isAddLettersBlock()));
 
-            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, this.options,
-                    null);
+            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, null);
 
             ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             DefaultPrettyPrinter printer = new DefaultPrettyPrinter()

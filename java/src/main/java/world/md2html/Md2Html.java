@@ -91,7 +91,7 @@ public class Md2Html {
             throw new RuntimeException(e);
         }
 
-        outputPage(document, plugins, substitutions, options, null);
+        outputPage(document, plugins, substitutions, null);
 
         if (log.isLoggable(Level.INFO)) {
             log.info("Output file generated: " + document.getOutput());
@@ -99,7 +99,7 @@ public class Md2Html {
     }
 
     public static void outputPage(Document document, List<Md2HtmlPlugin> plugins,
-                                  Map<String, Object> substitutions, SessionOptions options,
+                                  Map<String, Object> substitutions,
                                   Map<String, Object> overrideSubstitutions) {
 
         // TODO Probably move to `Md2HtmlUtils`.

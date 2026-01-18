@@ -237,8 +237,7 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 variables.put("wrap_code_path", filePath);
                 variables.put("wrap_code_file_name", fileName);
 
-                Md2Html.outputPage(documentObj, this.plugins, substitutions, this.options,
-                        variables);
+                Md2Html.outputPage(documentObj, this.plugins, substitutions, variables);
 
                 if (log.isLoggable(Level.INFO)) {
                     log.info("Wrapped output file generated: " + documentObj.getOutput());
