@@ -24,7 +24,6 @@ usage: md2html.py [-h] [--input-root INPUT_ROOT] [-i INPUT]
                   [--title-from-variable TITLE_FROM_VARIABLE]
                   [--template TEMPLATE] [--link-css LINK_CSS]
                   [--include-css INCLUDE_CSS] [--no-css] [-f] [-v] [-r]
-                  [--legacy-mode]
 
 Creates HTML documentation out of Markdown texts.
 
@@ -74,14 +73,6 @@ optional arguments:
   -f, --force           rewrites HTML output file even if it was modified later
                         than the input file
   -v, --verbose         outputs human readable information messages
-  -r, --report          turns on formalized output that may be further
-                        automatically processed. Only if HTML file is generated,
-                        the path of this file will be output. Incompatible with
-                        -v
-  --legacy-mode         Allows processing documentation projects prepared for
-                        version of the program prior to 1.0.0. It's still
-                        recommended to migrate the documentation projects to the
-                        newer version
 ````
 
 Here are some additional explanations:
@@ -139,8 +130,7 @@ Here is a quite complex example of an _argument file_ content:
 {
     "options": {
         # This only affects the whole run verbosity, for now only printing execution duration.
-        "verbose": true,
-        "legacy-mode": false
+        "verbose": true
     },
     "default": {
         # These are the default options for all documents.
@@ -213,7 +203,6 @@ Properties:
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
 verbose | boolean | No | The whole run verbosity, for now, only printing execution duration on finish
-legacy-mode | boolean | No | Activates [legacy mode](<!--page usage-->#legacy_mode)
 
 
 <a name="default_section"></a>
@@ -275,7 +264,6 @@ add-include-css | array of strings | No | Adds included CSS to the previously de
 page-flows | array of strings | No | Names of the page flows the page belongs to
 add-page-flows | array of strings | No | Adds page flow names to the previously defined list
 verbose | boolean | No | Outputs human readable information about this document generation
-report | boolean | No | The same meaning as the corresponding command line argument
 
 
 <a name="plugins_section"></a>

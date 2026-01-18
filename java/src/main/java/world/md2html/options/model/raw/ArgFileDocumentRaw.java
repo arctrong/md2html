@@ -49,7 +49,6 @@ public class ArgFileDocumentRaw {
     List<String> addPageFlows;
     boolean verbose;
     boolean force;
-    boolean report;
     @JsonIgnore
     String techSortBy;
 }

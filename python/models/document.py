@@ -1,7 +1,6 @@
 class Document:
     def __init__(self, input_file=None, output_file=None, title=None, code=None, template=None,
-                 link_css=None, include_css=None, no_css=None, force=None, verbose=None,
-                 report=None):
+                 link_css=None, include_css=None, no_css=None, force=None, verbose=None):
         self.input_file = input_file
         self.output_file = output_file
         self.title = title
@@ -12,11 +11,9 @@ class Document:
         self.no_css = no_css
         self.force = force
         self.verbose = verbose
-        self.report = report
 
     def copy(self, input_file=None, output_file=None, title=None, code=None, template=None,
-             link_css=None, include_css=None, no_css=None, force=None, verbose=None,
-             report=None):
+             link_css=None, include_css=None, no_css=None, force=None, verbose=None):
         return Document(
             input_file=self.input_file if input_file is None else input_file,
             output_file=self.output_file if output_file is None else output_file,
@@ -27,6 +24,5 @@ class Document:
             include_css=self.include_css if include_css is None else include_css,
             no_css=self.no_css if no_css is None else no_css,
             force=self.force if force is None else force,
-            verbose=self.verbose if verbose is None else verbose,
-            report=self.report if report is None else report
+            verbose=self.verbose if verbose is None else verbose
         )

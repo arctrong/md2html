@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import com.networknt.schema.JsonSchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +25,7 @@ import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
+import world.md2html.utils.Logging;
 import world.md2html.utils.UniqueIndexer;
 
 import java.io.IOException;
@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
@@ -51,11 +53,12 @@ import static world.md2html.plugins.PluginUtils.listFromStringOrArray;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER_FOR_BUILDERS;
 import static world.md2html.utils.JsonUtils.deJson;
-import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.slugify;
 
 public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
+
+    private static final Logger log = Logging.getLogger();
 
     // TODO Consider using Jackson object mapper
     // TODO Remove all getters and setters and use direct field access. This is a nested class
@@ -92,10 +95,6 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     private List<Md2HtmlPlugin> plugins;
 
     private boolean finalizationStarted = false;
-
-    // We are going to validate multiple metadata blocks, so preloading the schema.
-    private final JsonSchema metadataSchema =
-            loadJsonSchemaFromResource("plugins/string_or_array_schema.json");
 
     @Override
     public void acceptData(JsonNode data) throws ArgFileParseException {
@@ -249,9 +248,9 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
         for (IndexData indexData : this.indexData.values()) {
             if (indexData.getCachedPageResets().isEmpty()) {
-                if (indexData.getDocument().isVerbose()) {
-                    System.out.println("Index file is up-to-date. Skipping: "
-                            + indexData.getDocument().getOutput());
+                if (log.isLoggable(Level.INFO)) {
+                    log.info("Index file is up-to-date. Skipping: " +
+                            indexData.getDocument().getOutput());
                 }
                 return;
             }
@@ -263,8 +262,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             substitutions.put("content", generateIndexHtml(indexData.getIndexCache(),
                     indexData.isAddLetters(), indexData.isAddLettersBlock()));
 
-            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, this.options,
-                    null);
+            Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, null);
 
             ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
@@ -277,12 +275,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                         + indexData.getIndexCacheFile(), e);
             }
 
-            if (indexData.getDocument().isVerbose()) {
-                System.out.println("Index file generated: " +
-                        indexData.getDocument().getOutput());
-            }
-            if (indexData.getDocument().isReport()) {
-                System.out.println(indexData.getDocument().getOutput());
+            if (log.isLoggable(Level.INFO)) {
+                log.info("Index file generated: " + indexData.getDocument().getOutput());
             }
         }
     }

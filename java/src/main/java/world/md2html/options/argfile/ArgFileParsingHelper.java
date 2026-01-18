@@ -3,7 +3,6 @@ package world.md2html.options.argfile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Value;
 import org.javatuples.Pair;
@@ -38,7 +37,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -134,16 +132,6 @@ public class ArgFileParsingHelper {
                 new LinkedHashMap<>());
         argFileRawBuilder.plugins(plugins);
 
-        if (options.isLegacyMode()) {
-            JsonNode pageVariablesNode = plugins.computeIfAbsent("page-variables",
-                    key -> new ObjectNode(NODE_FACTORY));
-            if (!pageVariablesNode.has("METADATA")) {
-                ObjectNode metadataNode = new ObjectNode(NODE_FACTORY);
-                metadataNode.set("only-at-page-start", BooleanNode.getTrue());
-                ((ObjectNode) pageVariablesNode).set("METADATA", metadataNode);
-            }
-        }
-
         return argFileRawBuilder.build();
     }
 
@@ -153,16 +141,9 @@ public class ArgFileParsingHelper {
         ArgFileOptionsRaw options = firstNotNull(argFileRaw.getOptions(),
                 ArgFileOptionsRaw.builder().build());
         boolean verbose = cliOptions.isVerbose() || options.isVerbose();
-        boolean legacyMode = cliOptions.isLegacyMode() || options.isLegacyMode();
-
-        if (verbose && cliOptions.isReport()) {
-            throw new UserError("'verbose' parameter in 'options' section is incompatible " +
-                    "with '--report' command line argument.");
-        }
 
         return ArgFileOptionsRaw.builder()
                 .verbose(verbose)
-                .legacyMode(legacyMode)
                 .build();
     }
 
@@ -241,14 +222,7 @@ public class ArgFileParsingHelper {
 
         boolean verbose = cliOptions.isVerbose() || documentRaw.isVerbose() ||
                 defaults.isVerbose();
-        boolean report = cliOptions.isReport() || documentRaw.isReport() ||
-                defaults.isReport();
-        if (verbose && report) {
-            throw new UserError("Incompatible 'report' and 'verbose' parameters for 'documents' " +
-                    "item: " + refineToString(documentRaw));
-        }
         builder.verbose(verbose);
-        builder.report(report);
         builder.force(cliOptions.isForce() || documentRaw.isForce() || defaults.isForce());
 
         if (documentRaw.getPageFlows() != null && documentRaw.getAddPageFlows() != null) {
@@ -373,7 +347,6 @@ public class ArgFileParsingHelper {
                     .noCss(enrichedDocumentRaw.isNoCss())
                     .force(enrichedDocumentRaw.isForce())
                     .verbose(enrichedDocumentRaw.isVerbose())
-                    .report(enrichedDocumentRaw.isReport())
                     .build();
 
             if (uniqueCodes.contains(document.getCode())) {
@@ -404,7 +377,6 @@ public class ArgFileParsingHelper {
         ArgFile argFile = ArgFile.builder()
                 .options(SessionOptions.builder()
                         .verbose(optionsRaw.isVerbose())
-                        .legacyMode(optionsRaw.isLegacyMode())
                         .build())
                 .documents(documents)
                 .build();

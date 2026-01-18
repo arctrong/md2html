@@ -19,6 +19,5 @@ public class Document {
     boolean noCss;
     boolean force;
     boolean verbose;
-    boolean report;
 
 }

@@ -9,17 +9,22 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
+import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static world.md2html.options.argfile.ArgFileParsingHelper.readArgumentFileNode;
 import static world.md2html.utils.Utils.formatNanoSeconds;
 import static world.md2html.utils.Utils.readStringFromCommentedFile;
 
 public class Md2HtmlRunner {
+
+    private static final Logger log = Logging.getLogger();
 
     public static void main(String[] args) throws Exception {
         try {
@@ -70,6 +75,8 @@ public class Md2HtmlRunner {
                     e.getMessage());
         }
 
+        Logging.init(argFile.getOptions().isVerbose());
+
         PageMetadataHandlersWrapper metadataHandlersWrapper =
                 PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
@@ -77,10 +84,9 @@ public class Md2HtmlRunner {
             try {
                 Md2Html.execute(doc, argFile.getPlugins(), metadataHandlersWrapper,
                         argFile.getOptions());
-            } catch(UserError e) {
-                System.out.println("Error processing input file '" + doc.getInput() +
-                        "': " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                System.exit(1);
+            } catch(UserError ue) {
+                throw new UserError("Error processing input file '" + doc.getInput() +
+                        "': " + ue.getClass().getSimpleName() + ": " + ue.getMessage());
             }
         }
 
@@ -93,10 +99,9 @@ public class Md2HtmlRunner {
             }
         }
 
-        if (argFile.getOptions().isVerbose()) {
+        if (log.isLoggable(Level.INFO)) {
             long end = System.nanoTime();
-            System.out.println("Finished in: " + formatNanoSeconds(end - start));
+            log.info("Finished in: " + formatNanoSeconds(end - start));
         }
     }
-
 }

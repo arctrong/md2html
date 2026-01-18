@@ -23,7 +23,6 @@ class CliArgParseTest(unittest.TestCase):
         self.assertEqual(o1.link_css, o2.link_css)
         self.assertEqual(o1.force, o2.force)
         self.assertEqual(o1.verbose, o2.verbose)
-        self.assertEqual(o1.report, o2.report)
 
     def _assert_cli_error(self, arguments: list):
         try:
@@ -60,7 +59,6 @@ class CliArgParseTest(unittest.TestCase):
         self.assertTrue(doc.include_css)
         self.assertFalse(doc.force)
         self.assertFalse(doc.verbose)
-        self.assertFalse(doc.report)
 
     def test_maxArguments(self):
         # Short form
@@ -79,7 +77,6 @@ class CliArgParseTest(unittest.TestCase):
         self.assertFalse(md2html_args.include_css)
         self.assertTrue(md2html_args.force)
         self.assertTrue(md2html_args.verbose)
-        self.assertFalse(md2html_args.report)
         # Long form
         md2html_args1 = parse_cli_arguments(
             ['--input-root', 'input/root', '--output-root', 'output/root',
@@ -122,10 +119,6 @@ class CliArgParseTest(unittest.TestCase):
         md2html_args = parse_cli_arguments(['-i', 'input.md', '--no-css'])
         self.assertFalse(md2html_args.link_css)
         self.assertFalse(md2html_args.include_css)
-
-    def test_wrongVerboseAndReportFlags(self):
-        with contextlib.redirect_stdout(NonWritable()):
-            self._assert_cli_error(['-i', 'readme.txt', '-vr'])
 
     def test_wrongNoCssAndCss(self):
         for css_type in ["link-css", "include-css"]:

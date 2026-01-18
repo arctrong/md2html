@@ -131,14 +131,6 @@ class ArgFileParseTest(unittest.TestCase):
                 self.assertTrue('no-css' in str(cm.exception))
                 self.assertTrue(css_type in str(cm.exception))
 
-    def test_documentVerboseAndReportFlags_NegativeScenario(self):
-        with self.assertRaises(UserError) as cm:
-            argument_file_dict = load_json_argument_file(
-                '{"documents": [{"output": "index.html", "verbose": true, "report": true}]}')
-            parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
-        self.assertTrue('verbose' in str(cm.exception))
-        self.assertTrue('report' in str(cm.exception))
-
     def test_overridingWithCliArgs_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input-root": "doc_src", "output-root": "doc", '
@@ -193,16 +185,14 @@ class ArgFileParseTest(unittest.TestCase):
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         options = args.options
         self.assertFalse(options.verbose)
-        self.assertFalse(options.legacy_mode)
 
     def test_fullOptions_PositiveScenario(self):
         argument_file_dict = load_json_argument_file(
-            '{"options": {"verbose": true, "legacy-mode": true}, '
+            '{"options": {"verbose": true}, '
             '"documents": [{"input": "index.txt"}]}')
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         options = args.options
         self.assertTrue(options.verbose)
-        self.assertTrue(options.legacy_mode)
 
     def test_noPlugins_PositiveScenario(self):
         argument_file_dict = load_json_argument_file('{"documents": [{"input": "index.txt"}]}')

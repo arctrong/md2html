@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import time
@@ -16,21 +17,27 @@ from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_ext
 from utils import UserError, read_lines_from_commented_json_file, read_lines_from_cached_file, \
     relativize_relative_resource
 
+logger = logging.getLogger(__name__)
+
 WORKING_DIR = Path(__file__).resolve().parent
+
+def configure_logging(verbose: bool):
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG, format="%(message)s", stream=sys.stdout)
+    else:
+        logging.disable(logging.CRITICAL)
 
 
 def md2html(document, plugins, metadata_handlers, options):
 
-    if not document.force:
-        output_path = Path(document.output_file)
-        if output_path.exists():
-            input_path = Path(document.input_file)
-            input_file_mtime = os.path.getmtime(input_path)
-            output_file_mtime = os.path.getmtime(output_path)
-            if output_file_mtime > input_file_mtime:
-                if document.verbose:
-                    print(f'The output file is up-to-date. Skipping: {document.output_file}')
-                return
+    input_path = Path(document.input_file)
+    output_path = Path(document.output_file)
+    if not document.force and output_path.exists():
+        output_file_mtime = os.path.getmtime(output_path)
+        input_file_mtime = os.path.getmtime(input_path)
+        if output_file_mtime > input_file_mtime:
+            logger.info(f'The output file is up-to-date. Skipping: {document.output_file}')
+            return
 
     for plugin in plugins:
         plugin.new_page(document)
@@ -46,12 +53,9 @@ def md2html(document, plugins, metadata_handlers, options):
                      'source_file': relativize_relative_resource(document.input_file,
                                                                  document.output_file)}
 
-    output_page(document, plugins, substitutions, options)
+    output_page(document, plugins, substitutions)
 
-    if document.verbose:
-        print(f'Output file generated: {document.output_file}')
-    if document.report:
-        print(document.output_file)
+    logger.info(f'Output file generated: {document.output_file}')
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> Arguments:
@@ -105,6 +109,8 @@ def main():
         except UserError as e:
             raise UserError(f"Error parsing argument file '{cli_args.argument_file}': "
                             f"{type(e).__name__}: {e}")
+        
+        configure_logging(arguments.options.verbose)
 
         build_cache_manager = build_cache_manager_singleton
         if arguments.options.cache_file:
@@ -132,11 +138,10 @@ def main():
 
         build_cache_manager.save_build_cache(arguments.options.verbose)
 
-        if arguments.options.verbose:
-            end_moment = time.monotonic()
-            print('Finished in: ' + str(timedelta(seconds=end_moment - start_moment)))
+        end_moment = time.monotonic()
+        logger.info('Finished in: %s', str(timedelta(seconds=end_moment - start_moment)))
     except UserError as ue:
-        print(str(ue))
+        logger.error(str(ue))
         sys.exit(1)
 
 

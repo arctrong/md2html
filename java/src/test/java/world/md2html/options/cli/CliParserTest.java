@@ -29,7 +29,6 @@ class CliParserTest {
         assertEquals(o1.getLinkCss(), o2.getLinkCss());
         assertEquals(o1.isForce(), o2.isForce());
         assertEquals(o1.isVerbose(), o2.isVerbose());
-        assertEquals(o1.isReport(), o2.isReport());
     }
 
     private CliOptions getParsingResult(String... args) throws CliArgumentsException {
@@ -63,8 +62,6 @@ class CliParserTest {
         assertNull(options.getLinkCss());
         assertFalse(options.isForce());
         assertFalse(options.isVerbose());
-        assertFalse(options.isReport());
-        assertFalse(options.isLegacyMode());
     }
 
     @Test
@@ -96,7 +93,6 @@ class CliParserTest {
         assertNull(options.getIncludeCss());
         assertTrue(options.isForce());
         assertTrue(options.isVerbose());
-        assertFalse(options.isReport());
 
         // Long form
         CliOptions options1 = getParsingResult(
@@ -165,23 +161,11 @@ class CliParserTest {
                 () -> getParsingResult("input.txt", "output.html"));
     }
 
-    @Test
-    public void wrongVerboseAndReportFlags() {
-        assertThrows(CliArgumentsException.class,
-                () -> getParsingResult("-i", "readme.txt", "-vr"));
-    }
-
     @ParameterizedTest
     @CsvSource({"--include-css", "--link-css"})
     public void wrongNoCssAndCss(String cssOption) {
         assertThrows(CliArgumentsException.class, () -> getParsingResult("-i", "readme.txt",
                 "--no-css", cssOption, "styles.css"));
-    }
-
-    @Test
-    public void legacyMode() throws CliArgumentsException {
-        CliOptions options = getParsingResult("-i", "input.md", "--legacy-mode");
-        assertTrue(options.isLegacyMode());
     }
 
 }

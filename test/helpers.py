@@ -17,6 +17,11 @@ def run_with_parameters(params):
     subprocess.run(EXEC + params)
 
 
+def run_with_capture(params):
+    result = subprocess.run(EXEC + params, capture_output=True, text=True)
+    return result.returncode, result.stdout, result.stderr
+
+
 def recreate_directory(path: Path):
     if path.exists():
         shutil.rmtree(path)
