@@ -63,6 +63,7 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
     }
 
     options['verbose'] = first_not_none(cli_args.verbose, options.get('verbose'), False)
+    options['cache-file'] = first_not_none(options.get('cache-file'), None)
 
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
@@ -288,7 +289,9 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> Tup
     This method does not instantiate plugins.
     """
     options_item = canonized_argument_file['options']
-    options = Options(verbose=options_item['verbose'])
+    options = Options(verbose=options_item['verbose'],
+                      cache_file=options_item['cache-file']
+                      )
 
     documents_page_flows_plugin = {}
     extra_plugin_items = {"page-flows": documents_page_flows_plugin}

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
+from build_cache import build_cache_manager_singleton
 from cli_arguments_utils import CliArgDataObject
 from models.document import Document
 from models.options import Options
@@ -204,6 +205,9 @@ class IndexPlugin(Md2HtmlPlugin):
             if not index_data.cached_page_resets:
                 logger.info('Index file is up-to-date. Skipping: %s',
                             index_data.document.output_file)
+                # TODO Called two times, need to revise, and probably to centralize this logic
+                build_cache_manager_singleton.record_standalone_derived_document(
+                    index_data.document.output_file)
                 return
 
             for plugin in self.all_plugins:
@@ -217,5 +221,9 @@ class IndexPlugin(Md2HtmlPlugin):
 
             with open(index_data.index_cache_file, 'w', encoding="utf-8") as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)
+
+            # TODO Called two times, need to revise, and probably to centralize this logic
+            build_cache_manager_singleton.record_standalone_derived_document(
+                index_data.document.output_file)
 
             logger.info('Index file generated: %s', index_data.document.output_file)
