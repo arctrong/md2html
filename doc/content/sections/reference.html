@@ -81,7 +81,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             </div>
         </td></tr>
         <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
-            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.7</span>
+            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.8</span>
         </td></tr>
     </table>
 </div>
@@ -95,8 +95,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#command-line-syntax">Command line syntax</a></li>
 <li><a href="#argument-file-structure">Argument file structure</a><ul>
 <li><a href="#options-section">options section</a></li>
-<li><a href="#default-section">default section</a></li>
-<li><a href="#documents-section">documents section</a></li>
+<li><a href="#documents-and-default-section">documents and default section</a></li>
 <li><a href="#plugins-section">plugins section</a></li>
 </ul>
 </li>
@@ -344,18 +343,20 @@ This metadata may be used by other programs, e.g., for cataloguing purpose.</p>
 </tr>
 </tbody>
 </table>
-<p><a name="default_section"></a></p>
-<h2 id="default-section"><code>default</code> section</h2>
+<p><a name="documents_section"></a><a name="default_section"></a></p>
+<h2 id="documents-and-default-section"><code>documents</code> and <code>default</code> section</h2>
 <p><a href="#section_list"><img alt="" src="../../pict/triangle_up_h18px.png" /></a> <a href="#section_list">to section list</a></p>
-<p>These parameters will be applied to the document definitions if they are not defined explicitly.
-See the <a href="#documents_section"><code>documents</code> section</a> for the details.</p>
-<p>Properties:</p>
+<p>The <code>documents</code> section is an array of objects with the properties listed below. It defines the
+set of documents that will be processed.</p>
+<p>The <code>default</code> section parameters will be applied to the document definitions if they are not
+defined explicitly. It contains a subset of the document properties in the <code>documents</code> section.</p>
 <table>
 <thead>
 <tr>
 <th>Name</th>
 <th>Type</th>
 <th align="center">Required</th>
+<th align="center">Has default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -364,238 +365,147 @@ See the <a href="#documents_section"><code>documents</code> section</a> for the 
 <td>input-root</td>
 <td>string</td>
 <td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>input-glob</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>sort-by-file-path</td>
-<td>boolean</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>sort-by-variable</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>sort-by-title</td>
-<td>boolean</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>output</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>output-root</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>template</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>title</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>title-from-variable</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>code-from-variable</td>
-<td>string</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>verbose</td>
-<td>boolean</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>link-css</td>
-<td>array of strings</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>include-css</td>
-<td>array of strings</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>no-css</td>
-<td>boolean</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-<tr>
-<td>page-flows</td>
-<td>array of strings</td>
-<td align="center">No</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p><a name="documents_section"></a></p>
-<h2 id="documents-section"><code>documents</code> section</h2>
-<p><a href="#section_list"><img alt="" src="../../pict/triangle_up_h18px.png" /></a> <a href="#section_list">to section list</a></p>
-<p>Array of objects with properties:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th align="center">Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input-root</td>
-<td>string</td>
-<td align="center">No</td>
+<td align="center">Yes</td>
 <td>Root directory for input Markdown files</td>
 </tr>
 <tr>
 <td>input</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Input Markdown file: absolute or relative to the <code>input-root</code> property value</td>
 </tr>
 <tr>
 <td>input-glob</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Input Markdown file name pattern, absolute or relative to the input-root' property value</td>
 </tr>
 <tr>
 <td>sort-by-file-path</td>
 <td>boolean</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>If <code>input-glob</code> is used, the documents will be sorted by the input file path</td>
 </tr>
 <tr>
 <td>sort-by-variable</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>If <code>input-glob</code> is used, the documents will be sorted by the value of the specified page variable</td>
 </tr>
 <tr>
 <td>sort-by-title</td>
 <td>boolean</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>If <code>input-glob</code> is used, the documents will be sorted by their titles</td>
 </tr>
 <tr>
 <td>output-root</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Root directory for output HTML files</td>
 </tr>
 <tr>
 <td>output</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Output HTML file: absolute or relative to the <code>output-root</code> property value</td>
 </tr>
 <tr>
 <td>title</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Page title</td>
 </tr>
 <tr>
 <td>code</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center"></td>
 <td>Unique page code, may be used by plugins</td>
 </tr>
 <tr>
 <td>title-from-variable</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Take the title from the page metadata</td>
 </tr>
 <tr>
 <td>code-from-variable</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Take the code from the page metadata</td>
 </tr>
 <tr>
 <td>template</td>
 <td>string</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td><a href="templates.html">Template</a> that will wrap the generated HTML content</td>
 </tr>
 <tr>
 <td>link-css</td>
 <td>array of strings</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>List of CSS resources that will be linked to the page</td>
 </tr>
 <tr>
 <td>include-css</td>
 <td>array of strings</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>List of CSS files that will be included into the page</td>
 </tr>
 <tr>
 <td>no-css</td>
 <td>boolean</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Defines no CSS to be linked or included</td>
 </tr>
 <tr>
 <td>add-link-css</td>
 <td>array of strings</td>
 <td align="center">No</td>
+<td align="center"></td>
 <td>Adds linked CSS to the previously defined list</td>
 </tr>
 <tr>
 <td>add-include-css</td>
 <td>array of strings</td>
 <td align="center">No</td>
+<td align="center"></td>
 <td>Adds included CSS to the previously defined list</td>
 </tr>
 <tr>
 <td>page-flows</td>
 <td>array of strings</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Names of the page flows the page belongs to</td>
 </tr>
 <tr>
 <td>add-page-flows</td>
 <td>array of strings</td>
 <td align="center">No</td>
+<td align="center"></td>
 <td>Adds page flow names to the previously defined list</td>
 </tr>
 <tr>
 <td>verbose</td>
 <td>boolean</td>
 <td align="center">No</td>
+<td align="center">Yes</td>
 <td>Outputs human readable information about this document generation</td>
 </tr>
 </tbody>
