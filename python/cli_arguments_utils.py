@@ -27,6 +27,7 @@ class CliArgDataObject:
         self.no_css = None
         self.link_css = None
         self.include_css = None
+        self.cache_file = None
         self.force = None
         self.verbose = None
 
@@ -94,6 +95,7 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
     parser.add_argument("--no-css", help="creates HTML with no CSS. If no CSS-related arguments "
                                          "is specified, the default CSS will be included",
                         action='store_true')
+    parser.add_argument("--cache-file", help="build cache file for incremental builds", type=str)
     parser.add_argument("-f", "--force", help="rewrites HTML output file even if it was modified "
                                               "later than the input file", action='store_true')
     parser.add_argument("-v", "--verbose", help="outputs human readable information messages",
@@ -154,6 +156,7 @@ def parse_cli_arguments(*args) -> CliArgDataObject:
 
     cli_arg_data_object.link_css = args.link_css if args.link_css else []
     cli_arg_data_object.include_css = args.include_css if args.include_css else []
+    cli_arg_data_object.cache_file = args.cache_file
 
     cli_arg_data_object.force = args.force
     if bool(args.verbose):

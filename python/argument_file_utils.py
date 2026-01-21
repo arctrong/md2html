@@ -63,7 +63,7 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
     }
 
     options['verbose'] = first_not_none(cli_args.verbose, options.get('verbose'), False)
-    options['cache-file'] = first_not_none(options.get('cache-file'), None)
+    options['cache-file'] = first_not_none(cli_args.cache_file, options.get('cache-file'), None)
 
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
