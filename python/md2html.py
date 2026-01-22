@@ -7,7 +7,7 @@ from pathlib import Path
 
 from argument_file_utils import load_json_argument_file, complete_arguments_processing, \
     merge_and_canonize_argument_file
-from build_cache import build_cache_manager_singleton
+from build_cache import build_cache_manager
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
 from models.arguments import Arguments
 from output_utils import output_page, MARKDOWN
@@ -37,8 +37,8 @@ def md2html(document, plugins, metadata_handlers):
         input_file_mtime = os.path.getmtime(input_path)
         if output_file_mtime > input_file_mtime:
             # TODO Called two times, need to revise, and probably to centralize this logic
-            build_cache_manager_singleton.record_primary_document(document.input_file,
-                                                                  document.output_file, True)
+            build_cache_manager.record_primary_document(document.input_file,
+                                                        document.output_file, True)
             logger.info(f'The output file is up-to-date. Skipping: {document.output_file}')
             return
 
@@ -58,8 +58,7 @@ def md2html(document, plugins, metadata_handlers):
 
     output_page(document, plugins, substitutions)
     # TODO Called two times, need to revise, and probably to centralize this logic
-    build_cache_manager_singleton.record_primary_document(document.input_file, 
-                                                          document.output_file, False)
+    build_cache_manager.record_primary_document(document.input_file,document.output_file, False)
 
     logger.info('Output file generated: %s', document.output_file)
 
@@ -119,9 +118,9 @@ def main():
         configure_logging(arguments.options.verbose)
 
         if arguments.options.cache_file:
-            build_cache_manager_singleton.load_build_cache(arguments.options.cache_file,
-                                                           cli_args.argument_file)
-            if build_cache_manager_singleton.get_force_all(arguments.documents):
+            build_cache_manager.load_build_cache(arguments.options.cache_file,
+                                                 cli_args.argument_file)
+            if build_cache_manager.get_force_all(arguments.documents):
                 for document in arguments.documents:
                     document.force = True
 
@@ -144,8 +143,8 @@ def main():
                                 f"'{type(plugin).__name__}': {e}")
 
         if arguments.options.cache_file:
-            build_cache_manager_singleton.delete_obsolete_files()
-            build_cache_manager_singleton.save_build_cache()
+            build_cache_manager.delete_obsolete_files()
+            build_cache_manager.save_build_cache()
 
         end_moment = time.monotonic()
         logger.info('Finished in: %s', str(timedelta(seconds=end_moment - start_moment)))

@@ -143,4 +143,4 @@ class _BuildCacheManager:
         logger.info('Build cache saved: %s', self.build_cache_file)
 
 
-build_cache_manager_singleton = _BuildCacheManager()
+build_cache_manager = _BuildCacheManager()
