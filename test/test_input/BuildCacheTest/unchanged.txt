@@ -1,0 +1,4 @@
+# Unchanged document
+
+<!--index ["entry1", "entry2"]-->
+This document is going to stay the same throughout all tests.

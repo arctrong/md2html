@@ -1,0 +1,19 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BuildCacheTest/template.html",
+        "verbose": false,
+        "link-css": ["common_styles.css"]
+    },
+    "documents": [
+        { "input": "unchanged.txt" },
+        { "input": "added_with_wrap.txt" }
+    ],
+    "plugins": {
+        "wrap-code": {
+          "wrap_java": {}
+        }
+    }
+}

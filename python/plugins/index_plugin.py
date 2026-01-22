@@ -144,7 +144,8 @@ class IndexPlugin(Md2HtmlPlugin):
 
             if index_data.index_cache_relative:
                 index_data.index_cache_file = str(Path(index_data.document.output_file).parent
-                                                  .joinpath(index_data.index_cache_file))
+                                                  .joinpath(index_data.index_cache_file)
+                                                  ).replace('\\', '/')
             index_cache_file = Path(index_data.index_cache_file)
             if index_cache_file.exists():
                 with open(index_cache_file, 'r', encoding="utf-8") as file:
@@ -208,6 +209,8 @@ class IndexPlugin(Md2HtmlPlugin):
                 # TODO Called two times, need to revise, and probably to centralize this logic
                 build_cache_manager_singleton.record_standalone_derived_document(
                     index_data.document.output_file)
+                build_cache_manager_singleton.record_standalone_derived_document(
+                    index_data.index_cache_file)
                 return
 
             for plugin in self.all_plugins:
@@ -221,6 +224,8 @@ class IndexPlugin(Md2HtmlPlugin):
 
             with open(index_data.index_cache_file, 'w', encoding="utf-8") as cache_file:
                 json.dump(index_data.index_cache, cache_file, indent=2)
+            build_cache_manager_singleton.record_standalone_derived_document(
+                index_data.index_cache_file)
 
             # TODO Called two times, need to revise, and probably to centralize this logic
             build_cache_manager_singleton.record_standalone_derived_document(

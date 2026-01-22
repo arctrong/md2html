@@ -1,0 +1,21 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BuildCacheTest/template.html",
+        "verbose": false,
+        "link-css": ["common_styles.css"]
+    },
+    "documents": [
+        { "input": "unchanged.txt" },
+        { "input": "removed_with_wrap.txt" }
+    ],
+    "plugins": {
+        "wrap-code": {
+          "wrap_java": {}
+        },
+        "index": {"index": {"output": "index_page.html", "title": "Index",
+            "index-cache": "index_cache.json", "index-cache-relative": true } }
+    }
+}
