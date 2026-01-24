@@ -120,8 +120,9 @@ Here are some additional explanations:
     
     !!! note
         This feature is introduced in the version 1.0.8 and is not expected to cover all possible
-        program usage scenarios, but just the most frequent of them. In case of doubt and from
-        time to time please use the `--force` flag.
+        program usage scenarios, but just the most frequent of them. For example, the *template*
+        changes are not tracked yet. In case of doubt and from time to time please use the
+        `--force` flag.
 
 - `--no-css` --- if nether `--link-css` nor `--include-css` is specified then the
     default CSS is included into the page. To avoid this, use `--no-css` argument; then no CSS
