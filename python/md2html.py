@@ -7,6 +7,7 @@ from pathlib import Path
 
 from argument_file_utils import load_json_argument_file, complete_arguments_processing, \
     merge_and_canonize_argument_file
+from build_cache import build_cache_manager
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
 from models.arguments import Arguments
 from output_utils import output_page, MARKDOWN
@@ -27,7 +28,7 @@ def configure_logging(verbose: bool):
         logging.disable(logging.CRITICAL)
 
 
-def md2html(document, plugins, metadata_handlers, options):
+def md2html(document, plugins, metadata_handlers):
 
     input_path = Path(document.input_file)
     output_path = Path(document.output_file)
@@ -35,6 +36,9 @@ def md2html(document, plugins, metadata_handlers, options):
         output_file_mtime = os.path.getmtime(output_path)
         input_file_mtime = os.path.getmtime(input_path)
         if output_file_mtime > input_file_mtime:
+            # TODO Called two times, need to revise, and probably to centralize this logic
+            build_cache_manager.record_primary_document(document.input_file,
+                                                        document.output_file, True)
             logger.info(f'The output file is up-to-date. Skipping: {document.output_file}')
             return
 
@@ -53,8 +57,10 @@ def md2html(document, plugins, metadata_handlers, options):
                                                                  document.output_file)}
 
     output_page(document, plugins, substitutions)
+    # TODO Called two times, need to revise, and probably to centralize this logic
+    build_cache_manager.record_primary_document(document.input_file,document.output_file, False)
 
-    logger.info(f'Output file generated: {document.output_file}')
+    logger.info('Output file generated: %s', document.output_file)
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> Arguments:
@@ -111,12 +117,19 @@ def main():
         
         configure_logging(arguments.options.verbose)
 
+        if arguments.options.cache_file:
+            build_cache_manager.load_build_cache(arguments.options.cache_file,
+                                                 cli_args.argument_file)
+            if build_cache_manager.get_force_all(arguments.documents):
+                for document in arguments.documents:
+                    document.force = True
+
         for document in arguments.documents:
             try:
 
                 # TODO Consider removing `plugins` argument and using only `plugins.values()`.
 
-                md2html(document, arguments.plugins, arguments.metadata_handlers, arguments.options)
+                md2html(document, arguments.plugins, arguments.metadata_handlers)
             except UserError as e:
                 error_input_file = document.input_file
                 raise UserError(f"Error processing input file '{error_input_file}': "
@@ -128,6 +141,10 @@ def main():
             except UserError as e:
                 raise UserError(f"Error executing finalization action in plugin " +
                                 f"'{type(plugin).__name__}': {e}")
+
+        if arguments.options.cache_file:
+            build_cache_manager.delete_obsolete_files()
+            build_cache_manager.save_build_cache()
 
         end_moment = time.monotonic()
         logger.info('Finished in: %s', str(timedelta(seconds=end_moment - start_moment)))

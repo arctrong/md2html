@@ -7,4 +7,5 @@ import lombok.Value;
 @Builder(toBuilder = true)
 public class SessionOptions {
     boolean verbose;
+    String cacheFile;
 }

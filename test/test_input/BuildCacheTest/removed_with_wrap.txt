@@ -1,0 +1,4 @@
+# Removed document
+
+This document is going to be added to the document set and then removed. It contains a wrapped block:
+[CodeToRemove.java](<!--wrap_java CodeToRemove.java-->).

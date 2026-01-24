@@ -51,6 +51,7 @@ class CliArgParseTest(unittest.TestCase):
         md2html_args = parse_cli_arguments(['-i', '../doc/notes.md'])
         args = parse_argument_file_for_test({"documents": [{}]}, md2html_args)
         doc = args.documents[0]
+        self.assertIsNone(md2html_args.cache_file)
         self.assertEqual('../doc/notes.md', doc.input_file)
         self.assertEqual('../doc/notes.html', doc.output_file)
         self.assertFalse(doc.title)
@@ -65,7 +66,8 @@ class CliArgParseTest(unittest.TestCase):
         md2html_args = parse_cli_arguments(
                 ['--input-root', 'input/root', '--output-root', 'output/root',
                  '-i', 'input.md', '-o', 'doc/output.htm', '-t', 'someTitle', '--template',
-                 '../templateDir', '--link-css=someStyles.css', '-fv'])
+                 '../templateDir', '--link-css=someStyles.css', '-fv',
+                 "--cache-file", "cache_file.json"])
         self.assertEqual('input/root', md2html_args.input_root)
         self.assertEqual('input.md', md2html_args.input_file)
         self.assertEqual('output/root', md2html_args.output_root)
@@ -77,6 +79,7 @@ class CliArgParseTest(unittest.TestCase):
         self.assertFalse(md2html_args.include_css)
         self.assertTrue(md2html_args.force)
         self.assertTrue(md2html_args.verbose)
+        self.assertEqual('cache_file.json', md2html_args.cache_file)
         # Long form
         md2html_args1 = parse_cli_arguments(
             ['--input-root', 'input/root', '--output-root', 'output/root',
@@ -130,3 +133,7 @@ class CliArgParseTest(unittest.TestCase):
     def test_argumentFile(self):
         md2html_args = parse_cli_arguments(['--argument-file', 'md2html_args.json'])
         self.assertEqual(Path('md2html_args.json'), md2html_args.argument_file)
+
+    def test_cacheFile_emptyString(self):
+        cli_args = parse_cli_arguments(['-i', 'input.md', '--cache-file', ''])
+        self.assertEqual(cli_args.cache_file, '')

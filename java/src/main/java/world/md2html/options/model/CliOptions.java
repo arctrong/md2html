@@ -32,6 +32,8 @@ public class CliOptions {
     List<String> linkCss;
     boolean noCss;
 
+    String cacheFile;
+
     boolean force;
     boolean verbose;
 }

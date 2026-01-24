@@ -5,6 +5,7 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
@@ -50,6 +51,9 @@ public class Md2Html {
     private static final String GENERATION_TIME_PLACEHOLDER = "generation_time";
     private static final String SOURCE_FILE_PLACEHOLDER = "source_file";
 
+    private static final BuildCacheManager buildCacheManager =
+            Md2HtmlContext.getBuildCacheManager();
+
     public static void execute(Document document, List<Md2HtmlPlugin> plugins,
             PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options)
             throws IOException, UserError {
@@ -61,6 +65,8 @@ public class Md2Html {
             FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
             FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
             if (outputFileTime.compareTo(inputFileTime) > 0) {
+                buildCacheManager.recordPrimaryDocument(document.getInput(), document.getOutput(),
+                        true);
                 if (log.isLoggable(Level.INFO)) {
                     log.info("The output file is up-to-date. Skipping: " + document.getOutput());
                 }
@@ -92,6 +98,9 @@ public class Md2Html {
         }
 
         outputPage(document, plugins, substitutions, null);
+
+        buildCacheManager.recordPrimaryDocument(document.getInput(), 
+                document.getOutput(), false);
 
         if (log.isLoggable(Level.INFO)) {
             log.info("Output file generated: " + document.getOutput());

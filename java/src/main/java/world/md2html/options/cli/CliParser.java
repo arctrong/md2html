@@ -42,6 +42,8 @@ public class CliParser {
     private static final String INCLUDE_CSS = "include-css";
     private static final String NO_CSS = "no-css";
 
+    private static final String CACHE_FILE = "cache-file";
+
     private static final String FORCE = "f";
     private static final String VERBOSE = "v";
 
@@ -128,6 +130,10 @@ public class CliParser {
                 .hasArg(false)
                 .desc("creates HTML with no CSS. If no CSS-related arguments is specified, " +
                         "the default CSS will be included")
+                .build());
+        cliOptions.addOption(Option.builder(null).longOpt(CACHE_FILE)
+                .hasArg().numberOfArgs(1)
+                .desc("build cache file for incremental builds")
                 .build());
         cliOptions.addOption(Option.builder(FORCE).longOpt("force")
                 .hasArg(false)
@@ -218,6 +224,8 @@ public class CliParser {
         cliOptionsBuilder.linkCss(linkCss);
         cliOptionsBuilder.includeCss(includeCss);
         cliOptionsBuilder.noCss(noCss);
+
+        cliOptionsBuilder.cacheFile(commandLine.getOptionValue(CACHE_FILE));
 
         cliOptionsBuilder.force(commandLine.hasOption(FORCE));
         boolean verbose = commandLine.hasOption(VERBOSE);

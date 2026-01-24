@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.networknt.schema.JsonSchema;
 import world.md2html.Md2Html;
+import world.md2html.Md2HtmlContext;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -14,6 +15,7 @@ import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.Logging;
@@ -50,6 +52,9 @@ import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
     private static final Logger log = Logging.getLogger();
+
+    private static final BuildCacheManager buildCacheManager =
+            Md2HtmlContext.getBuildCacheManager();
 
     private static class WrapCodeData {
         private String style = "";
@@ -209,8 +214,7 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                 }
                 if (outputFileTime.compareTo(inputFileTime) > 0) {
                     if (log.isLoggable(Level.INFO)) {
-                        log.info("Wrapped output file is up-to-date. Skipping: " +
-                                document.getOutput());
+                        log.info("Wrapped output file is up-to-date. Skipping: " + outputFileStr);
                     }
                     needToGenerate = false;
                 }
@@ -243,6 +247,11 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
                     log.info("Wrapped output file generated: " + documentObj.getOutput());
                 }
             }
+
+            // TODO Though this is not called multiple times here, it's probably good to centralize
+            //  this logic
+            buildCacheManager.recordDerivedDocumentForPrimary(document.getInput(), outputFileStr);
+
             this.processedCache.put(cacheKey, outputFileStr);
         }
 

@@ -2,8 +2,12 @@ package world.md2html.utils;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
@@ -25,10 +29,20 @@ import java.util.stream.Collectors;
 public class JsonUtils {
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final ObjectWriter OBJECT_WRITER;
     public static final JsonNodeFactory NODE_FACTORY = OBJECT_MAPPER.getNodeFactory();
+    // TODO Consider using `@Jacksonized` instead
     public static final ObjectMapper OBJECT_MAPPER_FOR_BUILDERS = new ObjectMapper();
 
     static {
+        DefaultPrettyPrinter.Indenter indenter = new DefaultIndenter("  ", "\n");
+        ObjectMapper objectMapperForOutput = new ObjectMapper();
+        objectMapperForOutput.enable(SerializationFeature.INDENT_OUTPUT);
+        DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
+                .withObjectIndenter(indenter)
+                .withArrayIndenter(indenter);
+        OBJECT_WRITER = objectMapperForOutput.writer(printer);
+
         OBJECT_MAPPER_FOR_BUILDERS.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             public JsonPOJOBuilder.Value findPOJOBuilderConfig(AnnotatedClass ac) {

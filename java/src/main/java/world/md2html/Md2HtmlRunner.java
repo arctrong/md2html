@@ -9,12 +9,15 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +28,9 @@ import static world.md2html.utils.Utils.readStringFromCommentedFile;
 public class Md2HtmlRunner {
 
     private static final Logger log = Logging.getLogger();
+
+    private static final BuildCacheManager buildCacheManager =
+            Md2HtmlContext.getBuildCacheManager();
 
     public static void main(String[] args) throws Exception {
         try {
@@ -77,6 +83,26 @@ public class Md2HtmlRunner {
 
         Logging.init(argFile.getOptions().isVerbose());
 
+        if (argFile.getOptions().getCacheFile() != null) {
+            // Theoretically `argumentFile` may be null if it's specified in the CL.
+            // But this is intended for E2E tests. In the main scenario the cache file
+            // is specified in the argument file, so `argumentFile` is always present.
+            // Scenario with CL only needs further consideration to decide what to do
+            // in this case.
+            if (argumentFile == null) {
+                throw new UserError("Cache file specified but no argument file provided. " +
+                        "Argument file must exist if cache file is used.");
+            }
+            buildCacheManager.initialize(argFile.getOptions().getCacheFile(), argumentFile);
+            if (buildCacheManager.getForceAll(argFile.getDocuments())) {
+                for (Document doc : argFile.getDocuments()) {
+                    doc.setForce(true);
+                }
+            }
+        } else {
+            buildCacheManager.initializeDisabled();
+        }
+
         PageMetadataHandlersWrapper metadataHandlersWrapper =
                 PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
@@ -96,6 +122,15 @@ public class Md2HtmlRunner {
             } catch (UserError ue) {
                 throw new UserError("Error executing finalization action in plugin '" +
                         plugin.getClass().getSimpleName() + "': " + ue.getMessage());
+            }
+        }
+
+        if (argFile.getOptions().getCacheFile() != null) {
+            try {
+                buildCacheManager.deleteObsoleteFiles();
+                buildCacheManager.saveBuildCache();
+            } catch (IOException e) {
+                throw new UserError("Error saving build cache: " + e.getMessage());
             }
         }
 

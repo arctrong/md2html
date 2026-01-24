@@ -81,7 +81,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             </div>
         </td></tr>
         <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
-            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.7</span>
+            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.8</span>
         </td></tr>
     </table>
 </div>
@@ -93,7 +93,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <ul>
 <li><a href="#about-plugins">About plugins</a></li>
 <li><a href="#relative-paths-plugin">"relative-paths" plugin</a></li>
-<li><a href="#page-flows-plugin">"page-flows" plugin</a></li>
+<li><a href="#page_flows_plugin">"page-flows" plugin</a></li>
 <li><a href="#page-variables-plugin">"page-variables" plugin</a></li>
 <li><a href="#variables-plugin">"variables" plugin</a></li>
 <li><a href="#index-plugin">"index" plugin</a></li>
@@ -192,7 +192,7 @@ the desired path.</p>
 </table>
 <hr />
 <p><a name="index_entry_index_page_flows"></a>    </p>
-<h1 id="page-flows-plugin">"page-flows" plugin</h1>
+<h1 id="page_flows_plugin">"page-flows" plugin</h1>
 <p><strong>Motivation</strong></p>
 <p>Sidebar provides quick access to different project pages. It's often very helpful to put a
 sequence of pages that are intended to be read in order. Doing it manually is pretty
@@ -580,8 +580,9 @@ only those documents that were changed or added since the previous program run.
 In order to always generate a complete index page the program uses an <em>index cache file</em>
 that keeps the collected index entries between the runs.</p>
 <p>In some cases a forceful full regeneration (with <code>-f</code> flag or <code>"force": true</code> option, 
-see <a href="usage.html">here</a> for more details) is required, for example, if the "index" plugin is
-activated on an existing project or if the index cache file is deleted. </p>
+see <a href="reference.html#force_page_regeneration">here</a> for more details) is required,
+for example, if the "index" plugin is activated on an existing project or if the index
+cache file is deleted. </p>
 <p>Index cache file is a generated artifact so in case of any problem it may be manually deleted
 and the further forceful full documents regeneration may resolve the problem.</p>
 </div>
@@ -642,7 +643,8 @@ become <code>[](../page1.html)</code>.</p>
 <ol>
 <li>If a page is moved or renamed, some other pages may need to be regenerated to reflected this
     change. But those pages may be up-to-date, so a forceful full regeneration may be required
-    (with <code>-f</code> flag or <code>"force": true</code> option, see <a href="usage.html">here</a> for more details).</li>
+    (with <code>-f</code> flag or <code>"force": true</code> option, see
+    <a href="reference.html#force_page_regeneration">here</a> for more details).</li>
 <li>Changing a page's <code>code</code> will invalidate all links that reference this page by its <code>code</code>.</li>
 </ol>
 </div>
@@ -837,8 +839,8 @@ The result of this version is <a href="../code/hello/Main.java.html">here</a>.</
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
-To assure regeneration, use <code>-f</code> flag or <code>"force": true</code> option (see <a href="usage.html">here</a> 
-for more details).</p>
+To assure regeneration, use <code>-f</code> flag or <code>"force": true</code> option
+(see <a href="reference.html#force_page_regeneration">here</a> for more details).</p>
 </div>
 <hr />
 <h1 id="include_file_plugin">"include-file" plugin</h1>

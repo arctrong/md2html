@@ -2,6 +2,7 @@ import glob
 import json
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from typing import Tuple
 
 from jsonschema import validate, ValidationError
 
@@ -62,6 +63,7 @@ def merge_and_canonize_argument_file(argument_file_dict: dict, cli_args: CliArgD
     }
 
     options['verbose'] = first_not_none(cli_args.verbose, options.get('verbose'), False)
+    options['cache-file'] = first_not_none(cli_args.cache_file, options.get('cache-file'), None)
 
     if 'no-css' in defaults_item and (
             'link-css' in defaults_item or 'include-css' in defaults_item):
@@ -277,7 +279,7 @@ def expand_document_globs(documents_item, plugins) -> list:
     return expanded_documents_item
 
 
-def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Arguments, dict):
+def complete_arguments_processing(canonized_argument_file: dict, plugins) -> Tuple[Arguments, dict]:
     """
     Returns a tuple:
 
@@ -287,7 +289,9 @@ def complete_arguments_processing(canonized_argument_file: dict, plugins) -> (Ar
     This method does not instantiate plugins.
     """
     options_item = canonized_argument_file['options']
-    options = Options(verbose=options_item['verbose'])
+    options = Options(verbose=options_item['verbose'],
+                      cache_file=options_item['cache-file']
+                      )
 
     documents_page_flows_plugin = {}
     extra_plugin_items = {"page-flows": documents_page_flows_plugin}

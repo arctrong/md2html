@@ -1,0 +1,4 @@
+# Added document with wrapped code
+
+This document is going to be added. It contains a wrapped block:
+[CodeToPreserve.java](<!--wrap_java CodeToPreserve.java-->).

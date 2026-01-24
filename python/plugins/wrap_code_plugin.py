@@ -5,11 +5,12 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 from argument_file_utils import complete_arguments_processing, merge_and_canonize_argument_file
+from build_cache import build_cache_manager
 from cli_arguments_utils import CliArgDataObject
 from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
-from output_utils import output_page, MARKDOWN
+from output_utils import MARKDOWN, output_page
 from plugins.md2html_plugin import Md2HtmlPlugin
 from plugins.plugin_utils import dict_from_string_or_object
 from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
@@ -136,6 +137,11 @@ class WrapCodePlugin(Md2HtmlPlugin):
                 output_page(document_obj, self.plugins_for_output, substitutions, variables)
 
                 logger.info('Wrapped output file generated: %s', document_obj.output_file)
+
+            # TODO Though this is not called multiple times here, it's probably good to centralize
+            #  this logic
+            build_cache_manager.record_derived_document_for_primary(doc.input_file,
+                                                                    output_file_str)
 
             self.processed_cache[cache_key] = output_file_str
 

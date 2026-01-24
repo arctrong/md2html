@@ -232,3 +232,24 @@ class ArgFileParseTest(unittest.TestCase):
         doc = args.documents[2]
         self.assertEqual('doc_src/txt/index.txt', doc.input_file)
         self.assertTrue('index.html' in doc.output_file)
+
+    def test_cacheFile_cliOverridesArgumentFile(self):
+        for cli_cache_file, arg_file_cache_file, expected_result in [
+            ('cli_cache_file.json', 'arg_file_cache_file.json', 'cli_cache_file.json'),
+            ('', 'arg_file_cache_file.json', 'cli_cache_file.json'),
+            ('cli_cache_file.json', None, 'cli_cache_file.json'),
+            (None, 'arg_file_cache_file.json', 'arg_file_cache_file.json'),
+            (None, None, None),
+        ]:
+            with self.subTest(msg=f"{cli_cache_file}, {arg_file_cache_file}, {expected_result}"):
+                cli_args = CliArgDataObject()
+                argument_file_dict = load_json_argument_file(
+                    '{"options": {}, "documents": [{"input": "test.md"}]}')
+                if cli_cache_file:
+                    cli_args.cache_file = cli_cache_file
+                if arg_file_cache_file:
+                    argument_file_dict["options"]["cache-file"] = arg_file_cache_file
+
+        args = parse_argument_file_for_test(argument_file_dict, cli_args)
+
+        self.assertEqual(args.options.cache_file, expected_result)
