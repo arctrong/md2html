@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from models.document import Document
+from utils import UserError
 
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,9 @@ class _BuildCacheManager:
         return bool(self.previous_cache)
 
     def load_build_cache(self, build_cache_file, argument_file):
+        if not argument_file:
+            raise UserError("Cache file specified but no argument file provided. "
+                            "Argument file must exist if cache file is used.")
         self.current_arg_file_mtime = os.path.getmtime(argument_file)
         self.build_cache_file = build_cache_file
         build_cache_file_path = Path(self.build_cache_file)
