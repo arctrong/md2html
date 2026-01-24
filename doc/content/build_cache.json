@@ -1,0 +1,52 @@
+{
+  "arg_file_mtime": 1769285957.7995017,
+  "primary_documents": {
+    "readme.txt": {
+      "output_file": "readme.html"
+    },
+    "doc_src/sections/overview.txt": {
+      "output_file": "doc/content/sections/overview.html"
+    },
+    "doc_src/sections/quick_start.txt": {
+      "output_file": "doc/content/sections/quick_start.html"
+    },
+    "doc_src/sections/installation.txt": {
+      "output_file": "doc/content/sections/installation.html"
+    },
+    "doc_src/sections/usage.txt": {
+      "output_file": "doc/content/sections/usage.html"
+    },
+    "doc_src/sections/page_content.txt": {
+      "output_file": "doc/content/sections/page_content.html"
+    },
+    "doc_src/sections/page_content_dark.txt": {
+      "output_file": "doc/content/sections/page_content_dark.html"
+    },
+    "doc_src/sections/templates.txt": {
+      "output_file": "doc/content/sections/templates.html"
+    },
+    "doc_src/sections/plugins.txt": {
+      "output_file": "doc/content/sections/plugins.html",
+      "derived_documents": [
+        "doc/content/code/hello/Main.java.html",
+        "doc/content/code/hello/geometric_distribution.r.html"
+      ]
+    },
+    "doc_src/sections/reference.txt": {
+      "output_file": "doc/content/sections/reference.html"
+    },
+    "doc_src/sections/development.txt": {
+      "output_file": "doc/content/sections/development.html"
+    },
+    "doc_src/sections/ref/glossary.txt": {
+      "output_file": "doc/content/sections/ref/glossary.html"
+    },
+    "doc_src/sections/ref/references.txt": {
+      "output_file": "doc/content/sections/ref/references.html"
+    }
+  },
+  "standalone_derived_documents": [
+    "doc/content/index_cache.json",
+    "doc/content/index_page.html"
+  ]
+}

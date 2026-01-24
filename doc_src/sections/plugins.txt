@@ -115,7 +115,7 @@ For page `readme.html`  | For page `doc/about.html`
 
 ----------------------------------------------------------------------------------------------------
 <!--index page flows -->    
-# "page-flows" plugin
+# "page-flows" plugin {#page_flows_plugin}
 
 **Motivation**
 
@@ -419,8 +419,9 @@ letters-block | boolean | No | false | `true` means that all terms first letters
     that keeps the collected index entries between the runs.
     
     In some cases a forceful full regeneration (with `-f` flag or `"force": true` option, 
-    see [here](<!--page usage-->) for more details) is required, for example, if the "index" plugin is
-    activated on an existing project or if the index cache file is deleted. 
+    see [here](<!--page reference-->#force_page_regeneration) for more details) is required,
+    for example, if the "index" plugin is activated on an existing project or if the index
+    cache file is deleted. 
     
     Index cache file is a generated artifact so in case of any problem it may be manually deleted
     and the further forceful full documents regeneration may resolve the problem.
@@ -509,7 +510,8 @@ become `[](../page1.html)`.
 !!! attention
     1. If a page is moved or renamed, some other pages may need to be regenerated to reflected this
         change. But those pages may be up-to-date, so a forceful full regeneration may be required
-        (with `-f` flag or `"force": true` option, see [here](<!--page usage-->) for more details).
+        (with `-f` flag or `"force": true` option, see
+        [here](<!--page reference-->#force_page_regeneration) for more details).
     2. Changing a page's `code` will invalidate all links that reference this page by its `code`.
 
 ----------------------------------------------------------------------------------------------------
@@ -663,8 +665,8 @@ Variable | Description
 
 !!! note
     The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
-    To assure regeneration, use `-f` flag or `"force": true` option (see [here](<!--page usage-->) 
-    for more details).
+    To assure regeneration, use `-f` flag or `"force": true` option
+    (see [here](<!--page reference-->#force_page_regeneration) for more details).
 
 ----------------------------------------------------------------------------------------------------
 # "include-file" plugin {#include_file_plugin}

@@ -23,11 +23,12 @@ usage: md2html.py [-h] [--input-root INPUT_ROOT] [-i INPUT]
                   [--argument-file ARGUMENT_FILE] [-t TITLE]
                   [--title-from-variable TITLE_FROM_VARIABLE]
                   [--template TEMPLATE] [--link-css LINK_CSS]
-                  [--include-css INCLUDE_CSS] [--no-css] [-f] [-v] [-r]
+                  [--include-css INCLUDE_CSS] [--no-css]
+                  [--cache-file CACHE_FILE] [-f] [-v]
 
 Creates HTML documentation out of Markdown texts.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --input-root INPUT_ROOT
                         root directory for input Markdown files. Defaults to
@@ -70,6 +71,8 @@ optional arguments:
                         entries allowed
   --no-css              creates HTML with no CSS. If no CSS-related arguments is
                         specified, the default CSS will be included
+  --cache-file CACHE_FILE
+                        build cache file for incremental builds
   -f, --force           rewrites HTML output file even if it was modified later
                         than the input file
   -v, --verbose         outputs human readable information messages
@@ -77,36 +80,52 @@ optional arguments:
 
 Here are some additional explanations:
 
-- The **`--output`** argument. The program expects it to be defined as location relative to the
+- `--output` --- the program expects it to be defined as location relative to the
     program invocation current directory. This is required for possible further relative paths
-    recalculations. The **`--input`** and the **`--template`** arguments are recommended to be 
+    recalculations. The `--input` and the `--template` arguments are recommended to be 
     defined the same way. Other variations were not tested so try them first if they are really
     required. See the [recommended project structure](#typical_project_structure) for the
-    example.
+    example
     
-- <!--index GLOB--><a name="input_glob"></a>The `--input-glob` argument. See [<!--ref glob_wiki-->].
-    This syntax helps defining input file set like this: `doc_src/*.txt` that means "all files 
-    with `txt` extension in directory `doc_src`". `doc_src/**/*.txt` will mean the same but also
-    subdirectories of directory `doc_src` will be scanned recursively.
+- <!--index GLOB--><a name="input_glob"></a>
+    `--input-glob` --- lets specify input file set like this: `doc_src/*.txt` ---
+    that means "all files with `txt` extension in directory `doc_src`". Also see
+    [<!--ref glob_wiki-->]
 
-- The **`--force`** argument. If it's not specified then only the input files that were changed 
-    since their previous processing will be processed. Specify this argument to forcibly regenerate
-    all output files.
+- <!--index force page regeneration--><a name="force_page_regeneration"></a>
+    `--force` --- if it's not specified then only the input files that were changed 
+    since their previous processing moment will be processed. Specify this argument to forcibly
+    regenerate all output files
     
     !!! note
-        Processing only changed files is faster but needs some caution. Changes in the _template_
-        or _page flows_ must be reflected in all output files that use this template, but if the
-        input files are unchanged they will not be processed. This also applies to usage of GLOBs
-        if _page flows_ are used as well. If a new file is added to the folder or deleted from it
-        the corresponding _page flows_ will be changed and these changes must be reflected in all
-        corresponding output files.
+        Processing only changed files is faster but needs some care. Changes in the
+        [*template*](<!--page templates-->) must be reflected in all output files that use this
+        template, but if an input file is unchanged it will not be updated. This also applies to
+        [*page flows*](<!--page plugins-->#page_flows_plugin), [GLOBs](#input_glob) and some other
+        cases. If a new input file is added or an existing one is deleted, corresponding
+        *page flows* will be changed and these changes must be reflected in all corresponding
+        output files.
         
         So use `-f` option in any cases when there's a risk of breaking the documentation
         consistency.
+        
+        Also see the `--cache-file` argument.
+
+- <!--index ["build cache", "cache, build"]--><a name="build_cache"></a>
+    `--cache-file` --- specifies the build cache file and enables a smarter generation scope
+    determination and project cleanup. In this mode the program automatically identifies
+    the input file set changes and, base on this and some other data, decided to turn on the
+    full project forcible regeneration. Also when some input files are removed (by the user),
+    the corresponding output files are automatically removed as well.
     
-- The **`--no-css`** argument. If nether `--link-css` nor `--include-css` is specified then the
+    !!! note
+        This feature is introduced in the version 1.0.8 and is not expected to cover all possible
+        program usage scenarios, but just the most frequent of them. In case of doubt and from
+        time to time please use the `--force` flag.
+
+- `--no-css` --- if nether `--link-css` nor `--include-css` is specified then the
     default CSS is included into the page. To avoid this, use `--no-css` argument; then no CSS
-    will be used on the template resolution.
+    will be used on the template resolution
 
 ----------------------------------------------------------------------------------------------------
 <a name="argument_file_structure"></a>
@@ -202,7 +221,8 @@ Properties:
 
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
-verbose | boolean | No | The whole run verbosity, for now, only printing execution duration on finish
+verbose    | boolean | No | The whole run verbosity, for now, only printing execution duration on finish
+cache-file | string  | No | Specifies the build cache file, see [here](#build_cache)
 
 
 <a name="documents_section"></a><a name="default_section"></a>
