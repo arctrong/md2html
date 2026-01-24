@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.javatuples.Pair;
 import world.md2html.Md2Html;
+import world.md2html.Md2HtmlContext;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -24,6 +25,7 @@ import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.Logging;
 import world.md2html.utils.UniqueIndexer;
@@ -52,6 +54,7 @@ import static world.md2html.options.argfile.ArgFileParsingHelper.mergeAndCanoniz
 import static world.md2html.plugins.PluginUtils.listFromStringOrArray;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER_FOR_BUILDERS;
+import static world.md2html.utils.JsonUtils.OBJECT_WRITER;
 import static world.md2html.utils.JsonUtils.deJson;
 import static world.md2html.utils.Utils.relativizeRelativeResource;
 import static world.md2html.utils.Utils.slugify;
@@ -59,6 +62,9 @@ import static world.md2html.utils.Utils.slugify;
 public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
 
     private static final Logger log = Logging.getLogger();
+
+    private static final BuildCacheManager buildCacheManager =
+            Md2HtmlContext.getBuildCacheManager();
 
     // TODO Consider using Jackson object mapper
     // TODO Remove all getters and setters and use direct field access. This is a nested class
@@ -68,6 +74,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     @Builder(toBuilder = true)
     private static class IndexData {
         private Path indexCacheFile;
+        private String indexCacheFileStr;
         private boolean indexCacheRelative;
         // TODO Test this parameter
         private boolean addLetters;
@@ -184,6 +191,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                     .getParent().resolve(indexData.getIndexCacheFile()) :
                     indexData.getIndexCacheFile();
             indexDataBuilder.indexCacheFile(indexCacheFile);
+            indexDataBuilder.indexCacheFileStr(indexCacheFile.toString().replace("\\", "/"));
 
             if (Files.exists(indexCacheFile)) {
                 try {
@@ -252,7 +260,12 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
                     log.info("Index file is up-to-date. Skipping: " +
                             indexData.getDocument().getOutput());
                 }
-                return;
+                // TODO Called two times, need to revise, and probably to centralize this logic
+                buildCacheManager.recordStandaloneDerivedDocument(
+                        indexData.getDocument().getOutput());
+                buildCacheManager.recordStandaloneDerivedDocument(
+                        indexData.getIndexCacheFileStr());
+                continue;
             }
             for (Md2HtmlPlugin plugin : this.plugins) {
                 plugin.newPage(indexData.getDocument());
@@ -264,16 +277,19 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
             Md2Html.outputPage(indexData.getDocument(), this.plugins, substitutions, null);
 
-            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-            DefaultPrettyPrinter printer = new DefaultPrettyPrinter()
-                    .withObjectIndenter(new DefaultIndenter("  ", "\n"));
             try {
-                mapper.writer(printer).writeValue(indexData.getIndexCacheFile().toFile(),
+                OBJECT_WRITER.writeValue(indexData.getIndexCacheFile().toFile(),
                         indexData.getIndexCache());
             } catch (IOException e) {
                 throw new RuntimeException("Error opening index cache file for writing: "
                         + indexData.getIndexCacheFile(), e);
             }
+            buildCacheManager.recordStandaloneDerivedDocument(
+                    indexData.getIndexCacheFileStr());
+
+            // TODO Called two times, need to revise, and probably to centralize this logic
+            buildCacheManager.recordStandaloneDerivedDocument(
+                    indexData.getDocument().getOutput());
 
             if (log.isLoggable(Level.INFO)) {
                 log.info("Index file generated: " + indexData.getDocument().getOutput());

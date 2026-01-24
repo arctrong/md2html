@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -334,4 +335,7 @@ public class Utils {
         return processed.replaceAll("^_+|_+$", "");
     }
 
+    public static double pythonLikeFileMTime(Path file) throws IOException {
+        return Files.getLastModifiedTime(file).to(TimeUnit.NANOSECONDS) / 1_000_000_000.0;
+    }
 }

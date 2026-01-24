@@ -141,9 +141,11 @@ public class ArgFileParsingHelper {
         ArgFileOptionsRaw options = firstNotNull(argFileRaw.getOptions(),
                 ArgFileOptionsRaw.builder().build());
         boolean verbose = cliOptions.isVerbose() || options.isVerbose();
+        String cacheFile = firstNotNull(cliOptions.getCacheFile(), options.getCacheFile(), null);
 
         return ArgFileOptionsRaw.builder()
                 .verbose(verbose)
+                .cacheFile(cacheFile)
                 .build();
     }
 
@@ -377,6 +379,7 @@ public class ArgFileParsingHelper {
         ArgFile argFile = ArgFile.builder()
                 .options(SessionOptions.builder()
                         .verbose(optionsRaw.isVerbose())
+                        .cacheFile(optionsRaw.getCacheFile())
                         .build())
                 .documents(documents)
                 .build();

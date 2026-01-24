@@ -1,12 +1,16 @@
 package world.md2html.options.model.raw;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 @Value
 @Builder
-@JsonDeserialize(builder = ArgFileOptionsRaw.ArgFileOptionsRawBuilder.class)
+@Jacksonized
 public class ArgFileOptionsRaw {
     boolean verbose;
+    @JsonProperty("cache-file")
+    String cacheFile;
 }
