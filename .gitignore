@@ -2,11 +2,11 @@ __pycache__
 /java/target/
 /java/.idea/
 /java/md2html.iml
-/test/test_output/
+/e2e_tests/test_output/
 /python/test/test_output/*
 !/python/test/test_output/.gitkeep
 /python/.idea/
-/test/.idea/
+/e2e_tests/.idea/
 /.idea/
 /src/.$diagrams.drawio.bkp
 /src/.$*.drawio.dtmp
