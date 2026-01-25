@@ -87,33 +87,33 @@ All tested artifacts must be built (if required). All unit tests must pass.
 ## Execution
 
 ````winshell
->cd %MD2HTML_HOME%\test
+>cd %MD2HTML_HOME%\e2e_tests
 
->run_tests.bat
+>run_e2e_tests.bat
 ````
 
 or 
 
 ````unixshell
-$ cd $MD2HTML_HOME/test
+$ cd $MD2HTML_HOME/e2e_tests
 
-$ ./run_tests
+$ ./run_e2e_tests
 ````
 
 The output must look like this:
 
 ````shell
 ===== py implementation E2E tests =====
-.........................................
+..........................................
 ----------------------------------------------------------------------
-Ran 41 tests in 6.525s
+Ran 42 tests in 7.735s
 
 OK
 
 ===== java implementation E2E tests =====
-.........................................
+..........................................
 ----------------------------------------------------------------------
-Ran 41 tests in 13.805s
+Ran 42 tests in 15.578s
 
 OK
 ````
@@ -128,6 +128,4 @@ A certain test may be executed in the following way:
 
 The above test will be executed for the Python version. Use `set IMPLEMENTATION=java` to execute 
 it for the Java version.
-
-
 
