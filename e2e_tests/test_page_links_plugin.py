@@ -5,7 +5,7 @@ from pathlib import Path
 import helpers as h
 
 
-class Md2htmlPageLinksPluginIntegralTest(unittest.TestCase):
+class PageLinksPluginE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -7,7 +7,7 @@ from pathlib import Path
 import helpers as h
 
 
-class Md2htmlVerboseTest(unittest.TestCase):
+class VerboseFlagE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

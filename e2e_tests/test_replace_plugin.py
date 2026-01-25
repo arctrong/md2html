@@ -7,7 +7,7 @@ from pathlib import Path
 import helpers as h
 
 
-class Md2htmlReplacePluginIntegralTest(unittest.TestCase):
+class ReplacePluginE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

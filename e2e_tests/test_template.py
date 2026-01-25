@@ -4,7 +4,7 @@ import unittest
 import helpers as h
 
 
-class Md2htmlTemplateIntegralTest(unittest.TestCase):
+class TemplateE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

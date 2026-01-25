@@ -6,7 +6,7 @@ import re
 import helpers as h
 
 
-class Md2htmlContentIntegralTest(unittest.TestCase):
+class ContentE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

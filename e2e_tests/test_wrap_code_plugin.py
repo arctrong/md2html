@@ -5,7 +5,7 @@ from pathlib import Path
 import helpers as h
 
 
-class Md2htmlWrapCodePluginIntegralTest(unittest.TestCase):
+class WrapCodePluginE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

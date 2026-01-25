@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import helpers as h
 
 
-class Md2htmlPageFlowsPluginIntegralTest(unittest.TestCase):
+class PageFlowsPluginE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -8,7 +8,7 @@ import helpers as h
 anchor_attr = 'name'
 
 
-class Md2htmlIndexPluginIntegralTest(unittest.TestCase):
+class IndexPluginE2eTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
