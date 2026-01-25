@@ -1,0 +1,11 @@
+# The new-project script pre start check list.
+# Each line is a file/dir path relative to the target (CWD).
+# If ANY of these exist, the new-project script must abort without copying.
+
+doc_src
+doc
+md2html_args.json
+generate_doc_py.bat
+generate_doc_java.bat
+generate_doc_py
+generate_doc_java

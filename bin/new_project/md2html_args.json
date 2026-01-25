@@ -1,6 +1,10 @@
 {
+    "title": "New project",
+    "logo": "doc/favicon.png",
+    "home-page": "readme.html",
     "options": {
-        "verbose": true
+        "verbose": true,
+        "cache-file": "doc/content/build_cache.json"
     },
     "default": {
         "input-root": "doc_src",

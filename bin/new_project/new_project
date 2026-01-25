@@ -1,0 +1,61 @@
+#!/bin/bash
+
+set -e
+
+if [[ -z "$MD2HTML_HOME" ]]; then
+    echo "MD2HTML_HOME is not set"
+    exit 1
+fi
+
+CANNOT_PROCEED=
+CHECKFILE="${MD2HTML_HOME%/}/bin/new_project/check_list.txt"
+LISTFILE="${MD2HTML_HOME%/}/bin/new_project/copy_list.txt"
+HOME_NORM="${MD2HTML_HOME%/}"
+
+if [[ ! -f "$LISTFILE" ]]; then
+    echo "Copy list not found: $LISTFILE"
+    exit 1
+fi
+
+if [[ ! -f "$CHECKFILE" ]]; then
+    echo "Check list not found: $CHECKFILE"
+    exit 1
+fi
+
+check_exists() {
+    if [[ -e "$1" ]]; then
+        echo "File or directory '$1' already exists"
+        CANNOT_PROCEED=Y
+    fi
+}
+
+while IFS= read -r item; do
+    item=${item%$'\r'}
+    [[ -z "$item" || "$item" == \#* ]] && continue
+    check_exists "$item"
+done < "$CHECKFILE"
+
+if [[ -n "$CANNOT_PROCEED" ]]; then
+    echo "Some problems found (see above). Nothing has been done"
+    exit 1
+fi
+
+while IFS='|' read -r src dest rec; do
+    src=${src%$'\r'}
+    dest=${dest%$'\r'}
+    rec=${rec%$'\r'}
+    [[ -z "$src" || "$src" == \#* ]] && continue
+    src="${src%"${src##*[![:space:]]}"}"
+    dest="${dest%"${dest##*[![:space:]]}"}"
+    rec="${rec%"${rec##*[![:space:]]}"}"
+    src_path="$HOME_NORM/$src"
+    if [[ "$rec" == "1" ]]; then
+        mkdir -p "$(dirname "${dest%/}")"    
+        cp -r "$src_path" "$dest"
+    else
+        if [[ "$dest" != "." ]]; then
+            mkdir -p "$dest"
+        fi
+        cp "$src_path" "$dest"
+    fi
+done < "$LISTFILE"
