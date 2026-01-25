@@ -110,26 +110,25 @@ the ways of quick starting.</p>
 <hr />
 <p><a name="index_entry_index_quick_start_script"></a></p>
 <h1 id="quick-start-script">Quick start script</h1>
-<p>The  quick-start script creates a small new project with a 
+<p>The  quick start script creates a small new project with a 
 <a href="usage.html#typical_project_structure">typical structure</a> 
 and with some sample content.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>As for now, the quick start script is implemented for Windows only.</p>
-</div>
 <p>After the program is installed, create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal:</p>
-<pre class="highlight"><code class="language-shell">&gt;cd C:\your\path\your_project</code></pre>
-<p>Execute the following command:</p>
-<pre class="highlight"><code class="language-shell">&gt;%MD2HTML_HOME%\bin\new_project\new_project.bat</code></pre>
+then switch to there in the command line terminal and execute the quick start script. On Windows:</p>
+<pre class="highlight"><code class="language-shell">&gt;cd C:\your\path\your_project
+
+&gt;%MD2HTML_HOME%\bin\new_project\new_project.bat</code></pre>
+<p>On Unix and macOS:</p>
+<pre class="highlight"><code class="language-unixshell">$ cd /your/path/your_project
+
+$ $MD2HTML_HOME/bin/new_project/new_project</code></pre>
 <p>All necessary project files will be created in the directory <code>your_project</code>. Just generate 
 the documentation by double-clicking the command file <code>generate_doc_py.bat</code> or 
-<code>generate_doc_java.bat</code>. Open the generated file <code>readme.html</code> in the <code>your_project</code>
-directory to see the content.</p>
+<code>generate_doc_java.bat</code> (or executing the corresponding scripts in the command line).
+Open the generated file <code>readme.html</code> in the <code>your_project</code> directory to see the content.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code>your_project</code> directory must better be empty before running the new project generation 
-script.</p>
+<p>The <code>your_project</code> directory must better be empty before running the quick start script.</p>
 </div>
 <hr />
 <p><a name="index_entry_index_quick_start_manual"></a></p>
