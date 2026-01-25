@@ -1,12 +1,12 @@
 <!--VARIABLES {"noPageTitle": true}--> 
 
-<p><img src="<!--path pict-->logo.png" title="md2html" class="floatRight" /></p>
+![Logo](<!--path pict-->logo.png "md2html"){.floatRight}
 
-**M<sub>2</sub>H** creates structured well formatted HTML documentation with minimal effort and may be
-used for different types of writing works.
+**M<sub>2</sub>H** creates structured, well-formatted HTML static sites with minimal effort.
+It can be used for many kinds of writing projects.
 
-The first and the most telling example is this documentation that was written solely using this
-tool.
+This documentation was written entirely using **M<sub>2</sub>H** and serves as a real-world
+example of the tool in action.
 
 [TOC]
 

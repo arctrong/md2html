@@ -365,7 +365,7 @@ this case three pairs of curly braces are used to avoid HTML-escaping on substit
 
 ----------------------------------------------------------------------------------------------------
 <!--index index-->
-# "index" plugin
+# "index" plugin {#index_plugin}
 
 **Motivation**
 

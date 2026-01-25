@@ -1,7 +1,7 @@
 ![](doc/pict/logo.png)
 
-**M<sub>2</sub>H** creates structured well formatted HTML documentation with minimal effort and
-may be used for different types of writing works.
+**M<sub>2</sub>H** creates structured well-formatted HTML documentation with minimal effort and
+may be used for different types of writing projects.
 
 See the [complete documentation](https://arctrong.github.io/md2html/readme.html), that is created
 using this tool, as an example of a possible achievable result.

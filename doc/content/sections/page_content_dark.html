@@ -100,7 +100,13 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#table_of_contents">Table of contents</a></li>
 <li><a href="#links">Links</a></li>
 <li><a href="#anchors">Anchors</a></li>
-<li><a href="#images">Images</a></li>
+<li><a href="#images">Images</a><ul>
+<li><a href="#wrapping-around">Wrapping around</a></li>
+<li><a href="#fit-inside-and-framing">Fit inside and framing</a></li>
+<li><a href="#image-expanding">Image expanding</a></li>
+<li><a href="#mind-color-theme">Mind color theme</a></li>
+</ul>
+</li>
 <li><a href="#lists">Lists</a></li>
 <li><a href="#blockquotes">Blockquotes</a></li>
 <li><a href="#tables">Tables</a></li>
@@ -323,41 +329,49 @@ at the arbitrary places on the page with the syntax:</p>
 <p>Also see <a href="plugins.html#page_links_plugin">the "page-links" plugin</a>.</p>
 </div>
 <hr />
+<p><a name="index_entry_index_images_pictures"></a></p>
 <h1 id="images">Images</h1>
-<p><img src="../../pict/penrose.png" alt="Penrose" title="Penrose" class="floatRight" /></p>
-
 <p>A picture is inserted the following ways:</p>
 <ul>
 <li><code>![](path/to/image.png)</code> &mdash; the simplest form;</li>
 <li><code>![ALT](path/to/image.png "title")</code> &mdash; with optional alternative text and hint.</li>
 </ul>
-<p>The above syntax is simple enough so it's not going to be demonstrated here. Instead, the other
-method was used above that allows placing images on the page side with the text wrapping around.
-That may be very useful with small images. This method uses direct HTML inclusion:</p>
-<p style="clear: both;"></p>
-
-<pre class="highlight"><code>&lt;p&gt;&lt;img src="&lt;!--path pict--&gt;target.png" class="floatRight" /&gt;&lt;/p&gt;
-
-Here is the text that must wrap around the image on the left.
-
-&lt;p style="clear: both;"&gt;&lt;/p&gt;</code></pre>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The image tag is enclosed by a paragraph that is required for the currently used styles.
-The Python version does this enclosing itself, but the Java version does not. Though the
-Python version does not do extra enclosing if it's already done. So it's better to always
-add the paragraph.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This example also uses a path substitution <code>&lt;!--path pict--&gt;</code>.
-See <a href="plugins.html#relative_paths_plugin">"relative-paths" plugin</a> for more details.</p>
-</div>
-<p>To stop the text float the <code>&lt;p style="clear: both;"&gt;&lt;/p&gt;</code> HTML element was used.</p>
-<p>An image may be used as a link text like this:</p>
+<p>It may also be used as a link text like this:</p>
 <pre class="highlight"><code>[![](../../pict/target.png)](page.html)</code></pre>
 <p>Then we will get a clickable image that works as a link:</p>
 <p><a href="https://en.wikipedia.org/wiki/Penrose_tiling" title="Penrose"><img alt="" src="../../pict/penrose_small.png" /></a></p>
+<h2 id="wrapping-around">Wrapping around</h2>
+<p><img alt="Penrose" class="floatRight" src="../../pict/penrose.png" title="Penrose" /></p>
+<p>With smaller images we may want to save space or place them closer to the describing text,
+like it's demonstrated here &mdash; the image is placed on the page's side, and the text wraps it
+around.</p>
+<p>Here's how this may be done:</p>
+<pre class="highlight"><code>![](&lt;!--path pict--&gt;target.png){.floatRight}
+
+The wrapping paragraph test.
+
+&lt;p style="clear: both;"&gt;&lt;/p&gt;</code></pre>
+<p style="clear: both;"></p>
+
+<p>To stop the text wrapping the <code>&lt;p style="clear: both;"&gt;&lt;/p&gt;</code> HTML element was used. The following
+text will continue below the image.</p>
+<p>This example also uses path substitution <code>&lt;!--path pict--&gt;</code> that is implemented by the
+<a href="plugins.html#relative_paths_plugin">"relative-paths" plugin</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above example uses <a href="#attribute_lists"><em>attribute lists</em></a>. There's a less elegant but
+workable alternative using direct HTML inclusion:</p>
+<pre class="highlight"><code>&lt;p&gt;&lt;img src="&lt;!--path pict--&gt;target.png" class="floatRight" /&gt;&lt;/p&gt;
+
+The wrapping paragraph test.
+
+&lt;p style="clear: both;"&gt;&lt;/p&gt;</code></pre>
+<p>The <code>&lt;image&gt;</code> tag is enclosed into a paragraph <code>&lt;p&gt;</code> that is required for the currently used
+styles. The Python version does this enclosing itself, but the Java version does not.
+Though the Python version does not do extra enclosing if it already exists. So it's better
+to always add the paragraph.</p>
+</div>
+<h2 id="fit-inside-and-framing">Fit inside and framing</h2>
 <p><a name="index_entry_index_wide_image_fit_image"></a>
 When an image is too wide we may want it to fit into the page width.
 <a href="#attribute_lists"><em>Attribute lists</em></a> may be used for this with the following classes defined
@@ -373,9 +387,19 @@ the other examples:</p>
 <p><img alt="" class="img-frame" src="../../pict/dark_fake_text.png" width="285px" /> &mdash; for the <a href="page_content_dark.html#fake_image">dark scheme</a>.</p>
 <p>And here how it's done:</p>
 <pre class="highlight"><code>![](&lt;!--path pict--&gt;light_fake_text.png){.img-frame width=285px}</code></pre>
+<h2 id="image-expanding">Image expanding</h2>
+<p>If an image is large enough but not expected to be observed often, it may be good to place an icon
+in the page and to make it expendable on click. A relatively complex JavaScript solution may be
+implemented, but it's not yet done here. Anyway there's a simpler alternative that may be
+sufficient in some cases:</p>
+<p><a href="../../pict/wide_image.png" target="_blank" title="Click to expand"><img alt="" src="../../pict/wide_image.png" width="160px" /></a></p>
+<p>Click the icon to open the image in a separate tab. Here's how this can be done:</p>
+<pre class="highlight"><code>[![](&lt;!--path pict--&gt;wide_image.png){width=160px}](&lt;!--path pict--&gt;wide_image.png
+"Click to expand"){target=_blank}</code></pre>
+<h2 id="mind-color-theme">Mind color theme</h2>
 <p>There's one point that should be taken into account when working with images. Often images are
 intended to be shown on a light background. If we use a 
-<a href="templates.html#themes"><em>dark theme</em></a>, some images may not look well on a dark background.
+<a href="templates.html#themes"><em>dark theme</em></a>, some images may not look well in the dark.
 Such images may be marked the following way:</p>
 <pre class="highlight"><code>&lt;div class="light_only"&gt;&lt;/div&gt;
 
@@ -390,7 +414,7 @@ Here is an example:</p>
 <p><a href="page_content.html#images_on_dark_background_example">light scheme</a> |
 <a href="page_content_dark.html#images_on_dark_background_example">dark scheme</a></p>
 <p>The first picture has thin black elements (arms, hands, feet and hair) that don't look well on the
-dark background. The second picture has local white underlying plate and probably looks better.</p>
+dark background. The second picture has a local white underlying plate and probably looks better.</p>
 <hr />
 <h1 id="lists">Lists</h1>
 <p>The following markup:</p>

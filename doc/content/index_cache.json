@@ -65,6 +65,16 @@
   ],
   "doc/content/sections/page_content.html": [
     {
+      "entry": "images",
+      "link": "sections/page_content.html#index_entry_index_images_pictures",
+      "title": "Page content"
+    },
+    {
+      "entry": "pictures",
+      "link": "sections/page_content.html#index_entry_index_images_pictures",
+      "title": "Page content"
+    },
+    {
       "entry": "wide image",
       "link": "sections/page_content.html#index_entry_index_wide_image_fit_image",
       "title": "Page content"
@@ -121,6 +131,16 @@
     }
   ],
   "doc/content/sections/page_content_dark.html": [
+    {
+      "entry": "images",
+      "link": "sections/page_content_dark.html#index_entry_index_images_pictures",
+      "title": "Page content (dark)"
+    },
+    {
+      "entry": "pictures",
+      "link": "sections/page_content_dark.html#index_entry_index_images_pictures",
+      "title": "Page content (dark)"
+    },
     {
       "entry": "wide image",
       "link": "sections/page_content_dark.html#index_entry_index_wide_image_fit_image",
