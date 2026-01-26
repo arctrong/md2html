@@ -6,15 +6,15 @@
 <a id="installation_all"></a>
 # Common steps
 
-This program doesn't have any installer and is installed according to the principle 
-*unpack-and-run*:
+This program doesn't have an installer and follows the *unpack-and-run* approach:
 
-- Put (or clone from the VCS) the unpacked directory `md2html` to the directory by choice.
-- Define the `MD2HTML_HOME` environment variable as the absolute path of the directory `md2html`.
+- Put the unpacked directory `md2html` into a directory of your choice (or clone the repository
+    there).
+- Define the `MD2HTML_HOME` environment variable as the absolute path to the `md2html` directory.
 - Follow further specific steps for:
     - [Python version](#installation_python) and
     - [Java version](#installation_java)
-- For Windows, file explorer context menu items may be added, see
+- On Windows, Windows Explorer context menu items may be added, see
     [here](<!--page usage-->#win_explorer_context_menu).
 
 !!! tip
@@ -27,12 +27,12 @@ This program doesn't have any installer and is installed according to the princi
 
 ## Prerequisites
 
-This program requires [Python 3](https://www.python.org/) runtime that can be installed in 
-different ways. Here is a short instruction for a typical installation on Windows. 
+This program requires a [Python 3](https://www.python.org/) runtime that can be installed in
+different ways. Here are brief instructions for a typical installation on Windows.
 
 !!! note
     Again, this is just one of the methods intended mainly for less experienced users and those
-    who want to save the time. Other installation methods will most likely work as well.
+    who want to save time. Other installation methods will most likely work as well.
 
 The installer file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your
 platform). Only the following option (1) must be changed:
@@ -41,7 +41,7 @@ platform). Only the following option (1) must be changed:
 
 Nothing else should be changed in this and the subsequent dialogs.
 
-The following command may be used to check whether Python is installed.
+The following command may be used to check whether Python is installed:
 
 ````shell
 >python --version
@@ -49,11 +49,11 @@ Python 3.8.7
 ````
 
 !!! note
-    1. Later versions of Python will very likely be suitable too but they were not completely
-        checked.
-    2. In Linux the `python` command is probably used for running Python 2 that does not suffice 
-        for this program. Python 3 may need to be installed separately and called with 
-        the `python3` command.
+    1. Later versions of Python will very likely be suitable too, but they haven't been fully
+        tested.
+    2. On Linux, the `python` command may refer to Python 2, which does not suffice for this
+        program. Python 3 may need to be installed separately and called with the `python3`
+        command.
 
 The following Python packages must be installed:
 
@@ -62,13 +62,16 @@ The following Python packages must be installed:
 ````
 
 !!! note
-    The packages are specified with their versions for stability reason. Future versions of the
-    packages may have changes that noticeably affect the program work.
+    1. The packages are specified with their versions for stability reasons. Future versions of the
+        packages may have changes that noticeably affect how the program works.
+    2. (Optional) Consider a
+        [Python virtual environment](https://docs.python.org/3.8/library/venv.html)
+        (`venv`) to avoid modifying the system-wide Python installation.
 
 
 ## Installation
 
-No program specific installation steps are required, provided that the
+No program-specific installation steps are required, provided that the
 [common steps](#installation_all) are fulfilled and the prerequisites are matched.
 
 ----------------------------------------------------------------------------------------------------
@@ -89,8 +92,8 @@ java version "1.8.0_05"
 !!! important
     <a name="java_17_incompatible"></a>
     Java 8 is the intended version for this program. Java 11 was tried and worked stable, no
-    differences were observed. But with Java 17 the program did not compile because of the code
-    incompatibility. This issue is planned to be explored.
+    differences were observed. But with Java 17 the program did not compile due to code
+    incompatibilities. This issue is planned to be investigated.
 
 ## Installation
 
@@ -104,8 +107,8 @@ artifacts. They must be built or taken separately.
 
 ### Using the release build
 
-The latest built release must be available along with the source code. A release is a file named
-`md2html-bin.jar`. Download this file and put it inside the directory 
+The release artifact is a file named `md2html-bin.jar`. Download this file (it must be available
+along with the source code) and put it inside the directory
 `%MD2HTML_HOME%\java\target\` (create this directory if it does not exist). That's it.
 
 
@@ -116,7 +119,7 @@ This needs Java Development Kit (JDK, not JRE) 8 or higher and [Maven](https://m
 !!! important
     Please see the notes about Java 17 [above](#java_17_incompatible).
 
-In a command line terminal execute:
+In a Windows command line terminal execute:
 
 ````shell
 >cd %MD2HTML_HOME%\java
@@ -124,6 +127,12 @@ In a command line terminal execute:
 >release.bat
 ````
 
+On a Unix-like system execute:
+
+````unixshell
+$ cd $MD2HTML_HOME/java
+$ ./release
+````
 The following must be output as the process ends:
 
 ````shell
@@ -134,8 +143,8 @@ The following must be output as the process ends:
 
 File `md2html-bin.jar` must appear in the directory `%MD2HTML_HOME%\java\target\`.
 
-!!! note
-    __Note.__ The tests and the whole build will fail if the variable 
+!!! important
+    The tests and the whole build will fail if the variable
     [`MD2HTML_HOME`](#installation_all) is not set.
 
 

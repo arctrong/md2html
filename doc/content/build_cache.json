@@ -35,6 +35,9 @@
     "doc_src/sections/reference.txt": {
       "output_file": "doc/content/sections/reference.html"
     },
+    "doc_src/sections/troubleshooting.txt": {
+      "output_file": "doc/content/sections/troubleshooting.html"
+    },
     "doc_src/sections/development.txt": {
       "output_file": "doc/content/sections/development.html"
     },

@@ -73,6 +73,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="templates.html">Templates</a>
             <a class="sidebar_item selected " href="plugins.html">Plugins</a>
             <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
             
@@ -107,11 +108,11 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <hr />
 <p><a name="index_entry_index_plugins"></a></p>
 <h1 id="about-plugins">About plugins</h1>
-<p>Plugins automate and simplify typical tasks and make the documentation more structural and easy
+<p>Plugins automate and simplify typical tasks and make the documentation more structured and easy
 to use.</p>
-<p>The main approach used by this program is no interference in the Markdown syntax. So the
+<p>The main approach used by this program is minimal interference with the Markdown syntax. So the
 documentation content must be readable in plain text even without processing by this program.
-Plugins provide extra possibilities for the templates processing and visualization.</p>
+Plugins provide extra possibilities for template processing and visualization.</p>
 <p>See <a href="reference.html#argument_file_example">here</a> for an example of how plugins are defined in 
 the <em>argument file</em>.</p>
 <hr />
@@ -197,11 +198,11 @@ the desired path.</p>
 <p>Sidebar provides quick access to different project pages. It's often very helpful to put a
 sequence of pages that are intended to be read in order. Doing it manually is pretty
 cumbersome and error-prone.</p>
-<p>This plugin defines such pages sequences and and provides them for easy manipulation in templates.</p>
+<p>This plugin defines such page sequences and provides them for easy manipulation in templates.</p>
 <p><strong>Definition</strong></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You may want to also look at the new syntax described
+<p>It may also be useful to look at the new syntax described
 <a href="plugins.html#page_flows_new_syntax">here</a>.</p>
 </div>
 <p>In the <code>"plugins"</code> sections:</p>
@@ -272,7 +273,7 @@ provides the following structured data:</p>
 </tr>
 <tr>
 <td><code>{{sidebar.has_navigation}}</code></td>
-<td>Boolean, <code>true</code> if ether previous or next page exist</td>
+<td>Boolean, <code>true</code> if either previous or next page exists</td>
 </tr>
 <tr>
 <td><code>{{sidebar.not_empty}}</code></td>
@@ -327,7 +328,7 @@ exists then the enclosed content is rendered. <code>sidebar.previous</code> valu
 attribute <code>link</code> that is used in the rendered block.</p>
 </div>
 <p>Also for the current page we have the whole page sequence of the page flow and can render this
-list in the sidebar. As we know which page or pages are current, we can highlight this links.
+list in the sidebar. As the current page (or pages) is known, these links can be highlighted.
 Here's a simplified example of how the sidebar items may be rendered:</p>
 <pre class="highlight"><code>&lt;ul&gt;{{#sidebar}}
 &lt;li&gt;&lt;a class="sidebarItem{{#current}} selected{{/current}}" href="{{link}}"&gt;{{title}}&lt;/a&gt;&lt;/li&gt;
@@ -405,7 +406,7 @@ and the tags <code>{{title}}</code> and <code>{{noPageTitle}}</code> will be rep
 this page is processed.</p>
 <p>The <em>page metadata</em> blocks will be removed from the source text if they are recognized and
 processed by the defined markers.</p>
-<p>The metadata content must be a valid JSON [<a class="ref" href="ref/references.html#json">json</a>].</p>
+<p>The metadata content must be valid JSON [<a class="ref" href="ref/references.html#json">json</a>].</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Opening <code>&lt;!--</code> and closing markers <code>--&gt;</code> must not be used inside the metadata
@@ -413,7 +414,8 @@ section. Also consecutive hyphens <code>--</code> inside HTML comments may proba
 browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
 <code>"&lt;!\u002D-text-\u002D&gt;"</code> will be interpreted as <code>"&lt;!--text--&gt;"</code>. Still, depending on the 
 page content and the context, opening and closing markers, even when escaped in JSON, may 
-cause unexpected result. Check it first if you really need to use these symbols.</p>
+cause unexpected results. If these symbols must be used, the result should be checked in a
+browser.</p>
 </div>
 <hr />
 <h1 id="variables-plugin">"variables" plugin</h1>
@@ -431,10 +433,10 @@ this case three pairs of curly braces are used to avoid HTML-escaping on substit
 <p><a name="index_entry_index_index"></a></p>
 <h1 id="index_plugin">"index" plugin</h1>
 <p><strong>Motivation</strong></p>
-<p>Some terms, abbreviations and other kind of keywords may be defined, described and mentioned
+<p>Some terms, abbreviations and other kinds of keywords may be defined, described and mentioned
 in different pages within the documentation. Searching such keywords may be hard,
 especially if the documentation is large. This plugin allows marking such points on the pages
-as <em>index entries</em> and then collects these entries and put them together on a separate 
+as <em>index entries</em> and then collects these entries and puts them together on a separate
 <em>index page</em>. See the <a href="../index_page.html">index page</a> of this documentation as an example.</p>
 <p><strong>Definition</strong></p>
 <pre class="highlight"><code class="language-json">"plugins": {
@@ -606,15 +608,15 @@ The term first letter delimiters will look like this:</p>
     &lt;a href="#index_letter_C"&gt;C&lt;/a&gt;
     .  .  .
 &lt;/p&gt;</code></pre>
-<p>The above information allows define desirable styling with CSS.</p>
+<p>The above information allows defining desired styling with CSS.</p>
 <hr />
 <h1 id="page_links_plugin">"page-links" plugin</h1>
 <p><strong>Motivation</strong></p>
 <p>HTML pages inside documentation usually reference each other using links. A link specifies its 
-target relative to the page where it's placed. When the target page is moved or renamed the link
-need to be modified accordingly, otherwise it won't work. And what's worse, all pages that
-reference the relocated page need to be found and modified. This plugin automatically calculates 
-link target pages location thus eliminating the need of specifying them manually.</p>
+target relative to the page where it's placed. When the target page is moved or renamed, the link
+needs to be modified accordingly, otherwise it won't work. And what's worse, all pages that
+reference the relocated page need to be found and updated. This plugin automatically calculates 
+link target page locations, thus eliminating the need to specify them manually.</p>
 <p><strong>Definition</strong></p>
 <p>To make this plugin work the target document must have a <code>code</code>. Here is an example of an argument
 file that uses this plugin:</p>
@@ -641,7 +643,7 @@ become <code>[](../page1.html)</code>.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <ol>
-<li>If a page is moved or renamed, some other pages may need to be regenerated to reflected this
+<li>If a page is moved or renamed, some other pages may need to be regenerated to reflect this
     change. But those pages may be up-to-date, so a forceful full regeneration may be required
     (with <code>-f</code> flag or <code>"force": true</code> option, see
     <a href="reference.html#force_page_regeneration">here</a> for more details).</li>
@@ -682,7 +684,7 @@ is fulfilled, while in the second block the source text is
 <p>Pages may contain links to source code files like Java (*.java), Python (*.py), XML (*.xml), 
 and so on. When viewing such pages locally (as HTML files) the linked files are often opened by
 browsers as text. When the page is published and is viewed by URL, the browsers will often 
-offer downloading the linked files that's very inconvenient and significantly slows down the
+offer downloading the linked files, which is very inconvenient and significantly slows down the
 documentation usage.</p>
 <p>The "wrap-code" plugin wraps source code files into HTML pages and provides links to these
 wrapping pages.</p>
@@ -803,7 +805,7 @@ absent descriptions.</p>
 <p>Let's say there's the file <code>projects/hello/geometric_distribution.r</code> with some content.
 To link this file in a source text, use something like this: </p>
 <pre class="highlight"><code>The main class is [here](&lt;!--wrap hello/geometric_distribution.r--&gt;).</code></pre>
-<p>As the result, a new file <code>doc/code/hello/geometric_distribution.r.html</code> will be generated based on
+<p>As a result, a new file <code>doc/code/hello/geometric_distribution.r.html</code> will be generated based on
 the following transformed content:</p>
 <pre><code>````
 &lt;the file content here&gt;
@@ -839,7 +841,7 @@ The result of this version is <a href="../code/hello/Main.java.html">here</a>.</
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
-To assure regeneration, use <code>-f</code> flag or <code>"force": true</code> option
+To ensure regeneration, use the <code>-f</code> flag or the <code>"force": true</code> option
 (see <a href="reference.html#force_page_regeneration">here</a> for more details).</p>
 </div>
 <hr />
@@ -876,8 +878,8 @@ where it's described. This plugin does such kind of inclusion.</p>
 <li>partial inclusion. Not only the whole file may be included but also a fragment of it:<ul>
 <li><code>start-with</code> and <code>start-marker</code> parameters specify the text that will be the fragment start.
     The <code>start-with</code> text will be present in the included fragment while the <code>start-marker</code>
-    text will not be included. The first of these markers will be used. If ether of these
-    parameters are specified and they are not found in the file then nothing will be included;</li>
+    text will not be included. The first of these markers will be used. If either of these
+    parameters are specified, and they are not found in the file then nothing will be included;</li>
 <li><code>end-with</code> and <code>end-marker</code> specify the text that will be the fragment end. If no text
     defined by these parameters are found then the fragment will be to the end of the file.</li>
 </ul>
@@ -909,8 +911,7 @@ where it's described. This plugin does such kind of inclusion.</p>
 <h1 id="replace-plugin">"replace" plugin</h1>
 <p><strong>Motivation</strong></p>
 <p>This plugin makes replacements by template. It may be helpful for contracting long and recurring
-fragments. Probably, long and cumbersome HTML inclusions are the first fragments that 
-may be addressed by this plugin. </p>
+fragments. Probably, long and cumbersome HTML inclusions are the first  use case for this plugin.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>This plugin must be used with care. When used too much, it may become a replacement for
@@ -937,7 +938,7 @@ readability and compatibility in source text.</p>
 <li><code>${1}</code>, <code>${2}</code>, <code>${3}</code>, etc. are the placeholders that will be replaced in the template.
     To add a dollar sign <code>$</code> it must be doubled. So <code>$${4}</code> will be interpreted as <code>${4}</code>.
     There's a need for this doubling only if a dollar sign if followed by a curly brace.
-    So <code>$3</code> will be taken literary as <code>$3</code>;</li>
+    So <code>$3</code> will be taken literally as <code>$3</code>;</li>
 <li>if the <code>recursive</code> flag is set to <code>true</code> then the resulting text (after the template is
     extending) will be considered as containing metadata blocks. In the replacement definition
     with marker <code>pict</code> the fragment <code>&lt;!--path pict--&gt;</code> will be processed and replaced if

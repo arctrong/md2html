@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------------------------------
 # About this page
 
-This page contains reference information like factual technical details and descriptions that
+This page contains reference information such as factual technical details and descriptions that
 are usually long and would unnecessarily overload the other pages if placed there.
 
 ----------------------------------------------------------------------------------------------------
@@ -83,12 +83,12 @@ Here are some additional explanations:
 - `--output` --- the program expects it to be defined as location relative to the
     program invocation current directory. This is required for possible further relative paths
     recalculations. The `--input` and the `--template` arguments are recommended to be 
-    defined the same way. Other variations were not tested so try them first if they are really
-    required. See the [recommended project structure](#typical_project_structure) for the
-    example
+    defined the same way. Other variations were not tested, so they should be used only if
+    required and tested first. See the
+    [recommended project structure](<!--page usage-->#typical_project_structure) for an example
     
 - <!--index GLOB--><a name="input_glob"></a>
-    `--input-glob` --- lets specify input file set like this: `doc_src/*.txt` ---
+    `--input-glob` --- lets specify an input file set like this: `doc_src/*.txt` ---
     that means "all files with `txt` extension in directory `doc_src`". Also see
     [<!--ref glob_wiki-->]
 
@@ -114,17 +114,17 @@ Here are some additional explanations:
 - <!--index ["build cache", "cache, build"]--><a name="build_cache"></a>
     `--cache-file` --- specifies the build cache file and enables a smarter generation scope
     determination and project cleanup. In this mode the program automatically identifies
-    the input file set changes and, base on this and some other data, decided to turn on the
-    full project forcible regeneration. Also when some input files are removed (by the user),
-    the corresponding output files are automatically removed as well.
+    the input file set changes and, based on this and some other data, decides to turn on the
+    full project regeneration. Also when some input files are removed by the user,
+    the corresponding output files are automatically removed as well
     
     !!! note
-        This feature is introduced in the version 1.0.8 and is not expected to cover all possible
+        This feature is introduced in version 1.0.8 and is not expected to cover all possible
         program usage scenarios, but just the most frequent of them. For example, the *template*
-        changes are not tracked yet. In case of doubt and from time to time please use the
+        changes are not tracked yet. In case of doubt, or from time to time, please use the
         `--force` flag.
 
-- `--no-css` --- if nether `--link-css` nor `--include-css` is specified then the
+- `--no-css` --- if neither `--link-css` nor `--include-css` is specified then the
     default CSS is included into the page. To avoid this, use `--no-css` argument; then no CSS
     will be used on the template resolution
 
@@ -138,7 +138,7 @@ Here is a very simple example of an _argument file_ content:
 {
     "documents": [
         { "input": "index.txt", "title": "Home" },
-        { "input": "about.txt", "output": "about.html", "title": "Home" }
+        { "input": "about.txt", "output": "about.html", "title": "About" }
     ]
 }
 ````
@@ -202,15 +202,15 @@ The following is the detailed _argument file_ format description by sections:
 Name | Type | Required | Description
 ---- | ---- | :----: | ----
 title\* | string | No | Writing work title
-logo\* | string | No | Logo image (relative the the project root)
-home-page\* | string | No | Writing work start page (relative the the project root)
+logo\* | string | No | Logo image (relative to the project root)
+home-page\* | string | No | Writing work start page (relative to the project root)
 [options](#options_section) | object | No | Options for the whole program run
 [default](#default_section) | object | No | Default options for the documents
 [documents](#documents_section) | array of objects | Yes | Documents that will be processed
 [plugins](#plugins_section) | object | No | Plugins that will be used for the documents processing
 
 \* As for now, the "title", "logo" and "home-page" properties are not processed by the program.
-This metadata may be used by other programs, e.g., for cataloguing purpose.
+This metadata may be used by other programs, e.g., for cataloguing purposes.
 
 
 <a name="options_section"></a>
@@ -252,7 +252,7 @@ title               | string           | No       | Yes         | Page title
 code                | string           | No       |             | Unique page code, may be used by plugins
 title-from-variable | string           | No       | Yes         | Take the title from the page metadata
 code-from-variable  | string           | No       | Yes         | Take the code from the page metadata
-template            | string           | No       | Yes         | [Template](templates.html) that will wrap the generated HTML content
+template            | string           | No       | Yes         | [*Template*](<!--page templates-->) that will wrap the generated HTML content
 link-css            | array of strings | No       | Yes         | List of CSS resources that will be linked to the page
 include-css         | array of strings | No       | Yes         | List of CSS files that will be included into the page
 no-css              | boolean          | No       | Yes         | Defines no CSS to be linked or included
@@ -274,6 +274,7 @@ Name | Type | Required | Description
 ---- | ---- | :----: | ----
 _plugin name_ | _defined by plugin_ | No | Plugin data
 
-The plugins data and the plugins themselves are described in the [separate sections](<!--page plugins-->).
+The plugins data and the plugins themselves are described in the
+[separate sections](<!--page plugins-->).
 
 

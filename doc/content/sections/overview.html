@@ -73,6 +73,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
             <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
             
@@ -115,9 +116,9 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li>HTML page resources.</li>
 </ul>
 <p>The program processes these artifacts and generates a set of static HTML pages that may 
-represent a logically related documentation with a sidebar menu, navigation, index and 
+represent a coherent documentation site with a sidebar menu, navigation, index, and 
 other elements.</p>
-<p>The following subsections describe the above artifacts in more details.</p>
+<p>The following subsections describe the above artifacts in more detail.</p>
 <p style="clear: both;"></p>
 
 <h2 id="source-markdown-texts">Source Markdown texts</h2>
@@ -125,49 +126,49 @@ other elements.</p>
 <a href="plugins.html#page_metadata">Page metadata</a> may be used to activate extra functions
 provided by <a href="plugins.html">plugins</a>.</p>
 <p><a name="index_entry_index_markdown"></a>
-<a href="ref/references.html#markdown">Markdown</a> is a formatting syntax whose main goal is making texts that
+<a href="ref/references.html#markdown">Markdown</a> is a formatting syntax whose main goal is to make texts that
 are as readable as possible in <em>plain text</em>.
 This syntax is very simple and allows writing very fast. It has enough features for writing
-a variety of document kinds. Because of its simplicity it's quite restricted and contains
-just a very small subset of HTML features, but it allows direct inclusions of HTML code that
-helps achieve more complex result when it's required.</p>
+a variety of document kinds. Because of its simplicity, it's quite restricted and contains
+just a very small subset of HTML features, but it allows direct inclusion of HTML code that
+helps achieve more complex results when needed.</p>
 <p>The <a href="page_content.html">"Page content" section</a> describes the methods, tricks and elements
-that may be used in process of the content writing.</p>
+that may be used during content writing.</p>
 <h2 id="html-templates">HTML templates</h2>
-<p>An HTML artifact that is generated out of a markdown text is not a complete HTML page. It's
+<p>An HTML artifact that is generated from a Markdown text is not a complete HTML page. It's
 just a fragment that must be put inside the <code>&lt;body&gt;...&lt;/body&gt;</code> HTML element. A <strong>template</strong> may
-be considered as an HTML page that doesn't have the main content but just specifies the place
-(placeholder) where this main content must be inserted.</p>
+be considered an HTML page that doesn't have the main content but specifies a placeholder
+where this main content must be inserted.</p>
 <p>See <a href="templates.html">here</a> for more details about templates and other placeholders that 
-may be used in templates.</p>
+may be used.</p>
 <h2 id="argument-file">Argument file</h2>
 <p>The <em>argument file</em> defines the set of input source files and different parameters for the 
-following HTML documents generation. See <a href="usage.html#using_argument_file">here</a> 
+HTML documents generation. See <a href="usage.html#using_argument_file">here</a> 
 for more details.</p>
 <h2 id="html-page-resources">HTML page resources</h2>
 <p>Different resources, like CSS, JavaScript and images are not processed by the program. The program
-may just adjust the location of these resources while putting link on them into the certain pages. 
-These are usually <a href="plugins.html">plugins</a> that perform these adjustments.</p>
+may just adjust the location of these resources while inserting links to them into specific pages. 
+This is usually done by <a href="plugins.html">plugins</a>.</p>
 <hr />
 <h1 id="restrictions-and-security">Restrictions and security</h1>
 <p><strong>M<sub>2</sub>H</strong> is a static site generator that means that every output HTML page contains
 everything required for display, including such repeated elements like menus and sidebars.
 There's no server that could generate these elements on the fly.
-This approach speeds up navigation and even for pretty large and complex sites must not be a
-significant overhead. But if the site is very huge, its full regeneration may be long enough
-(like 5 sec or so). Also, e.g., <a href="plugins.html#index_plugin">index plugin</a> doesn't have
+This approach speeds up navigation and, even for quite large and complex sites, should not be a
+significant overhead. But if the site is very huge, its full regeneration may take noticeable time
+(like 5 seconds or so). Also, e.g., <a href="plugins.html#index_plugin">index plugin</a> doesn't have
 pagination, and with enormous number of terms the index page may become pretty heavy.
 So if the writing project becomes too large it may be good to consider splitting it into several
 projects.</p>
 <p><strong>M<sub>2</sub>H</strong> doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
 may contain JavaScript that will be translated unchanged into the generated HTML page. This
 must not be a problem for personal use but may be a security issue when converting and
-publishing source texts from untrusted third-parties. Click the image below to see how it may
+publishing source texts from untrusted third parties. Click the image below to see how it may
 look like.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>In case of worry, first have a look at the source text by clicking at the "Source text"
-link ("&lt;/&gt;") at the page top. Also you can view the HTML text
+<p>If you're concerned, first have a look at the source text by clicking the "Source text"
+link ("&lt;/&gt;") at the page top. Also, you can view the HTML text
 (<code>Ctrl</code>+<code>U</code> in most browsers).</p>
 </div>
 <p><img src="../../pict/box.png" style="cursor: pointer;" onclick="alert(
@@ -176,14 +177,14 @@ link ("&lt;/&gt;") at the page top. Also you can view the HTML text
 <p><a name="index_entry_index_history"></a></p>
 <h1 id="history">History</h1>
 <p><strong>M<sub>2</sub>H</strong> was born in about 2019 as a Python script of about 50 lines of code written
-in about one hour. It was used for writing notes on a computer science study course.
+in about one hour. It was used for writing notes for a computer science study course.
 Then this solution was used for the other writing works and, as the requirements grew, it developed
 up to the current state.</p>
 <p><a name="index_entry_index_java_implementation"></a>
 As for the Java implementation, it appeared as a response to the lack of Python in an environment
 where the program was going to be used. For now the Java implementation slows down the development
-as it needs writing the same things in two languages. Anyway it's going to be supported as it
-gives additional level of platform independence 🙂</p>
+as it needs writing the same things in two languages. Still it's going to be supported as it
+provides an additional level of platform independence.</p>
 <hr />
 <p><a name="index_entry_index_pelican_static_site_generator"></a></p>
 <h1 id="alternative-solution">Alternative solution</h1>
@@ -192,7 +193,7 @@ to <strong>M<sub>2</sub>H</strong> by its functionality. It looks mature and fea
 similar motivation, see
 <a href="https://docs.getpelican.com/en/stable/report.html">Some history about Pelican</a>. </p>
 <p>Pelican is written in Python only, uses the same Python-Markdown module [<a class="ref" href="ref/references.html#py_markdown">py_markdown</a>] and 
-also supports another mark up language &mdash;
+also supports another markup language &mdash;
 <a href="https://docutils.sourceforge.io/rst.html">reStructuredText</a>.</p>
 <p>The main difference may be described the following way:</p>
 <ul>

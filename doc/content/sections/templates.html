@@ -73,6 +73,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item selected " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
             <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
             
@@ -92,7 +93,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <div class="toc">
 <ul>
 <li><a href="#preliminary-note">Preliminary note</a></li>
-<li><a href="#what-is-template">What is template?</a></li>
+<li><a href="#what-is-a-template">What is a template</a></li>
 <li><a href="#provided-templates">Provided templates</a></li>
 <li><a href="#css">CSS</a></li>
 <li><a href="#color-themes">Color themes</a></li>
@@ -100,14 +101,14 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 </div>
 <hr />
 <h1 id="preliminary-note">Preliminary note</h1>
-<p>As for now the program provides a <em>quick start script</em> described <a href="quick_start.html">here</a>.
-This page may be useful for understanding the program's working principles, and for new templates
-creation or the existing templates modification.</p>
+<p>Currently, a quick start script is provided <a href="quick_start.html">here</a>. Manual template
+work is optional for most basic setups. This page may be useful for understanding the program's
+principles and for creating new templates or modifying existing ones.</p>
 <hr />
 <p><a name="index_entry_index_template_mustache"></a></p>
-<h1 id="what-is-template">What is template?</h1>
-<p>In this program Mustache template engine [<a class="ref" href="ref/references.html#mustache">mustache</a>] is used for HTML
-templates processing. A simple template file may look like this:</p>
+<h1 id="what-is-a-template">What is a template</h1>
+<p>This program uses the Mustache template engine [<a class="ref" href="ref/references.html#mustache">mustache</a>] for processing HTML
+templates. A simple template file may look like this:</p>
 <pre class="highlight"><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;&lt;title&gt;{{title}}&lt;/title&gt;
@@ -121,8 +122,8 @@ templates processing. A simple template file may look like this:</p>
 {{generation_date}} {{generation_time}}&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-<p>It consists of static HTML code and Mustache <em>tags</em> that define substitutions and other kind
-of template processing actions. In this simple example only substitutions are defined. The
+<p>It consists of static HTML code and Mustache <em>tags</em> that define substitutions and other kinds
+of processing actions. In this simple example, only substitutions are defined. The
 tags with <strong>three</strong> pairs of curly braces will be substituted with the provided values without
 change. The tags with <strong>two</strong> pairs of curly braces will be substituted with the HTML-escaped
 provided values.</p>
@@ -149,7 +150,7 @@ provided values.</p>
 </tr>
 <tr>
 <td><code>{{exec_name}}</code></td>
-<td>The self name provided by the program</td>
+<td>The executable name reported by the program</td>
 </tr>
 <tr>
 <td><code>{{exec_version}}</code></td>
@@ -165,24 +166,24 @@ provided values.</p>
 </tr>
 <tr>
 <td><code>{{source_file}}</code></td>
-<td>The source text file resolved relatively to the current HTML page</td>
+<td>The source text file path resolved relative to the current HTML page</td>
 </tr>
 </tbody>
 </table>
-<p>The other tags may be provided by <em>plugins</em> that are described in the
+<p>Other tags may be provided by <em>plugins</em> that are described in the
 <a href="plugins.html">separate section</a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The number of curly braces pairs (two or three) is meaningful. Use them for the certain tags
-as it's presented in the table above.</p>
+as presented in the table above.</p>
 </div>
 <hr />
 <h1 id="provided-templates">Provided templates</h1>
 <p>This documentation is created using an extended template that can be easily reused in other
 documentation projects. The template file location is <code>doc_src/templates/multipage.html</code>.</p>
-<p>There's also the other template located at <code>doc_src/templates/default.html</code>. This is a single-page
+<p>There is also another template located at <code>doc_src/templates/default.html</code>. This is a single-page
 template that is used by the Windows context menu scripts. It may also be used manually for
-single-page documents creation.</p>
+creating single-page documents.</p>
 <p>The above templates, in conjunction with the corresponding CSS, produce responsive HTML documents
 that are adapted for both desktop and mobile devices.</p>
 <hr />
@@ -198,14 +199,16 @@ for more details.</p>
 the directory <code>doc/themes/</code>. The theme subdirectory name is the theme's name.</p>
 <p>The theme name is specified by the variable <code>theme</code> in the <em>argument file</em> <code>md2html_args.json</code>.
 The complete declaration may look like this: <code>"theme": "light"</code>, where <code>light</code> is the desired
-theme name. As for now, two themes are defined: <code>light</code> and <code>dark</code>.</p>
+theme name. Currently, two themes are defined: <code>light</code> and <code>dark</code>.</p>
 <p><a name="index_entry_index_dark_theme_theme_dark"></a>
 The <a href="quick_start.html"><em>quick start script</em></a> creates and defines the light theme only.
 To use the dark theme:</p>
 <ul>
-<li>copy the directory <code>dark</code> to the <code>doc/themes</code> directory;</li>
+<li>copy the <code>$MD2HTML_HOME/doc/themes/dark</code> directory from the distribution into the project
+    directory <code>doc/themes/dark</code>;</li>
 <li>assign the value <code>dark</code> to the variable <code>theme</code> in the file <code>md2html_args.json</code>;</li>
-<li>fulfill forcible full documentation regeneration;</li>
+<li>perform a full documentation regeneration (e.g. with the <code>--force</code> flag, see
+    <a href="reference.html#force_page_regeneration">here</a>);</li>
 <li>the dark theme will be applied.</li>
 </ul>
 <p>A page may be separately rendered using the dark theme. For this, variable <code>"theme": "dark"</code>

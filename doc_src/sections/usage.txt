@@ -5,22 +5,22 @@
 ----------------------------------------------------------------------------------------------------
 # About this section
 
-This section describes the program running and documentation projects configuration. Documentation
-content writing, formatting and structuring are described in the other sections.
+This section describes running the program and configuring documentation projects. Documentation
+content writing, formatting, and structuring are described in the other sections.
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["Linux", "Windows", "macOS", "Unix"] -->
-# Cross platform
+# Cross-platform
 
-The Java and the Python executables are platform-independent so they will theoretically work in
-all environments where the corresponding *virtual machines* are installed. The tests were done on:
+The Java and the Python executables are platform-independent, so they should work in all
+environments where the corresponding runtimes are installed. The program was tested on:
 
 - Windows
 - Ubuntu Linux
 - macOS
 
-The examples in this documentation are mostly given applied to Windows, but they may be easily
-adapted for Unix-like platforms. Some Unix specific notes are given when required.
+The examples in this documentation are mostly given for Windows, but they may be easily adapted
+for Unix-like platforms. Some Unix-specific notes are provided when required.
 
 ----------------------------------------------------------------------------------------------------
 # Command line syntax
@@ -37,27 +37,27 @@ and for the Java version is:
 >java -jar %MD2HTML_HOME%/java/target/md2html-bin.jar -i test.txt
 ````
 
-These both will convert file `test.txt` into file `test.html` using default parameters.
+Both commands will convert file `test.txt` into file `test.html` using default parameters.
 
 !!! note
-    The above commands very well explain the main idea of the program usage but 
-    there are more convenient ways described below in this section.
+    The above commands illustrate the main idea of the program usage, but more convenient ways
+    are described below in this section.
 
-The program has much more command line options that are listed and described in the
+The program has many more command line options that are listed and described on the
 [reference page](<!--page reference-->#command_line_syntax).
 
-There are two ways of the program usage:
+There are two ways to use the program:
 
 - [With command line arguments](#using_command_line_arguments)
-- [With argument file](#using_argument_file)
+- [With an argument file](#using_argument_file)
 
 ----------------------------------------------------------------------------------------------------
 <a name="using_command_line_arguments"></a>
 # Using command line arguments
 
 This mode accepts all required parameters in the command line and allows processing one document
-per one run (unless [GLOB](<!--page reference-->#input_glob) argument is used). It's selected 
-if the `--argument-file` argument is not specified.
+per run (unless the [GLOB](<!--page reference-->#input_glob) argument is used). It's selected when
+the `--argument-file` argument is not specified.
 
 ----------------------------------------------------------------------------------------------------
 <!--index argument file -->
@@ -70,7 +70,7 @@ Here's the example that executes the argument file with name `md2html_args.json`
 >python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json
 ````
 
-The *argument file* allows to define:
+The *argument file* lets define:
 
 - multiple files to be processed;
 - the same parameters that can be specified in the command line;
@@ -78,13 +78,13 @@ The *argument file* allows to define:
 - extended processing using *plugins*.
 
 
-Here is a simplest example of an _argument file_:
+Here is a very simple example of an _argument file_:
 
 ````json
 {
     "documents": [
         { "input": "index.txt", "title": "Home" },
-        { "input": "about.txt", "output": "about.html", "title": "Home" }
+        { "input": "about.txt", "output": "about.html", "title": "About" }
     ]
 }
 ````
@@ -103,9 +103,9 @@ A more complex example and the _argument file_ structure are described in the
 <!--index ["command scripts", "double-click script"] -->
 # Command scripts {#command_scripts}
 
-The program versions (Python and Java) are supposed to work independently and to require only
-their corresponding execution stack. E.g. the Java version should work even if there's no
-Python in the environment where it runs. For different auxiliary purposes command scrips for
+The program versions (Python and Java) are supposed to work independently and require only
+their corresponding runtime. For example, the Java version should work even if there's no Python
+in the environment where it runs. For different auxiliary purposes, command scripts for
 Windows and Unix-like platforms are used. Here are the scripts that run the program:
 
 For Windows             | For Unix-like       | Description
@@ -113,13 +113,13 @@ For Windows             | For Unix-like       | Description
 `generate_doc_py.bat`   | `generate_doc_py`   | Uses the Python version
 `generate_doc_java.bat` | `generate_doc_java` | Uses the Java version
 
-The Windows versions may be run by double-click from the Windows file explorer. The Linux 
-*Bash script* versions may need special environmental adjustments (depending on the Linux
+The Windows versions may be run by double-clicking in Windows Explorer. The Linux *Bash script*
+versions may need special environment adjustments (depending on the Linux
 distribution) to behave the same way. In Ubuntu these scripts were tested only in the command
 line terminal.
 
 These scripts execute the _argument file_ `md2html_args.json` in the current working directory.
-When double-clicked in Windows, they will open a command window and close it just as they
+When double-clicked in Windows, they will open a command window and close it when they
 successfully complete. If there are errors, the command window will stay open with the
 information and error messages displayed.
 
@@ -131,7 +131,7 @@ they will process the project's _argument file_ (see the
 <!--index context menu items-->
 # Windows Explorer context menu integration {#win_explorer_context_menu}
 
-The program may be integrated into Windows Explorer context menu:
+The program may be integrated into the Windows Explorer context menu:
 
 ![WINDOWS_EXPOLORER_CONTEXT_MENU](<!--path pict-->windows_context_menu.png)
 
@@ -139,7 +139,7 @@ This may be a quick and convenient way to convert single documents.
 
 The "no prompt" version generates HTML from the selected file with default options. It leaves
 the command window open only in case of errors. The other version opens a command line window and
-allows redefining some options. Just pressing `Enter` will fulfill generation with the default
+allows redefining some options. Just pressing `Enter` will start generation with the default
 options.
 
 To add these context menu items, open the Windows Registry editor (press `Win`+`R`, type `regedit`
@@ -166,7 +166,7 @@ The quotes must be set like this:
 
 ![](<!--path pict-->reg_value.png)
 
-There is a Windows command line script that automates this operation. Open Windows console and
+There is a Windows command line script that automates this operation. Open a Windows console and
 execute:
 
 ````shell
@@ -175,7 +175,7 @@ The output file is: C:\Users\user1\md2html_context_menu_integration.reg
 ````
 
 Find the generated file in the user's profile directory, check and execute it (by double-click).
-Read the popped up message and confirm the operation.
+Read the pop-up message and confirm the operation.
 
 !!! note
     There's no such integration for Linux and macOS.
@@ -184,7 +184,7 @@ Read the popped up message and confirm the operation.
 <a name="typical_project_structure"></a>
 # Typical project structure
 
-The program doesn't set restrictions on the documentation project structure. The following 
+The program doesn't impose restrictions on the documentation project structure. The following
 structure is just a suggested approach that is used in this documentation.
 
 Note that there's a quick start script described [here](<!--page quick_start-->) that creates
@@ -227,42 +227,43 @@ $ tree -L 2 --charset=ascii --dirsfirst
         But this page, on the other hand, requires special manipulation, so this decision is a
         trade-off.
 
-- the `doc` directory along with the file `doc0.html` contain the whole project's HTML 
+- the `doc` directory along with the file `doc0.html` contains the whole project's HTML
     documentation with all required resources like images and CSS files.
     This directory may be used and shipped autonomously (with additional file `doc0.html`
     if it's used)
 
     !!! note
-        For this documentation and projects generated by the *quick start script* it's not
+        For this documentation and projects generated by the *quick start script* this is not
         true. As the pages have links to their source texts, if we want these links to work,
         we need to ship the source texts as well.
     
 - the `doc/content` directory is intended to contain the **generated artifacts only**. In case of 
     issues with document generation, this directory may be safely deleted. On the following
-    project regeneration this directory and its content will be recreated
+    project regeneration, this directory and its content will be recreated
     
     !!! important
-        if not sure please use renaming instead of deletion or a version control system (like Git)
+        If you're not sure, please use renaming instead of deletion, or use a version control
+        system (like Git)
         to avoid data loss.
 
 - the `doc_src` directory contains all source files required for producing the project's
-    documentation (also need the file `doc0.txt` if we want to use it)
+    documentation (and also requires the file `doc0.txt` if we want to use it)
 
 - `generate_doc_py.bat` --- the *double-click script* for the HTML documentation generation. Here
-    The Python version is demonstrated. See [here](#command_scripts) for the other variations
+    the Python version is demonstrated. See [here](#command_scripts) for the other variations
     
 
 - `md2html_args.json` --- the project's [*argument file*](#using_argument_file);
 
 - `doc/layout` directory contains the resources that are used by the template. It's a 
     convenient way to separate those resources from the ones that belong to the documentation
-    content. This directory may be copy-pasted to a new project and it will most likely work
-    (in conjunction with the particular *template*);
+    content. This directory may be copied to a new project, and it will most likely work
+    (in conjunction with the particular *template*)
 
 - `doc/themes` directory contains the [color *themes*](<!--page templates-->#themes) used by
-    the documentation. More than one theme may be used at the same time.
+    the documentation. More than one theme may be used at the same time
 
-- `favicon.png` file is placed here as it's considered as a project's artifact;
+- `favicon.png` file is placed here because it's considered a project artifact
     
-- `custom.css` is intended to contain the styles specific to the project (if required).
+- `custom.css` is intended to contain the styles specific to the project (if required)
 

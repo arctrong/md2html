@@ -5,16 +5,16 @@
 ----------------------------------------------------------------------------------------------------
 # Preliminary note
 
-As for now the program provides a *quick start script* described [here](<!--page quick_start-->).
-This page may be useful for understanding the program's working principles, and for new templates
-creation or the existing templates modification.
+Currently, a quick start script is provided [here](<!--page quick_start-->). Manual template
+work is optional for most basic setups. This page may be useful for understanding the program's
+principles and for creating new templates or modifying existing ones.
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["template", "Mustache"] -->
-# What is template?
+# What is a template
 
-In this program Mustache template engine [<!--ref mustache-->] is used for HTML
-templates processing. A simple template file may look like this:
+This program uses the Mustache template engine [<!--ref mustache-->] for processing HTML
+templates. A simple template file may look like this:
 
 ````html
 <!DOCTYPE html>
@@ -32,8 +32,8 @@ templates processing. A simple template file may look like this:
 </html>
 ````
 
-It consists of static HTML code and Mustache _tags_ that define substitutions and other kind
-of template processing actions. In this simple example only substitutions are defined. The
+It consists of static HTML code and Mustache _tags_ that define substitutions and other kinds
+of processing actions. In this simple example, only substitutions are defined. The
 tags with **three** pairs of curly braces will be substituted with the provided values without
 change. The tags with **two** pairs of curly braces will be substituted with the HTML-escaped
 provided values.
@@ -45,18 +45,18 @@ Tag key | Description
 `{{title}}` | The page title
 `{{{styles}}}` | Included and/or linked CSS
 `{{{content}}}` | The result of the Markdown document processing
-`{{exec_name}}` | The self name provided by the program
+`{{exec_name}}` | The executable name reported by the program
 `{{exec_version}}` | The program version (meaning the numbers, not Python or Java)
 `{{generation_date}}` | The generation date (YYYY-MM-DD)
 `{{generation_time}}` | The generation time (hh:mm:ss)
-`{{source_file}}` | The source text file resolved relatively to the current HTML page
+`{{source_file}}` | The source text file path resolved relative to the current HTML page
 
-The other tags may be provided by _plugins_ that are described in the
+Other tags may be provided by _plugins_ that are described in the
 [separate section](<!--page plugins-->).
 
 !!! important
     The number of curly braces pairs (two or three) is meaningful. Use them for the certain tags
-    as it's presented in the table above.
+    as presented in the table above.
 
 ----------------------------------------------------------------------------------------------------
 # Provided templates
@@ -64,9 +64,9 @@ The other tags may be provided by _plugins_ that are described in the
 This documentation is created using an extended template that can be easily reused in other
 documentation projects. The template file location is `doc_src/templates/multipage.html`.
 
-There's also the other template located at `doc_src/templates/default.html`. This is a single-page
+There is also another template located at `doc_src/templates/default.html`. This is a single-page
 template that is used by the Windows context menu scripts. It may also be used manually for
-single-page documents creation.
+creating single-page documents.
 
 The above templates, in conjunction with the corresponding CSS, produce responsive HTML documents
 that are adapted for both desktop and mobile devices.
@@ -88,15 +88,17 @@ the directory `doc/themes/`. The theme subdirectory name is the theme's name.
 
 The theme name is specified by the variable `theme` in the *argument file* `md2html_args.json`.
 The complete declaration may look like this: `"theme": "light"`, where `light` is the desired
-theme name. As for now, two themes are defined: `light` and `dark`.
+theme name. Currently, two themes are defined: `light` and `dark`.
 
 <!--index ["dark theme", "theme, dark"]-->
 The [*quick start script*](<!--page quick_start-->) creates and defines the light theme only.
 To use the dark theme:
 
-- copy the directory `dark` to the `doc/themes` directory;
+- copy the `$MD2HTML_HOME/doc/themes/dark` directory from the distribution into the project
+    directory `doc/themes/dark`;
 - assign the value `dark` to the variable `theme` in the file `md2html_args.json`;
-- fulfill forcible full documentation regeneration;
+- perform a full documentation regeneration (e.g. with the `--force` flag, see
+    [here](<!--page reference-->#force_page_regeneration));
 - the dark theme will be applied.
 
 A page may be separately rendered using the dark theme. For this, variable `"theme": "dark"`

@@ -5,10 +5,10 @@
 ----------------------------------------------------------------------------------------------------
 # About this section
 
-This documentation gives the program's [usage](<!--page usage-->) detailed description 
-as well as the [page content](<!--page page_content-->) writing methods and tricks. But such 
-information is probably not necessary for just trying the program out. This section describes 
-the ways of quick starting.
+This documentation provides a detailed description of the program's [usage](<!--page usage-->)
+as well as the [page content](<!--page page_content-->) writing methods and tricks. However, such
+information is probably not necessary for just trying the program out. This section describes
+quick-start options.
 
 !!! note
     Before following this section, the program must be installed, see the 
@@ -18,12 +18,12 @@ the ways of quick starting.
 <!--index quick start script-->
 # Quick start script
 
-The  quick start script creates a small new project with a 
+The quick start script creates a small new project with a 
 [typical recommended structure](<!--page usage-->#typical_project_structure) 
 and with some sample content.
 
 After the program is installed, create an empty directory where the documentation must be set up,
-then switch to there in the command line terminal and execute the quick start script. On Windows:
+then switch to it in the command line terminal and execute the quick start script. On Windows:
 
 ````shell
 >cd C:\your\path\your_project
@@ -39,13 +39,17 @@ $ cd /your/path/your_project
 $ $MD2HTML_HOME/bin/new_project/new_project
 ````
 
-All necessary project files will be created in the directory `your_project`. Just generate 
-the documentation by double-clicking the command file `generate_doc_py.bat` or 
+!!! note
+    [Here](<!--page troubleshooting-->#unix_permission_denied) is a possible issue that may be
+    encountered on Unix-like platforms.
+
+All necessary project files will be created in the directory `your_project`. Now generate 
+the documentation by double-clicking the command script `generate_doc_py.bat` or 
 `generate_doc_java.bat` (or executing the corresponding scripts in the command line).
 Open the generated file `index.html` in the `your_project` directory to see the content.
 
 !!! note
-    The `your_project` directory must better be empty before running the quick start script.
+    The `your_project` directory should be empty before running the quick start script.
 
 ----------------------------------------------------------------------------------------------------
 <!--index quick start, manual-->
@@ -55,7 +59,7 @@ Here is an instruction for manually creating a very simple documentation project
 intended mostly to demonstrate the main application workflow using a simplest setup, but it may be
 used in real life if such primitive setup is really needed.
 
-In a project directory create the following artifacts.
+In the project directory, create the following artifacts.
 
 - File `generate_doc_py.bat` or `generate_doc_java.bat`. May be copied from the program's root 
     directory. There are corresponding `generate_doc_py` or `generate_doc_java` scripts for Linux.
@@ -69,8 +73,7 @@ In a project directory create the following artifacts.
         },
         "default": {
             "template": "template.html",
-            "no-css": true,
-            "verbose": true
+            "no-css": true
         },
         "documents": [
             { "input": "example.txt", "title": "Example" }
@@ -114,9 +117,9 @@ In a project directory create the following artifacts.
     - a list usage.
     ````
 
-Click ether of the files `generate_doc_py.bat` or `generate_doc_java.bat` (or corresponding
-files for Linux). Alternatively the project's directory may be opened in the command line and 
-the scripts may be run in there. The result file `example.html` will be generated.
+Run either `generate_doc_py.bat` or `generate_doc_java.bat` (or the corresponding scripts on
+Linux). Alternatively, open the project's directory in the command line and run the scripts there.
+The result file `example.html` will be generated.
 
 The result HTML page in this simple example neither contains nor links any style sheets and uses
 the browser's default styles.
@@ -124,6 +127,3 @@ the browser's default styles.
 The described example is reproduced in the directory `simplest_project` and the generated page
 may be viewed [here](<!--path resource_path-->../simplest_project/example.html).
 
-
-    
-    

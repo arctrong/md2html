@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Development", "SORT_ORDER": "100", "code": "development"}-->
+<!--VARIABLES {"title": "Development", "SORT_ORDER": "110", "code": "development"}-->
 
 [TOC]
 
@@ -19,12 +19,12 @@ This implementation uses the following libraries for Markdown texts processing:
 
 ## Packaging
 
-No special packaging actions required.
+No special packaging actions are required.
 
 
 ## Testing
 
-To run unit tests execute:
+To run unit tests, execute:
 
 ````shell
 > cd %MD2HTML_HOME%\python
@@ -47,7 +47,7 @@ A single test may be called like this: `python -m unittest test\test_arg_file_pa
 ----------------------------------------------------------------------------------------------------
 # Java version
 
-This implementation uses module [vsch/flexmark-java](https://github.com/vsch/flexmark-java) 
+This implementation uses the [vsch/flexmark-java](https://github.com/vsch/flexmark-java) module
 for converting Markdown text to HTML.
 
 
@@ -74,7 +74,7 @@ library is used for HTML parsing.
 
 ## Prerequisites
 
-To run the E2E tests [Python 3](https://www.python.org/) is required. The following
+To run the E2E tests, [Python 3](https://www.python.org/) is required. The following
 additional Python package must be installed:
 
 ````unixshell

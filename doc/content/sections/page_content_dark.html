@@ -73,6 +73,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
             <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
             
@@ -104,7 +105,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#wrapping-around">Wrapping around</a></li>
 <li><a href="#fit-inside-and-framing">Fit inside and framing</a></li>
 <li><a href="#image-expanding">Image expanding</a></li>
-<li><a href="#mind-color-theme">Mind color theme</a></li>
+<li><a href="#color-theme-and-images">Color theme and images</a></li>
 </ul>
 </li>
 <li><a href="#lists">Lists</a></li>
@@ -126,18 +127,18 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 </div>
 <hr />
 <h1 id="about-this-section">About this section</h1>
-<p>This section describes documentation source text writing and covers such topics as Markdown
-syntax, formatting examples and tricks. The templates and styling, as well as the 
+<p>This section describes writing documentation source texts and covers topics such as Markdown
+syntax, formatting examples, and tricks. Templates and styling, as well as the
 documentation structuring, are discussed in the other sections.</p>
-<p>The complete Markdown guide is not provided here, so see 
+<p>A complete Markdown guide is not provided here, so see
 <a href="https://daringfireball.net/projects/markdown/syntax">the original syntax description</a>
 for more details.</p>
 <hr />
 <h1 id="example-source-texts">Example source texts</h1>
-<p>This documentation is written solely using the <strong>M<sub>2</sub>H</strong> program and itself demonstrates
-the possible obtainable result. The source Markdown text files might be viewed using the 
-"Source text" link ("&lt;/&gt;") in the page title block... But not for this page. This page is 
-generated in in two <a href="templates.html#themes">color schemes</a> using
+<p>This documentation is written entirely using <strong>M<sub>2</sub>H</strong> and demonstrates one possible
+result. The source Markdown text files can usually be viewed using the "Source text" link
+("&lt;/&gt;") in the page title block. This page is an exception: it is generated in two
+<a href="templates.html#themes">color schemes</a> using
 <a href="plugins.html#include_file_plugin">inclusion</a>, so the actual source text may be viewed only
 <a href="../../../doc_src/parts/page_content.txt">here</a>.</p>
 <p>The two versions of this page are:</p>
@@ -214,12 +215,12 @@ generated in in two <a href="templates.html#themes">color schemes</a> using
 <p class="admonition-title">Comments</p>
 <ol>
 <li>This method was used as a workaround for preventing conflicts with the plugin markers
-    preprocessing. As for now, there's 
+    preprocessing. As of now, there is
     <a href="plugins.html#ignore_plugin">the "ignore" plugin</a> that is easier to use.</li>
-<li>Special markdown syntax for inserted (<code>++inserted++</code>) and deleted (<code>~~deleted~~</code>)
+<li>Special Markdown syntax for inserted (<code>++inserted++</code>) and deleted (<code>~~deleted~~</code>)
     text is not activated in this program. First, these effects must not be required very
-    often. Second, such markup may cause problems if we write text like "C++", or <code>++i</code>.
-    The used direct HTML markup lets achieve these effects more safely.</li>
+    often. Second, such markup may cause problems if text like "C++" or <code>++i</code> is used.
+    Direct HTML markup allows these effects to be achieved more safely.</li>
 <li>Stricken through text, subscript and superscript are not in the Markdown syntax.
     Here direct HTML markup is used as a possible workaround.</li>
 </ol>
@@ -235,14 +236,14 @@ A line break (<code>&lt;br /&gt;</code>) may be inserted by leaving more than tw
 <hr />
 <p><a name="headers"></a></p>
 <h1 id="headers">Headers</h1>
-<p>Headers are inserted using one to six pound symbols (<code>#</code>) at the beginning of line. This
+<p>Headers are inserted using one to six pound symbols (<code>#</code>) at the beginning of a line. This
 makes headers from <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> respectively. Other ways are described
 <a href="https://daringfireball.net/projects/markdown/syntax#header">here</a>.</p>
 <p>Dashes and equal signs may be interpreted as header marks of the previous line, so to avoid this
 markup it's better, and sometimes required, to leave an empty line before these sequences.</p>
 <hr />
 <h1 id="table_of_contents">Table of contents</h1>
-<p><code>[TOC]</code> element in the Markdown document will resolve into the document's table of contents in
+<p>The <code>[TOC]</code> element in the Markdown document resolves into the document's table of contents in
 the generated HTML. The example can be seen at the top of this and other pages. The ToC is
 composed of the <a href="#headers">headers</a> found on the page.</p>
 <div class="admonition note">
@@ -260,16 +261,16 @@ composed of the <a href="#headers">headers</a> found on the page.</p>
 <h1 id="links">Links</h1>
 <p>The link syntax is:</p>
 <pre class="highlight"><code>[link text](path/to/doc.html "title")</code></pre>
-<p>where <code>"title"</code> is not required. If <code>link text</code> is omitted the link will be not visible.
-There's the other syntax:</p>
+<p>where <code>"title"</code> is not required. If <code>link text</code> is omitted the link will not be visible.
+There is another syntax:</p>
 <pre class="highlight"><code>&lt;path/to/doc.html&gt;</code></pre>
-<p>that will make the link text equal the link location.</p>
+<p>that makes the link text equal to the link location.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><a href="plugins.html#page_links_plugin">The "page-links" plugin</a> may be used for creating
 relative internal links within the documentation.</p>
 </div>
-<p><a href="#attribute_lists"><em>Attribute lists</em></a> may be used with links the following ways:</p>
+<p><a href="#attribute_lists"><em>Attribute lists</em></a> may be used with links in the following ways:</p>
 <ul>
 <li><code>[Some title](https://some.url.org){attributes}</code></li>
 <li><code>&lt;https://some.url.org&gt;{attributes}</code></li>
@@ -312,14 +313,13 @@ relative internal links within the documentation.</p>
 <h1 id="anchors">Anchors</h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since the version 1.0.6, <a href="#attribute_lists"><em>attribute lists</em></a> may be used for the tag IDs
-definition.</p>
+<p>Since version 1.0.6, <a href="#attribute_lists"><em>attribute lists</em></a> may be used for tag ID definition.</p>
 </div>
 <p>The header tags have their automatically generated <code>id</code>s so they can be referenced by the links. 
-But these <code>id</code>s are uncontrolled and will change if the the header changes. Anchors may be added
-at the arbitrary places on the page with the syntax:</p>
+But these <code>id</code>s are generated automatically and will change if the header text changes. Anchors
+may be added at arbitrary places on the page with the syntax:</p>
 <pre class="highlight"><code>&lt;a name="anchor_name"&gt;&lt;/a&gt;</code></pre>
-<p><code>id</code> attribute instead of <code>name</code> attribute will also work. Then this anchor may be referenced as:</p>
+<p>The <code>id</code> attribute may be used instead of <code>name</code>. Then the anchor may be referenced as:</p>
 <pre class="highlight"><code>[link text](#anchor_name)</code></pre>
 <p>from the same page, or:</p>
 <pre class="highlight"><code>[link text](this_page.html#anchor_name)</code></pre>
@@ -331,19 +331,19 @@ at the arbitrary places on the page with the syntax:</p>
 <hr />
 <p><a name="index_entry_index_images_pictures"></a></p>
 <h1 id="images">Images</h1>
-<p>A picture is inserted the following ways:</p>
+<p>An image can be inserted in the following ways:</p>
 <ul>
 <li><code>![](path/to/image.png)</code> &mdash; the simplest form;</li>
 <li><code>![ALT](path/to/image.png "title")</code> &mdash; with optional alternative text and hint.</li>
 </ul>
 <p>It may also be used as a link text like this:</p>
 <pre class="highlight"><code>[![](../../pict/target.png)](page.html)</code></pre>
-<p>Then we will get a clickable image that works as a link:</p>
+<p>The result is a clickable image that works as a link:</p>
 <p><a href="https://en.wikipedia.org/wiki/Penrose_tiling" title="Penrose"><img alt="" src="../../pict/penrose_small.png" /></a></p>
 <h2 id="wrapping-around">Wrapping around</h2>
 <p><img alt="Penrose" class="floatRight" src="../../pict/penrose.png" title="Penrose" /></p>
-<p>With smaller images we may want to save space or place them closer to the describing text,
-like it's demonstrated here &mdash; the image is placed on the page's side, and the text wraps it
+<p>With smaller images, we may want to save space or place them closer to the describing text,
+as demonstrated here &mdash; the image is placed on the page's side, and the text wraps it
 around.</p>
 <p>Here's how this may be done:</p>
 <pre class="highlight"><code>![](&lt;!--path pict--&gt;target.png){.floatRight}
@@ -353,7 +353,7 @@ The wrapping paragraph test.
 &lt;p style="clear: both;"&gt;&lt;/p&gt;</code></pre>
 <p style="clear: both;"></p>
 
-<p>To stop the text wrapping the <code>&lt;p style="clear: both;"&gt;&lt;/p&gt;</code> HTML element was used. The following
+<p>To stop text wrapping, the <code>&lt;p style="clear: both;"&gt;&lt;/p&gt;</code> HTML element can be used. The following
 text will continue below the image.</p>
 <p>This example also uses path substitution <code>&lt;!--path pict--&gt;</code> that is implemented by the
 <a href="plugins.html#relative_paths_plugin">"relative-paths" plugin</a>.</p>
@@ -366,14 +366,14 @@ workable alternative using direct HTML inclusion:</p>
 The wrapping paragraph test.
 
 &lt;p style="clear: both;"&gt;&lt;/p&gt;</code></pre>
-<p>The <code>&lt;image&gt;</code> tag is enclosed into a paragraph <code>&lt;p&gt;</code> that is required for the currently used
+<p>The <code>&lt;img&gt;</code> tag is enclosed into a paragraph <code>&lt;p&gt;</code> that is required for the currently used
 styles. The Python version does this enclosing itself, but the Java version does not.
 Though the Python version does not do extra enclosing if it already exists. So it's better
 to always add the paragraph.</p>
 </div>
 <h2 id="fit-inside-and-framing">Fit inside and framing</h2>
 <p><a name="index_entry_index_wide_image_fit_image"></a>
-When an image is too wide we may want it to fit into the page width.
+When an image is too wide, we may want to fit it into the page width.
 <a href="#attribute_lists"><em>Attribute lists</em></a> may be used for this with the following classes defined
 in the provided CSS:</p>
 <pre class="highlight"><code>![](&lt;!--path pict--&gt;wide_image.png){.w-fit .img-frame}</code></pre>
@@ -389,17 +389,17 @@ the other examples:</p>
 <pre class="highlight"><code>![](&lt;!--path pict--&gt;light_fake_text.png){.img-frame width=285px}</code></pre>
 <h2 id="image-expanding">Image expanding</h2>
 <p>If an image is large enough but not expected to be observed often, it may be good to place an icon
-in the page and to make it expendable on click. A relatively complex JavaScript solution may be
+on the page and make it expandable on click. A relatively complex JavaScript solution may be
 implemented, but it's not yet done here. Anyway there's a simpler alternative that may be
 sufficient in some cases:</p>
 <p><a href="../../pict/wide_image.png" target="_blank" title="Click to expand"><img alt="" src="../../pict/wide_image.png" width="160px" /></a></p>
-<p>Click the icon to open the image in a separate tab. Here's how this can be done:</p>
+<p>Clicking the icon opens the image in a separate tab. Here's how this can be done:</p>
 <pre class="highlight"><code>[![](&lt;!--path pict--&gt;wide_image.png){width=160px}](&lt;!--path pict--&gt;wide_image.png
 "Click to expand"){target=_blank}</code></pre>
-<h2 id="mind-color-theme">Mind color theme</h2>
-<p>There's one point that should be taken into account when working with images. Often images are
-intended to be shown on a light background. If we use a 
-<a href="templates.html#themes"><em>dark theme</em></a>, some images may not look well in the dark.
+<h2 id="color-theme-and-images">Color theme and images</h2>
+<p>One point should be taken into account when working with images. Often images are
+intended to be shown on a light background. If a <a href="templates.html#themes"><em>dark theme</em></a>
+is used, some images may not look well in the dark.
 Such images may be marked the following way:</p>
 <pre class="highlight"><code>&lt;div class="light_only"&gt;&lt;/div&gt;
 
@@ -508,15 +508,15 @@ dark background. The second picture has a local white underlying plate and proba
 </tr>
 </tbody>
 </table>
-<p>In this example, using <a href="#attribute_lists"><em>attribute lists</em></a> we specify the class <code>{.th}</code> that 
+<p>In this example, we use <a href="#attribute_lists"><em>attribute lists</em></a> to specify the class <code>{.th}</code> that
 makes the table sidebar have the same format as the table header. The class <code>.th</code> is defined in
 the provided CSS.</p>
-<p>Markdown doesn't have syntax for different table styles, but some trick may be used to achieve 
-this. We can add an invisible element (an empty <code>&lt;div&gt;</code> in this case) right before the
-table and then define the appearance using some simple CSS magic. So the following invisible
-element right before a table:</p>
+<p>Markdown doesn't have syntax for different table styles, but a simple trick may be used to achieve
+this. An invisible element (an empty <code>&lt;div&gt;</code> in this case) can be added right before the table,
+and the appearance can then be defined with a small CSS magic. So the following invisible element
+right before a table:</p>
 <pre class="highlight"><code>&lt;div class="tableLight"&gt;&lt;/div&gt;</code></pre>
-<p>Will give the following table style:</p>
+<p>will give the following table style:</p>
 <div class="tableLight"></div>
 
 <table>
@@ -590,7 +590,7 @@ element right before a table:</p>
 </tr>
 </tbody>
 </table>
-<p>We also can combine the CSS classes like this:</p>
+<p>It is also possible to combine the CSS classes like this:</p>
 <pre class="highlight"><code>&lt;div class="tableLight tableHeaderless"&gt;&lt;/div&gt;</code></pre>
 <div class="tableLight tableHeaderless"></div>
 
@@ -678,18 +678,18 @@ Fenced block, line 2</code></pre></li>
 </ul>
 </blockquote>
 <h2 id="wrapping">Wrapping</h2>
-<p>Sometimes it's required to have long lines inside code blocks wrapped, but the above code
-blocks don't wrap the lines automatically. Of cause we can break the lines manually but this 
-may make the content inconvenient for copy-pasting. To address this cases, additional markers
+<p>Sometimes it is required to have long lines inside code blocks wrapped, but the above code blocks
+don't wrap the lines automatically. Of course, lines can be broken manually, but this may make the
+content inconvenient for copy-pasting. To address these cases, additional markers
 <code>wrapped</code>, <code>wrapped-code</code> and <code>wrapped-shell</code> were defined. Here's an example:</p>
 <pre class="highlight"><code class="language-wrapped-code">This is a long line that doesn't contain line breaks inside itself and that we want to be automatically wrapped so that the fenced code block is not scrolled.</code></pre>
-<p>Just for comparison, a similar content will be scrolled in not wrapped fenced blocks:</p>
+<p>Just for comparison, a similar content will be scrolled in non-wrapped fenced blocks:</p>
 <pre class="highlight"><code class="language-code">This is a long line that doesn't contain line breaks inside itself and that we want to be scrolled so that the fenced code block doesn't exceed the page width.</code></pre>
 <h2 id="using-html">Using HTML</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As for now, there's <a href="plugins.html#ignore_plugin">the "ignore" plugin</a> that is easier
-to use. So the following method must be needed less often.</p>
+<p>As of now, there is <a href="plugins.html#ignore_plugin">the "ignore" plugin</a> that is easier
+to use, so the following method is expected to be needed less often.</p>
 </div>
 <p>The following code may be used in order to avoid plugin substitutions:</p>
 <pre class="highlight"><code>&lt;div class="code"&gt;![](&amp;lt;!--path pict--&amp;gt;logo.png)&lt;/div&gt;</code></pre>
@@ -911,14 +911,14 @@ I write a file</code></pre>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>Admonitions are specially formatted blocks whose purpose is drawing attention to some pieces
-of information. To add such a block the following syntax is used:</p>
+of information. To add such a block, the following syntax is used:</p>
 <pre class="highlight"><code>!!! qualifier "Optional title"
     block content
-    with 4 space indent on each line</code></pre>
+    with 4-space indent on each line</code></pre>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There are defined the following qualifiers:</p>
+<p>The following qualifiers are defined:</p>
 <ul>
 <li><code>note</code>;</li>
 <li>tips: <code>tip</code>, <code>hint</code>, <code>important</code>;</li>
@@ -928,17 +928,17 @@ of information. To add such a block the following syntax is used:</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Other qualifiers may be used (like <code>info</code> qualifier above). CSS need to be edited to
-add special formatting for this admonitions, otherwise the default formatting is used.</p>
+<p>Other qualifiers may be used (like <code>info</code> qualifier above). CSS needs to be edited to
+add special formatting for these admonitions, otherwise the default formatting is used.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Don't overuse!</p>
-<p>This highlighting method should not be overused. If there are a lot of such blocks then 
+<p>This highlighting method should not be overused. If there are many such blocks, then
 important information may be easily missed by the reader.</p>
-<p>BTW, in this block a custom title is used.</p>
+<p>In this block, a custom title is used.</p>
 </div>
 <div class="admonition hint">
-<p>To place an admonition without a header empty quotes may be set as the title:</p>
+<p>To place an admonition without a header, empty quotes may be used as the title:</p>
 <pre class="highlight"><code>!!! hint ""
     This admonition will not have a title.</code></pre>
 </div>
@@ -953,7 +953,7 @@ important information may be easily missed by the reader.</p>
 <hr />
 <p><a name="index_entry_index_attribute_lists"></a></p>
 <h1 id="attribute_lists">Attribute lists</h1>
-<p>Attribute lists let add attributes to HTML tags. More details may be found at:</p>
+<p>Attribute lists allow adding attributes to HTML tags. More details may be found at:</p>
 <ul>
 <li><a href="https://python-markdown.github.io/extensions/attr_list/">Attribute Lists extension</a>
     for the Python library;</li>
@@ -961,18 +961,18 @@ important information may be easily missed by the reader.</p>
     for the Java library.</li>
 </ul>
 <p>The above libraries have some differences in their interpretation, so Python and Java versions
-may work differently. The below are the usage examples that must work the same way.</p>
+may work differently. The examples below are expected to work the same way.</p>
 <p>The following header:</p>
 <pre class="highlight"><code># Header title {#custom_id}</code></pre>
 <p>will be converted into something like:</p>
 <pre class="highlight"><code>&lt;h1 id="custom_id"&gt;Header title&lt;/h1&gt;</code></pre>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Mind the space between the header title and the opening curly brace <code>{</code> &mdash; it's mandatory.</p>
+<p>Note the space between the header title and the opening curly brace <code>{</code> &mdash; it's mandatory.</p>
 </div>
 <p>Alternatively an ID may be assigned by expression <code>{id=custom_id}</code> or <code>{id='custom_id'}</code> or
 <code>{id="custom_id"}</code>.</p>
-<p>This <code>id</code> will be also set in the corresponding <a href="#table_of_contents">table of contents</a> item.</p>
+<p>This <code>id</code> will also be set in the corresponding <a href="#table_of_contents">table of contents</a> item.</p>
 <p>A paragraph and a list item may be styled by assigning CSS classes like this:</p>
 <pre class="highlight"><code>Paragraph content.
 { .blue .underlined }
@@ -987,21 +987,21 @@ may work differently. The below are the usage examples that must work the same w
 &lt;li class="blue"&gt;List item 1&lt;/li&gt;
 &lt;li class="green"&gt;List item 2&lt;/li&gt;
 &lt;/ul&gt;</code></pre>
-<p>As we can see, a dot <code>.</code> may be replaced by <code>class=</code> with optional single or double quotes.
-Also note that the attributes must be specified at a separate line in the end of the element.</p>
+<p>As shown above, a dot <code>.</code> may be replaced by <code>class=</code> with optional single or double quotes.
+Also note that attributes must be specified on a separate line at the end of the element.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To make the document be rendered similarly in the Python and the Java versions, it's better
 to follow the examples above. See the above links at the extensions (libraries)
 descriptions.</p>
 </div>
-<p>Here's a way a table cell may be formatted:</p>
+<p>A table cell can be formatted as follows:</p>
 <pre class="highlight"><code>Header 1 | Header 2
 ---------|--------
 Cell 1 {style="background-color: cadetblue;"} | Cell 2 {name=cell2}</code></pre>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Mind the space between the header title and the opening curly brace <code>{</code> &mdash; it's mandatory.</p>
+<p>Note the space between the cell content and the opening curly brace <code>{</code> &mdash; it's mandatory.</p>
 </div>
 <p>The generated HTML code will be like this:</p>
 <pre class="highlight"><code class="language-html">&lt;table&gt;
@@ -1016,8 +1016,8 @@ Cell 1 {style="background-color: cadetblue;"} | Cell 2 {name=cell2}</code></pre>
 &lt;/tbody&gt;
 &lt;/table&gt;</code></pre>
 <p>In this example an arbitrary attribute <code>name=cell2</code> is added. This may be done for other elements
-as well. Single or double quotes may be used, and ether of them <em>must</em> be used if the attribute 
-value contains spaces. Of cause alternatively a class might be assigned instead of the direct
+as well. Single or double quotes may be used, and either of them <em>must</em> be used if the attribute
+value contains spaces. Of course, alternatively a class might be assigned instead of the direct
 CSS parameters.</p>
 <p>The table will look like this:</p>
 <table>
@@ -1058,8 +1058,9 @@ The source of the above quote is aligned to the right. Here's how it is done:</p
 &gt; --- *William Blake, "Proverbs of Hell"*
 &gt; {.right}</code></pre>
 <p><a name="index_entry_index_hide"></a>
-In some cases an element must be hidden. For example: <em>Do you see a <strong class="hide">gopher</strong>?
-But it still exists!</em> Here's what actually was written:</p>
+In some cases an element must be hidden. For example:</p>
+<p><em>Do you see a <strong class="hide">gopher</strong>? But it still exists!</em></p>
+<p>Here's what actually was written:</p>
 <pre class="highlight"><code>_Do you see a **gopher**{.hide}? But it still exists!_</code></pre>
 <p>&nbsp;</p>
 <hr />

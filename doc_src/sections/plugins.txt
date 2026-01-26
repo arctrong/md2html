@@ -6,12 +6,12 @@
 <!--index plugins -->
 # About plugins
 
-Plugins automate and simplify typical tasks and make the documentation more structural and easy
+Plugins automate and simplify typical tasks and make the documentation more structured and easy
 to use.
 
-The main approach used by this program is no interference in the Markdown syntax. So the
+The main approach used by this program is minimal interference with the Markdown syntax. So the
 documentation content must be readable in plain text even without processing by this program.
-Plugins provide extra possibilities for the templates processing and visualization.
+Plugins provide extra possibilities for template processing and visualization.
 
 See [here](<!--page reference-->#argument_file_example) for an example of how plugins are defined in 
 the *argument file*.
@@ -123,13 +123,13 @@ Sidebar provides quick access to different project pages. It's often very helpfu
 sequence of pages that are intended to be read in order. Doing it manually is pretty
 cumbersome and error-prone.
 
-This plugin defines such pages sequences and and provides them for easy manipulation in templates.
+This plugin defines such page sequences and provides them for easy manipulation in templates.
 
 
 **Definition**
 
 !!! note
-    You may want to also look at the new syntax described
+    It may also be useful to look at the new syntax described
     [here](<!--page plugins-->#page_flows_new_syntax).
     
 In the `"plugins"` sections:
@@ -193,7 +193,7 @@ Field | Description
 `{{sidebar.previous}}` | Previous [page](#page_flow_page_structure) if exists
 `{{sidebar.current}}` | Current [page](#page_flow_page_structure) if exists
 `{{sidebar.next}}` | Next [page](#page_flow_page_structure) if exists
-`{{sidebar.has_navigation}}` | Boolean, `true` if ether previous or next page exist
+`{{sidebar.has_navigation}}` | Boolean, `true` if either previous or next page exists
 `{{sidebar.not_empty}}` | Boolean, `true` if contains at least one page
 
 <a name="page_flow_page_structure"></a>
@@ -222,7 +222,7 @@ know the previous and the next pages and render the navigations. Here's a simple
     attribute `link` that is used in the rendered block.
 
 Also for the current page we have the whole page sequence of the page flow and can render this
-list in the sidebar. As we know which page or pages are current, we can highlight this links.
+list in the sidebar. As the current page (or pages) is known, these links can be highlighted.
 Here's a simplified example of how the sidebar items may be rendered:
 
 ````
@@ -332,15 +332,16 @@ this page is processed.
 The _page metadata_ blocks will be removed from the source text if they are recognized and
 processed by the defined markers.
 
-The metadata content must be a valid JSON [<!--ref json-->].
+The metadata content must be valid JSON [<!--ref json-->].
 
-!!! Note
+!!! note
     Opening `<!--` and closing markers `-->` must not be used inside the metadata
     section. Also consecutive hyphens `--` inside HTML comments may probably be a problem in some
     browsers. In JSON strings, Unicode entities may be used to resolve these issues, i.e. string
     `"<!\u002D-text-\u002D>"` will be interpreted as `"<!--text-->"`. Still, depending on the 
     page content and the context, opening and closing markers, even when escaped in JSON, may 
-    cause unexpected result. Check it first if you really need to use these symbols.
+    cause unexpected results. If these symbols must be used, the result should be checked in a
+    browser.
 
 ----------------------------------------------------------------------------------------------------
 # "variables" plugin
@@ -369,10 +370,10 @@ this case three pairs of curly braces are used to avoid HTML-escaping on substit
 
 **Motivation**
 
-Some terms, abbreviations and other kind of keywords may be defined, described and mentioned
+Some terms, abbreviations and other kinds of keywords may be defined, described and mentioned
 in different pages within the documentation. Searching such keywords may be hard,
 especially if the documentation is large. This plugin allows marking such points on the pages
-as _index entries_ and then collects these entries and put them together on a separate 
+as _index entries_ and then collects these entries and puts them together on a separate
 _index page_. See the [index page](../index_page.html) of this documentation as an example.
 
 **Definition**
@@ -461,7 +462,7 @@ The first letter link block will look like this:
 </p>
 ````
 
-The above information allows define desirable styling with CSS.
+The above information allows defining desired styling with CSS.
 
 ----------------------------------------------------------------------------------------------------
 # "page-links" plugin {#page_links_plugin}
@@ -469,10 +470,10 @@ The above information allows define desirable styling with CSS.
 **Motivation**
 
 HTML pages inside documentation usually reference each other using links. A link specifies its 
-target relative to the page where it's placed. When the target page is moved or renamed the link
-need to be modified accordingly, otherwise it won't work. And what's worse, all pages that
-reference the relocated page need to be found and modified. This plugin automatically calculates 
-link target pages location thus eliminating the need of specifying them manually.
+target relative to the page where it's placed. When the target page is moved or renamed, the link
+needs to be modified accordingly, otherwise it won't work. And what's worse, all pages that
+reference the relocated page need to be found and updated. This plugin automatically calculates 
+link target page locations, thus eliminating the need to specify them manually.
 
 **Definition**
 
@@ -508,7 +509,7 @@ On the page `page1.txt` the following link to the page `subdir/page2.txt` may be
 become `[](../page1.html)`.
 
 !!! attention
-    1. If a page is moved or renamed, some other pages may need to be regenerated to reflected this
+    1. If a page is moved or renamed, some other pages may need to be regenerated to reflect this
         change. But those pages may be up-to-date, so a forceful full regeneration may be required
         (with `-f` flag or `"force": true` option, see
         [here](<!--page reference-->#force_page_regeneration) for more details).
@@ -571,7 +572,7 @@ is fulfilled, while in the second block the source text is
 Pages may contain links to source code files like Java (\*.java), Python (\*.py), XML (\*.xml), 
 and so on. When viewing such pages locally (as HTML files) the linked files are often opened by
 browsers as text. When the page is published and is viewed by URL, the browsers will often 
-offer downloading the linked files that's very inconvenient and significantly slows down the
+offer downloading the linked files, which is very inconvenient and significantly slows down the
 documentation usage.
 
 The "wrap-code" plugin wraps source code files into HTML pages and provides links to these
@@ -631,7 +632,7 @@ To link this file in a source text, use something like this:
 The main class is [here](<!--ignore wrap hello/geometric_distribution.r-->).
 ````
 
-As the result, a new file `doc/code/hello/geometric_distribution.r.html` will be generated based on
+As a result, a new file `doc/code/hello/geometric_distribution.r.html` will be generated based on
 the following transformed content:
 
     ````
@@ -665,7 +666,7 @@ Variable | Description
 
 !!! note
     The wrapping HTML file will be generated (or regenerated) only if the source text is processed.
-    To assure regeneration, use `-f` flag or `"force": true` option
+    To ensure regeneration, use the `-f` flag or the `"force": true` option
     (see [here](<!--page reference-->#force_page_regeneration) for more details).
 
 ----------------------------------------------------------------------------------------------------
@@ -711,8 +712,8 @@ In this example:
 - partial inclusion. Not only the whole file may be included but also a fragment of it:
     - `start-with` and `start-marker` parameters specify the text that will be the fragment start.
         The `start-with` text will be present in the included fragment while the `start-marker`
-        text will not be included. The first of these markers will be used. If ether of these
-        parameters are specified and they are not found in the file then nothing will be included;
+        text will not be included. The first of these markers will be used. If either of these
+        parameters are specified, and they are not found in the file then nothing will be included;
     - `end-with` and `end-marker` specify the text that will be the fragment end. If no text
         defined by these parameters are found then the fragment will be to the end of the file.
 
@@ -755,8 +756,7 @@ The result will look like this:
 **Motivation**
 
 This plugin makes replacements by template. It may be helpful for contracting long and recurring
-fragments. Probably, long and cumbersome HTML inclusions are the first fragments that 
-may be addressed by this plugin. 
+fragments. Probably, long and cumbersome HTML inclusions are the first  use case for this plugin.
 
 !!! important
     This plugin must be used with care. When used too much, it may become a replacement for
@@ -789,7 +789,7 @@ In this example:
 - `${1}`, `${2}`, `${3}`, etc. are the placeholders that will be replaced in the template.
     To add a dollar sign `$` it must be doubled. So `$${4}` will be interpreted as `${4}`.
     There's a need for this doubling only if a dollar sign if followed by a curly brace.
-    So `$3` will be taken literary as `$3`;
+    So `$3` will be taken literally as `$3`;
 - if the `recursive` flag is set to `true` then the resulting text (after the template is
     extending) will be considered as containing metadata blocks. In the replacement definition
     with marker `pict` the fragment `<!--ignore path pict-->` will be processed and replaced if

@@ -2,7 +2,7 @@
 
 ![Logo](<!--path pict-->logo.png "md2html"){.floatRight}
 
-**M<sub>2</sub>H** creates structured, well-formatted HTML static sites with minimal effort.
+**M<sub>2</sub>H** creates structured, well-formatted static HTML sites with minimal effort.
 It can be used for many kinds of writing projects.
 
 This documentation was written entirely using **M<sub>2</sub>H** and serves as a real-world
@@ -40,27 +40,26 @@ looks like this:
 
 # Features
 
-**M<sub>2</sub>H** automates conversion of Markdown texts into HTML pages and provides templates
-and styles that are ether ready to use or may be easily adapted and extended for certain cases.
+**M<sub>2</sub>H** automates the conversion of Markdown texts into HTML pages and provides templates
+and styles that are either ready to use or easy to adapt and extend.
 
-Apart of that, it provides means for processing whole sets of documents, organizing the output
-and producing a self-contained static HTML documentation that needs only a browser to be viewed.
+In addition, it supports processing whole document sets, organizing the output, and producing
+self-contained static HTML documentation that needs only a browser to be viewed.
 
-In the end, this tool has a set of plugins that automate and simplify typical tasks and make
-the documentation look professionally.
+Finally, **M<sub>2</sub>H** includes plugins that automate common tasks and help the documentation
+look professional.
 
-**M<sub>2</sub>H** doesn't lay much restrictions on the documentation project's organization and
-lets the users make their own configuration. Still it provides recommendations on the project
-structure described in this manual and implemented in the quick start scripts.
+**M<sub>2</sub>H** doesn't impose many restrictions on project organization and lets users define
+their own configuration. Still, it provides recommended project structures described in this
+manual and implemented in the quick start scripts.
 
 
 # Implementation
 
-**M<sub>2</sub>H** is a command line utility that has two versions: in Python and in Java. They
-work mostly the same way, have the same command line syntax, process the same input, are shipped
-together as source code and share some common artifacts like templates and styles, command
-scripts, and this documentation. Despite this, the versions are independent and can be
-used separately. This manual describes the both versions.
-
+**M<sub>2</sub>H** is a command line utility available in two versions: Python and Java. They work
+mostly the same way, share the same command line syntax, and process the same inputs. The versions
+are independent and can be used separately, but they are shipped together as source code and share
+common artifacts (templates, styles, scripts, and this documentation). This manual describes both
+versions.
 
 

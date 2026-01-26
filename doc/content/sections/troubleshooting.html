@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Troubleshooting</title>
+<meta charset="utf-8">
+<link rel="shortcut icon" type="image/png" href="../../favicon.png">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../../layout/content.css">
+<link rel="stylesheet" type="text/css" href="../../layout/more_prog_langs.css">
+<link rel="stylesheet" type="text/css" href="../../themes/light/content_theme.css">
+<link rel="stylesheet" type="text/css" href="../../themes/light/more_prog_langs_theme.css">
+<link rel="stylesheet" type="text/css" href="../../layout/layout.css">
+<link rel="stylesheet" type="text/css" href="../../themes/light/layout_theme.css">
+<link rel="stylesheet" type="text/css" href="../../custom.css">
+
+<link rel="stylesheet" type="text/css" href="../../layout/flex.css">
+</head>
+<body>
+
+<div class="header">
+<img id="burger" src="../../layout/pict/burger.png" 
+onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" alt="Sidebar">
+
+<a 
+class="header_item "
+href="../../../readme.html"><img 
+class="logo_image" src="../../favicon.png" alt="Logo"></a><a 
+class="header_item toggle_wide_only_inline"
+href="../../../readme.html"><span class="">Home</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="installation.html"><span class="">Installation</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="usage.html"><span class="">Usage</span></a><a 
+class="header_item toggle_wide_only_inline"
+href="../index_page.html"><span class="">Index</span></a><a 
+class="header_item toggle_narrow_only_inline"
+href="../index_page.html"><img 
+class="header_image index_image" src="../../layout/pict/search.png" alt="Index"></a><a 
+class="header_item toggle_wide_only_inline "
+href="https://github.com/arctrong/md2html"><span class="">GitHub</span></a>
+<a href="../../../doc_src/sections/troubleshooting.txt" class="source_file toggle_wide_only_inline" title="Source text">&lt;/&gt;</a>
+
+<a href="reference.html" title="Previous: Reference"><img class="headerNavArrows"
+src="../../layout/pict/previous_page_h21px.png" alt="Back"></a>
+ 
+<a href="development.html" title="Next: Development"><img class="headerNavArrows"
+src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
+
+
+<span class="headerTitle">Troubleshooting</span>
+
+</div>
+
+<div class="sidebarWrapper">
+<div class="sidebar">
+    <table class="sidebarAligner">
+        <tr><td class="valign_top">
+            <div class="align_right toggle_narrow_only_block">
+            <a class="sidebar_item_inline align_right" href="https://github.com/arctrong/md2html">GitHub</a>
+            
+            <a href="../../../doc_src/sections/troubleshooting.txt" class="sidebar_item_inline source_file align_right" 
+                title="Source text">&lt;/&gt;</a>
+            
+            </div>
+            <div class="sidebar_block">
+            
+            <a class="sidebar_item " href="../../../readme.html">Home</a>
+            <a class="sidebar_item " href="overview.html">Overview</a>
+            <a class="sidebar_item " href="quick_start.html">Quick start</a>
+            <a class="sidebar_item " href="installation.html">Installation</a>
+            <a class="sidebar_item " href="usage.html">Usage</a>
+            <a class="sidebar_item " href="page_content.html">Page content</a>
+            <a class="sidebar_item " href="page_content_dark.html">Page content (dark)</a>
+            <a class="sidebar_item " href="templates.html">Templates</a>
+            <a class="sidebar_item " href="plugins.html">Plugins</a>
+            <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item selected " href="troubleshooting.html">Troubleshooting</a>
+            <a class="sidebar_item " href="development.html">Development</a>
+            </div><div class="sidebar_block">
+            
+            <a class="sidebar_item " href="ref/glossary.html">Glossary</a>
+            <a class="sidebar_item " href="ref/references.html">References</a>
+            </div>
+        </td></tr>
+        <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
+            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.8</span>
+        </td></tr>
+    </table>
+</div>
+</div>
+
+<p class="page-title">Troubleshooting</p>
+
+<div class="toc">
+<ul>
+<li><a href="#about-this-page">About this page</a></li>
+<li><a href="#unix_permission_denied">Insufficient permissions on Unix-like systems</a></li>
+</ul>
+</div>
+<hr />
+<h1 id="about-this-page">About this page</h1>
+<p>This page describes known issues and how to fix them.</p>
+<hr />
+<h1 id="unix_permission_denied">Insufficient permissions on Unix-like systems</h1>
+<p>Although executable scripts are shipped with the executable flag set, during file transmission
+this flag may be reset. The symptom is:</p>
+<pre class="highlight"><code class="language-unixshell">$ ./generate_doc_java
+-bash: ./generate_doc_java: Permission denied</code></pre>
+<p>To make it work, set the executable flag manually:</p>
+<pre class="highlight"><code class="language-unixshell">$ chmod a+x ./generate_doc_java</code></pre>
+<p>&nbsp;</p>
+<hr />
+
+<p style="margin-top:0px;margin-bottom:0px;text-align:right;"><a href="reference.html" 
+title="Previous: Reference"><img src="../../layout/pict/previous_page.png"
+alt="Back"></a>
+<a href="development.html" title="Next: Development"><img 
+src="../../layout/pict/next_page.png" alt="Next"></a>
+</p>
+
+<script>
+function toggleSidebar() {
+    let sidebar = document.getElementsByClassName("sidebarWrapper")[0]
+    let display = sidebar.style.display
+    if (!display || display == "none") {
+        sidebar.style.display = "block"
+    } else {
+        sidebar.style.display = ""
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!--VARIABLES {"title": "Troubleshooting", "SORT_ORDER": "100", "code": "troubleshooting"}-->
+
+[TOC]
+
+----------------------------------------------------------------------------------------------------
+# About this page
+
+This page describes known issues and how to fix them.
+
+----------------------------------------------------------------------------------------------------
+# Insufficient permissions on Unix-like systems {#unix_permission_denied}
+
+Although executable scripts are shipped with the executable flag set, during file transmission
+this flag may be reset. The symptom is:
+
+````unixshell
+$ ./generate_doc_java
+-bash: ./generate_doc_java: Permission denied
+````
+
+To make it work, set the executable flag manually:
+
+````unixshell
+$ chmod a+x ./generate_doc_java
+````
+
