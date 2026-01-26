@@ -1,7 +1,7 @@
 {
     "title": "New project",
     "logo": "doc/favicon.png",
-    "home-page": "readme.html",
+    "home-page": "index.html",
     "options": {
         "verbose": true,
         "cache-file": "doc/content/build_cache.json"
@@ -14,7 +14,7 @@
         "verbose": true
     },
     "documents": [
-        { "input-root": "", "output-root": "", "input": "readme.txt", "title": "Home", 
+        { "input-root": "", "output-root": "", "input": "index.txt", "title": "Home", 
             "page-flows": ["sections", "nav"] },
         { "input-glob": "sections/*.txt", "page-flows": ["sections", "nav"], 
             "title-from-variable": "title", "code-from-variable": "code", 
@@ -43,9 +43,9 @@
         },
         "page-flows": {
             "header": [
-                { "link": "readme.html", "title": "", "image": "favicon.png", "image_class": "logo_image",
+                { "link": "index.html", "title": "", "image": "favicon.png", "image_class": "logo_image",
                     "image_alt": "Logo" },
-                { "link": "readme.html", "title": "Home", "class": "toggle_wide_only_inline" },
+                { "link": "index.html", "title": "Home", "class": "toggle_wide_only_inline" },
                 { "link": "doc/content/index_page.html", "title": "Index", "class": "toggle_wide_only_inline" },
                 { "link": "doc/content/index_page.html", "title": "", "class": "toggle_narrow_only_inline",
                     "image": "layout/pict/search.png", "image_class": "header_image index_image",
