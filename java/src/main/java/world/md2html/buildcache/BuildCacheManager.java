@@ -152,7 +152,11 @@ public class BuildCacheManager {
             newDerivedOutputs.addAll(docInfo.getDerivedDocuments());
         }
 
+        Set<String> oldDerivedOutputs = new HashSet<>();
         for (PrimaryDocumentInfo prevDocInfo : previousCache.getPrimaryDocuments().values()) {
+            if (prevDocInfo.getDerivedDocuments() != null) {
+                oldDerivedOutputs.addAll(prevDocInfo.getDerivedDocuments());
+            }
             String outputFile = prevDocInfo.getOutputFile();
             if (!newPrimaryOutputs.contains(outputFile)) {
                 if (deleteFileIfExists(outputFile) && log.isLoggable(Level.INFO)) {
@@ -161,12 +165,6 @@ public class BuildCacheManager {
             }
         }
 
-        Set<String> oldDerivedOutputs = new HashSet<>();
-        for (PrimaryDocumentInfo docInfo : previousCache.getPrimaryDocuments().values()) {
-            if (docInfo.getDerivedDocuments() != null) {
-                oldDerivedOutputs.addAll(docInfo.getDerivedDocuments());
-            }
-        }
         for (String oldDerivedOutput : oldDerivedOutputs) {
             if (!newDerivedOutputs.contains(oldDerivedOutput)) {
                 if (deleteFileIfExists(oldDerivedOutput) && log.isLoggable(Level.INFO)) {
