@@ -148,13 +148,13 @@ platform). Only the following option (1) must be changed:</p>
 <pre class="highlight"><code class="language-shell">&gt;python --version
 Python 3.8.7</code></pre>
 <div class="admonition note">
-<p class="admonition-title">Notes</p>
+<p class="admonition-title">Note</p>
 <ol>
-<li>Later versions of Python will very probably be suitable too but they were not completely
+<li>Later versions of Python will very likely be suitable too but they were not completely
     checked.</li>
 <li>In Linux the <code>python</code> command is probably used for running Python 2 that does not suffice 
     for this program. Python 3 may need to be installed separately and called with 
-    command <code>python3</code>.</li>
+    the <code>python3</code> command.</li>
 </ol>
 </div>
 <p>The following Python packages must be installed:</p>
@@ -165,11 +165,8 @@ Python 3.8.7</code></pre>
 packages may have changes that noticeably affect the program work.</p>
 </div>
 <h2 id="installation">Installation</h2>
-<p>Here's how the Python version may be installed:</p>
-<ul>
-<li>Fulfill the <a href="#installation_all">common steps</a>.</li>
-<li>That's it, provided that the prerequisites are matched.</li>
-</ul>
+<p>No program specific installation steps are required, provided that the
+<a href="#installation_all">common steps</a> are fulfilled and the prerequisites are matched.</p>
 <hr />
 <p><a id="installation_java"></a></p>
 <h1 id="java-version">Java version</h1>
@@ -179,6 +176,13 @@ installed.</p>
 <pre class="highlight"><code class="language-shell">&gt;java -version
 java version "1.8.0_05"
 .  .  .</code></pre>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><a name="java_17_incompatible"></a>
+Java 8 is the intended version for this program. Java 11 was tried and worked stable, no
+differences were observed. But with Java 17 the program did not compile because of the code
+incompatibility. This issue is planned to be explored.</p>
+</div>
 <h2 id="installation_1">Installation</h2>
 <p>Here's how the Java version may be installed:</p>
 <ul>
@@ -193,6 +197,10 @@ artifacts. They must be built or taken separately.</p>
 <code>%MD2HTML_HOME%\java\target\</code> (create this directory if it does not exist). That's it.</p>
 <h3 id="building-the-project">Building the project</h3>
 <p>This needs Java Development Kit (JDK, not JRE) 8 or higher and <a href="https://maven.apache.org/">Maven</a>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Please see the notes about Java 17 <a href="#java_17_incompatible">above</a>.</p>
+</div>
 <p>In a command line terminal execute:</p>
 <pre class="highlight"><code class="language-shell">&gt;cd %MD2HTML_HOME%\java
 

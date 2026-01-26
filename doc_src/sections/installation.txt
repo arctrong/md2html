@@ -48,12 +48,12 @@ The following command may be used to check whether Python is installed.
 Python 3.8.7
 ````
 
-!!! note "Notes"
-    1. Later versions of Python will very probably be suitable too but they were not completely
+!!! note
+    1. Later versions of Python will very likely be suitable too but they were not completely
         checked.
     2. In Linux the `python` command is probably used for running Python 2 that does not suffice 
         for this program. Python 3 may need to be installed separately and called with 
-        command `python3`.
+        the `python3` command.
 
 The following Python packages must be installed:
 
@@ -68,10 +68,8 @@ The following Python packages must be installed:
 
 ## Installation
 
-Here's how the Python version may be installed:
-
-- Fulfill the [common steps](#installation_all).
-- That's it, provided that the prerequisites are matched.
+No program specific installation steps are required, provided that the
+[common steps](#installation_all) are fulfilled and the prerequisites are matched.
 
 ----------------------------------------------------------------------------------------------------
 <a id="installation_java"></a>
@@ -87,6 +85,12 @@ installed.
 java version "1.8.0_05"
 .  .  .
 ````
+
+!!! important
+    <a name="java_17_incompatible"></a>
+    Java 8 is the intended version for this program. Java 11 was tried and worked stable, no
+    differences were observed. But with Java 17 the program did not compile because of the code
+    incompatibility. This issue is planned to be explored.
 
 ## Installation
 
@@ -108,6 +112,9 @@ The latest built release must be available along with the source code. A release
 ### Building the project
 
 This needs Java Development Kit (JDK, not JRE) 8 or higher and [Maven](https://maven.apache.org/).
+
+!!! important
+    Please see the notes about Java 17 [above](#java_17_incompatible).
 
 In a command line terminal execute:
 

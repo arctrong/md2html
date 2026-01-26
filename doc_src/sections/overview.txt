@@ -25,10 +25,20 @@ The following subsections describe the above artifacts in more details.
 
 ## Source Markdown texts
 
-These texts comprise the main documentation content written by the author. They are written in 
-the Markdown language [<!--ref markdown-->]. The 
-[Page content section](<!--page page_content-->) describes the methods, tricks and elements that
-may be used in process of the content writing.
+These texts comprise the main documentation content written by the author in Markdown language.
+[Page metadata](<!--page plugins-->#page_metadata) may be used to activate extra functions
+provided by [plugins](<!--page plugins-->).
+
+<!--index Markdown -->
+[Markdown](<!--page refs-->#markdown) is a formatting syntax whose main goal is making texts that
+are as readable as possible in *plain text*.
+This syntax is very simple and allows writing very fast. It has enough features for writing
+a variety of document kinds. Because of its simplicity it's quite restricted and contains
+just a very small subset of HTML features, but it allows direct inclusions of HTML code that
+helps achieve more complex result when it's required.
+
+The ["Page content" section](<!--page page_content-->) describes the methods, tricks and elements
+that may be used in process of the content writing.
 
 
 ## HTML templates

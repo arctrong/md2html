@@ -96,15 +96,14 @@ It can be used for many kinds of writing projects.</p>
 example of the tool in action.</p>
 <div class="toc">
 <ul>
-<li><a href="#how-it-works">How it works?</a></li>
-<li><a href="#markdown">Markdown</a></li>
+<li><a href="#how-it-works">How it works</a></li>
 <li><a href="#features">Features</a></li>
 <li><a href="#implementation">Implementation</a></li>
 </ul>
 </div>
 <p style="clear: both;"></p>
 
-<h1 id="how-it-works">How it works?</h1>
+<h1 id="how-it-works">How it works</h1>
 <p>You write a Markdown text like this:</p>
 <pre class="highlight"><code>!!! note
     A **monad** is just a _monoid_ in the category of `endofunctors`.</code></pre>
@@ -119,25 +118,16 @@ looks like this:</p>
 <p class="admonition-title">Note</p>
 <p>A <strong>monad</strong> is just a <em>monoid</em> in the category of <code>endofunctors</code>.</p>
 </div>
-<p>There are more details described in the <a href="doc/content/sections/overview.html">Overview section</a>.</p>
-<p><a name="index_entry_index_markdown"></a></p>
-<h1 id="markdown">Markdown</h1>
-<p><a href="doc/content/sections/ref/references.html#markdown">Markdown</a> is a formatting syntax whose
-main goal is making texts that are as readable as possible in <em>plain text</em>.</p>
-<p>This syntax is very simple and allows writing very fast. It has enough features for writing
-a variety of document kinds. Because of its simplicity it's quite restricted and contains
-just a very small subset of HTML features, but it allows direct inclusions of HTML code that
-helps achieve more complex result when it's required.</p>
 <h1 id="features">Features</h1>
 <p><strong>M<sub>2</sub>H</strong> automates conversion of Markdown texts into HTML pages and provides templates
 and styles that are ether ready to use or may be easily adapted and extended for certain cases.</p>
 <p>Apart of that, it provides means for processing whole sets of documents, organizing the output
 and producing a self-contained static HTML documentation that needs only a browser to be viewed.</p>
 <p>In the end, this tool has a set of plugins that automate and simplify typical tasks and make
-the documentation look more professionally.</p>
+the documentation look professionally.</p>
 <p><strong>M<sub>2</sub>H</strong> doesn't lay much restrictions on the documentation project's organization and
-lets the users make their own configuration. There are recommendations on the project structure
-described in this manual and used for its creation.</p>
+lets the users make their own configuration. Still it provides recommendations on the project
+structure described in this manual and implemented in the quick start scripts.</p>
 <h1 id="implementation">Implementation</h1>
 <p><strong>M<sub>2</sub>H</strong> is a command line utility that has two versions: in Python and in Java. They
 work mostly the same way, have the same command line syntax, process the same input, are shipped

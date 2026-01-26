@@ -92,14 +92,13 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <div class="toc">
 <ul>
 <li><a href="#about-this-section">About this section</a></li>
-<li><a href="#on-linux">On Linux</a></li>
+<li><a href="#cross-platform">Cross platform</a></li>
 <li><a href="#command-line-syntax">Command line syntax</a></li>
 <li><a href="#using-command-line-arguments">Using command line arguments</a></li>
 <li><a href="#using_argument_file">Using argument file</a></li>
 <li><a href="#command_scripts">Command scripts</a></li>
 <li><a href="#win_explorer_context_menu">Windows Explorer context menu integration</a></li>
 <li><a href="#typical-project-structure">Typical project structure</a></li>
-<li><a href="#previous-versions-compatibility">Previous versions compatibility</a></li>
 </ul>
 </div>
 <hr />
@@ -107,13 +106,17 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <p>This section describes the program running and documentation projects configuration. Documentation
 content writing, formatting and structuring are described in the other sections.</p>
 <hr />
-<p><a name="index_entry_index_linux"></a></p>
-<h1 id="on-linux">On Linux</h1>
+<p><a name="index_entry_index_linux_windows_macos_unix"></a></p>
+<h1 id="cross-platform">Cross platform</h1>
 <p>The Java and the Python executables are platform-independent so they will theoretically work in
-all environments where the corresponding <em>virtual machines</em> are installed. The tests were done only
-on Windows and on Ubuntu Linux. The examples in this documentation are mostly given applied to 
-Windows, but they may be easily adapted for Linux. Some Linux specific notes are given when 
-required.</p>
+all environments where the corresponding <em>virtual machines</em> are installed. The tests were done on:</p>
+<ul>
+<li>Windows</li>
+<li>Ubuntu Linux</li>
+<li>macOS</li>
+</ul>
+<p>The examples in this documentation are mostly given applied to Windows, but they may be easily
+adapted for Unix-like platforms. Some Unix specific notes are given when required.</p>
 <hr />
 <h1 id="command-line-syntax">Command line syntax</h1>
 <p>A simple usage example for the Python version is:</p>
@@ -142,15 +145,9 @@ if the <code>--argument-file</code> argument is not specified.</p>
 <hr />
 <p><a name="index_entry_index_argument_file"></a></p>
 <h1 id="using_argument_file">Using argument file</h1>
-<p>The <code>--argument-file</code> argument defines the <strong>argument file</strong> that will be used for
-processing. This may be a single parameter of the call or other command line parameters may be
-specified as well.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The command line and the <em>argument file</em> may specify different values for the parameters that
-mean the same (sometimes they have different names). In this case the command line
-arguments will <strong>override</strong> the corresponding parameters in the <em>argument file</em>.</p>
-</div>
+<p>The <code>--argument-file</code> argument defines the <strong>argument file</strong> that will be used for processing.
+Here's the example that executes the argument file with name <code>md2html_args.json</code>:</p>
+<pre class="highlight"><code class="language-shell">&gt;python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json</code></pre>
 <p>The <em>argument file</em> allows to define:</p>
 <ul>
 <li>multiple files to be processed;</li>
@@ -168,17 +165,24 @@ arguments will <strong>override</strong> the corresponding parameters in the <em
 <p>It's similar to using command line arguments, except it defines several documents to process.</p>
 <p>A more complex example and the <em>argument file</em> structure are described in the
 <a href="reference.html#argument_file_structure">reference page</a>.</p>
-<p>To execute an <em>argument file</em> <code>md2html_args.json</code> the following command may be used:</p>
-<pre class="highlight"><code class="language-shell">&gt;python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The command line and the <em>argument file</em> may specify different values for the parameters that
+mean the same (sometimes they have different names). In this case the command line
+arguments will <strong>override</strong> the corresponding parameters in the <em>argument file</em>.</p>
+</div>
 <hr />
 <p><a name="index_entry_index_command_scripts_double_click_script"></a></p>
 <h1 id="command_scripts">Command scripts</h1>
-<p>The following convenience command scripts are provided:</p>
+<p>The program versions (Python and Java) are supposed to work independently and to require only
+their corresponding execution stack. E.g. the Java version should work even if there's no
+Python in the environment where it runs. For different auxiliary purposes command scrips for
+Windows and Unix-like platforms are used. Here are the scripts that run the program:</p>
 <table>
 <thead>
 <tr>
 <th>For Windows</th>
-<th>For Linux</th>
+<th>For Unix-like</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -193,33 +197,19 @@ arguments will <strong>override</strong> the corresponding parameters in the <em
 <td><code>generate_doc_java</code></td>
 <td>Uses the Java version</td>
 </tr>
-<tr>
-<td><code>generate_doc.bat</code></td>
-<td><code>generate_doc</code></td>
-<td>Uses the executor selector</td>
-</tr>
 </tbody>
 </table>
 <p>The Windows versions may be run by double-click from the Windows file explorer. The Linux 
 <em>Bash script</em> versions may need special environmental adjustments (depending on the Linux
 distribution) to behave the same way. In Ubuntu these scripts were tested only in the command
 line terminal.</p>
-<p>These scripts execute the <em>argument file</em> <code>md2html_args.json</code> in the directory they are called
-from. They will open a command window and close it just as they successfully complete.
-If there are errors, the command window will stay open with the information and error messages
-displayed.</p>
+<p>These scripts execute the <em>argument file</em> <code>md2html_args.json</code> in the current working directory.
+When double-clicked in Windows, they will open a command window and close it just as they
+successfully complete. If there are errors, the command window will stay open with the
+information and error messages displayed.</p>
 <p>These scripts are very small and intended to be copied to a project's directory where
 they will process the project's <em>argument file</em> (see the 
 <a href="#typical_project_structure">recommended project structure</a>).</p>
-<p>The scripts <code>generate_doc.bat</code> and <code>generate_doc</code> use intermediate scripts with the <em>executor
-selector</em>. These scripts accept their first argument <code>py</code>, or <code>java</code> and run the corresponding
-version of the program. If nether of these arguments are specified the default executor will be
-run (that is the Python version for now).</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The documentation projects prepared for versions of this program prior to 1.0.0 will not work
-with these scripts. See <a href="#legacy_compatibility">here</a> for migration instructions.</p>
-</div>
 <hr />
 <p><a name="index_entry_index_context_menu_items"></a></p>
 <h1 id="win_explorer_context_menu">Windows Explorer context menu integration</h1>
@@ -256,9 +246,7 @@ The output file is: C:\Users\user1\md2html_context_menu_integration.reg</code></
 Read the popped up message and confirm the operation.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There's no such integration for Linux. The interested Linux users may use the scripts 
-<code>md2html_prompt.bat</code> and <code>md2html_prompt_fast.bat</code> in the directory <code>bin/context_menu/</code> as
-the starting point for adaption.</p>
+<p>There's no such integration for Linux and macOS.</p>
 </div>
 <hr />
 <p><a name="typical_project_structure"></a></p>
@@ -291,47 +279,54 @@ project setup.</p>
 |   `-- doc2.txt
 |-- doc0.html
 |-- doc0.txt
-|-- generate_doc.bat
+|-- generate_doc_py.bat
 `-- md2html_args.json</code></pre>
 <ul>
 <li>
 <p><code>doc0.txt</code> and <code>doc0.html</code> are the Markdown document and its corresponding generated HTML
-    page that we want to have in the project's root.</p>
+    page that we want to have in the project's root</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>It may be convenient to have a documentation starting page in the project's root directory.
-But this page, on the other hand, requires special manipulation, so this decision is a kind
-of a trade-off.</p>
+But this page, on the other hand, requires special manipulation, so this decision is a
+trade-off.</p>
 </div>
 </li>
 <li>
 <p>the <code>doc</code> directory along with the file <code>doc0.html</code> contain the whole project's HTML 
     documentation with all required resources like images and CSS files.
-    This directory may be used and distributed autonomously (with additional file <code>doc0.html</code>
-    if it's used).</p>
-<p>Please note that as for now it's possible on the HTML pages to place links to their source
-Markdown texts. In this case, if we want these links to work, we need to preserve the
-source texts location.</p>
+    This directory may be used and shipped autonomously (with additional file <code>doc0.html</code>
+    if it's used)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For this documentation and projects generated by the <em>quick start script</em> it's not
+true. As the pages have links to their source texts, if we want these links to work,
+we need to ship the source texts as well.</p>
+</div>
 </li>
 <li>
 <p>the <code>doc/content</code> directory is intended to contain the <strong>generated artifacts only</strong>. In case of 
-    problems with document generation, this directory may be safely deleted (or, maybe, better
-    first renamed and then deleted). On the next project regeneration this directory and its 
-    content will be recreated.</p>
+    issues with document generation, this directory may be safely deleted. On the following
+    project regeneration this directory and its content will be recreated</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>if not sure please use renaming instead of deletion or a version control system (like Git)
+to avoid data loss.</p>
+</div>
 </li>
 <li>
 <p>the <code>doc_src</code> directory contains all source files required for producing the project's
-    documentation (also need the file <code>doc0.txt</code> if we want to use it);</p>
+    documentation (also need the file <code>doc0.txt</code> if we want to use it)</p>
 </li>
 <li>
-<p><code>generate_doc.bat</code> &mdash; the <a href="#command_scripts">double-click script</a> for the whole HTML
-    documentation regeneration;</p>
+<p><code>generate_doc_py.bat</code> &mdash; the <em>double-click script</em> for the HTML documentation generation. Here
+    The Python version is demonstrated. See <a href="#command_scripts">here</a> for the other variations</p>
 </li>
 <li>
 <p><code>md2html_args.json</code> &mdash; the project's <a href="#using_argument_file"><em>argument file</em></a>;</p>
 </li>
 <li>
-<p><code>doc/layout</code> directory contains the resources that are used by the template itself. It's a 
+<p><code>doc/layout</code> directory contains the resources that are used by the template. It's a 
     convenient way to separate those resources from the ones that belong to the documentation
     content. This directory may be copy-pasted to a new project and it will most likely work
     (in conjunction with the particular <em>template</em>);</p>
@@ -347,47 +342,6 @@ source texts location.</p>
 <p><code>custom.css</code> is intended to contain the styles specific to the project (if required).</p>
 </li>
 </ul>
-<hr />
-<p><a name="legacy_compatibility"></a></p>
-<h1 id="previous-versions-compatibility">Previous versions compatibility</h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This section describes a very improbable case as the new version of this program exists
-about 5 years already, and legacy documentation projects hardly exist.</p>
-</div>
-<p>Starting from version 1.0.0, this program introduced significant changes:</p>
-<ul>
-<li>More convenient and about ten times more efficient documents bulk processing mechanism;</li>
-<li>More versatile template engine.</li>
-</ul>
-<p>These changes made the program incompatible with documentation projects created for previous versions.
-Projects from older versions <strong>must be migrated</strong> using the steps described below.</p>
-<p>The descriptions contain terminology that may not yet be familiar. See the <a href="../index_page.html">Index</a>
-and other sections for clarification when needed.</p>
-<p>This migration process consists of several steps.</p>
-<ol>
-<li>
-<p>Migrate page generation templates. Replace placeholders <code>${content}</code> and <code>${styles}</code> with 
-    <code>{{{content}}}</code> and <code>{{{styles}}}</code> (with <strong>three</strong> pairs of curly braces) respectively.
-    Replace placeholders in format <code>${name}</code> with placeholders in format <code>{{name}}</code> (with
-    {{two}} pairs of curly braces).</p>
-</li>
-<li>
-<p>In the page metadata sections:</p>
-<ul>
-<li>replace markers <code>"METADATA"</code> (case insensitively) with marker <code>"VARIABLES"</code>;</li>
-<li>in the <code>"placeholders"</code> sections move all variables to the same level as the 
-    <code>"placeholders"</code> variable and delete the <code>"placeholders"</code> variable.</li>
-</ul>
-</li>
-<li>
-<p>Rewrite the <em>list file</em> <code>md2html_list.txt</code> to the <em>argument file</em> <code>md2html_args.json</code>. If 
-    page metadata was used, add plugin <code>"page-variables": {}</code> to the <code>"plugins"</code> sections.</p>
-</li>
-<li>
-<p>Use the script <code>generate_doc.bat</code> or the other scripts from the section <a href="#command_scripts">"Command scripts"</a>.</p>
-</li>
-</ol>
 <p>&nbsp;</p>
 <hr />
 

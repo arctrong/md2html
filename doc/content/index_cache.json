@@ -1,12 +1,11 @@
 {
-  "readme.html": [
+  "readme.html": [],
+  "doc/content/sections/overview.html": [
     {
       "entry": "Markdown",
-      "link": "../../readme.html#index_entry_index_markdown",
-      "title": "Home"
-    }
-  ],
-  "doc/content/sections/overview.html": [
+      "link": "sections/overview.html#index_entry_index_markdown",
+      "title": "Overview"
+    },
     {
       "entry": "History",
       "link": "sections/overview.html#index_entry_index_history",
@@ -39,7 +38,22 @@
   "doc/content/sections/usage.html": [
     {
       "entry": "Linux",
-      "link": "sections/usage.html#index_entry_index_linux",
+      "link": "sections/usage.html#index_entry_index_linux_windows_macos_unix",
+      "title": "Usage"
+    },
+    {
+      "entry": "Windows",
+      "link": "sections/usage.html#index_entry_index_linux_windows_macos_unix",
+      "title": "Usage"
+    },
+    {
+      "entry": "macOS",
+      "link": "sections/usage.html#index_entry_index_linux_windows_macos_unix",
+      "title": "Usage"
+    },
+    {
+      "entry": "Unix",
+      "link": "sections/usage.html#index_entry_index_linux_windows_macos_unix",
       "title": "Usage"
     },
     {
@@ -242,7 +256,12 @@
     },
     {
       "entry": "page metadata",
-      "link": "sections/plugins.html#index_entry_index_page_metadata",
+      "link": "sections/plugins.html#index_entry_index_page_metadata_metadata_page",
+      "title": "Plugins"
+    },
+    {
+      "entry": "metadata, page",
+      "link": "sections/plugins.html#index_entry_index_page_metadata_metadata_page",
       "title": "Plugins"
     },
     {

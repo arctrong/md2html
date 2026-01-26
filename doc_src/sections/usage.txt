@@ -9,14 +9,18 @@ This section describes the program running and documentation projects configurat
 content writing, formatting and structuring are described in the other sections.
 
 ----------------------------------------------------------------------------------------------------
-<!--index Linux -->
-# On Linux
+<!--index ["Linux", "Windows", "macOS", "Unix"] -->
+# Cross platform
 
 The Java and the Python executables are platform-independent so they will theoretically work in
-all environments where the corresponding *virtual machines* are installed. The tests were done only
-on Windows and on Ubuntu Linux. The examples in this documentation are mostly given applied to 
-Windows, but they may be easily adapted for Linux. Some Linux specific notes are given when 
-required.
+all environments where the corresponding *virtual machines* are installed. The tests were done on:
+
+- Windows
+- Ubuntu Linux
+- macOS
+
+The examples in this documentation are mostly given applied to Windows, but they may be easily
+adapted for Unix-like platforms. Some Unix specific notes are given when required.
 
 ----------------------------------------------------------------------------------------------------
 # Command line syntax
@@ -59,16 +63,14 @@ if the `--argument-file` argument is not specified.
 <!--index argument file -->
 # Using argument file {#using_argument_file}
 
-The `--argument-file` argument defines the __argument file__ that will be used for
-processing. This may be a single parameter of the call or other command line parameters may be
-specified as well.
+The `--argument-file` argument defines the **argument file** that will be used for processing.
+Here's the example that executes the argument file with name `md2html_args.json`:
 
-!!! note
-    The command line and the _argument file_ may specify different values for the parameters that
-    mean the same (sometimes they have different names). In this case the command line
-    arguments will **override** the corresponding parameters in the _argument file_.
+````shell
+>python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json
+````
 
-The _argument file_ allows to define:
+The *argument file* allows to define:
 
 - multiple files to be processed;
 - the same parameters that can be specified in the command line;
@@ -92,46 +94,38 @@ It's similar to using command line arguments, except it defines several document
 A more complex example and the _argument file_ structure are described in the
 [reference page](<!--page reference-->#argument_file_structure).
 
-To execute an _argument file_ `md2html_args.json` the following command may be used:
-
-````shell
->python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json
-````
+!!! note
+    The command line and the _argument file_ may specify different values for the parameters that
+    mean the same (sometimes they have different names). In this case the command line
+    arguments will **override** the corresponding parameters in the _argument file_.
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["command scripts", "double-click script"] -->
 # Command scripts {#command_scripts}
 
-The following convenience command scripts are provided:
+The program versions (Python and Java) are supposed to work independently and to require only
+their corresponding execution stack. E.g. the Java version should work even if there's no
+Python in the environment where it runs. For different auxiliary purposes command scrips for
+Windows and Unix-like platforms are used. Here are the scripts that run the program:
 
-For Windows             | For Linux           | Description
+For Windows             | For Unix-like       | Description
 ------------------------|---------------------|--------------------------------
 `generate_doc_py.bat`   | `generate_doc_py`   | Uses the Python version
 `generate_doc_java.bat` | `generate_doc_java` | Uses the Java version
-`generate_doc.bat`      | `generate_doc`      | Uses the executor selector
 
 The Windows versions may be run by double-click from the Windows file explorer. The Linux 
 *Bash script* versions may need special environmental adjustments (depending on the Linux
 distribution) to behave the same way. In Ubuntu these scripts were tested only in the command
 line terminal.
 
-These scripts execute the _argument file_ `md2html_args.json` in the directory they are called
-from. They will open a command window and close it just as they successfully complete.
-If there are errors, the command window will stay open with the information and error messages
-displayed.
+These scripts execute the _argument file_ `md2html_args.json` in the current working directory.
+When double-clicked in Windows, they will open a command window and close it just as they
+successfully complete. If there are errors, the command window will stay open with the
+information and error messages displayed.
 
 These scripts are very small and intended to be copied to a project's directory where
 they will process the project's _argument file_ (see the 
 [recommended project structure](#typical_project_structure)).
-
-The scripts `generate_doc.bat` and `generate_doc` use intermediate scripts with the _executor
-selector_. These scripts accept their first argument `py`, or `java` and run the corresponding
-version of the program. If nether of these arguments are specified the default executor will be
-run (that is the Python version for now).
-
-!!! important
-    The documentation projects prepared for versions of this program prior to 1.0.0 will not work
-    with these scripts. See [here](#legacy_compatibility) for migration instructions.
 
 ----------------------------------------------------------------------------------------------------
 <!--index context menu items-->
@@ -184,9 +178,7 @@ Find the generated file in the user's profile directory, check and execute it (b
 Read the popped up message and confirm the operation.
 
 !!! note
-    There's no such integration for Linux. The interested Linux users may use the scripts 
-    `md2html_prompt.bat` and `md2html_prompt_fast.bat` in the directory `bin/context_menu/` as
-    the starting point for adaption.
+    There's no such integration for Linux and macOS.
 
 ----------------------------------------------------------------------------------------------------
 <a name="typical_project_structure"></a>
@@ -223,41 +215,46 @@ $ tree -L 2 --charset=ascii --dirsfirst
 |   `-- doc2.txt
 |-- doc0.html
 |-- doc0.txt
-|-- generate_doc.bat
+|-- generate_doc_py.bat
 `-- md2html_args.json
 ````
 
 - `doc0.txt` and `doc0.html` are the Markdown document and its corresponding generated HTML
-    page that we want to have in the project's root.
+    page that we want to have in the project's root
     
     !!! hint
         It may be convenient to have a documentation starting page in the project's root directory.
-        But this page, on the other hand, requires special manipulation, so this decision is a kind
-        of a trade-off.
+        But this page, on the other hand, requires special manipulation, so this decision is a
+        trade-off.
 
 - the `doc` directory along with the file `doc0.html` contain the whole project's HTML 
     documentation with all required resources like images and CSS files.
-    This directory may be used and distributed autonomously (with additional file `doc0.html`
-    if it's used).
+    This directory may be used and shipped autonomously (with additional file `doc0.html`
+    if it's used)
 
-    Please note that as for now it's possible on the HTML pages to place links to their source
-    Markdown texts. In this case, if we want these links to work, we need to preserve the
-    source texts location.
+    !!! note
+        For this documentation and projects generated by the *quick start script* it's not
+        true. As the pages have links to their source texts, if we want these links to work,
+        we need to ship the source texts as well.
     
 - the `doc/content` directory is intended to contain the **generated artifacts only**. In case of 
-    problems with document generation, this directory may be safely deleted (or, maybe, better
-    first renamed and then deleted). On the next project regeneration this directory and its 
-    content will be recreated.
+    issues with document generation, this directory may be safely deleted. On the following
+    project regeneration this directory and its content will be recreated
     
-- the `doc_src` directory contains all source files required for producing the project's
-    documentation (also need the file `doc0.txt` if we want to use it);
+    !!! important
+        if not sure please use renaming instead of deletion or a version control system (like Git)
+        to avoid data loss.
 
-- `generate_doc.bat` --- the [double-click script](#command_scripts) for the whole HTML
-    documentation regeneration;
+- the `doc_src` directory contains all source files required for producing the project's
+    documentation (also need the file `doc0.txt` if we want to use it)
+
+- `generate_doc_py.bat` --- the *double-click script* for the HTML documentation generation. Here
+    The Python version is demonstrated. See [here](#command_scripts) for the other variations
+    
 
 - `md2html_args.json` --- the project's [*argument file*](#using_argument_file);
 
-- `doc/layout` directory contains the resources that are used by the template itself. It's a 
+- `doc/layout` directory contains the resources that are used by the template. It's a 
     convenient way to separate those resources from the ones that belong to the documentation
     content. This directory may be copy-pasted to a new project and it will most likely work
     (in conjunction with the particular *template*);
@@ -268,46 +265,4 @@ $ tree -L 2 --charset=ascii --dirsfirst
 - `favicon.png` file is placed here as it's considered as a project's artifact;
     
 - `custom.css` is intended to contain the styles specific to the project (if required).
-
-----------------------------------------------------------------------------------------------------
-<a name="legacy_compatibility"></a>
-# Previous versions compatibility
-
-!!! note
-    This section describes a very improbable case as the new version of this program exists
-    about 5 years already, and legacy documentation projects hardly exist.
-
-Starting from version 1.0.0, this program introduced significant changes:
-
-- More convenient and about ten times more efficient documents bulk processing mechanism;
-- More versatile template engine.
-
-These changes made the program incompatible with documentation projects created for previous versions.
-Projects from older versions **must be migrated** using the steps described below.
-
-The descriptions contain terminology that may not yet be familiar. See the [Index](../index_page.html)
-and other sections for clarification when needed.
-
-This migration process consists of several steps.
-
-1. Migrate page generation templates. Replace placeholders `${content}` and `${styles}` with 
-    `{{{content}}}` and `{{{styles}}}` (with **three** pairs of curly braces) respectively.
-    Replace placeholders in format `${name}` with placeholders in format `{{name}}` (with
-    {{two}} pairs of curly braces).
-    
-2. In the page metadata sections:
-    - replace markers `"METADATA"` (case insensitively) with marker `"VARIABLES"`;
-    - in the `"placeholders"` sections move all variables to the same level as the 
-        `"placeholders"` variable and delete the `"placeholders"` variable.
-        
-3. Rewrite the *list file* `md2html_list.txt` to the *argument file* `md2html_args.json`. If 
-    page metadata was used, add plugin `"page-variables": {}` to the `"plugins"` sections.
-    
-4. Use the script `generate_doc.bat` or the other scripts from the section ["Command scripts"](#command_scripts).
-
-
-
-
-
-
 

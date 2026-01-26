@@ -13,7 +13,7 @@ example of the tool in action.
 <p style="clear: both;"></p>
 
 
-# How it works?
+# How it works
 
 You write a Markdown text like this:
 
@@ -37,20 +37,6 @@ looks like this:
 !!! note
     A **monad** is just a _monoid_ in the category of `endofunctors`.
     
-There are more details described in the [Overview section](<!--page overview-->).
-
-
-<!--index Markdown -->
-# Markdown
-
-[Markdown](<!--page refs-->#markdown) is a formatting syntax whose
-main goal is making texts that are as readable as possible in *plain text*.
-
-This syntax is very simple and allows writing very fast. It has enough features for writing
-a variety of document kinds. Because of its simplicity it's quite restricted and contains
-just a very small subset of HTML features, but it allows direct inclusions of HTML code that
-helps achieve more complex result when it's required.
-
 
 # Features
 
@@ -61,11 +47,11 @@ Apart of that, it provides means for processing whole sets of documents, organiz
 and producing a self-contained static HTML documentation that needs only a browser to be viewed.
 
 In the end, this tool has a set of plugins that automate and simplify typical tasks and make
-the documentation look more professionally.
+the documentation look professionally.
 
 **M<sub>2</sub>H** doesn't lay much restrictions on the documentation project's organization and
-lets the users make their own configuration. There are recommendations on the project structure
-described in this manual and used for its creation.
+lets the users make their own configuration. Still it provides recommendations on the project
+structure described in this manual and implemented in the quick start scripts.
 
 
 # Implementation

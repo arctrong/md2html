@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------------------------------
 # About this section
 
-The documentation gives the program's [usage](<!--page usage-->) detailed description 
+This documentation gives the program's [usage](<!--page usage-->) detailed description 
 as well as the [page content](<!--page page_content-->) writing methods and tricks. But such 
 information is probably not necessary for just trying the program out. This section describes 
 the ways of quick starting.
@@ -19,7 +19,7 @@ the ways of quick starting.
 # Quick start script
 
 The  quick start script creates a small new project with a 
-[typical structure](<!--page usage-->#typical_project_structure) 
+[typical recommended structure](<!--page usage-->#typical_project_structure) 
 and with some sample content.
 
 After the program is installed, create an empty directory where the documentation must be set up,
@@ -31,7 +31,7 @@ then switch to there in the command line terminal and execute the quick start sc
 >%MD2HTML_HOME%\bin\new_project\new_project.bat
 ````
 
-On Unix and macOS:
+On Unix-like platforms:
 
 ````unixshell
 $ cd /your/path/your_project
@@ -42,7 +42,7 @@ $ $MD2HTML_HOME/bin/new_project/new_project
 All necessary project files will be created in the directory `your_project`. Just generate 
 the documentation by double-clicking the command file `generate_doc_py.bat` or 
 `generate_doc_java.bat` (or executing the corresponding scripts in the command line).
-Open the generated file `readme.html` in the `your_project` directory to see the content.
+Open the generated file `index.html` in the `your_project` directory to see the content.
 
 !!! note
     The `your_project` directory must better be empty before running the quick start script.
@@ -51,7 +51,9 @@ Open the generated file `readme.html` in the `your_project` directory to see the
 <!--index quick start, manual-->
 # Creating a simplest project
 
-Here is an instruction for manually creating a very simple documentation project.
+Here is an instruction for manually creating a very simple documentation project. This guide is
+intended mostly to demonstrate the main application workflow using a simplest setup, but it may be
+used in real life if such primitive setup is really needed.
 
 In a project directory create the following artifacts.
 
@@ -91,7 +93,7 @@ In a project directory create the following artifacts.
     </html>
     ````
 
-- Example Markdown file `example.txt` with a content like this:
+- A Markdown file, let's say `example.txt`, with a content like this:
 
     ````
     [TOC]
@@ -116,8 +118,8 @@ Click ether of the files `generate_doc_py.bat` or `generate_doc_java.bat` (or co
 files for Linux). Alternatively the project's directory may be opened in the command line and 
 the scripts may be run in there. The result file `example.html` will be generated.
 
-The result HTML page in this simple example doesn't contain nor link any style sheets and uses the
-browser's default styles.
+The result HTML page in this simple example neither contains nor links any style sheets and uses
+the browser's default styles.
 
 The described example is reproduced in the directory `simplest_project` and the generated page
 may be viewed [here](<!--path resource_path-->../simplest_project/example.html).
