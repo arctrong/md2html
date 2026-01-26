@@ -1,7 +1,0 @@
-# Modified Document
-
-This document gets modified during tests to test regeneration.
-
-## Original Content
-
-This content will be changed in tests.

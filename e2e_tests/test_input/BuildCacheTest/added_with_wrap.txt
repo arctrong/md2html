@@ -1,4 +1,11 @@
 # Added document with wrapped code
 
-This document is going to be added. It contains a wrapped block:
-[CodeToPreserve.java](<!--wrap_java CodeToPreserve.java-->).
+This document is going to be added and preserved.
+
+It contains wrapped blocks:
+
+- [CodeToPreserve.java](<!--wrap_java CodeToPreserve.java-->) --- referenced only in this page.
+    As this page is going to be preserved, the wrapped page should not be cleaned up
+- [CodeToPreserve_two_includes.java](<!--wrap_java CodeToPreserve_two_includes.java-->) ---
+    referenced in this and another pages. As this page is going to be preserved, the wrapped
+    page should not be cleaned up even if the other page where it's wrapped is removed

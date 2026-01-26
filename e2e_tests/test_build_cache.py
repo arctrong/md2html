@@ -41,6 +41,7 @@ class BuildCacheE2eTest(unittest.TestCase):
             "unchanged.html",
             "removed_with_wrap.html",
             "CodeToRemove.java.html",
+            "CodeToPreserve_two_includes.java.html",
             "index_page.html",
             "index_cache.json",
             ], output_files.keys())
@@ -72,6 +73,7 @@ class BuildCacheE2eTest(unittest.TestCase):
             "unchanged.html",
             "added_with_wrap.html",
             "CodeToPreserve.java.html",
+            "CodeToPreserve_two_includes.java.html",
             ], output_files.keys())
         self.assertGreater(output_files["unchanged.html"], 
                            output_files_before["unchanged.html"])

@@ -102,30 +102,33 @@ class _BuildCacheManager:
         if not self._is_build_cache_used():
             return
 
-        old_primary_outputs = {doc_info['output_file']
-                               for doc_info in self.previous_cache.get('primary_documents', {}).values()}
-        new_primary_outputs = {doc_info['output_file']
-                               for doc_info in self.current_cache.get('primary_documents', {}).values()}
-        unused_primary_files = old_primary_outputs - new_primary_outputs
-        for output_file in unused_primary_files:
-            if os.path.exists(output_file):
-                os.remove(output_file)
-                logger.info('Unused primary file deleted: %s', output_file)
+        new_primary_outputs = set()
+        new_derived_outputs = set()
 
-        for primary_input, old_primary in self.previous_cache.get('primary_documents', {}).items():
-            new_primary = self.current_cache.get('primary_documents', {}).get(primary_input, {})
-            old_derived = set(old_primary.get('derived_documents', []))
-            new_derived = set(new_primary.get('derived_documents', []))
-            obsolete_derived = old_derived - new_derived
-            for derived_file in obsolete_derived:
-                if os.path.exists(derived_file):
-                    os.remove(derived_file)
-                    logger.info('Obsolete derived file deleted: %s', derived_file)
+        for new_doc_info in self.current_cache['primary_documents'].values():
+            new_primary_outputs.add(new_doc_info['output_file'])
+            new_derived_outputs.update(new_doc_info.get('derived_documents', []))
 
-        old_standalone = set(self.previous_cache.get('standalone_derived_documents', []))
-        new_standalone = set(self.current_cache.get('standalone_derived_documents', []))
-        obsolete_standalone = old_standalone - new_standalone
-        for standalone_file in obsolete_standalone:
+        old_derived_outputs = set()
+
+        for old_doc_info in self.previous_cache['primary_documents'].values():
+            old_derived_outputs.update(old_doc_info.get('derived_documents', []))
+            old_primary_output_file = old_doc_info['output_file']
+            if old_primary_output_file not in new_primary_outputs and os.path.exists(
+                    old_primary_output_file):
+                os.remove(old_primary_output_file)
+                logger.info('Unused primary file deleted: %s', old_primary_output_file)
+
+        obsolete_derived_outputs = old_derived_outputs - new_derived_outputs
+
+        for obsolete_derived_output in obsolete_derived_outputs:
+            if os.path.exists(obsolete_derived_output):
+                os.remove(obsolete_derived_output)
+                logger.info('Obsolete derived file deleted: %s', obsolete_derived_output)
+
+        old_standalone = set(self.previous_cache['standalone_derived_documents'])
+        new_standalone = set(self.current_cache['standalone_derived_documents'])
+        for standalone_file in old_standalone - new_standalone:
             if os.path.exists(standalone_file):
                 os.remove(standalone_file)
                 logger.info('Obsolete standalone derived file deleted: %s', standalone_file)

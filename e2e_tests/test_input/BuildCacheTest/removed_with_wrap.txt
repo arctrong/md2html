@@ -1,4 +1,12 @@
-# Removed document
+# Removed document with wrapped code
 
-This document is going to be added to the document set and then removed. It contains a wrapped block:
-[CodeToRemove.java](<!--wrap_java CodeToRemove.java-->).
+This document is going to be added to the document set and then removed.
+
+It contains wrapped blocks:
+
+- [CodeToRemove.java](<!--wrap_java CodeToRemove.java-->) --- referenced only in this page.
+    As this page is going to be removed, the wrapped page should be cleaned up
+- [CodeToPreserve_two_includes.java](<!--wrap_java CodeToPreserve_two_includes.java-->) ---
+    referenced in this and another pages. Though this page is going to be preserved, the wrapped
+    page should not be cleaned up as the other page where it's wrapped is still preserved in the
+    document set
