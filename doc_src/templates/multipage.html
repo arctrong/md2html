@@ -26,7 +26,7 @@ onclick="toggleSidebar();return false;" class="toggle_narrow_only_inline" alt="S
 {{#logo}}<span class="toggle_wide_only_inline">{{{.}}}</span>{{/logo}}
 {{#header}}<a 
 class="header_item{{#current}} selected{{/current}} {{{class}}}"
-href="{{link}}">{{#title}}<span class="{{{title_class}}}">{{{.}}}</span>{{/title}}{{#image}}<img 
+href="{{link}}">{{#title}}<span{{#title_class}} class="{{{.}}}"{{/title_class}}>{{{.}}}</span>{{/title}}{{#image}}<img 
 class="{{{image_class}}}" src="{{resource_path}}{{{.}}}" {{#image_alt}}alt="{{{.}}}"{{/image_alt}}>{{/image
 }}</a>{{/header}}{{#header_wide_only}}<a 
 class="header_item{{#current}} selected{{/current}} toggle_wide_only_inline {{{class}}}"
