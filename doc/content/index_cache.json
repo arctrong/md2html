@@ -75,6 +75,11 @@
       "entry": "context menu items",
       "link": "sections/usage.html#index_entry_index_context_menu_items",
       "title": "Usage"
+    },
+    {
+      "entry": "layout",
+      "link": "sections/usage.html#index_entry_index_layout",
+      "title": "Usage"
     }
   ],
   "doc/content/sections/page_content.html": [
