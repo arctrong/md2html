@@ -239,12 +239,12 @@ $ tree -L 2 --charset=ascii --dirsfirst
     
 - the `doc/content` directory is intended to contain the **generated artifacts only**. In case of 
     issues with document generation, this directory may be safely deleted. On the following
-    project regeneration, this directory and its content will be recreated
+    project regeneration, this directory and its content will be recreated (also see
+    [Troubleshooting](<!--page troubleshooting-->#cleanup_and_regenerate))
     
     !!! important
         If you're not sure, please use renaming instead of deletion, or use a version control
-        system (like Git)
-        to avoid data loss.
+        system (like Git) to avoid data loss.
 
 - the `doc_src` directory contains all source files required for producing the project's
     documentation (and also requires the file `doc0.txt` if we want to use it)

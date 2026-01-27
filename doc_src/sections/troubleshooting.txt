@@ -8,6 +8,44 @@
 This page describes known issues and how to fix them.
 
 ----------------------------------------------------------------------------------------------------
+<!--index ["force regeneration", "cleanup"]-->
+# Cleanup and full regeneration {#cleanup_and_regenerate}
+
+In case of unexpected issues the following steps may help restore the generated documentation
+consistency and make the program work correctly.
+
+
+## Full regeneration
+
+Run a full regeneration of the project with the `-f`/`--force` command line flag.
+See [here](<!--page reference-->#force_page_regeneration) for more details.
+
+
+## Remove generated output and regenerate
+
+If the [typical project structure](<!--page usage-->#typical_project_structure) is used, the
+directory `doc/content` is intended to contain **generated artifacts only**. It may be deleted,
+and then the whole project may be regenerated.
+
+!!! important
+    Deletion is irreversible. In case of doubt, use renaming instead, or commit/stash your 
+    uncommitted changes in your version control system (like Git) before deletion
+    to avoid data loss.
+
+
+## Remove cache files
+
+Sometimes it is sufficient to delete only cache files and regenerate:
+
+- **build cache file**: configured by the `cache-file` option in the *argument file* (see
+    [here](<!--page reference-->#build_cache)).
+- **index cache file**: configured by the "index" plugin option `index-cache` (see
+    [here](<!--page plugins-->#index_cache_file)).
+
+After cache deletion, regeneration may still require the `-f`/`--force` flag if the output
+files are not updated due to incremental generation rules.
+
+----------------------------------------------------------------------------------------------------
 # Insufficient permissions on Unix-like systems {#unix_permission_denied}
 
 Although executable scripts are shipped with the executable flag set, during file transmission

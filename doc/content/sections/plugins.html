@@ -576,7 +576,8 @@ absent descriptions.</p>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Index cache file</p>
-<p><em>Index page</em> is generated using the entries from all the documents but
+<p><a name="index_cache_file"></a>
+<em>Index page</em> is generated using the entries from all the documents but
 the program may regenerate the documentation project partially, i.e. it may regenerate
 only those documents that were changed or added since the previous program run.
 In order to always generate a complete index page the program uses an <em>index cache file</em>
@@ -587,6 +588,7 @@ for example, if the "index" plugin is activated on an existing project or if the
 cache file is deleted. </p>
 <p>Index cache file is a generated artifact so in case of any problem it may be manually deleted
 and the further forceful full documents regeneration may resolve the problem.</p>
+<p>Also see the troubleshooting section <a href="troubleshooting.html#cleanup_and_regenerate">here</a>.</p>
 </div>
 <p><strong>Usage</strong></p>
 <p>Index entries may be added in two different ways:
@@ -644,7 +646,7 @@ become <code>[](../page1.html)</code>.</p>
 <p class="admonition-title">Attention</p>
 <ol>
 <li>If a page is moved or renamed, some other pages may need to be regenerated to reflect this
-    change. But those pages may be up-to-date, so a forceful full regeneration may be required
+    change. But those pages may be up-to-date, so a forced full regeneration may be required
     (with <code>-f</code> flag or <code>"force": true</code> option, see
     <a href="reference.html#force_page_regeneration">here</a> for more details).</li>
 <li>Changing a page's <code>code</code> will invalidate all links that reference this page by its <code>code</code>.</li>

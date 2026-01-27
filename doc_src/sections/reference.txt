@@ -109,14 +109,18 @@ Here are some additional explanations:
         So use `-f` option in any cases when there's a risk of breaking the documentation
         consistency.
         
-        Also see the `--cache-file` argument.
+        Also see:
+        
+        - the `--cache-file` argument
+        - the [troubleshooting section](<!--page troubleshooting-->#cleanup_and_regenerate)
 
 - <!--index ["build cache", "cache, build"]--><a name="build_cache"></a>
     `--cache-file` --- specifies the build cache file and enables a smarter generation scope
     determination and project cleanup. In this mode the program automatically identifies
     the input file set changes and, based on this and some other data, decides to turn on the
     full project regeneration. Also when some input files are removed by the user,
-    the corresponding output files are automatically removed as well
+    the corresponding output files are automatically removed as well (also see the
+    [troubleshooting section](<!--page troubleshooting-->#cleanup_and_regenerate))
     
     !!! note
         This feature is introduced in version 1.0.8 and is not expected to cover all possible

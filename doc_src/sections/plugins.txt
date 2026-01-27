@@ -413,6 +413,7 @@ letters | boolean | No | false | `true` means that the index page content will b
 letters-block | boolean | No | false | `true` means that all terms first letters will be listed at the top of the index page
         
 !!! note "Index cache file"
+    <a name="index_cache_file"></a>
     _Index page_ is generated using the entries from all the documents but
     the program may regenerate the documentation project partially, i.e. it may regenerate
     only those documents that were changed or added since the previous program run.
@@ -426,6 +427,8 @@ letters-block | boolean | No | false | `true` means that all terms first letters
     
     Index cache file is a generated artifact so in case of any problem it may be manually deleted
     and the further forceful full documents regeneration may resolve the problem.
+    
+    Also see the troubleshooting section [here](<!--page troubleshooting-->#cleanup_and_regenerate).
 
 
 **Usage**
@@ -510,7 +513,7 @@ become `[](../page1.html)`.
 
 !!! attention
     1. If a page is moved or renamed, some other pages may need to be regenerated to reflect this
-        change. But those pages may be up-to-date, so a forceful full regeneration may be required
+        change. But those pages may be up-to-date, so a forced full regeneration may be required
         (with `-f` flag or `"force": true` option, see
         [here](<!--page reference-->#force_page_regeneration) for more details).
     2. Changing a page's `code` will invalidate all links that reference this page by its `code`.

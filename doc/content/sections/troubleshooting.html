@@ -93,12 +93,46 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <div class="toc">
 <ul>
 <li><a href="#about-this-page">About this page</a></li>
+<li><a href="#cleanup_and_regenerate">Cleanup and full regeneration</a><ul>
+<li><a href="#full-regeneration">Full regeneration</a></li>
+<li><a href="#remove-generated-output-and-regenerate">Remove generated output and regenerate</a></li>
+<li><a href="#remove-cache-files">Remove cache files</a></li>
+</ul>
+</li>
 <li><a href="#unix_permission_denied">Insufficient permissions on Unix-like systems</a></li>
 </ul>
 </div>
 <hr />
 <h1 id="about-this-page">About this page</h1>
 <p>This page describes known issues and how to fix them.</p>
+<hr />
+<p><a name="index_entry_index_force_regeneration_cleanup"></a></p>
+<h1 id="cleanup_and_regenerate">Cleanup and full regeneration</h1>
+<p>In case of unexpected issues the following steps may help restore the generated documentation
+consistency and make the program work correctly.</p>
+<h2 id="full-regeneration">Full regeneration</h2>
+<p>Run a full regeneration of the project with the <code>-f</code>/<code>--force</code> command line flag.
+See <a href="reference.html#force_page_regeneration">here</a> for more details.</p>
+<h2 id="remove-generated-output-and-regenerate">Remove generated output and regenerate</h2>
+<p>If the <a href="usage.html#typical_project_structure">typical project structure</a> is used, the
+directory <code>doc/content</code> is intended to contain <strong>generated artifacts only</strong>. It may be deleted,
+and then the whole project may be regenerated.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Deletion is irreversible. In case of doubt, use renaming instead, or commit/stash your 
+uncommitted changes in your version control system (like Git) before deletion
+to avoid data loss.</p>
+</div>
+<h2 id="remove-cache-files">Remove cache files</h2>
+<p>Sometimes it is sufficient to delete only cache files and regenerate:</p>
+<ul>
+<li><strong>build cache file</strong>: configured by the <code>cache-file</code> option in the <em>argument file</em> (see
+    <a href="reference.html#build_cache">here</a>).</li>
+<li><strong>index cache file</strong>: configured by the "index" plugin option <code>index-cache</code> (see
+    <a href="plugins.html#index_cache_file">here</a>).</li>
+</ul>
+<p>After cache deletion, regeneration may still require the <code>-f</code>/<code>--force</code> flag if the output
+files are not updated due to incremental generation rules.</p>
 <hr />
 <h1 id="unix_permission_denied">Insufficient permissions on Unix-like systems</h1>
 <p>Although executable scripts are shipped with the executable flag set, during file transmission
