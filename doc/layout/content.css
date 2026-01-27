@@ -201,7 +201,7 @@ img.floatLeft {
     margin-right: 3px;
 }
 
-.external::before {
+.external::before, .away::before {
     position: relative;
     bottom: -2px;
     margin-right: 3px;

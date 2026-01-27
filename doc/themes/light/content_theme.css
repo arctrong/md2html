@@ -119,7 +119,7 @@ div.admonition.note>p.admonition-title {
     content: url("video_link.png");
 }
 
-.external::before {
+.external::before, .away::before {
     content: url("external_link.png");
 }
 

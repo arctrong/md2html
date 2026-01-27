@@ -3,12 +3,13 @@
 [TOC]
 
 ----------------------------------------------------------------------------------------------------
+<!--index ["troubleshooting"]-->
 # About this page
 
 This page describes known issues and how to fix them.
 
 ----------------------------------------------------------------------------------------------------
-<!--index ["force regeneration", "cleanup"]-->
+<!--index ["cleanup"]-->
 # Cleanup and full regeneration {#cleanup_and_regenerate}
 
 In case of unexpected issues the following steps may help restore the generated documentation

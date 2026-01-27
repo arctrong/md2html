@@ -96,14 +96,15 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#what-is-a-template">What is a template</a></li>
 <li><a href="#provided-templates">Provided templates</a></li>
 <li><a href="#css">CSS</a></li>
-<li><a href="#color-themes">Color themes</a></li>
+<li><a href="#themes">Color themes</a></li>
 </ul>
 </div>
 <hr />
 <h1 id="preliminary-note">Preliminary note</h1>
-<p>Currently, a quick start script is provided <a href="quick_start.html">here</a>. Manual template
-work is optional for most basic setups. This page may be useful for understanding the program's
-principles and for creating new templates or modifying existing ones.</p>
+<p>Currently, the <a href="quick_start.html">quick start script</a> may be used for initial project
+setup, so manual template manipulation is usually not required. This page may be useful
+for understanding the program's principles and for creating new templates or modifying existing
+ones.</p>
 <hr />
 <p><a name="index_entry_index_template_mustache"></a></p>
 <h1 id="what-is-a-template">What is a template</h1>
@@ -124,9 +125,9 @@ templates. A simple template file may look like this:</p>
 &lt;/html&gt;</code></pre>
 <p>It consists of static HTML code and Mustache <em>tags</em> that define substitutions and other kinds
 of processing actions. In this simple example, only substitutions are defined. The
-tags with <strong>three</strong> pairs of curly braces will be substituted with the provided values without
-change. The tags with <strong>two</strong> pairs of curly braces will be substituted with the HTML-escaped
-provided values.</p>
+tags with three pairs of curly braces (like <code>{{{content}}}</code>) will be substituted with the
+provided values as is. The tags with two pairs of curly braces (like <code>{{exec_name}}</code>) will be
+substituted with the HTML-escaped provided values.</p>
 <p>The program provides values for the following <em>keys</em> by default:</p>
 <table>
 <thead>
@@ -150,11 +151,11 @@ provided values.</p>
 </tr>
 <tr>
 <td><code>{{exec_name}}</code></td>
-<td>The executable name reported by the program</td>
+<td>The executable name reported by the program (like "md2html_py")</td>
 </tr>
 <tr>
 <td><code>{{exec_version}}</code></td>
-<td>The program version (meaning the numbers, not Python or Java)</td>
+<td>The program version (like "1.0.8")</td>
 </tr>
 <tr>
 <td><code>{{generation_date}}</code></td>
@@ -170,20 +171,20 @@ provided values.</p>
 </tr>
 </tbody>
 </table>
-<p>Other tags may be provided by <em>plugins</em> that are described in the
-<a href="plugins.html">separate section</a>.</p>
+<p>Other keys may be provided by <a href="plugins.html">plugins</a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The number of curly braces pairs (two or three) is meaningful. Use them for the certain tags
-as presented in the table above.</p>
+<p>The number of curly braces pairs (two or three) is meaningful. Please use them for the certain
+keys as presented in the table above.</p>
 </div>
 <hr />
 <h1 id="provided-templates">Provided templates</h1>
-<p>This documentation is created using an extended template that can be easily reused in other
+<p>This documentation is created using an extended template that is intended to be reused in other
 documentation projects. The template file location is <code>doc_src/templates/multipage.html</code>.</p>
 <p>There is also another template located at <code>doc_src/templates/default.html</code>. This is a single-page
-template that is used by the Windows context menu scripts. It may also be used manually for
-creating single-page documents.</p>
+template that is used by the
+<a href="usage.html#win_explorer_context_menu">Windows Explorer context menu scripts</a>.
+It may also be used manually for creating single-page documents.</p>
 <p>The above templates, in conjunction with the corresponding CSS, produce responsive HTML documents
 that are adapted for both desktop and mobile devices.</p>
 <hr />
@@ -193,10 +194,10 @@ that are adapted for both desktop and mobile devices.</p>
 in the template files. See the <a href="usage.html#typical_project_structure">typical project structure</a>
 for more details.</p>
 <hr />
-<p><a name="index_entry_index_themes"></a><a name="themes"></a></p>
-<h1 id="color-themes">Color themes</h1>
-<p>There's a mechanism for defining and using color <strong>themes</strong>. A <em>theme</em> is a subdirectory of
-the directory <code>doc/themes/</code>. The theme subdirectory name is the theme's name.</p>
+<p><a name="index_entry_index_themes"></a></p>
+<h1 id="themes">Color themes</h1>
+<p>The provided template supports defining and using color <strong>themes</strong>. A <em>theme</em> is a subdirectory
+of the <code>doc/themes/</code> directory. The theme subdirectory name is the theme's name.</p>
 <p>The theme name is specified by the variable <code>theme</code> in the <em>argument file</em> <code>md2html_args.json</code>.
 The complete declaration may look like this: <code>"theme": "light"</code>, where <code>light</code> is the desired
 theme name. Currently, two themes are defined: <code>light</code> and <code>dark</code>.</p>
@@ -206,13 +207,11 @@ To use the dark theme:</p>
 <ul>
 <li>copy the <code>$MD2HTML_HOME/doc/themes/dark</code> directory from the distribution into the project
     directory <code>doc/themes/dark</code>;</li>
-<li>assign the value <code>dark</code> to the variable <code>theme</code> in the file <code>md2html_args.json</code>;</li>
-<li>perform a full documentation regeneration (e.g. with the <code>--force</code> flag, see
-    <a href="reference.html#force_page_regeneration">here</a>);</li>
-<li>the dark theme will be applied.</li>
+<li>assign the value <code>dark</code> to the variable <code>theme</code> in the <code>md2html_args.json</code> file;</li>
+<li>perform a full documentation regeneration with the <code>f</code>/<code>--force</code> flag.</li>
 </ul>
-<p>A page may be separately rendered using the dark theme. For this, variable <code>"theme": "dark"</code>
-may be defined in the <em>page variables section</em>.</p>
+<p>A page may be separately rendered using the dark theme. For this, define the <code>"theme": "dark"</code>
+variable in the <em>page variables section</em>.</p>
 <p>This documentation contains one page rendered in the dark color scheme as an example, 
 see <a href="page_content_dark.html">here</a>.</p>
 <p>&nbsp;</p>

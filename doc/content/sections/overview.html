@@ -152,14 +152,14 @@ This is usually done by <a href="plugins.html">plugins</a>.</p>
 <hr />
 <h1 id="restrictions-and-security">Restrictions and security</h1>
 <p><strong>M<sub>2</sub>H</strong> is a static site generator that means that every output HTML page contains
-everything required for display, including such repeated elements like menus and sidebars.
+everything required for display, including such repeated elements like menu and sidebar.
 There's no server that could generate these elements on the fly.
 This approach speeds up navigation and, even for quite large and complex sites, should not be a
 significant overhead. But if the site is very huge, its full regeneration may take noticeable time
 (like 5 seconds or so). Also, e.g., <a href="plugins.html#index_plugin">index plugin</a> doesn't have
 pagination, and with enormous number of terms the index page may become pretty heavy.
 So if the writing project becomes too large it may be good to consider splitting it into several
-projects.</p>
+smaller ones.</p>
 <p><strong>M<sub>2</sub>H</strong> doesn't restrict HTML code inside the Markdown texts. Particularly, these texts 
 may contain JavaScript that will be translated unchanged into the generated HTML page. This
 must not be a problem for personal use but may be a security issue when converting and
@@ -191,10 +191,10 @@ provides an additional level of platform independence.</p>
 <p>There's <strong>Pelican</strong> [<a class="ref" href="ref/references.html#pelican">pelican</a>] static site generator that may be considered quite close
 to <strong>M<sub>2</sub>H</strong> by its functionality. It looks mature and feature-rich enough, and has a
 similar motivation, see
-<a href="https://docs.getpelican.com/en/stable/report.html">Some history about Pelican</a>. </p>
+<a class="away" href="https://docs.getpelican.com/en/stable/report.html">Some history about Pelican</a>. </p>
 <p>Pelican is written in Python only, uses the same Python-Markdown module [<a class="ref" href="ref/references.html#py_markdown">py_markdown</a>] and 
 also supports another markup language &mdash;
-<a href="https://docutils.sourceforge.io/rst.html">reStructuredText</a>.</p>
+<a class="away" href="https://docutils.sourceforge.io/rst.html">reStructuredText</a>.</p>
 <p>The main difference may be described the following way:</p>
 <ul>
 <li>Pelican &mdash; initially designed for keeping blogs, may be used for the other kinds of writing

@@ -134,7 +134,7 @@ div.light_only+p>img, img.light_only {
     content: url("video_link_dark.png");
 }
 
-.external::before {
+.external::before, .away::before {
     content: url("external_link_dark.png");
 }
 

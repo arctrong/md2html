@@ -21,10 +21,17 @@ result. The source Markdown text files can usually be viewed using the "Source t
 [inclusion](<!--page plugins-->#include_file_plugin), so the actual source text may be viewed only
 [here](<!--path doc_src-->parts/page_content.txt).
 
+!!! note
+    This approach lets keep the documentation [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself){.external}
+    but it causes the index entries to be repeated on the index page. This may look strange,
+    but, on the other hand, it is probably the most logical behavior --- there are two pages with
+    an index entry, so the index page should have links to them both.
+
+<a name="color_themes_list"></a>
 The two versions of this page are:
 
-- [in the light color scheme](<!--page page_content-->);
-- [in the dark color scheme](<!--page page_content_dark-->).
+- [in the light color scheme](<!--page page_content-->#color_themes_list);
+- [in the dark color scheme](<!--page page_content_dark-->#color_themes_list).
 
 ----------------------------------------------------------------------------------------------------
 # Text effects
@@ -127,11 +134,14 @@ The following classes are defined in the provided CSS to indicate link kinds
 
 Link example | Attributes
 ----|-----
-[HTML class Attribute](https://www.w3schools.com/html/html_classes.asp){.external} | `{.external}`
+[HTML class Attribute](https://www.w3schools.com/html/html_classes.asp){.away} | `{.away}`, `{.external}` <sup>\*</sup>
 [HTML 4.0 Specification (PDF)](https://www.w3.org/TR/1998/REC-html40-19980424/html40.pdf){.doc} | `{.doc}`
 <https://icons.getbootstrap.com/>{.folder} | `{.folder}`
 [The first video on YouTube](https://www.youtube.com/watch?v=jNQXAC9IVRw){.video} | `{.video}`
 [About Wikipedia](https://www.wikipedia.org/){.wiki} | `{.wiki}`
+
+<sup>\*</sup> The `.away` class name is shorter and more expressive but it was found later, so the
+`.external` class name is also supported for backward compatibility.
 
 ----------------------------------------------------------------------------------------------------
 <a name="anchor_demo"></a>

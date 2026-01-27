@@ -141,10 +141,18 @@ result. The source Markdown text files can usually be viewed using the "Source t
 <a href="templates.html#themes">color schemes</a> using
 <a href="plugins.html#include_file_plugin">inclusion</a>, so the actual source text may be viewed only
 <a href="../../../doc_src/parts/page_content.txt">here</a>.</p>
-<p>The two versions of this page are:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This approach lets keep the documentation <a class="external" href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a>
+but it causes the index entries to be repeated on the index page. This may look strange,
+but, on the other hand, it is probably the most logical behavior &mdash; there are two pages with
+an index entry, so the index page should have links to them both.</p>
+</div>
+<p><a name="color_themes_list"></a>
+The two versions of this page are:</p>
 <ul>
-<li><a href="page_content.html">in the light color scheme</a>;</li>
-<li><a href="page_content_dark.html">in the dark color scheme</a>.</li>
+<li><a href="page_content.html#color_themes_list">in the light color scheme</a>;</li>
+<li><a href="page_content_dark.html#color_themes_list">in the dark color scheme</a>.</li>
 </ul>
 <hr />
 <h1 id="text-effects">Text effects</h1>
@@ -287,8 +295,8 @@ relative internal links within the documentation.</p>
 </thead>
 <tbody>
 <tr>
-<td><a class="external" href="https://www.w3schools.com/html/html_classes.asp">HTML class Attribute</a></td>
-<td><code>{.external}</code></td>
+<td><a class="away" href="https://www.w3schools.com/html/html_classes.asp">HTML class Attribute</a></td>
+<td><code>{.away}</code>, <code>{.external}</code> <sup>*</sup></td>
 </tr>
 <tr>
 <td><a class="doc" href="https://www.w3.org/TR/1998/REC-html40-19980424/html40.pdf">HTML 4.0 Specification (PDF)</a></td>
@@ -308,6 +316,8 @@ relative internal links within the documentation.</p>
 </tr>
 </tbody>
 </table>
+<p><sup>*</sup> The <code>.away</code> class name is shorter and more expressive but it was found later, so the
+<code>.external</code> class name is also supported for backward compatibility.</p>
 <hr />
 <p><a name="anchor_demo"></a></p>
 <h1 id="anchors">Anchors</h1>

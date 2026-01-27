@@ -319,13 +319,13 @@
   "doc/content/sections/ref/references.html": [],
   "doc/content/sections/troubleshooting.html": [
     {
-      "entry": "force regeneration",
-      "link": "sections/troubleshooting.html#index_entry_index_force_regeneration_cleanup",
+      "entry": "troubleshooting",
+      "link": "sections/troubleshooting.html#index_entry_index_troubleshooting",
       "title": "Troubleshooting"
     },
     {
       "entry": "cleanup",
-      "link": "sections/troubleshooting.html#index_entry_index_force_regeneration_cleanup",
+      "link": "sections/troubleshooting.html#index_entry_index_cleanup",
       "title": "Troubleshooting"
     }
   ]
