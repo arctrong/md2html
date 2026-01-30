@@ -4,9 +4,9 @@
 
 # About this page
 
-This page demonstrates a simplest possible documentation.
+This page demonstrates very simple writing project.
 
-# Formatting and lists
+# The page content
 
 Demonstrated are:
 

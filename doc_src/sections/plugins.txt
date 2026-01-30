@@ -6,11 +6,11 @@
 <!--index plugins -->
 # About plugins
 
-Plugins automate and simplify typical tasks and make the documentation more structured and easy
-to use.
+Plugins automate and simplify typical tasks and make the writing project result more structured
+and easy to use.
 
 The main approach used by this program is minimal interference with the Markdown syntax. So the
-documentation content must be readable in plain text even without processing by this program.
+source texts must be readable as is even without processing by this program.
 Plugins provide extra possibilities for template processing and visualization.
 
 See [here](<!--page reference-->#argument_file_example) for an example of how plugins are defined in 
@@ -271,12 +271,12 @@ the pages just the same way as in the old syntax.
 The `sections` *page flow* defines only the necessary attributes. The title is an empty string by
 default. The content is empty initially and it may be defined in the `documents` section.
 
-The `header` *page flow* uses the old syntax. Two syntaxes may be used in the same argument file
-that makes the previously written documentation compatible with the new version of the program.
+The `header` *page flow* uses the old syntax. The two syntaxes may be used in the same argument
+file that makes the previously written projects compatible with the new version of the program.
 
 The purpose of this change is to remove specific elements from the
-[templates](<!--page templates-->) and to avoid boilerplates. Now sidebar *page flows* may be
-defined solely in the argument file and the template file in the documentation project
+[templates](<!--page templates-->) and to avoid boilerplate. Now sidebar *page flows* may be
+defined solely in the argument file and the template file in the writing project
 may be updated with the other one taken from the outside without subsequent customization.
 Here's a sidebar block that may be defined for the above argument file fragment:
 
@@ -371,8 +371,8 @@ this case three pairs of curly braces are used to avoid HTML-escaping on substit
 **Motivation**
 
 Some terms, abbreviations and other kinds of keywords may be defined, described and mentioned
-in different pages within the documentation. Searching such keywords may be hard,
-especially if the documentation is large. This plugin allows marking such points on the pages
+in different places within the site. Searching such keywords may be hard,
+especially if the site is large. This plugin allows marking such points on the pages
 as _index entries_ and then collects these entries and puts them together on a separate
 _index page_. See the [index page](../index_page.html) of this documentation as an example.
 
@@ -415,7 +415,7 @@ letters-block | boolean | No | false | `true` means that all terms first letters
 !!! note "Index cache file"
     <a name="index_cache_file"></a>
     _Index page_ is generated using the entries from all the documents but
-    the program may regenerate the documentation project partially, i.e. it may regenerate
+    the program may regenerate the writing project partially, i.e. it may regenerate
     only those documents that were changed or added since the previous program run.
     In order to always generate a complete index page the program uses an _index cache file_
     that keeps the collected index entries between the runs.
@@ -472,7 +472,7 @@ The above information allows defining desired styling with CSS.
 
 **Motivation**
 
-HTML pages inside documentation usually reference each other using links. A link specifies its 
+HTML pages inside the site usually reference each other using links. A link specifies its 
 target relative to the page where it's placed. When the target page is moved or renamed, the link
 needs to be modified accordingly, otherwise it won't work. And what's worse, all pages that
 reference the relocated page need to be found and updated. This plugin automatically calculates 
@@ -574,9 +574,9 @@ is fulfilled, while in the second block the source text is
 
 Pages may contain links to source code files like Java (\*.java), Python (\*.py), XML (\*.xml), 
 and so on. When viewing such pages locally (as HTML files) the linked files are often opened by
-browsers as text. When the page is published and is viewed by URL, the browsers will often 
-offer downloading the linked files, which is very inconvenient and significantly slows down the
-documentation usage.
+browsers as text, and that is fine. But when the page is published and viewed by URL, the browsers
+will often offer downloading the linked files, which is very inconvenient and significantly slows
+down the usage.
 
 The "wrap-code" plugin wraps source code files into HTML pages and provides links to these
 wrapping pages.
@@ -677,11 +677,12 @@ Variable | Description
 
 **Motivation**
 
-When writing and running program code, it may be desired to place some source code into the
-documentation. Just copy-pasting will require updating documentation each time the source code 
-is changed. ["wrap-code" plugin](#wrap_code_plugin) may help by generating a separate page
-for this code. But if the source text is small it may be better to show it directly in the text 
-where it's described. This plugin does such kind of inclusion.
+When writing technical content, it may be desired to place into this content some fragments of
+the real source code located alongside. Just copy-pasting will require writing content update
+each time the source code is changed. ["wrap-code" plugin](#wrap_code_plugin) may help by
+generating a separate page for such code. But if the source text is small, or if just a part 
+of the source file is needed, it may be better to show it directly in the text where it's
+described. This plugin implements such inclusions.
 
 
 **Definition**

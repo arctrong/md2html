@@ -27,19 +27,9 @@ This program doesn't have an installer and follows the *unpack-and-run* approach
 
 ## Prerequisites
 
-This program requires a [Python 3](https://www.python.org/) runtime that can be installed in
-different ways. Here are brief instructions for a typical installation on Windows.
-
-!!! note
-    Again, this is just one of the methods intended mainly for less experienced users and those
-    who want to save time. Other installation methods will most likely work as well.
-
-The installer file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your
-platform). Only the following option (1) must be changed:
-
-![](<!--path pict-->install_python_3_8.png)
-
-Nothing else should be changed in this and the subsequent dialogs.
+This program requires a [Python 3](https://www.python.org/) runtime. See 
+[here](<!--page reference-->#python_runtime_installation) for installation instructions
+(if required).
 
 The following command may be used to check whether Python is installed:
 
@@ -49,11 +39,9 @@ Python 3.8.7
 ````
 
 !!! note
-    1. Later versions of Python will very likely be suitable too, but they haven't been fully
-        tested.
-    2. On Linux, the `python` command may refer to Python 2, which does not suffice for this
-        program. Python 3 may need to be installed separately and called with the `python3`
-        command.
+    1. Version 3.8 is the intended one for this program. Later versions of Python will very likely
+        be suitable too, but they haven't been fully tested.
+    2. On Unix-like systems, the `python3` command should be used instead of `python`.
 
 The following Python packages must be installed:
 
@@ -66,7 +54,8 @@ The following Python packages must be installed:
         packages may have changes that noticeably affect how the program works.
     2. (Optional) Consider a
         [Python virtual environment](https://docs.python.org/3.8/library/venv.html)
-        (`venv`) to avoid modifying the system-wide Python installation.
+        (`venv`) to avoid modifying the system-wide Python installation. `venv` adaption is not yet
+        done in this program, bit it is planned.
 
 
 ## Installation

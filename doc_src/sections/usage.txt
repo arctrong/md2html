@@ -5,8 +5,8 @@
 ----------------------------------------------------------------------------------------------------
 # About this section
 
-This section describes running the program and configuring documentation projects. Documentation
-content writing, formatting, and structuring are described in the other sections.
+This section describes running the program and configuring writing projects. Content writing,
+formatting, and structuring are described in the other sections.
 
 ----------------------------------------------------------------------------------------------------
 <!--index ["Linux", "Windows", "macOS", "Unix"] -->
@@ -70,7 +70,7 @@ Here's the example that executes the argument file with name `md2html_args.json`
 >python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json
 ````
 
-The *argument file* lets define:
+The *argument file* allows defining:
 
 - multiple files to be processed;
 - the same parameters that can be specified in the command line;
@@ -183,11 +183,11 @@ Read the pop-up message and confirm the operation.
 ----------------------------------------------------------------------------------------------------
 # Typical project structure {#typical_project_structure}
 
-The program doesn't impose restrictions on the documentation project structure. The following
+The program doesn't impose restrictions on the writing project structure. The following
 structure is just a suggested approach that is used in this documentation.
 
 Note that there's the [quick start script](<!--page quick_start-->) that automatically creates
-a simple project with a structure like this. The following description may be used for manual
+a small project with a structure like this. The following description may be used for manual
 project setup.
 
 ````shell
@@ -219,16 +219,16 @@ $ tree -L 2 --charset=ascii --dirsfirst
 ````
 
 - `doc0.txt` and `doc0.html` are the Markdown document and its corresponding generated HTML
-    page that we want to have in the project's root
+    page that we want to have in the project's root.
     
     !!! hint
-        It may be convenient to have a documentation starting page in the project's root directory.
+        It may be convenient to have a starting page in the project's root directory.
         But this page, on the other hand, requires special manipulation, so this decision is a
         trade-off.
 
-- the `doc` directory along with the file `doc0.html` contains the whole project's HTML
-    documentation with all required resources like images and CSS files.
-    This directory may be used and shipped autonomously (with additional file `doc0.html`
+- the `doc` directory along with the `doc0.html` file contains the whole project's HTML
+    content with all required resources like images and CSS files.
+    This directory may be used and shipped autonomously (with additional `doc0.html` file
     if it's used).
 
     !!! note
@@ -236,31 +236,31 @@ $ tree -L 2 --charset=ascii --dirsfirst
         true. As the pages have links to their source texts, if we want these links to work,
         we need to ship the source texts as well.
 
-    As it can be seen, the `doc` directory is a ready-to-use setup containing all necessary
-    artifacts, like CSS, JavaScript and pictures. Only the HTML content needs to be generated
-    and put here (see below)
+    As can be seen, the `doc` directory is a ready-to-use setup containing all necessary
+    artifacts, such as CSS, JavaScript and images. Only the HTML content needs to be generated
+    and placed here (see below).
 
 - the `doc/content` directory is intended to contain the **generated artifacts only**. In case of 
     issues with document generation, this directory may be safely deleted. On the following
-    project regeneration, this directory and its content will be recreated (also see
-    [Troubleshooting](<!--page troubleshooting-->#cleanup_and_regenerate))
+    project regeneration, this directory and its content will be recreated.
+    See also [Troubleshooting](<!--page troubleshooting-->#cleanup_and_regenerate).
     
     !!! important
-        If you're not sure, please use renaming instead of deletion, or use a version control
+        If unsure, please use renaming instead of deletion, or use a version control
         system (like Git) to avoid data loss.
 
 - the `doc_src` directory contains all source files required for producing the project's
-    documentation (plus the `doc0.txt` file if we use it)
+    output (plus the `doc0.txt` file if we use it)
     - the `templates` subdirectory contains the templates used for the HTML content generation
     
         !!! note
             Templates are not actually user written artifacts, but they also don't belong to the
             `doc` directory because they are not required for the writing project viewing. Here we
-            probably see an imperfect structure design that might be revised, but still this
-            structure is surely workable, and the users may easily redefine it in their writing
-            projects.
+            probably see an imperfect structure design that might be revised (and ir is planned),
+            but still this structure is surely workable, and the users may easily redefine it
+            in their writing projects.
 
-- `generate_doc_py.bat` --- the *double-click script* for the HTML documentation generation. Here
+- `generate_doc_py.bat` --- the *double-click script* for the HTML output generation. Here
     the Python version is demonstrated. See [here](#command_scripts) for the other variations
 
 - `md2html_args.json` --- the project's [*argument file*](#using_argument_file);
@@ -271,7 +271,7 @@ $ tree -L 2 --charset=ascii --dirsfirst
     (in conjunction with the particular *template*)
 
 - `doc/themes` directory contains the [color *themes*](<!--page templates-->#themes) used by
-    the documentation. More than one theme may be used at the same time
+    the project. More than one theme may be used at the same time
 
 - `favicon.png` file is placed here because it's considered a project artifact
     
@@ -281,8 +281,8 @@ $ tree -L 2 --charset=ascii --dirsfirst
 <!--index layout-->
 ## Layout manipulation
 
-By **layout** we mean the whole set of artifacts used for the writing project results generation
-and not belonging to the user created content. Applying to the
+By **layout** we mean the whole set of artifacts used for generating the writing project results
+and not belonging to the user-created content. Applying to the
 [recommended project structure](#typical_project_structure) 
 the layout artifacts are:
 
@@ -290,29 +290,28 @@ the layout artifacts are:
 - the `doc/themes` directory --- only the used scheme(s) are required;
 - the `doc_src/templates` directory --- only the used templates are required.
 
-The layout is a relatively independent part of the **M<sub>2</sub>H** project. Currently newer
+The layout is a relatively independent part of the **M<sub>2</sub>H** project. Currently, newer
 versions of the program work well with older versions of the layout.
 
 The [quick start script](<!--page quick_start-->) copies the layout artifacts from the
 **M<sub>2</sub>H** home directory to the new writing project. This approach keeps the users'
-projects independent from the changes made in the **M<sub>2</sub>H** project. Also the `doc`
-directory is the actual direct static part of the generated site. In case the latter 
-changes are made and they contain desired features or fixes, the user's writing project layout
+projects independent of the changes made in the **M<sub>2</sub>H** project. When a newer version
+of **M<sub>2</sub>H** provides desired layout changes or fixes, the writing project's layout
 may be updated manually. Here are the suggested steps for that:
 
 - Make sure the writing project's layout was not changed. This is not recommended but there
-    may probably be the cases where the user cannot achieve the required results without, e.g.,
-    patching the template files. In such case the layout update will include extra steps for
-    reapplying the local patch. This is not going to be discussed here.
+    may be cases where the required results cannot be achieved without, e.g.,
+    patching the template files. In such cases the layout update will include extra steps for
+    reapplying the local patch. These steps are not discussed here.
 - Commit/stash the writing project changes if a version control system (Git) is used, or
-    at least save/rename the current layout artifacts. This is not required if the previous
-    layout loss is not an issue.
+    at least save/rename the current layout artifacts. This is not required if losing the
+    previous layout is not an issue.
 - Copy the layout files listed above from the **M<sub>2</sub>H** home directory to the new
-    writing project --- only those ones that are used.
+    writing project --- only those that are used.
 - It's probably good to create a separate commit at this point, with a message like
     "layout updated".
-- Perform a full documentation regeneration with the `f`/`--force` flag.
-- At this step it may be good to observe the changes in the HTML output files and create a
+- Perform a full project regeneration with the `-f`/`--force` flag.
+- At this point it may be useful to review the changes in the HTML output files and create a
     separate commit for these changes, like "documentation regenerated".
 - Continue working with your writing project.
 

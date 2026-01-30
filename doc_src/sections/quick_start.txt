@@ -22,7 +22,7 @@ The quick start script creates a small new project with a
 [typical recommended structure](<!--page usage-->#typical_project_structure) 
 and with some sample content.
 
-After the program is installed, create an empty directory where the documentation must be set up,
+After the program is installed, create an empty directory where the writing project must be set up,
 then switch to it in the command line terminal and execute the quick start script. On Windows:
 
 ````shell
@@ -44,7 +44,7 @@ $ $MD2HTML_HOME/bin/new_project/new_project
     encountered on Unix-like platforms.
 
 All necessary project files will be created in the directory `your_project`. Now generate 
-the documentation by double-clicking the command script `generate_doc_py.bat` or 
+the project by double-clicking the command script `generate_doc_py.bat` or 
 `generate_doc_java.bat` (or executing the corresponding scripts in the command line).
 Open the generated file `index.html` in the `your_project` directory to see the content.
 
@@ -55,9 +55,9 @@ Open the generated file `index.html` in the `your_project` directory to see the 
 <!--index quick start, manual-->
 # Creating a simplest project
 
-Here is an instruction for manually creating a very simple documentation project. This guide is
-intended mostly to demonstrate the main application workflow using a simplest setup, but it may be
-used in real life if such primitive setup is really needed.
+Here is an instruction for manually creating a very simple writing project. This guide is
+intended mostly to demonstrate the main application workflow using a very simple setup, but it
+may be used in real life if such primitive setup is really needed.
 
 In the project directory, create the following artifacts.
 
@@ -105,9 +105,9 @@ In the project directory, create the following artifacts.
 
     # About this page
 
-    This page demonstrates a simplest possible documentation.
+    This page demonstrates very simple writing project.
 
-    # Formatting and lists
+    # The page content
 
     Demonstrated are:
 

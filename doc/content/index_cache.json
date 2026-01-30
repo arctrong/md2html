@@ -279,22 +279,22 @@
     {
       "entry": "GLOB",
       "link": "sections/reference.html#index_entry_index_glob",
-      "title": "Reference"
+      "title": "Technical reference"
     },
     {
       "entry": "force page regeneration",
       "link": "sections/reference.html#index_entry_index_force_page_regeneration",
-      "title": "Reference"
+      "title": "Technical reference"
     },
     {
       "entry": "build cache",
       "link": "sections/reference.html#index_entry_index_build_cache_cache_build",
-      "title": "Reference"
+      "title": "Technical reference"
     },
     {
       "entry": "cache, build",
       "link": "sections/reference.html#index_entry_index_build_cache_cache_build",
-      "title": "Reference"
+      "title": "Technical reference"
     }
   ],
   "doc/content/sections/development.html": [

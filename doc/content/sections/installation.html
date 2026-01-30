@@ -72,7 +72,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="page_content_dark.html">Page content (dark)</a>
             <a class="sidebar_item " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
-            <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="reference.html">Technical reference</a>
             <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
@@ -134,28 +134,18 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <p><a id="installation_python"></a></p>
 <h1 id="python-version">Python version</h1>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>This program requires a <a href="https://www.python.org/">Python 3</a> runtime that can be installed in
-different ways. Here are brief instructions for a typical installation on Windows.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Again, this is just one of the methods intended mainly for less experienced users and those
-who want to save time. Other installation methods will most likely work as well.</p>
-</div>
-<p>The installer file name is <code>python-3.8.7-amd64.exe</code> (or choose the other one applicable to your
-platform). Only the following option (1) must be changed:</p>
-<p><img alt="" src="../../pict/install_python_3_8.png" /></p>
-<p>Nothing else should be changed in this and the subsequent dialogs.</p>
+<p>This program requires a <a href="https://www.python.org/">Python 3</a> runtime. See 
+<a href="reference.html#python_runtime_installation">here</a> for installation instructions
+(if required).</p>
 <p>The following command may be used to check whether Python is installed:</p>
 <pre class="highlight"><code class="language-shell">&gt;python --version
 Python 3.8.7</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ol>
-<li>Later versions of Python will very likely be suitable too, but they haven't been fully
-    tested.</li>
-<li>On Linux, the <code>python</code> command may refer to Python 2, which does not suffice for this
-    program. Python 3 may need to be installed separately and called with the <code>python3</code>
-    command.</li>
+<li>Version 3.8 is the intended one for this program. Later versions of Python will very likely
+    be suitable too, but they haven't been fully tested.</li>
+<li>On Unix-like systems, the <code>python3</code> command should be used instead of <code>python</code>.</li>
 </ol>
 </div>
 <p>The following Python packages must be installed:</p>
@@ -167,7 +157,8 @@ Python 3.8.7</code></pre>
     packages may have changes that noticeably affect how the program works.</li>
 <li>(Optional) Consider a
     <a href="https://docs.python.org/3.8/library/venv.html">Python virtual environment</a>
-    (<code>venv</code>) to avoid modifying the system-wide Python installation.</li>
+    (<code>venv</code>) to avoid modifying the system-wide Python installation. <code>venv</code> adaption is not yet
+    done in this program, bit it is planned.</li>
 </ol>
 </div>
 <h2 id="installation">Installation</h2>

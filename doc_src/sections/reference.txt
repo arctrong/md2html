@@ -1,4 +1,4 @@
-<!--VARIABLES {"title": "Reference", "SORT_ORDER": "090", "code": "reference"}-->
+<!--VARIABLES {"title": "Technical reference", "SORT_ORDER": "090", "code": "reference"}-->
 
 [TOC]
 
@@ -7,6 +7,36 @@
 
 This page contains reference information such as factual technical details and descriptions that
 are usually long and would unnecessarily overload the other pages if placed there.
+
+----------------------------------------------------------------------------------------------------
+<a name="Python, installation"></a>
+# Python runtime installation {#python_runtime_installation}
+
+Python runtime can be installed in different ways. Here are brief instructions for a typical
+installation on Windows.
+
+!!! note
+    This is just one of the methods intended mainly for less experienced users and those
+    who want to save time. Other installation methods will most likely work as well.
+
+The installer file name is `python-3.8.7-amd64.exe` (or choose the other one applicable to your
+platform). Only the following option (1) must be changed:
+
+![](<!--path pict-->install_python_3_8.png)
+
+Nothing else should be changed in this and the subsequent dialogs.
+
+The following command may be used to check whether Python is installed:
+
+````shell
+>python --version
+Python 3.8.7
+````
+
+!!! note
+    On Linux, the `python` command may refer to Python 2, which does not suffice for this
+    program. Python 3 may need to be installed separately and called with the `python3`
+    command.
 
 ----------------------------------------------------------------------------------------------------
 <a name="command_line_syntax"></a>

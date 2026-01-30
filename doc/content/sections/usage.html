@@ -72,7 +72,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="page_content_dark.html">Page content (dark)</a>
             <a class="sidebar_item " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
-            <a class="sidebar_item " href="reference.html">Reference</a>
+            <a class="sidebar_item " href="reference.html">Technical reference</a>
             <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
@@ -107,8 +107,8 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 </div>
 <hr />
 <h1 id="about-this-section">About this section</h1>
-<p>This section describes running the program and configuring documentation projects. Documentation
-content writing, formatting, and structuring are described in the other sections.</p>
+<p>This section describes running the program and configuring writing projects. Content writing,
+formatting, and structuring are described in the other sections.</p>
 <hr />
 <p><a name="index_entry_index_linux_windows_macos_unix"></a></p>
 <h1 id="cross-platform">Cross-platform</h1>
@@ -152,7 +152,7 @@ the <code>--argument-file</code> argument is not specified.</p>
 <p>The <code>--argument-file</code> argument defines the <strong>argument file</strong> that will be used for processing.
 Here's the example that executes the argument file with name <code>md2html_args.json</code>:</p>
 <pre class="highlight"><code class="language-shell">&gt;python %MD2HTML_HOME%/python/md2html.py --argument-file md2html_args.json</code></pre>
-<p>The <em>argument file</em> lets define:</p>
+<p>The <em>argument file</em> allows defining:</p>
 <ul>
 <li>multiple files to be processed;</li>
 <li>the same parameters that can be specified in the command line;</li>
@@ -254,10 +254,10 @@ Read the pop-up message and confirm the operation.</p>
 </div>
 <hr />
 <h1 id="typical_project_structure">Typical project structure</h1>
-<p>The program doesn't impose restrictions on the documentation project structure. The following
+<p>The program doesn't impose restrictions on the writing project structure. The following
 structure is just a suggested approach that is used in this documentation.</p>
 <p>Note that there's the <a href="quick_start.html">quick start script</a> that automatically creates
-a simple project with a structure like this. The following description may be used for manual
+a small project with a structure like this. The following description may be used for manual
 project setup.</p>
 <pre class="highlight"><code class="language-shell">$ tree -L 2 --charset=ascii --dirsfirst
 .
@@ -287,18 +287,18 @@ project setup.</p>
 <ul>
 <li>
 <p><code>doc0.txt</code> and <code>doc0.html</code> are the Markdown document and its corresponding generated HTML
-    page that we want to have in the project's root</p>
+    page that we want to have in the project's root.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>It may be convenient to have a documentation starting page in the project's root directory.
+<p>It may be convenient to have a starting page in the project's root directory.
 But this page, on the other hand, requires special manipulation, so this decision is a
 trade-off.</p>
 </div>
 </li>
 <li>
-<p>the <code>doc</code> directory along with the file <code>doc0.html</code> contains the whole project's HTML
-    documentation with all required resources like images and CSS files.
-    This directory may be used and shipped autonomously (with additional file <code>doc0.html</code>
+<p>the <code>doc</code> directory along with the <code>doc0.html</code> file contains the whole project's HTML
+    content with all required resources like images and CSS files.
+    This directory may be used and shipped autonomously (with additional <code>doc0.html</code> file
     if it's used).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -306,24 +306,24 @@ trade-off.</p>
 true. As the pages have links to their source texts, if we want these links to work,
 we need to ship the source texts as well.</p>
 </div>
-<p>As it can be seen, the <code>doc</code> directory is a ready-to-use setup containing all necessary
-artifacts, like CSS, JavaScript and pictures. Only the HTML content needs to be generated
-and put here (see below)</p>
+<p>As can be seen, the <code>doc</code> directory is a ready-to-use setup containing all necessary
+artifacts, such as CSS, JavaScript and images. Only the HTML content needs to be generated
+and placed here (see below).</p>
 </li>
 <li>
 <p>the <code>doc/content</code> directory is intended to contain the <strong>generated artifacts only</strong>. In case of 
     issues with document generation, this directory may be safely deleted. On the following
-    project regeneration, this directory and its content will be recreated (also see
-    <a href="troubleshooting.html#cleanup_and_regenerate">Troubleshooting</a>)</p>
+    project regeneration, this directory and its content will be recreated.
+    See also <a href="troubleshooting.html#cleanup_and_regenerate">Troubleshooting</a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>If you're not sure, please use renaming instead of deletion, or use a version control
+<p>If unsure, please use renaming instead of deletion, or use a version control
 system (like Git) to avoid data loss.</p>
 </div>
 </li>
 <li>
 <p>the <code>doc_src</code> directory contains all source files required for producing the project's
-    documentation (plus the <code>doc0.txt</code> file if we use it)</p>
+    output (plus the <code>doc0.txt</code> file if we use it)</p>
 <ul>
 <li>
 <p>the <code>templates</code> subdirectory contains the templates used for the HTML content generation</p>
@@ -331,15 +331,15 @@ system (like Git) to avoid data loss.</p>
 <p class="admonition-title">Note</p>
 <p>Templates are not actually user written artifacts, but they also don't belong to the
 <code>doc</code> directory because they are not required for the writing project viewing. Here we
-probably see an imperfect structure design that might be revised, but still this
-structure is surely workable, and the users may easily redefine it in their writing
-projects.</p>
+probably see an imperfect structure design that might be revised (and ir is planned),
+but still this structure is surely workable, and the users may easily redefine it
+in their writing projects.</p>
 </div>
 </li>
 </ul>
 </li>
 <li>
-<p><code>generate_doc_py.bat</code> &mdash; the <em>double-click script</em> for the HTML documentation generation. Here
+<p><code>generate_doc_py.bat</code> &mdash; the <em>double-click script</em> for the HTML output generation. Here
     the Python version is demonstrated. See <a href="#command_scripts">here</a> for the other variations</p>
 </li>
 <li>
@@ -353,7 +353,7 @@ projects.</p>
 </li>
 <li>
 <p><code>doc/themes</code> directory contains the <a href="templates.html#themes">color <em>themes</em></a> used by
-    the documentation. More than one theme may be used at the same time</p>
+    the project. More than one theme may be used at the same time</p>
 </li>
 <li>
 <p><code>favicon.png</code> file is placed here because it's considered a project artifact</p>
@@ -364,8 +364,8 @@ projects.</p>
 </ul>
 <p><a name="index_entry_index_layout"></a></p>
 <h2 id="layout-manipulation">Layout manipulation</h2>
-<p>By <strong>layout</strong> we mean the whole set of artifacts used for the writing project results generation
-and not belonging to the user created content. Applying to the
+<p>By <strong>layout</strong> we mean the whole set of artifacts used for generating the writing project results
+and not belonging to the user-created content. Applying to the
 <a href="#typical_project_structure">recommended project structure</a> 
 the layout artifacts are:</p>
 <ul>
@@ -373,28 +373,27 @@ the layout artifacts are:</p>
 <li>the <code>doc/themes</code> directory &mdash; only the used scheme(s) are required;</li>
 <li>the <code>doc_src/templates</code> directory &mdash; only the used templates are required.</li>
 </ul>
-<p>The layout is a relatively independent part of the <strong>M<sub>2</sub>H</strong> project. Currently newer
+<p>The layout is a relatively independent part of the <strong>M<sub>2</sub>H</strong> project. Currently, newer
 versions of the program work well with older versions of the layout.</p>
 <p>The <a href="quick_start.html">quick start script</a> copies the layout artifacts from the
 <strong>M<sub>2</sub>H</strong> home directory to the new writing project. This approach keeps the users'
-projects independent from the changes made in the <strong>M<sub>2</sub>H</strong> project. Also the <code>doc</code>
-directory is the actual direct static part of the generated site. In case the latter 
-changes are made and they contain desired features or fixes, the user's writing project layout
+projects independent of the changes made in the <strong>M<sub>2</sub>H</strong> project. When a newer version
+of <strong>M<sub>2</sub>H</strong> provides desired layout changes or fixes, the writing project's layout
 may be updated manually. Here are the suggested steps for that:</p>
 <ul>
 <li>Make sure the writing project's layout was not changed. This is not recommended but there
-    may probably be the cases where the user cannot achieve the required results without, e.g.,
-    patching the template files. In such case the layout update will include extra steps for
-    reapplying the local patch. This is not going to be discussed here.</li>
+    may be cases where the required results cannot be achieved without, e.g.,
+    patching the template files. In such cases the layout update will include extra steps for
+    reapplying the local patch. These steps are not discussed here.</li>
 <li>Commit/stash the writing project changes if a version control system (Git) is used, or
-    at least save/rename the current layout artifacts. This is not required if the previous
-    layout loss is not an issue.</li>
+    at least save/rename the current layout artifacts. This is not required if losing the
+    previous layout is not an issue.</li>
 <li>Copy the layout files listed above from the <strong>M<sub>2</sub>H</strong> home directory to the new
-    writing project &mdash; only those ones that are used.</li>
+    writing project &mdash; only those that are used.</li>
 <li>It's probably good to create a separate commit at this point, with a message like
     "layout updated".</li>
-<li>Perform a full documentation regeneration with the <code>f</code>/<code>--force</code> flag.</li>
-<li>At this step it may be good to observe the changes in the HTML output files and create a
+<li>Perform a full project regeneration with the <code>-f</code>/<code>--force</code> flag.</li>
+<li>At this point it may be useful to review the changes in the HTML output files and create a
     separate commit for these changes, like "documentation regenerated".</li>
 <li>Continue working with your writing project.</li>
 </ul>

@@ -62,7 +62,7 @@ Other keys may be provided by [plugins](<!--page plugins-->).
 # Provided templates
 
 This documentation is created using an extended template that is intended to be reused in other
-documentation projects. The template file location is `doc_src/templates/multipage.html`.
+writing projects. The template file location is `doc_src/templates/multipage.html`.
 
 There is also another template located at `doc_src/templates/default.html`. This is a single-page
 template that is used by the
@@ -98,7 +98,7 @@ To use the dark theme:
 - copy the `$MD2HTML_HOME/doc/themes/dark` directory from the distribution into the project
     directory `doc/themes/dark`;
 - assign the value `dark` to the variable `theme` in the `md2html_args.json` file;
-- perform a full documentation regeneration with the `f`/`--force` flag.
+- perform a full site regeneration with the `f`/`--force` flag.
 
 A page may be separately rendered using the dark theme. For this, define the `"theme": "dark"`
 variable in the *page variables section*.

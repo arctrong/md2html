@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><title>Reference</title>
+<head><title>Technical reference</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" type="image/png" href="../../favicon.png">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
@@ -46,7 +46,7 @@ src="../../layout/pict/previous_page_h21px.png" alt="Back"></a>
 src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 
 
-<span class="headerTitle">Reference</span>
+<span class="headerTitle">Technical reference</span>
 
 </div>
 
@@ -72,7 +72,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             <a class="sidebar_item " href="page_content_dark.html">Page content (dark)</a>
             <a class="sidebar_item " href="templates.html">Templates</a>
             <a class="sidebar_item " href="plugins.html">Plugins</a>
-            <a class="sidebar_item selected " href="reference.html">Reference</a>
+            <a class="sidebar_item selected " href="reference.html">Technical reference</a>
             <a class="sidebar_item " href="troubleshooting.html">Troubleshooting</a>
             <a class="sidebar_item " href="development.html">Development</a>
             </div><div class="sidebar_block">
@@ -88,11 +88,12 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 </div>
 </div>
 
-<p class="page-title">Reference</p>
+<p class="page-title">Technical reference</p>
 
 <div class="toc">
 <ul>
 <li><a href="#about-this-page">About this page</a></li>
+<li><a href="#python_runtime_installation">Python runtime installation</a></li>
 <li><a href="#command-line-syntax">Command line syntax</a></li>
 <li><a href="#argument-file-structure">Argument file structure</a><ul>
 <li><a href="#options-section">options section</a></li>
@@ -106,6 +107,29 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <h1 id="about-this-page">About this page</h1>
 <p>This page contains reference information such as factual technical details and descriptions that
 are usually long and would unnecessarily overload the other pages if placed there.</p>
+<hr />
+<p><a name="Python, installation"></a></p>
+<h1 id="python_runtime_installation">Python runtime installation</h1>
+<p>Python runtime can be installed in different ways. Here are brief instructions for a typical
+installation on Windows.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is just one of the methods intended mainly for less experienced users and those
+who want to save time. Other installation methods will most likely work as well.</p>
+</div>
+<p>The installer file name is <code>python-3.8.7-amd64.exe</code> (or choose the other one applicable to your
+platform). Only the following option (1) must be changed:</p>
+<p><img alt="" src="../../pict/install_python_3_8.png" /></p>
+<p>Nothing else should be changed in this and the subsequent dialogs.</p>
+<p>The following command may be used to check whether Python is installed:</p>
+<pre class="highlight"><code class="language-shell">&gt;python --version
+Python 3.8.7</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On Linux, the <code>python</code> command may refer to Python 2, which does not suffice for this
+program. Python 3 may need to be installed separately and called with the <code>python3</code>
+command.</p>
+</div>
 <hr />
 <p><a name="command_line_syntax"></a></p>
 <h1 id="command-line-syntax">Command line syntax</h1>

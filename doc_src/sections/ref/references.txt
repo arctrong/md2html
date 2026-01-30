@@ -2,10 +2,10 @@
 
 !!! note
     This form of a *page of references* is by now proved to be convenient and simple in use.
-    It is created using existing functionality of the program. Further improvements may add
-    functionality like reference codes control and back references to the places where a reference
-    is used. But these improvements will most likely need the program modification (like adding
-    a new specialized plugin). For now that is not in priority.
+    It is created using existing program functionality. Further improvements are planned to add:
+    
+    - reference codes uniqueness control
+    - back references
 
 <!--refdef markdown--> [Markdown](https://daringfireball.net/projects/markdown/)
 

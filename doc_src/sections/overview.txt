@@ -15,8 +15,7 @@
 - HTML page resources.
 
 The program processes these artifacts and generates a set of static HTML pages that may 
-represent a coherent documentation site with a sidebar menu, navigation, index, and 
-other elements.
+represent a coherent site with a sidebar menu, navigation, index, and other elements.
 
 The following subsections describe the above artifacts in more detail.
 
@@ -25,7 +24,7 @@ The following subsections describe the above artifacts in more detail.
 
 ## Source Markdown texts
 
-These texts comprise the main documentation content written by the author in Markdown language.
+These texts comprise the main content written by the author in Markdown language.
 [Page metadata](<!--page plugins-->#page_metadata) may be used to activate extra functions
 provided by [plugins](<!--page plugins-->).
 

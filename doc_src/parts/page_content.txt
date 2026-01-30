@@ -3,12 +3,11 @@
 ----------------------------------------------------------------------------------------------------
 # About this section
 
-This section describes writing documentation source texts and covers topics such as Markdown
-syntax, formatting examples, and tricks. Templates and styling, as well as the
-documentation structuring, are discussed in the other sections.
+This section describes content writing and covers such topics as Markdown syntax, formatting,
+and tricks. Templates, styling, and writing project structure are discussed in the other sections.
 
 A complete Markdown guide is not provided here, so see
-[the original syntax description](https://daringfireball.net/projects/markdown/syntax)
+[the official Markdown site](https://daringfireball.net/projects/markdown/syntax)
 for more details.
 
 ----------------------------------------------------------------------------------------------------
@@ -120,7 +119,7 @@ that makes the link text equal to the link location.
 
 !!! tip
     [The "page-links" plugin](<!--page plugins-->#page_links_plugin) may be used for creating
-    relative internal links within the documentation.
+    relative internal links within the writing project.
     
 [*Attribute lists*](#attribute_lists) may be used with links in the following ways:
 

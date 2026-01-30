@@ -3,7 +3,7 @@
 <p><img src="<!--path pict-->sample_picture.jpg" class="floatRight" /></p>
 
 <!--index Home page -->
-This is an automatically generated documentation template.
+This is an automatically generated writing project.
 
 [TOC]
 
