@@ -15,7 +15,7 @@
 - HTML page resources.
 
 The program processes these artifacts and generates a set of static HTML pages that may 
-represent a coherent site with a sidebar menu, navigation, index, and other elements.
+represent a coherent site with sidebars, menus, navigation, indexes, and other elements.
 
 The following subsections describe the above artifacts in more detail.
 
