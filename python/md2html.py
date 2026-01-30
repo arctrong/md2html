@@ -11,7 +11,8 @@ from build_cache import build_cache_manager
 from cli_arguments_utils import parse_cli_arguments, CliError, CliArgDataObject
 from models.arguments import Arguments
 from output_utils import output_page, MARKDOWN
-from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers
+from page_metadata_utils import register_page_metadata_handlers, apply_metadata_handlers, \
+    join_parsing_results
 from plugins_utils import instantiate_plugins, filter_non_blank_plugins, add_extra_plugin_data, \
     complete_plugins_initialization, feed_plugins_with_documents, feed_plugins_with_app_data
 from utils import UserError, read_lines_from_commented_json_file, read_lines_from_cached_file, \
@@ -28,7 +29,7 @@ def configure_logging(verbose: bool):
         logging.disable(logging.CRITICAL)
 
 
-def md2html(document, plugins, metadata_handlers):
+def md2html(document, plugins, metadata_handlers, deferred_pages):
 
     input_path = Path(document.input_file)
     output_path = Path(document.output_file)
@@ -50,7 +51,14 @@ def md2html(document, plugins, metadata_handlers):
     except FileNotFoundError as e:
         raise UserError(f"Error processing page: {type(e).__name__}: {e}")
 
-    md_lines = apply_metadata_handlers(md_lines, metadata_handlers, document)
+    apply_metadata_result = apply_metadata_handlers(md_lines, metadata_handlers, document)
+
+    if apply_metadata_result.deferPage:
+        deferred_pages[document.output_file] = (document, apply_metadata_result)
+        return
+
+    md_lines = join_parsing_results(apply_metadata_result.parsingResults, metadata_handlers,
+                                    document)
     MARKDOWN.reset()
     substitutions = {'content': MARKDOWN.convert(source=md_lines),
                      'source_file': relativize_relative_resource(document.input_file,
@@ -61,6 +69,30 @@ def md2html(document, plugins, metadata_handlers):
     build_cache_manager.record_primary_document(document.input_file,document.output_file, False)
 
     logger.info('Output file generated: %s', document.output_file)
+
+
+def md2html_phase2(arguments, deferred_pages):
+    for output_file, (document, apply_metadata_result) in deferred_pages.items():
+        try:
+            for plugin in arguments.plugins:
+                plugin.new_page(document)
+
+            md_lines = join_parsing_results(apply_metadata_result.parsingResults,
+                                            arguments.metadata_handlers, document)
+            MARKDOWN.reset()
+            substitutions = {
+                'content': MARKDOWN.convert(source=md_lines),
+                'source_file': relativize_relative_resource(document.input_file,
+                                                            document.output_file)
+            }
+
+            output_page(document, arguments.plugins, substitutions)
+
+            logger.info('Output file generated: %s', document.output_file)
+
+        except UserError as e:
+            raise UserError(f"Error rendering deferred page '{document.output_file}': "
+                            f"{type(e).__name__}: {e}")
 
 
 def parse_argument_file(argument_file_dict: dict, cli_args: CliArgDataObject) -> Arguments:
@@ -124,16 +156,22 @@ def main():
                 for document in arguments.documents:
                     document.force = True
 
+        deferred_pages = {}
+
         for document in arguments.documents:
             try:
 
                 # TODO Consider removing `plugins` argument and using only `plugins.values()`.
 
-                md2html(document, arguments.plugins, arguments.metadata_handlers)
+                md2html(document, arguments.plugins, arguments.metadata_handlers,
+                        deferred_pages)
             except UserError as e:
                 error_input_file = document.input_file
                 raise UserError(f"Error processing input file '{error_input_file}': "
                                 f"{type(e).__name__}: {e}")
+
+        if deferred_pages:
+            md2html_phase2(arguments, deferred_pages)
 
         for plugin in arguments.plugins:
             try:

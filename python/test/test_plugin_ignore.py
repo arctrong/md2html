@@ -1,6 +1,7 @@
 import unittest
 
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.ignore_plugin import IgnorePlugin
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
@@ -29,7 +30,7 @@ class IgnorePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning<!--ignore \t  some context-->ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning<!--some context-->ending", processed_page)
 
     def test_non_default_marker(self):
@@ -44,11 +45,11 @@ class IgnorePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning <!--marker1 some context--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning <!--some context--> ending", processed_page)
 
         page_text = "beginning <!--ignore some context--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning <!--ignore some context--> ending", processed_page)
 
     def test_several_markers(self):
@@ -63,13 +64,13 @@ class IgnorePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "beginning <!--marker1 some context--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning <!--some context--> ending", processed_page)
 
         page_text = "beginning <!--marker2 some context--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning <!--some context--> ending", processed_page)
 
         page_text = "beginning <!--ignore some context--> ending"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("beginning <!--ignore some context--> ending", processed_page)

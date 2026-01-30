@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Union, Dict
 
 from models.document import Document
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -29,8 +29,10 @@ class IgnorePlugin(Md2HtmlPlugin):
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
                              metadata_section: str,
-                             visited_markers: Union[Dict[str, None]] = None):
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
         content_start = metadata_section.find(metadata_str)
         prefix = metadata_section[:content_start - len(marker)]
         suffix = metadata_section[content_start + len(metadata_str):]
-        return prefix + metadata_str.lstrip() + suffix
+        return MetadataProcessingResult(prefix + metadata_str.lstrip() + suffix)

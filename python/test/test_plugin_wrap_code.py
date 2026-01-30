@@ -1,6 +1,7 @@
 import unittest
 
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.wrap_code_plugin import WrapCodePlugin
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
@@ -38,7 +39,7 @@ class WrapCodePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1  path/to/file.csv --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before output/path/path/to/file.csv.html after", processed_page)
 
     def test_minimal_with_json_metadata(self):
@@ -56,7 +57,7 @@ class WrapCodePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = 'before <!--marker1 {"file": "path/to/file.csv", "style": "code"} --> after'
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before output/path/path/to/file.csv.html after", processed_page)
 
     def test_several_markers(self):
@@ -75,11 +76,11 @@ class WrapCodePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1  path/to/file1.csv --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before output/path1/path/to/file1.csv.html after", processed_page)
 
         page_text = "before <!--marker2  path/to/file2.csv --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before output/path2/path/to/file2.csv.html after", processed_page)
 
     def test_repeated_source(self):
@@ -97,5 +98,6 @@ class WrapCodePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "<!--marker1 path/to/file.csv--> <!--marker1 path/to/file.csv-->"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
-        self.assertEqual("output/path/path/to/file.csv.html output/path/path/to/file.csv.html", processed_page)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
+        self.assertEqual("output/path/path/to/file.csv.html output/path/path/to/file.csv.html",
+                         processed_page)

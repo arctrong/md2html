@@ -1,6 +1,7 @@
 import unittest
 
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.page_links_plugin import PageLinksPlugin
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
@@ -40,7 +41,7 @@ class PageLinksPluginTest(unittest.TestCase):
 
         page_text = "[](<!--page page1-->#anchor)"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("[](page1.html#anchor)", processed_page)
 
     def test_different_paths(self):
@@ -62,13 +63,13 @@ class PageLinksPluginTest(unittest.TestCase):
         page_text = "[](<!--page page2-->#anchor)"
         plugin.new_page(doc1)
         plugin.new_page(doc2)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc1)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc1)
         self.assertEqual("[](subdir/page2.html#anchor)", processed_page)
 
         page_text = "[](<!--page page1-->#anchor)"
         plugin.new_page(doc1)
         plugin.new_page(doc2)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc2)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc2)
         self.assertEqual("[](../page1.html#anchor)", processed_page)
 
     def test_no_page_code_must_ignore(self):
@@ -88,7 +89,7 @@ class PageLinksPluginTest(unittest.TestCase):
 
         page_text = "[](<!--page page2-->#anchor)"
         plugin.new_page(doc1)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc1)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc1)
         self.assertEqual("[](<!--page page2-->#anchor)", processed_page)
 
     def test_non_default_marker(self):
@@ -107,12 +108,12 @@ class PageLinksPluginTest(unittest.TestCase):
 
         page_text = "[](<!--marker1 page2-->#anchor)"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("[](page2.html#anchor)", processed_page)
 
         page_text = "[](<!--page page2-->#anchor)"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("[](<!--page page2-->#anchor)", processed_page)
 
     def test_several_markers(self):
@@ -131,16 +132,16 @@ class PageLinksPluginTest(unittest.TestCase):
 
         page_text = "[](<!--marker1 page2-->#anchor)"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("[](page2.html#anchor)", processed_page)
 
         page_text = "[](<!--marker2 page2-->#anchor)"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("[](page2.html#anchor)", processed_page)
 
         page_text = "[](<!--page page2-->#anchor)"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("[](<!--page page2-->#anchor)", processed_page)
 
