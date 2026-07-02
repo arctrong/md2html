@@ -2,6 +2,7 @@ package world.md2html.options.argfile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import world.md2html.Constants;
+import world.md2html.Md2HtmlContext;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
@@ -14,7 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
+import world.md2html.buildcache.BuildCacheManager;
 
 public class PluginHelper {
 
@@ -23,15 +25,21 @@ public class PluginHelper {
 
     public static Map<String, Md2HtmlPlugin> instantiatePlugins(
             Map<String, JsonNode> pluginNodes) throws ArgFileParseException {
+        return instantiatePlugins(pluginNodes, Md2HtmlContext.getBuildCacheManager());
+    }
+
+    public static Map<String, Md2HtmlPlugin> instantiatePlugins(
+            Map<String, JsonNode> pluginNodes, BuildCacheManager buildCacheManager)
+            throws ArgFileParseException {
 
         Map<String, Md2HtmlPlugin> instantiatedPlugins = new HashMap<>();
 
         for (Map.Entry<String, JsonNode> pluginEntry : pluginNodes.entrySet()) {
-            Supplier<Md2HtmlPlugin> pluginProvider =
+            Function<BuildCacheManager, Md2HtmlPlugin> pluginProvider =
                     Constants.PLUGIN_PROVIDERS.get(pluginEntry.getKey());
             if (pluginProvider != null) {
                 try {
-                    Md2HtmlPlugin plugin = pluginProvider.get();
+                    Md2HtmlPlugin plugin = pluginProvider.apply(buildCacheManager);
                     plugin.acceptData(pluginEntry.getValue());
                     instantiatedPlugins.put(pluginEntry.getKey(), plugin);
                 } catch (ArgFileParseException e) {

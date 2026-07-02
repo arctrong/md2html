@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.networknt.schema.JsonSchema;
 import world.md2html.Md2Html;
-import world.md2html.Md2HtmlContext;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -53,8 +52,11 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
 
     private static final Logger log = Logging.getLogger();
 
-    private static final BuildCacheManager buildCacheManager =
-            Md2HtmlContext.getBuildCacheManager();
+    private final BuildCacheManager buildCacheManager;
+
+    public WrapCodePlugin(BuildCacheManager buildCacheManager) {
+        this.buildCacheManager = buildCacheManager;
+    }
 
     private static class WrapCodeData {
         private String style = "";
