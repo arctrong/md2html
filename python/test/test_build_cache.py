@@ -82,21 +82,24 @@ class BuildCacheRecordingTest(unittest.TestCase):
         self.cache_manager.previous_cache = get_empty_build_cache(230)
         self.cache_manager.previous_cache['primary_documents']['input.md'] = {
             'output_file': 'output_OLD.html',
-            'derived_documents': {'derived.html'}
+            'derived_documents': {'derived.html'},
+            'dependencies': {'included.txt'}
         }
         self.cache_manager.current_cache = get_empty_build_cache(230)
 
     def test_record_primary_document_not_skipped(self):
         self.cache_manager.record_primary_document('input.md', 'output.html', False)
+        self.cache_manager.record_dependency('input.md', 'included.txt')
 
         self.assertDictEqual(self.cache_manager.current_cache['primary_documents']['input.md'],
-                         {'output_file': 'output.html'})
+                         {'output_file': 'output.html', 'dependencies': {'included.txt'}})
 
     def test_record_primary_document_skipped(self):        
         self.cache_manager.record_primary_document('input.md', 'output.html', True)
 
         self.assertDictEqual(self.cache_manager.current_cache['primary_documents']['input.md'],
-                         {'output_file': 'output.html', 'derived_documents': {'derived.html'}})
+                         {'output_file': 'output.html', 'derived_documents': {'derived.html'},
+                          'dependencies': {'included.txt'}})
 
     def test_record_derived_document_for_primary(self):
         self.cache_manager.record_derived_document_for_primary('input.md', 'generated.html')
@@ -120,6 +123,74 @@ class BuildCacheRecordingTest(unittest.TestCase):
         
         self.assertIsNone(self.cache_manager.previous_cache)
         self.assertIsNone(self.cache_manager.current_cache)
+
+
+class BuildCacheDependencyTest(unittest.TestCase):
+
+    def setUp(self):
+        self.cache_manager = _BuildCacheManager()
+        self.cache_manager.previous_cache = get_empty_build_cache(230)
+        self.cache_manager.current_cache = get_empty_build_cache(230)
+
+    def test_record_dependency_writes_into_document_record(self):
+        self.cache_manager.record_dependency('input.md', 'dep1.txt')
+        self.cache_manager.record_dependency('input.md', 'dep2.txt')
+        self.cache_manager.record_dependency('other.md', 'other_dep.txt')
+
+        primary_documents = self.cache_manager.current_cache['primary_documents']
+        self.assertEqual({'dep1.txt', 'dep2.txt'},
+                         primary_documents['input.md']['dependencies'])
+        self.assertEqual({'other_dep.txt'},
+                         primary_documents['other.md']['dependencies'])
+
+    @patch('os.path.getmtime')
+    def test_has_stale_dependencies_when_dep_is_newer(self, mock_mtime):
+        self.cache_manager.previous_cache['primary_documents']['input.md'] = {
+            'output_file': 'output.html',
+            'dependencies': ['dep.txt']
+        }
+        mock_mtime.side_effect = lambda path: 300 if path == 'dep.txt' else 100
+
+        self.assertTrue(self.cache_manager.has_stale_dependencies('input.md', 200))
+
+    @patch('os.path.getmtime')
+    def test_has_stale_dependencies_when_all_deps_are_older(self, mock_mtime):
+        self.cache_manager.previous_cache['primary_documents']['input.md'] = {
+            'output_file': 'output.html',
+            'dependencies': ['dep.txt']
+        }
+        mock_mtime.return_value = 100
+
+        self.assertFalse(self.cache_manager.has_stale_dependencies('input.md', 200))
+
+    def test_has_stale_dependencies_false_when_no_dependencies(self):
+        self.cache_manager.previous_cache['primary_documents']['input.md'] = {
+            'output_file': 'output.html'
+        }
+
+        self.assertFalse(self.cache_manager.has_stale_dependencies('input.md', 200))
+
+    def test_has_stale_dependencies_no_op_without_cache(self):
+        self.cache_manager.previous_cache = None
+
+        self.assertFalse(self.cache_manager.has_stale_dependencies('input.md', 200))
+
+    def test_save_build_cache_sorts_dependencies(self):
+        self.cache_manager.build_cache_file = str(Path(tempfile.gettempdir()).joinpath(
+            'test_build_cache_deps.json'))
+        self.cache_manager.current_cache['primary_documents']['input.md'] = {
+            'output_file': 'output.html',
+            'dependencies': {'b.txt', 'a.txt'}
+        }
+        try:
+            self.cache_manager.save_build_cache()
+            with open(self.cache_manager.build_cache_file, 'r') as f:
+                saved_cache = json.load(f)
+            self.assertListEqual(['a.txt', 'b.txt'],
+                                 saved_cache['primary_documents']['input.md']['dependencies'])
+        finally:
+            if os.path.exists(self.cache_manager.build_cache_file):
+                os.remove(self.cache_manager.build_cache_file)
 
 
 class BuildCacheFinalizationTest(unittest.TestCase):
