@@ -11,8 +11,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.SortedSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -119,6 +123,7 @@ class BuildCacheManagerTest {
         cacheManager.initialize(cacheFile.toString(), argsFile.toString());
 
         cacheManager.recordPrimaryDocument("input.md", "output.html", false);
+        cacheManager.recordDependency("input.md", "included.txt");
 
         cacheManager.saveBuildCache();
         BuildCache savedCache = OBJECT_MAPPER.readValue(cacheFile.toFile(), BuildCache.class);
@@ -127,6 +132,7 @@ class BuildCacheManagerTest {
         PrimaryDocumentInfo doc = savedCache.getPrimaryDocuments().get("input.md");
         assertEquals("output.html", doc.getOutputFile());
         assertTrue(doc.getDerivedDocuments().isEmpty());
+        assertEquals(new HashSet<>(Arrays.asList("included.txt")), doc.getDependencies());
     }
 
     @Test
@@ -135,7 +141,8 @@ class BuildCacheManagerTest {
         PrimaryDocumentInfo prevDoc =
                 PrimaryDocumentInfo.builder().outputFile("output_OLD.html").build();
         prevDoc.getDerivedDocuments().add("derived.html");
-        previousCache.getPrimaryDocuments().put("input.md",prevDoc);
+        prevDoc.getDependencies().add("included.txt");
+        previousCache.getPrimaryDocuments().put("input.md", prevDoc);
 
         OBJECT_WRITER.writeValue(cacheFile.toFile(), previousCache);
 
@@ -149,6 +156,7 @@ class BuildCacheManagerTest {
         PrimaryDocumentInfo doc = savedCache.getPrimaryDocuments().get("input.md");
         assertEquals("output.html", doc.getOutputFile());
         assertTrue(doc.getDerivedDocuments().contains("derived.html"));
+        assertEquals(new HashSet<>(Arrays.asList("included.txt")), doc.getDependencies());
     }
 
     @Test
@@ -286,5 +294,91 @@ class BuildCacheManagerTest {
         PrimaryDocumentInfo primaryDoc = finalCache.getPrimaryDocuments().get("doc1.md");
         assertEquals("doc1.html", primaryDoc.getOutputFile());
         assertTrue(primaryDoc.getDerivedDocuments().contains("my_code.html"));
+    }
+
+    @Test
+    void recordDependency_writesIntoDocumentRecord() throws IOException {
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+        cacheManager.recordDependency("input.md", "dep1.txt");
+        cacheManager.recordDependency("input.md", "dep2.txt");
+        cacheManager.recordDependency("other.md", "other_dep.txt");
+
+        cacheManager.saveBuildCache();
+        BuildCache savedCache = OBJECT_MAPPER.readValue(cacheFile.toFile(), BuildCache.class);
+
+        assertEquals(new HashSet<>(Arrays.asList("dep1.txt", "dep2.txt")),
+                savedCache.getPrimaryDocuments().get("input.md").getDependencies());
+        assertEquals(new HashSet<>(Arrays.asList("other_dep.txt")),
+                savedCache.getPrimaryDocuments().get("other.md").getDependencies());
+    }
+
+    @Test
+    void hasStaleDependencies_whenDepIsNewer() throws IOException {
+        Path depFile = tempDir.resolve("dep.txt");
+        Files.createFile(depFile);
+        Files.setLastModifiedTime(depFile, FileTime.from(Instant.ofEpochSecond(300)));
+
+        BuildCache previousCache = BuildCache.builder().argFileMtime(500).build();
+        PrimaryDocumentInfo prevDoc = PrimaryDocumentInfo.builder().outputFile("output.html")
+                .build();
+        prevDoc.getDependencies().add(depFile.toString().replace("\\", "/"));
+        previousCache.getPrimaryDocuments().put("input.md", prevDoc);
+        OBJECT_WRITER.writeValue(cacheFile.toFile(), previousCache);
+
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+
+        assertTrue(cacheManager.hasStaleDependencies("input.md", 200));
+    }
+
+    @Test
+    void hasStaleDependencies_whenAllDepsAreOlder() throws IOException {
+        Path depFile = tempDir.resolve("dep.txt");
+        Files.createFile(depFile);
+        Files.setLastModifiedTime(depFile, FileTime.from(Instant.ofEpochSecond(100)));
+
+        BuildCache previousCache = BuildCache.builder().argFileMtime(500).build();
+        PrimaryDocumentInfo prevDoc = PrimaryDocumentInfo.builder().outputFile("output.html")
+                .build();
+        prevDoc.getDependencies().add(depFile.toString().replace("\\", "/"));
+        previousCache.getPrimaryDocuments().put("input.md", prevDoc);
+        OBJECT_WRITER.writeValue(cacheFile.toFile(), previousCache);
+
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+
+        assertFalse(cacheManager.hasStaleDependencies("input.md", 200));
+    }
+
+    @Test
+    void hasStaleDependencies_falseWhenNoDependencies() throws IOException {
+        BuildCache previousCache = BuildCache.builder().argFileMtime(500).build();
+        previousCache.getPrimaryDocuments().put("input.md",
+                PrimaryDocumentInfo.builder().outputFile("output.html").build());
+        OBJECT_WRITER.writeValue(cacheFile.toFile(), previousCache);
+
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+
+        assertFalse(cacheManager.hasStaleDependencies("input.md", 200));
+    }
+
+    @Test
+    void hasStaleDependencies_noOpWithoutCache() {
+        cacheManager.initializeDisabled();
+
+        assertFalse(cacheManager.hasStaleDependencies("input.md", 200));
+    }
+
+    @Test
+    void saveBuildCache_sortsDependencies() throws IOException {
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+        cacheManager.recordPrimaryDocument("input.md", "output.html", false);
+        cacheManager.recordDependency("input.md", "b.txt");
+        cacheManager.recordDependency("input.md", "a.txt");
+
+        cacheManager.saveBuildCache();
+
+        BuildCache savedCache = OBJECT_MAPPER.readValue(cacheFile.toFile(), BuildCache.class);
+        SortedSet<String> dependencies =
+                savedCache.getPrimaryDocuments().get("input.md").getDependencies();
+        assertEquals(Arrays.asList("a.txt", "b.txt"), new ArrayList<>(dependencies));
     }
 }

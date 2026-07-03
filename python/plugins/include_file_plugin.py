@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Union
 
+from build_cache import build_cache_manager
 from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
@@ -82,6 +83,9 @@ class IncludeFilePlugin(Md2HtmlPlugin):
 
         file_path = metadata.get("file").strip()
         include_file = Path(marker_data.root_dir).joinpath(file_path)
+        if doc is not None:
+            include_file_str = str(include_file).replace("\\", "/")
+            build_cache_manager.record_dependency(doc.input_file, include_file_str)
         try:
             content = read_lines_from_cached_file(include_file)
         except FileNotFoundError as e:

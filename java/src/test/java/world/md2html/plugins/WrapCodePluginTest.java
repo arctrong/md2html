@@ -1,8 +1,6 @@
 package world.md2html.plugins;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import world.md2html.Md2HtmlContext;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -22,11 +20,6 @@ class WrapCodePluginTest {
 
     private WrapCodePlugin findSinglePlugin(List<Md2HtmlPlugin> plugins) {
         return PluginTestUtils.findFirstElementOfType(plugins, WrapCodePlugin.class);
-    }
-
-    @BeforeEach
-    void setUp() {
-        Md2HtmlContext.getBuildCacheManager().initializeDisabled();
     }
 
     @Test

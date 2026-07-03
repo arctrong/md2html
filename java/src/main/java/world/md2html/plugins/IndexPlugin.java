@@ -2,11 +2,7 @@ package world.md2html.plugins;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import lombok.AllArgsConstructor;
@@ -16,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.javatuples.Pair;
 import world.md2html.Md2Html;
-import world.md2html.Md2HtmlContext;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -25,7 +21,6 @@ import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
-import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.Logging;
 import world.md2html.utils.UniqueIndexer;
@@ -63,8 +58,11 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
 
     private static final Logger log = Logging.getLogger();
 
-    private static final BuildCacheManager buildCacheManager =
-            Md2HtmlContext.getBuildCacheManager();
+    private final BuildCacheManager buildCacheManager;
+
+    public IndexPlugin(BuildCacheManager buildCacheManager) {
+        this.buildCacheManager = buildCacheManager;
+    }
 
     // TODO Consider using Jackson object mapper
     // TODO Remove all getters and setters and use direct field access. This is a nested class

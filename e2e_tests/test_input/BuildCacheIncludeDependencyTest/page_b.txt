@@ -1,0 +1,3 @@
+PAGE-B
+
+<!--include_shared shared.txt-->

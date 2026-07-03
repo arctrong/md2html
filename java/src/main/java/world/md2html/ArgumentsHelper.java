@@ -2,6 +2,7 @@ package world.md2html;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.javatuples.Pair;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -27,11 +28,19 @@ public class ArgumentsHelper {
     private ArgumentsHelper() {
     }
 
-    public static ArgFile parseArgumentFile(ArgFileRaw argFileRaw,
-            CliOptions cliOptions) throws ArgFileParseException {
+    /** Use only this version in production code! */
+    public static ArgFile parseArgumentFile(ArgFileRaw argFileRaw, CliOptions cliOptions)
+            throws ArgFileParseException {
+        return parseArgumentFile(argFileRaw, cliOptions, Md2HtmlContext.getBuildCacheManager());
+    }
+
+    /** For test usage only! */
+    public static ArgFile parseArgumentFile(ArgFileRaw argFileRaw, CliOptions cliOptions,
+            BuildCacheManager buildCacheManager) throws ArgFileParseException {
 
         ArgFileRaw canonizedArgFileRaw = mergeAndCanonizeArgFileRaw(argFileRaw, cliOptions);
-        Map<String, Md2HtmlPlugin> pluginMap = instantiatePlugins(canonizedArgFileRaw.getPlugins());
+        Map<String, Md2HtmlPlugin> pluginMap = instantiatePlugins(
+                canonizedArgFileRaw.getPlugins(), buildCacheManager);
 
         // Plugins are not initialized yet, but 'page-variables' plugin will be used in the
         // following call. Still particularly this plugin is already fully functional.

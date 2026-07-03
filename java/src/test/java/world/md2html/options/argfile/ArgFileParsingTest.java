@@ -9,15 +9,12 @@ import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
-import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
-import world.md2html.plugins.PageVariablesPlugin;
 import world.md2html.utils.UserError;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static world.md2html.options.TestUtils.parseArgumentFile;
-import static world.md2html.testutils.PluginTestUtils.ANY_DOCUMENT;
-import static world.md2html.testutils.PluginTestUtils.findFirstElementOfType;
 
 public class ArgFileParsingTest {
 

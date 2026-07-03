@@ -28,19 +28,28 @@ def configure_logging(verbose: bool):
         logging.disable(logging.CRITICAL)
 
 
-def md2html(document, plugins, metadata_handlers):
-
+def _is_output_up_to_date(document) -> bool:
     input_path = Path(document.input_file)
     output_path = Path(document.output_file)
-    if not document.force and output_path.exists():
-        output_file_mtime = os.path.getmtime(output_path)
-        input_file_mtime = os.path.getmtime(input_path)
-        if output_file_mtime > input_file_mtime:
-            # TODO Called two times, need to revise, and probably to centralize this logic
-            build_cache_manager.record_primary_document(document.input_file,
-                                                        document.output_file, True)
-            logger.info(f'The output file is up-to-date. Skipping: {document.output_file}')
-            return
+    if document.force or not output_path.exists():
+        return False
+    output_file_mtime = os.path.getmtime(output_path)
+    input_file_mtime = os.path.getmtime(input_path)
+    if output_file_mtime <= input_file_mtime:
+        return False
+    if build_cache_manager.has_stale_dependencies(document.input_file, output_file_mtime):
+        return False
+    return True
+
+
+def md2html(document, plugins, metadata_handlers):
+
+    skipped = _is_output_up_to_date(document)
+    build_cache_manager.record_primary_document(document.input_file,
+                                                document.output_file, skipped)
+    if skipped:
+        logger.info(f'The output file is up-to-date. Skipping: {document.output_file}')
+        return
 
     for plugin in plugins:
         plugin.new_page(document)
@@ -57,8 +66,6 @@ def md2html(document, plugins, metadata_handlers):
                                                                  document.output_file)}
 
     output_page(document, plugins, substitutions)
-    # TODO Called two times, need to revise, and probably to centralize this logic
-    build_cache_manager.record_primary_document(document.input_file,document.output_file, False)
 
     logger.info('Output file generated: %s', document.output_file)
 
