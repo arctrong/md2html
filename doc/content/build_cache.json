@@ -33,12 +33,12 @@
     },
     "doc_src/sections/plugins.txt": {
       "output_file": "doc/content/sections/plugins.html",
-      "dependencies": [
-        "sample_code/hello/Main.java"
-      ],
       "derived_documents": [
         "doc/content/code/hello/Main.java.html",
         "doc/content/code/hello/geometric_distribution.r.html"
+      ],
+      "dependencies": [
+        "sample_code/hello/Main.java"
       ]
     },
     "doc_src/sections/reference.txt": {
