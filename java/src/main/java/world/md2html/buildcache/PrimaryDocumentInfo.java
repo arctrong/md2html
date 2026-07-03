@@ -27,4 +27,11 @@ public class PrimaryDocumentInfo {
     @JsonProperty("derived_documents")
     @Builder.Default
     SortedSet<String> derivedDocuments = new TreeSet<>();
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = SetToListSerializer.class)
+    @JsonDeserialize(using = ListToSetDeserializer.class)
+    @JsonProperty("dependencies")
+    @Builder.Default
+    SortedSet<String> dependencies = new TreeSet<>();
 }

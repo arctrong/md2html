@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -58,21 +57,16 @@ public class Md2Html {
             PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options)
             throws IOException, UserError {
 
-        Path outputFile = Paths.get(document.getOutput());
-        Path inputFile = Paths.get(document.getInput());
-
-        if (!document.isForce() && Files.exists(outputFile)) {
-            FileTime inputFileTime = Files.getLastModifiedTime(inputFile);
-            FileTime outputFileTime = Files.getLastModifiedTime(outputFile);
-            if (outputFileTime.compareTo(inputFileTime) > 0) {
-                buildCacheManager.recordPrimaryDocument(document.getInput(), document.getOutput(),
-                        true);
-                if (log.isLoggable(Level.INFO)) {
-                    log.info("The output file is up-to-date. Skipping: " + document.getOutput());
-                }
-                return;
+        boolean skipped = isOutputUpToDate(document);
+        buildCacheManager.recordPrimaryDocument(document.getInput(), document.getOutput(), skipped);
+        if (skipped) {
+            if (log.isLoggable(Level.INFO)) {
+                log.info("The output file is up-to-date. Skipping: " + document.getOutput());
             }
+            return;
         }
+
+        Path inputFile = Paths.get(document.getInput());
 
         for (Md2HtmlPlugin plugin : plugins) {
             plugin.newPage(document);
@@ -99,12 +93,26 @@ public class Md2Html {
 
         outputPage(document, plugins, substitutions, null);
 
-        buildCacheManager.recordPrimaryDocument(document.getInput(), 
-                document.getOutput(), false);
-
         if (log.isLoggable(Level.INFO)) {
             log.info("Output file generated: " + document.getOutput());
         }
+    }
+
+    private static boolean isOutputUpToDate(Document document) throws IOException {
+        if (document.isForce()) {
+            return false;
+        }
+        Path outputFile = Paths.get(document.getOutput());
+        Path inputFile = Paths.get(document.getInput());
+        if (!Files.exists(outputFile)) {
+            return false;
+        }
+        double outputMtime = Utils.pythonLikeFileMTime(outputFile);
+        double inputMtime = Utils.pythonLikeFileMTime(inputFile);
+        if (outputMtime <= inputMtime) {
+            return false;
+        }
+        return !buildCacheManager.hasStaleDependencies(document.getInput(), outputMtime);
     }
 
     public static void outputPage(Document document, List<Md2HtmlPlugin> plugins,

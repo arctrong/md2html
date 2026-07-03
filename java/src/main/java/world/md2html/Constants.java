@@ -42,7 +42,7 @@ public final class Constants {
         PLUGIN_PROVIDERS.put("page-links", mgr -> new PageLinksPlugin());
         PLUGIN_PROVIDERS.put("ignore", mgr -> new IgnorePlugin());
         PLUGIN_PROVIDERS.put("wrap-code", WrapCodePlugin::new);
-        PLUGIN_PROVIDERS.put("include-file", mgr -> new IncludeFilePlugin());
+        PLUGIN_PROVIDERS.put("include-file", IncludeFilePlugin::new);
         PLUGIN_PROVIDERS.put("replace", mgr -> new ReplacePlugin());
     }
 

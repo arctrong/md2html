@@ -9,8 +9,6 @@ from bs4 import BeautifulSoup
 import helpers as h
 
 
-@unittest.skipUnless(h.IMPLEMENTATION == 'py',
-                     'Include dependency tracking is Python-only for now')
 class BuildCacheIncludeDependencyE2eTest(unittest.TestCase):
 
     @classmethod

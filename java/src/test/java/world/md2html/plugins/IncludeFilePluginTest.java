@@ -1,6 +1,9 @@
 package world.md2html.plugins;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import world.md2html.buildcache.BuildCache;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -10,7 +13,13 @@ import world.md2html.testutils.PluginTestUtils;
 import world.md2html.utils.UserError;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.SortedSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static world.md2html.options.TestUtils.parseArgumentFile;
 import static world.md2html.testutils.TestUtils.relativeToCurrentDir;
+import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 
 class IncludeFilePluginTest {
 
@@ -336,5 +346,73 @@ class IncludeFilePluginTest {
          pageText = "before <!--marker1 {\"file\": \"recursive.txt\", \"recursive\": true}--> after";
         processedPage = metadataHandlers.applyMetadataHandlers(pageText, doc);
         assertEquals("before text 1, [[text 2]] after", processedPage);
+    }
+
+    @TempDir
+    Path tempDir;
+
+    private SortedSet<String> getSavedDependencies(BuildCacheManager cacheManager,
+            Path cacheFile, String inputFile) throws IOException {
+        cacheManager.saveBuildCache();
+        BuildCache savedCache = OBJECT_MAPPER.readValue(cacheFile.toFile(), BuildCache.class);
+        return savedCache.getPrimaryDocuments().get(inputFile).getDependencies();
+    }
+
+    @Test
+    public void test_recordsIncludeDependencies() throws Exception {
+        Path cacheFile = tempDir.resolve("cache.json");
+        Path argsFile = tempDir.resolve("args.json");
+        Files.createFile(argsFile);
+
+        BuildCacheManager cacheManager = new BuildCacheManager();
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+
+        String rootDir = THIS_DIR + "for_include_file_plugin_test/";
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"page.txt\", \"output\": \"page.html\"}], " +
+                "\"plugins\": {" +
+                "\"include-file\": [" +
+                "    {\"markers\": [\"marker1\"], " +
+                "     \"root-dir\": \"" + rootDir + "\"}" +
+                "]}}", DUMMY_CLI_OPTIONS, cacheManager);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers = argFile.getMetadataHandlers();
+
+        cacheManager.recordPrimaryDocument(doc.getInput(), doc.getOutput(), false);
+        metadataHandlers.applyMetadataHandlers("before <!--marker1 code1.txt --> after", doc);
+
+        assertEquals(new HashSet<>(Arrays.asList(rootDir.replace("\\", "/") + "code1.txt")),
+                getSavedDependencies(cacheManager, cacheFile, "page.txt"));
+    }
+
+    @Test
+    public void test_recordsRecursiveIncludeDependencies() throws Exception {
+        Path cacheFile = tempDir.resolve("cache.json");
+        Path argsFile = tempDir.resolve("args.json");
+        Files.createFile(argsFile);
+
+        BuildCacheManager cacheManager = new BuildCacheManager();
+        cacheManager.initialize(cacheFile.toString(), argsFile.toString());
+
+        String rootDir = THIS_DIR + "for_include_file_plugin_test/";
+        ArgFile argFile = parseArgumentFile(
+                "{\"documents\": [{\"input\": \"page.txt\", \"output\": \"page.html\"}], " +
+                "\"plugins\": {" +
+                "\"include-file\": [" +
+                "    {\"markers\": [\"include\"], " +
+                "     \"root-dir\": \"" + rootDir + "\"," +
+                "     \"recursive\": true}" +
+                "]}}", DUMMY_CLI_OPTIONS, cacheManager);
+        Document doc = argFile.getDocuments().get(0);
+        PageMetadataHandlersWrapper metadataHandlers = argFile.getMetadataHandlers();
+
+        cacheManager.recordPrimaryDocument(doc.getInput(), doc.getOutput(), false);
+        metadataHandlers.applyMetadataHandlers("before <!--include recursive1.txt --> after", doc);
+
+        String normalizedRoot = rootDir.replace("\\", "/");
+        assertEquals(new HashSet<>(Arrays.asList(
+                normalizedRoot + "recursive1.txt",
+                normalizedRoot + "recursive.txt"
+        )), getSavedDependencies(cacheManager, cacheFile, "page.txt"));
     }
 }
