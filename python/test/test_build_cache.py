@@ -192,6 +192,28 @@ class BuildCacheDependencyTest(unittest.TestCase):
             if os.path.exists(self.cache_manager.build_cache_file):
                 os.remove(self.cache_manager.build_cache_file)
 
+    def test_save_build_cache_canonical_primary_document_key_order(self):
+        self.cache_manager.build_cache_file = str(Path(tempfile.gettempdir()).joinpath(
+            'test_build_cache_key_order.json'))
+        self.cache_manager.current_cache['primary_documents']['input.md'] = {
+            'dependencies': {'b.txt', 'a.txt'},
+            'output_file': 'output.html',
+            'derived_documents': {'z.html', 'a.html'},
+        }
+        try:
+            self.cache_manager.save_build_cache()
+            with open(self.cache_manager.build_cache_file, 'r') as f:
+                saved_cache = json.load(f)
+            saved_doc = saved_cache['primary_documents']['input.md']
+            self.assertListEqual(
+                ['output_file', 'derived_documents', 'dependencies'],
+                list(saved_doc.keys()))
+            self.assertListEqual(['a.html', 'z.html'], saved_doc['derived_documents'])
+            self.assertListEqual(['a.txt', 'b.txt'], saved_doc['dependencies'])
+        finally:
+            if os.path.exists(self.cache_manager.build_cache_file):
+                os.remove(self.cache_manager.build_cache_file)
+
 
 class BuildCacheFinalizationTest(unittest.TestCase):
 

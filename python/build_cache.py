@@ -19,6 +19,18 @@ def get_empty_build_cache(arg_file_mtime):
     }
 
 
+def _canonicalize_primary_document(doc):
+    """ Makes sure the fields in the documents are in the predefined order. """
+    canonical = {'output_file': doc['output_file']}
+    derived_documents = doc.get('derived_documents')
+    if derived_documents:
+        canonical['derived_documents'] = sorted(derived_documents)
+    dependencies = doc.get('dependencies')
+    if dependencies:
+        canonical['dependencies'] = sorted(dependencies)
+    return canonical
+
+
 class _BuildCacheManager:
     def __init__(self):
         self.previous_cache: Optional[dict] = None
@@ -164,15 +176,10 @@ class _BuildCacheManager:
         if not self._is_build_cache_used():
             return
 
-        for doc in self.current_cache['primary_documents'].values():
-            if not doc.get('derived_documents'):
-                doc.pop('derived_documents', None)
-            else:
-                doc['derived_documents'] = sorted(doc['derived_documents'])
-            if not doc.get('dependencies'):
-                doc.pop('dependencies', None)
-            else:
-                doc['dependencies'] = sorted(doc['dependencies'])
+        self.current_cache['primary_documents'] = {
+            input_file: _canonicalize_primary_document(doc)
+            for input_file, doc in self.current_cache['primary_documents'].items()
+        }
         self.current_cache["standalone_derived_documents"] = sorted(
             self.current_cache['standalone_derived_documents'])
 
