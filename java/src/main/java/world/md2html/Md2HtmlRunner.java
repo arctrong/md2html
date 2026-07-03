@@ -1,5 +1,6 @@
 package world.md2html;
 
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.cli.CliArgumentsException;
 import world.md2html.options.cli.CliParser;
@@ -9,15 +10,12 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
-import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.utils.Logging;
 import world.md2html.utils.UserError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

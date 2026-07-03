@@ -1,5 +1,6 @@
 package world.md2html;
 
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.plugins.IgnorePlugin;
 import world.md2html.plugins.IncludeFilePlugin;
 import world.md2html.plugins.IndexPlugin;
@@ -11,8 +12,6 @@ import world.md2html.plugins.RelativePathsPlugin;
 import world.md2html.plugins.ReplacePlugin;
 import world.md2html.plugins.VariablesPlugin;
 import world.md2html.plugins.WrapCodePlugin;
-
-import world.md2html.buildcache.BuildCacheManager;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
