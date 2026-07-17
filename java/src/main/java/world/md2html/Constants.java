@@ -1,5 +1,6 @@
 package world.md2html;
 
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.plugins.IgnorePlugin;
 import world.md2html.plugins.IncludeFilePlugin;
 import world.md2html.plugins.IndexPlugin;
@@ -16,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public final class Constants {
 
@@ -29,19 +30,20 @@ public final class Constants {
     private static final String WORKING_DIR_ENV_VARIABLE_NAME = "MD2HTML_HOME";
     public static final Path WORKING_DIR;
 
-    public static final Map<String, Supplier<Md2HtmlPlugin>> PLUGIN_PROVIDERS = new HashMap<>();
+    public static final Map<String, Function<BuildCacheManager, Md2HtmlPlugin>> PLUGIN_PROVIDERS =
+            new HashMap<>();
 
     static {
-        PLUGIN_PROVIDERS.put("page-flows", PageFlowsPlugin::new);
-        PLUGIN_PROVIDERS.put("relative-paths", RelativePathsPlugin::new);
-        PLUGIN_PROVIDERS.put("page-variables", PageVariablesPlugin::new);
-        PLUGIN_PROVIDERS.put("variables", VariablesPlugin::new);
+        PLUGIN_PROVIDERS.put("page-flows", mgr -> new PageFlowsPlugin());
+        PLUGIN_PROVIDERS.put("relative-paths", mgr -> new RelativePathsPlugin());
+        PLUGIN_PROVIDERS.put("page-variables", mgr -> new PageVariablesPlugin());
+        PLUGIN_PROVIDERS.put("variables", mgr -> new VariablesPlugin());
         PLUGIN_PROVIDERS.put("index", IndexPlugin::new);
-        PLUGIN_PROVIDERS.put("page-links", PageLinksPlugin::new);
-        PLUGIN_PROVIDERS.put("ignore", IgnorePlugin::new);
+        PLUGIN_PROVIDERS.put("page-links", mgr -> new PageLinksPlugin());
+        PLUGIN_PROVIDERS.put("ignore", mgr -> new IgnorePlugin());
         PLUGIN_PROVIDERS.put("wrap-code", WrapCodePlugin::new);
         PLUGIN_PROVIDERS.put("include-file", IncludeFilePlugin::new);
-        PLUGIN_PROVIDERS.put("replace", ReplacePlugin::new);
+        PLUGIN_PROVIDERS.put("replace", mgr -> new ReplacePlugin());
     }
 
     static {

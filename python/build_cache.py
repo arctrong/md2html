@@ -19,6 +19,18 @@ def get_empty_build_cache(arg_file_mtime):
     }
 
 
+def _canonicalize_primary_document(doc):
+    """ Makes sure the fields in the documents are in the predefined order. """
+    canonical = {'output_file': doc['output_file']}
+    derived_documents = doc.get('derived_documents')
+    if derived_documents:
+        canonical['derived_documents'] = sorted(derived_documents)
+    dependencies = doc.get('dependencies')
+    if dependencies:
+        canonical['dependencies'] = sorted(dependencies)
+    return canonical
+
+
 class _BuildCacheManager:
     def __init__(self):
         self.previous_cache: Optional[dict] = None
@@ -74,6 +86,30 @@ class _BuildCacheManager:
 
         return force_all
 
+    def record_dependency(self, input_file: str, dependency_path: str):
+        if not self._is_build_cache_used():
+            return
+        doc = self.current_cache['primary_documents'].setdefault(input_file, {})
+        doc.setdefault('dependencies', set()).add(dependency_path)
+
+    def has_stale_dependencies(self, input_file: str, output_mtime: float) -> bool:
+        if not self._is_build_cache_used():
+            return False
+
+        prev_doc = self.previous_cache.get('primary_documents', {}).get(input_file)
+        if prev_doc is None:
+            return True
+
+        for dep in prev_doc.get('dependencies', []):
+            try:
+                if os.path.getmtime(dep) > output_mtime:
+                    logger.info('Dependency changed: %s', dep)
+                    return True
+            except OSError:
+                logger.info('ERROR: Dependency missing or unreadable: %s', dep)
+                return True
+        return False
+
     def record_primary_document(self, input_file: str, output_file: str, skipped: bool):
         if not self._is_build_cache_used():
             return
@@ -81,9 +117,12 @@ class _BuildCacheManager:
         doc = self.current_cache['primary_documents'].setdefault(input_file, {})
         doc['output_file'] = output_file
         if skipped:
-            old_derived = self.previous_cache.get(
-                'primary_documents', {}).get(input_file, {}).get('derived_documents', [])
+            prev_doc = self.previous_cache.get('primary_documents', {}).get(input_file, {})
+            old_derived = prev_doc.get('derived_documents', [])
             doc['derived_documents'] = set(old_derived)
+            doc['dependencies'] = set(prev_doc.get('dependencies', []))
+        else:
+            doc.setdefault('dependencies', set())
 
     def record_derived_document_for_primary(self, primary_input: str, derived_output: str):
         if not self._is_build_cache_used():
@@ -137,11 +176,10 @@ class _BuildCacheManager:
         if not self._is_build_cache_used():
             return
 
-        for doc in self.current_cache['primary_documents'].values():
-            if not doc.get('derived_documents'):
-                doc.pop('derived_documents', None)
-            else: 
-                doc['derived_documents'] = sorted(doc['derived_documents'])
+        self.current_cache['primary_documents'] = {
+            input_file: _canonicalize_primary_document(doc)
+            for input_file, doc in self.current_cache['primary_documents'].items()
+        }
         self.current_cache["standalone_derived_documents"] = sorted(
             self.current_cache['standalone_derived_documents'])
 

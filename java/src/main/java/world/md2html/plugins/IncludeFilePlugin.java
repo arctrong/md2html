@@ -3,6 +3,7 @@ package world.md2html.plugins;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
+import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
@@ -26,6 +27,12 @@ import static world.md2html.utils.Utils.getCachedString;
 import static world.md2html.utils.Utils.supplyWithFileExceptionAsUserError;
 
 public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMetadataHandler {
+
+    private final BuildCacheManager buildCacheManager;
+
+    public IncludeFilePlugin(BuildCacheManager buildCacheManager) {
+        this.buildCacheManager = buildCacheManager;
+    }
 
     private static class IncludeFileData {
         private String rootDir = "";
@@ -114,6 +121,8 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         );
         String filePath = ((String) metadataMap.get("file")).trim();
         Path includeFile = Paths.get(markerData.rootDir, filePath);
+        buildCacheManager.recordDependency(document.getInput(),
+                includeFile.toString().replace("\\", "/"));
         String content = supplyWithFileExceptionAsUserError(
                 () -> getCachedString(includeFile, Utils::readStringFromUtf8File),
                 "Error processing page metadata block"

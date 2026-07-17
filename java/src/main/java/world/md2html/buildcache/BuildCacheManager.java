@@ -108,6 +108,43 @@ public class BuildCacheManager {
         return forceAll;
     }
 
+    public void recordDependency(String inputFile, String dependencyPath) {
+        if (isDisabled()) {
+            return;
+        }
+        PrimaryDocumentInfo doc = currentCache.getPrimaryDocuments().computeIfAbsent(inputFile,
+                (k) -> PrimaryDocumentInfo.builder().outputFile("").build());
+        doc.getDependencies().add(dependencyPath);
+    }
+
+    public boolean hasStaleDependencies(String inputFile, double outputMtime) {
+        if (isDisabled()) {
+            return false;
+        }
+
+        PrimaryDocumentInfo prevDoc = previousCache.getPrimaryDocuments().get(inputFile);
+        if (prevDoc == null) {
+            return true;
+        }
+
+        for (String dep : prevDoc.getDependencies()) {
+            try {
+                if (Utils.pythonLikeFileMTime(Paths.get(dep)) > outputMtime) {
+                    if (log.isLoggable(Level.INFO)) {
+                        log.info("Dependency changed: " + dep);
+                    }
+                    return true;
+                }
+            } catch (IOException e) {
+                if (log.isLoggable(Level.INFO)) {
+                    log.info("ERROR: Dependency missing or unreadable: " + dep);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void recordPrimaryDocument(String inputFile, String outputFile, boolean skipped) {
         if (isDisabled()) {
             return;
@@ -117,8 +154,13 @@ public class BuildCacheManager {
         newDoc.setOutputFile(outputFile);
         if (skipped) {
             PrimaryDocumentInfo oldDoc = previousCache.getPrimaryDocuments().get(inputFile);
-            if (oldDoc != null && oldDoc.getDerivedDocuments() != null) {
-                newDoc.getDerivedDocuments().addAll(oldDoc.getDerivedDocuments());
+            if (oldDoc != null) {
+                if (oldDoc.getDerivedDocuments() != null) {
+                    newDoc.getDerivedDocuments().addAll(oldDoc.getDerivedDocuments());
+                }
+                if (oldDoc.getDependencies() != null) {
+                    newDoc.getDependencies().addAll(oldDoc.getDependencies());
+                }
             }
         }
     }

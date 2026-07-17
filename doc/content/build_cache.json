@@ -1,5 +1,5 @@
 {
-  "arg_file_mtime": 1769298886.9993494,
+  "arg_file_mtime": 1769776271.7321725,
   "primary_documents": {
     "readme.txt": {
       "output_file": "readme.html"
@@ -17,10 +17,16 @@
       "output_file": "doc/content/sections/usage.html"
     },
     "doc_src/sections/page_content.txt": {
-      "output_file": "doc/content/sections/page_content.html"
+      "output_file": "doc/content/sections/page_content.html",
+      "dependencies": [
+        "doc_src/parts/page_content.txt"
+      ]
     },
     "doc_src/sections/page_content_dark.txt": {
-      "output_file": "doc/content/sections/page_content_dark.html"
+      "output_file": "doc/content/sections/page_content_dark.html",
+      "dependencies": [
+        "doc_src/parts/page_content.txt"
+      ]
     },
     "doc_src/sections/templates.txt": {
       "output_file": "doc/content/sections/templates.html"
@@ -30,6 +36,9 @@
       "derived_documents": [
         "doc/content/code/hello/Main.java.html",
         "doc/content/code/hello/geometric_distribution.r.html"
+      ],
+      "dependencies": [
+        "sample_code/hello/Main.java"
       ]
     },
     "doc_src/sections/reference.txt": {

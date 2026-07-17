@@ -1,0 +1,24 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BuildCacheIncludeDependencyTest/template.html",
+        "verbose": false,
+        "link-css": ["common_styles.css"]
+    },
+    "documents": [
+        { "input": "unchanged.txt" },
+        { "input": "page_a.txt" },
+        { "input": "page_b.txt" }
+    ],
+    "plugins": {
+        "include-file": [
+            {
+                "markers": ["include_shared"],
+                "root-dir": "test_output/common/BuildCacheIncludeDependencyE2eTest/",
+                "recursive": true
+            }
+        ]
+    }
+}

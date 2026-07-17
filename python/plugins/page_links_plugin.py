@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
@@ -12,7 +12,7 @@ class PageLinksPlugin(Md2HtmlPlugin):
     def __init__(self):
         super().__init__()
         self.markers: List[str] = []
-        self.page_links_handlers: List[PageLinkMetadataHandler] = []
+        self.page_links_handlers: List[Tuple[PageLinkMetadataHandler, str, bool]] = []
 
     def accept_data(self, data):
         self.assure_accept_data_once()

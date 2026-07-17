@@ -1,5 +1,6 @@
 import unittest
 
+from build_cache import get_empty_build_cache
 from md2html import *
 from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.include_file_plugin import IncludeFilePlugin
@@ -11,6 +12,16 @@ THIS_DIR = relative_to_current_dir(Path(__file__).parent)
 
 def _find_single_plugin(plugins) -> IncludeFilePlugin:
     return find_single_instance_of_type(plugins, IncludeFilePlugin)
+
+
+def _activate_build_cache_for_test():
+    build_cache_manager.previous_cache = get_empty_build_cache(230)
+    build_cache_manager.current_cache = get_empty_build_cache(230)
+
+
+def _deactivate_build_cache_for_test():
+    build_cache_manager.previous_cache = None
+    build_cache_manager.current_cache = None
 
 
 class IncludeFilePluginTest(unittest.TestCase):
@@ -300,3 +311,60 @@ class IncludeFilePluginTest(unittest.TestCase):
         processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 1, [[text 2]] after", processed_page)
 
+    def test_records_include_dependencies(self):
+        root_dir = THIS_DIR + 'for_include_file_plugin_test/'
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "page.txt", "output": "page.html"}], '
+            '"plugins": {'
+            '"include-file": ['
+            '    {"markers": ["marker1"], '
+            '     "root-dir": "' + root_dir + '"}'
+            ']}}')
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        _activate_build_cache_for_test()
+        try:
+            build_cache_manager.record_primary_document(doc.input_file, doc.output_file, False)
+            apply_metadata_handlers('before <!--marker1 code1.txt --> after',
+                                    metadata_handlers, doc)
+
+            dependencies = build_cache_manager.current_cache['primary_documents']['page.txt'][
+                'dependencies']
+            self.assertEqual({root_dir + 'code1.txt'}, dependencies)
+        finally:
+            _deactivate_build_cache_for_test()
+
+    def test_records_recursive_include_dependencies(self):
+        root_dir = THIS_DIR + 'for_include_file_plugin_test/'
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "page.txt", "output": "page.html"}], '
+            '"plugins": {'
+            '"include-file": ['
+            '    {"markers": ["include"], '
+            '     "root-dir": "' + root_dir + '",'
+            '     "recursive": true}'
+            ']}}')
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
+        doc = args.documents[0]
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        _activate_build_cache_for_test()
+        try:
+            build_cache_manager.record_primary_document(doc.input_file, doc.output_file, False)
+            apply_metadata_handlers('before <!--include recursive1.txt --> after',
+                                    metadata_handlers, doc)
+
+            dependencies = build_cache_manager.current_cache['primary_documents']['page.txt'][
+                'dependencies']
+            self.assertEqual({
+                root_dir + 'recursive1.txt',
+                root_dir + 'recursive.txt',
+            }, dependencies)
+        finally:
+            _deactivate_build_cache_for_test()
+
+
+if __name__ == '__main__':
+    unittest.main()
