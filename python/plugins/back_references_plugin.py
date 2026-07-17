@@ -21,7 +21,7 @@ DEF_METADATA_PATTERN = re.compile(r'([^\s]+)\s+(.*)')
 
 def parse_ref_metadata(metadata):
     fields = metadata.split()
-    if 1 > len(fields) > 2:
+    if not 1 <= len(fields) <= 2:
         raise UserError(f"Metadata error: '{metadata}' - should contain 1 or 2 fields "
                         f"(source code and optionally format name) separated by spaces.")
     source_code = fields[0]
