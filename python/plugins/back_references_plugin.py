@@ -1,8 +1,10 @@
 import itertools
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Union
+from typing import Dict, List, Union
 
+from build_cache import build_cache_manager
 from models.document import Document
 from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from utils import UserError, relativize_relative_resource, UniqueIndexer, VariableReplacer
@@ -17,6 +19,25 @@ DEFAULT_REF_TEMPLATE = "${3}<sup><a class=\"ref\" href=\"${2}\">[${1}]</a></sup>
 DEFAULT_BACK_REF_TEMPLATE = "<a class=\"ref\" href=\"${1}\">${2}</a>"
 
 DEF_METADATA_PATTERN = re.compile(r'([^\s]+)\s+(.*)')
+
+
+@dataclass(frozen=True)
+class PageLocation:
+    input_file: str
+    output_file: str
+
+
+@dataclass(frozen=True)
+class SourceDefinition:
+    page: PageLocation
+    anchor_id: str
+    ref_content: str
+
+
+@dataclass(frozen=True)
+class SourceReference:
+    page: PageLocation
+    anchor_id: str
 
 
 def parse_ref_metadata(metadata):
@@ -47,14 +68,28 @@ def find_replacer(replacers, format_name):
     return replacer
 
 
+def _normalize_dependency_path(path: str) -> str:
+    return path.replace("\\", "/")
+
+
+def _page_location(doc: Document) -> PageLocation:
+    return PageLocation(
+        _normalize_dependency_path(doc.input_file),
+        _normalize_dependency_path(doc.output_file),
+    )
+
+
+def _record_dependency_pair(ref: PageLocation, def_: PageLocation):
+    build_cache_manager.record_dependency(ref.input_file, def_.input_file)
+    build_cache_manager.record_dependency(def_.input_file, ref.input_file)
+
+
 class BackReferencesPlugin(Md2HtmlPlugin):
 
     def __init__(self):
         super().__init__()
-        # Maps source_code -> (defining_page_output_file, anchor_id, ref_content)
-        self.source_definitions: Dict[str, tuple] = {}
-        # Maps source_code -> list of (referencing_page_output_file, anchor_id)
-        self.source_references: Dict[str, list] = {}
+        self.source_definitions: Dict[str, SourceDefinition] = {}
+        self.source_references: Dict[str, List[SourceReference]] = {}
         self.def_markers = []
         self.ref_markers = []
         self.code_prefix = "backref_"
@@ -116,13 +151,16 @@ class BackReferencesPlugin(Md2HtmlPlugin):
                              ) -> MetadataProcessingResult:
         marker = marker.upper()
 
+        # TODO Consider defining separate metadata handlers for `def_markers` and `ref_markers`.
+        #  This will make the methods smaller and avoid the lookups.
         if marker in self.def_markers:
             source_code, ref_content = parse_def_metadata(metadata)
             if phase == 1:
                 if source_code in self.source_definitions:
                     raise UserError(f"Source '{source_code}' is defined multiple times")
                 anchor_id = self.code_prefix + "def_" + source_code
-                self.source_definitions[source_code] = (doc.output_file, anchor_id, ref_content)
+                self.source_definitions[source_code] = SourceDefinition(_page_location(doc),
+                                                                        anchor_id, ref_content)
                 return MetadataProcessingResult(anchor_id, defer=True)
             elif phase == 2:
                 anchor_id = data_from_prev_phase
@@ -130,25 +168,29 @@ class BackReferencesPlugin(Md2HtmlPlugin):
                 back_ref_list = []
                 back_ref_index = 0
                 back_ref_replacer = find_replacer(self.back_ref_templates, "")
-                for ref_page, anchor in back_refs:
+                for ref in back_refs:
                     back_ref_index += 1
-                    ref_link = relativize_relative_resource(ref_page, doc.output_file)
+                    ref_link = relativize_relative_resource(ref.page.output_file, doc.output_file)
                     back_ref_list.append(back_ref_replacer.replace(
-                        [f"{ref_link}#{anchor}", str(back_ref_index)]))
+                        [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
                 back_ref_html = ", ".join(back_ref_list)
                 replacer = find_replacer(self.refdef_templates, "")
                 return MetadataProcessingResult(replacer.replace([
                     source_code, anchor_id, back_ref_html, ref_content]))
+            else:
+                raise Exception(f"Unknown phase: '{phase}'")
 
         elif marker in self.ref_markers:
             source_code, format_name = parse_ref_metadata(metadata)
             if phase == 1:
                 ref_anchor_id = self.code_prefix + "ref_" + source_code
                 ref_anchor_id = self.unique_indexer.get_unique(ref_anchor_id)
+                ref_page = _page_location(doc)
 
                 if source_code not in self.source_references:
                     self.source_references[source_code] = []
-                self.source_references[source_code].append((doc.output_file, ref_anchor_id))
+                self.source_references[source_code].append(SourceReference(ref_page,
+                                                                           ref_anchor_id))
 
                 if source_code in self.source_definitions:
                     return MetadataProcessingResult(
@@ -162,14 +204,22 @@ class BackReferencesPlugin(Md2HtmlPlugin):
                     raise UserError(f"Source '{source_code}' referenced but not defined")
                 return MetadataProcessingResult(
                         self._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
+            else:
+                raise Exception(f"Unknown phase: '{phase}'")
+        else:
+            raise Exception(f"Unknown marker: '{marker}'")
 
     def new_page(self, doc: Document):
         self.unique_indexer = UniqueIndexer()
 
-    def _generate_ref_html(self, source_code, ref_anchor_id, doc, format_name):
-        def_page, def_anchor_id, ref_content = self.source_definitions[source_code]
-        link = relativize_relative_resource(def_page, doc.output_file)
-        replacer = find_replacer(self.ref_templates, format_name)
-        return replacer.replace([source_code, ref_anchor_id, f"{link}#{def_anchor_id}",
-                                 ref_content])
+    def finalize(self):
+        for source_code, definition in self.source_definitions.items():
+            for ref in self.source_references.get(source_code, []):
+                _record_dependency_pair(ref.page, definition.page)
 
+    def _generate_ref_html(self, source_code, ref_anchor_id, doc, format_name):
+        definition = self.source_definitions[source_code]
+        link = relativize_relative_resource(definition.page.output_file, doc.output_file)
+        replacer = find_replacer(self.ref_templates, format_name)
+        return replacer.replace([source_code, ref_anchor_id, f"{link}#{definition.anchor_id}",
+                                 definition.ref_content])
