@@ -16,9 +16,9 @@ MODULE_DIR = Path(__file__).resolve().parent
 
 DEFAULT_DEF_MARKERS = ["REFDEF"]
 DEFAULT_REF_MARKERS = ["REF"]
-DEFAULT_REFDEF_TEMPLATE = "<a name=\"${1}\"></a><span class=\"ref-def\">[${1}]</span>" \
-                          "<sup>${2}</sup> ${3}"
-DEFAULT_REF_TEMPLATE = "${3}<sup><a class=\"ref\" href=\"${2}\">[${1}]</a></sup>"
+DEFAULT_REFDEF_TEMPLATE = """<a name="${2}"></a><span class="ref-def">[${1}]</span> ${4}""" \
+                          "<sup>${3}</sup>"
+DEFAULT_REF_TEMPLATE = """${4}<sup><a name="${2}"></a><a class="ref" href="${3}">[${1}]</a></sup>"""
 DEFAULT_BACK_REF_TEMPLATE = "<a class=\"ref\" href=\"${1}\">${2}</a>"
 
 DEF_METADATA_PATTERN = re.compile(r'([^\s]+)\s+(.*)')
@@ -171,7 +171,7 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         self._set_templates(data)
 
     def _set_templates(self, data):
-        default_refdef_template = data.get("refdef-template")
+        default_refdef_template = data.get("def-template")
         self.def_templates[""] = VariableReplacer(
             default_refdef_template if default_refdef_template else DEFAULT_REFDEF_TEMPLATE)
         default_ref_template = data.get("ref-template")

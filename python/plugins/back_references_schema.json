@@ -5,7 +5,7 @@
         "def-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
         "ref-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
         "code-prefix": { "type": "string" },
-        "refdef-template": { "type": "string" },
+        "def-template": { "type": "string" },
         "ref-template": { "type": "string" },
         "back-ref-template": { "type": "string" },
         "cache": { "type": "string" },
