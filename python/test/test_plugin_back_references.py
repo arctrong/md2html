@@ -101,8 +101,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         plugin.accept_page_metadata(
             page1_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
 
-        refs = plugin.references.get('foo', [])
-        referencer_inputs = {ref.page.input_file for ref in refs}
+        referencer_inputs = set(plugin.references.get('foo', {}).keys())
         self.assertEqual(referencer_inputs, {'page_01.txt', 'page_02.txt'})
 
     def test_ref_cache_new_page_clears_only_current_page(self):
@@ -128,8 +127,9 @@ class BackReferencesPluginTest(unittest.TestCase):
         plugin.new_page(page1_doc)
 
         self.assertNotIn('page_01.txt', plugin.backrefs_cache.get('foo', {}))
-        self.assertEqual(len(plugin.references.get('foo', [])), 1)
-        self.assertEqual(plugin.references['foo'][0].page.input_file, 'page_02.txt')
+        refs_by_page = plugin.references.get('foo', {})
+        self.assertEqual(set(refs_by_page.keys()), {'page_02.txt'})
+        self.assertEqual(len(refs_by_page['page_02.txt']), 1)
 
     def test_new_page_with_no_input_file_skips_cache_reset(self):
         plugin = _plugin_with_cache(self.temp_dir)
@@ -145,7 +145,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         plugin.new_page(index_doc)
 
         self.assertIn('foo', plugin.backrefs_cache)
-        self.assertEqual(len(plugin.references.get('foo', [])), 1)
+        self.assertEqual(len(plugin.references.get('foo', {})), 1)
 
     def test_ref_cache_finalize_writes_file(self):
         plugin = _plugin_with_cache(self.temp_dir)
@@ -198,7 +198,7 @@ class BackReferencesPluginTest(unittest.TestCase):
 
         self.assertIn('foo', plugin.backrefs_cache)
         self.assertNotIn('bar', plugin.backrefs_cache)
-        self.assertEqual(len(plugin.references.get('foo', [])), 1)
+        self.assertEqual(len(plugin.references.get('foo', {})), 1)
 
     def test_ref_cache_groups_multiple_anchors_on_same_page(self):
         plugin = _plugin_with_cache(self.temp_dir)

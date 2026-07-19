@@ -131,7 +131,7 @@ class BackReferencesPlugin(Md2HtmlPlugin):
     def __init__(self):
         super().__init__()
         self.definitions: Dict[str, Definition] = {}
-        self.references: Dict[str, List[Reference]] = {}
+        self.references: Dict[str, Dict[str, List[Reference]]] = {}
         self.def_markers = []
         self.ref_markers = []
         self.code_prefix = "backref_"
@@ -230,15 +230,16 @@ class BackReferencesPlugin(Md2HtmlPlugin):
                 return MetadataProcessingResult(anchor_id, defer=True)
             elif phase == 2:
                 anchor_id = data_from_prev_phase
-                back_refs = self.references.get(source_code, [])
                 back_ref_list = []
                 back_ref_index = 0
                 back_ref_replacer = find_replacer(self.back_ref_templates, "")
-                for ref in back_refs:
-                    back_ref_index += 1
-                    ref_link = relativize_relative_resource(ref.page.output_file, doc.output_file)
-                    back_ref_list.append(back_ref_replacer.replace(
-                        [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
+                for refs in self.references.get(source_code, {}).values():
+                    for ref in refs:
+                        back_ref_index += 1
+                        ref_link = relativize_relative_resource(
+                            ref.page.output_file, doc.output_file)
+                        back_ref_list.append(back_ref_replacer.replace(
+                            [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
                 back_ref_html = ", ".join(back_ref_list)
                 replacer = find_replacer(self.def_templates, "")
                 return MetadataProcessingResult(replacer.replace([
@@ -287,8 +288,9 @@ class BackReferencesPlugin(Md2HtmlPlugin):
 
     def finalize(self):
         for source_code, definition in self.definitions.items():
-            for ref in self.references.get(source_code, []):
-                _record_dependency_pair(ref.page, definition.page)
+            for refs in self.references.get(source_code, {}).values():
+                for ref in refs:
+                    _record_dependency_pair(ref.page, definition.page)
 
         if self.backrefs_cache_file:
             self._save_backrefs_cache()
@@ -333,10 +335,13 @@ class BackReferencesPlugin(Md2HtmlPlugin):
 
     def _populate_references_from_cache(self, references):
         for source_code, referencing_pages in self.backrefs_cache.items():
-            for referencing_page in referencing_pages.values():
+            by_page = references.setdefault(source_code, {})
+            for input_file, referencing_page in referencing_pages.items():
                 page = _page_location_from_cache_ref_item(referencing_page)
-                for anchor_id in referencing_page['anchor_ids']:
-                    references.setdefault(source_code, []).append(Reference(page, anchor_id))
+                by_page[input_file] = [
+                    Reference(page, anchor_id)
+                    for anchor_id in referencing_page['anchor_ids']
+                ]
 
     def _remove_page_from_definitions(self, page_input: str):
         for source_code in self._reverse_map_definitions_by_page.pop(page_input, ()):
@@ -349,25 +354,21 @@ class BackReferencesPlugin(Md2HtmlPlugin):
     def _remove_referencing_page_from_source(self, source_code: str, page_input: str):
         references = self.references.get(source_code)
         if references is not None:
-            references = [
-                reference for reference in references
-                if reference.page.input_file != page_input
-            ]
-            if references:
-                self.references[source_code] = references
-            else:
+            references.pop(page_input, None)
+            if not references:
                 del self.references[source_code]
 
         if self._backrefs_cache_enabled():
-            by_page = self.backrefs_cache.get(source_code)
-            if by_page is not None:
-                by_page.pop(page_input, None)
-                if not by_page:
+            cache_references = self.backrefs_cache.get(source_code)
+            if cache_references is not None:
+                cache_references.pop(page_input, None)
+                if not cache_references:
                     del self.backrefs_cache[source_code]
 
     def _add_reference(self, source_code: str, ref_page: PageLocation, ref_anchor_id: str):
         reference = Reference(ref_page, ref_anchor_id)
-        self.references.setdefault(source_code, []).append(reference)
+        self.references.setdefault(source_code, {}).setdefault(
+            ref_page.input_file, []).append(reference)
         self._reverse_map_references_by_page.setdefault(
             ref_page.input_file, set()).add(source_code)
 
