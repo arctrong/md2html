@@ -96,8 +96,11 @@ def _record_dependency_pair(ref: PageLocation, def_: PageLocation):
 
 def _prepare_cache_for_save(by_page_cache: Dict[str, Dict[str, dict]]) -> dict:
     lists_cache = {}
-    for source_code, by_page in by_page_cache.items():
-        lists_cache[source_code] = list(by_page.values())
+    for source_code in sorted(by_page_cache.keys()):
+        by_page = by_page_cache[source_code]
+        lists_cache[source_code] = [
+            by_page[input_file] for input_file in sorted(by_page.keys())
+        ]
     return lists_cache
 
 

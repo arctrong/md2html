@@ -10,7 +10,7 @@ from models.document import Document
 from models.options import Options
 from page_metadata_utils import apply_metadata_handlers, join_parsing_results
 from plugins.back_references_plugin import BackReferencesPlugin, _normalize_loaded_cache, \
-    _build_reverse_map_references_by_page_from_cache
+    _build_reverse_map_references_by_page_from_cache, _prepare_cache_for_save
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
@@ -212,6 +212,47 @@ class BackReferencesPluginTest(unittest.TestCase):
         record = plugin.backrefs_cache['foo']['page_01.txt']
         self.assertEqual(record['input_file'], 'page_01.txt')
         self.assertEqual(len(record['anchor_ids']), 2)
+
+    def test_prepare_cache_for_save_sorts_sources_and_pages(self):
+        saved = _prepare_cache_for_save({
+            'zebra': {
+                'page_b.txt': {
+                    'input_file': 'page_b.txt',
+                    'output_file': 'doc/page_b.html',
+                    'anchor_ids': ['ref_b1', 'ref_b2'],
+                },
+                'page_a.txt': {
+                    'input_file': 'page_a.txt',
+                    'output_file': 'doc/page_a.html',
+                    'anchor_ids': ['ref_a1'],
+                },
+            },
+            'alpha': {
+                'page_02.txt': {
+                    'input_file': 'page_02.txt',
+                    'output_file': 'doc/page_02.html',
+                    'anchor_ids': ['ref_2'],
+                },
+                'page_01.txt': {
+                    'input_file': 'page_01.txt',
+                    'output_file': 'doc/page_01.html',
+                    'anchor_ids': ['ref_1a', 'ref_1b'],
+                },
+            },
+        })
+
+        self.assertEqual(list(saved.keys()), ['alpha', 'zebra'])
+        self.assertEqual(
+            [record['input_file'] for record in saved['alpha']],
+            ['page_01.txt', 'page_02.txt'],
+        )
+        self.assertEqual(
+            [record['input_file'] for record in saved['zebra']],
+            ['page_a.txt', 'page_b.txt'],
+        )
+        self.assertEqual(saved['alpha'][0]['anchor_ids'], ['ref_1a', 'ref_1b'])
+        self.assertEqual(saved['zebra'][0]['anchor_ids'], ['ref_a1'])
+        self.assertEqual(saved['zebra'][1]['anchor_ids'], ['ref_b1', 'ref_b2'])
 
     def test_reverse_map_references_by_page_after_cache_load(self):
         plugin = _plugin_with_cache(self.temp_dir)
