@@ -9,7 +9,8 @@ from md2html import load_json_argument_file, register_page_metadata_handlers
 from models.document import Document
 from models.options import Options
 from page_metadata_utils import apply_metadata_handlers, join_parsing_results
-from plugins.back_references_plugin import BackReferencesPlugin
+from plugins.back_references_plugin import BackReferencesPlugin, _normalize_loaded_cache, \
+    _build_reverse_map_references_by_page_from_cache
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
@@ -26,7 +27,9 @@ def _plugin_with_cache(temp_dir: str) -> BackReferencesPlugin:
 
 
 def _set_cache_referencing_pages(plugin, referencing_pages_by_source):
-    plugin.backrefs_cache = referencing_pages_by_source
+    plugin.backrefs_cache = _normalize_loaded_cache(referencing_pages_by_source)
+    plugin._reverse_map_references_by_page = _build_reverse_map_references_by_page_from_cache(
+        plugin.backrefs_cache)    
     plugin._populate_references_from_cache(plugin.references)
 
 
@@ -124,11 +127,7 @@ class BackReferencesPluginTest(unittest.TestCase):
 
         plugin.new_page(page1_doc)
 
-        page1_records = [
-            referencer for referencer in plugin.backrefs_cache.get('foo', [])
-            if referencer['input_file'] == 'page_01.txt'
-        ]
-        self.assertEqual(page1_records, [])
+        self.assertNotIn('page_01.txt', plugin.backrefs_cache.get('foo', {}))
         self.assertEqual(len(plugin.references.get('foo', [])), 1)
         self.assertEqual(plugin.references['foo'][0].page.input_file, 'page_02.txt')
 
@@ -191,8 +190,10 @@ class BackReferencesPluginTest(unittest.TestCase):
         refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
         page_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         plugin.accept_document_list([refs_doc, page_doc])
-        plugin._load_ref_cache()
+        plugin._load_backrefs_cache()
         plugin._prune_backrefs_cache()
+        plugin._reverse_map_references_by_page = _build_reverse_map_references_by_page_from_cache(
+            plugin.backrefs_cache)
         plugin._populate_references_from_cache(plugin.references)
 
         self.assertIn('foo', plugin.backrefs_cache)
@@ -208,9 +209,54 @@ class BackReferencesPluginTest(unittest.TestCase):
         plugin.accept_page_metadata(page_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
         plugin.accept_page_metadata(page_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
 
-        record = plugin.backrefs_cache['foo'][0]
+        record = plugin.backrefs_cache['foo']['page_01.txt']
         self.assertEqual(record['input_file'], 'page_01.txt')
         self.assertEqual(len(record['anchor_ids']), 2)
+
+    def test_reverse_map_references_by_page_after_cache_load(self):
+        plugin = _plugin_with_cache(self.temp_dir)
+        cache_path = Path(plugin.backrefs_cache_file)
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(cache_path, 'w', encoding='utf-8') as file:
+            json.dump({
+                'foo': [
+                    {
+                        'input_file': 'page_01.txt',
+                        'output_file': 'doc/page_01.html',
+                        'anchor_ids': ['a1'],
+                    },
+                    {
+                        'input_file': 'page_02.txt',
+                        'output_file': 'doc/page_02.html',
+                        'anchor_ids': ['a2'],
+                    },
+                ],
+            }, file)
+
+        plugin._load_backrefs_cache()
+        plugin._reverse_map_references_by_page = _build_reverse_map_references_by_page_from_cache(
+            plugin.backrefs_cache)
+
+        self.assertEqual(plugin._reverse_map_references_by_page['page_01.txt'], {'foo'})
+        self.assertEqual(plugin._reverse_map_references_by_page['page_02.txt'], {'foo'})
+
+    def test_reverse_map_definitions_by_page_on_new_page(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({})
+        refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
+
+        plugin.new_page(refs_doc)
+        plugin.accept_page_metadata(
+            refs_doc, 'REFDEF', 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        plugin.accept_page_metadata(
+            refs_doc, 'REFDEF', 'bar Bar display', '<!--REFDEF bar Bar display-->', phase=1)
+
+        self.assertEqual(plugin._reverse_map_definitions_by_page['refs.txt'], {'foo', 'bar'})
+
+        plugin.new_page(refs_doc)
+
+        self.assertNotIn('refs.txt', plugin._reverse_map_definitions_by_page)
+        self.assertEqual(plugin.definitions, {})
 
     @patch('plugins.back_references_plugin.build_cache_manager')
     def test_refdef_phase2_uses_cached_references_from_skipped_page(self, mock_cache_manager):
