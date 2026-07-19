@@ -2,12 +2,13 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
-        "refdef-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
+        "def-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
         "ref-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
         "code-prefix": { "type": "string" },
         "refdef-template": { "type": "string" },
         "ref-template": { "type": "string" },
         "back-ref-template": { "type": "string" },
+        "cache": { "type": "string" },
         "formats": {
             "type": "object",
             "patternProperties": {

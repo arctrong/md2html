@@ -81,9 +81,6 @@ def md2html(document, plugins, metadata_handlers, deferred_pages):
 def md2html_phase2(arguments, deferred_pages):
     for output_file, (document, apply_metadata_result) in deferred_pages.items():
         try:
-            for plugin in arguments.plugins:
-                plugin.new_page(document)
-
             md_lines = join_parsing_results(apply_metadata_result.parsingResults,
                                             arguments.metadata_handlers, document)
             MARKDOWN.reset()

@@ -1,11 +1,14 @@
 import itertools
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Set, Union
 
 from build_cache import build_cache_manager
 from models.document import Document
+from models.options import Options
+from models.page_metadata_handlers import PageMetadataHandlers
 from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from utils import UserError, relativize_relative_resource, UniqueIndexer, VariableReplacer
 
@@ -28,14 +31,14 @@ class PageLocation:
 
 
 @dataclass(frozen=True)
-class SourceDefinition:
+class Definition:
     page: PageLocation
     anchor_id: str
     ref_content: str
 
 
 @dataclass(frozen=True)
-class SourceReference:
+class Reference:
     page: PageLocation
     anchor_id: str
 
@@ -72,10 +75,17 @@ def _normalize_dependency_path(path: str) -> str:
     return path.replace("\\", "/")
 
 
-def _page_location(doc: Document) -> PageLocation:
+def _page_location_from_doc(doc: Document) -> PageLocation:
     return PageLocation(
         _normalize_dependency_path(doc.input_file),
         _normalize_dependency_path(doc.output_file),
+    )
+
+
+def _page_location_from_cache_ref_item(record: dict) -> PageLocation:
+    return PageLocation(
+        _normalize_dependency_path(record['input_file']),
+        _normalize_dependency_path(record['output_file']),
     )
 
 
@@ -88,15 +98,18 @@ class BackReferencesPlugin(Md2HtmlPlugin):
 
     def __init__(self):
         super().__init__()
-        self.source_definitions: Dict[str, SourceDefinition] = {}
-        self.source_references: Dict[str, List[SourceReference]] = {}
+        self.definitions: Dict[str, Definition] = {}
+        self.references: Dict[str, List[Reference]] = {}
         self.def_markers = []
         self.ref_markers = []
         self.code_prefix = "backref_"
-        self.refdef_templates: Dict[str, VariableReplacer] = {}    # format -> template
+        self.def_templates: Dict[str, VariableReplacer] = {}    # format -> template
         self.ref_templates: Dict[str, VariableReplacer] = {}       # format -> template
         self.back_ref_templates: Dict[str, VariableReplacer] = {}  # format -> template
-        self.unique_indexer: Union[UniqueIndexer, None] = None
+        self.unique_indexer: Optional[UniqueIndexer] = None
+        self.backrefs_cache_file: Optional[str] = None
+        self.backrefs_cache: Dict[str, List[dict]] = {}
+        self._document_inputs: Set[str] = set()
 
     def accept_data(self, data):
         self.assure_accept_data_once()
@@ -113,11 +126,15 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         if code_prefix:
             self.code_prefix = code_prefix
 
+        raw_backrefs_cache_file = data.get("cache")
+        if raw_backrefs_cache_file:
+            self.backrefs_cache_file = raw_backrefs_cache_file.replace('\\', '/')
+
         self._set_templates(data)
 
     def _set_templates(self, data):
         default_refdef_template = data.get("refdef-template")
-        self.refdef_templates[""] = VariableReplacer(
+        self.def_templates[""] = VariableReplacer(
             default_refdef_template if default_refdef_template else DEFAULT_REFDEF_TEMPLATE)
         default_ref_template = data.get("ref-template")
         self.ref_templates[""] = VariableReplacer(
@@ -130,10 +147,22 @@ class BackReferencesPlugin(Md2HtmlPlugin):
             for format_code, formats in template_formats.items():
                 for template_code, template in formats.items():
                     # There's only one template that may have alternative formats.
-                    # For others it looks like not making sense. But if in future we need to add
+                    # For others, it looks like not making sense. But if in future we need to add
                     # other templates, this will be easy to do.
                     if template_code == "ref-template":
                         self.ref_templates[format_code] = VariableReplacer(template)
+
+    def accept_document_list(self, docs: List[Document]):
+        self._document_inputs = {
+            _normalize_dependency_path(document.input_file) for document in docs
+        }
+
+    def accept_app_data(self, plugins: list, options: Options,
+                        metadata_handlers: PageMetadataHandlers):
+        if self._backrefs_cache_enabled():
+            self._load_ref_cache()
+            self._prune_backrefs_cache()
+            self._populate_references_from_cache(self.references)
 
     def is_blank(self) -> bool:
         # This plugin has default configuration, so it should never be blank, but theoretically
@@ -156,15 +185,15 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         if marker in self.def_markers:
             source_code, ref_content = parse_def_metadata(metadata)
             if phase == 1:
-                if source_code in self.source_definitions:
+                if source_code in self.definitions:
                     raise UserError(f"Source '{source_code}' is defined multiple times")
                 anchor_id = self.code_prefix + "def_" + source_code
-                self.source_definitions[source_code] = SourceDefinition(_page_location(doc),
-                                                                        anchor_id, ref_content)
+                definition = Definition(_page_location_from_doc(doc), anchor_id, ref_content)
+                self.definitions[source_code] = definition
                 return MetadataProcessingResult(anchor_id, defer=True)
             elif phase == 2:
                 anchor_id = data_from_prev_phase
-                back_refs = self.source_references.get(source_code, [])
+                back_refs = self.references.get(source_code, [])
                 back_ref_list = []
                 back_ref_index = 0
                 back_ref_replacer = find_replacer(self.back_ref_templates, "")
@@ -174,7 +203,7 @@ class BackReferencesPlugin(Md2HtmlPlugin):
                     back_ref_list.append(back_ref_replacer.replace(
                         [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
                 back_ref_html = ", ".join(back_ref_list)
-                replacer = find_replacer(self.refdef_templates, "")
+                replacer = find_replacer(self.def_templates, "")
                 return MetadataProcessingResult(replacer.replace([
                     source_code, anchor_id, back_ref_html, ref_content]))
             else:
@@ -185,14 +214,11 @@ class BackReferencesPlugin(Md2HtmlPlugin):
             if phase == 1:
                 ref_anchor_id = self.code_prefix + "ref_" + source_code
                 ref_anchor_id = self.unique_indexer.get_unique(ref_anchor_id)
-                ref_page = _page_location(doc)
+                ref_page = _page_location_from_doc(doc)
 
-                if source_code not in self.source_references:
-                    self.source_references[source_code] = []
-                self.source_references[source_code].append(SourceReference(ref_page,
-                                                                           ref_anchor_id))
+                self._store_reference(source_code, ref_page, ref_anchor_id)
 
-                if source_code in self.source_definitions:
+                if source_code in self.definitions:
                     return MetadataProcessingResult(
                         self._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
                 else:
@@ -200,7 +226,7 @@ class BackReferencesPlugin(Md2HtmlPlugin):
 
             elif phase == 2:
                 ref_anchor_id = data_from_prev_phase
-                if source_code not in self.source_definitions:
+                if source_code not in self.definitions:
                     raise UserError(f"Source '{source_code}' referenced but not defined")
                 return MetadataProcessingResult(
                         self._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
@@ -211,15 +237,132 @@ class BackReferencesPlugin(Md2HtmlPlugin):
 
     def new_page(self, doc: Document):
         self.unique_indexer = UniqueIndexer()
+        if doc.input_file is None:
+            return
+        page_input = _normalize_dependency_path(doc.input_file)
+        self._remove_page_from_definitions(page_input)
+        self._remove_referencing_page_from_cache(page_input)
+        self._remove_referencing_page_from_references(page_input)
 
     def finalize(self):
-        for source_code, definition in self.source_definitions.items():
-            for ref in self.source_references.get(source_code, []):
+        for source_code, definition in self.definitions.items():
+            for ref in self.references.get(source_code, []):
                 _record_dependency_pair(ref.page, definition.page)
 
+        if self.backrefs_cache_file:
+            self._save_backrefs_cache()
+            build_cache_manager.record_standalone_derived_document(self.backrefs_cache_file)
+
     def _generate_ref_html(self, source_code, ref_anchor_id, doc, format_name):
-        definition = self.source_definitions[source_code]
+        definition = self.definitions[source_code]
         link = relativize_relative_resource(definition.page.output_file, doc.output_file)
         replacer = find_replacer(self.ref_templates, format_name)
         return replacer.replace([source_code, ref_anchor_id, f"{link}#{definition.anchor_id}",
                                  definition.ref_content])
+
+    def _backrefs_cache_enabled(self) -> bool:
+        return self.backrefs_cache_file is not None
+
+    def _load_ref_cache(self):
+        cache_file = Path(self.backrefs_cache_file)
+        if cache_file.exists():
+            with open(cache_file, 'r', encoding="utf-8") as file:
+                data = json.load(file)
+            self.backrefs_cache = _normalize_loaded_cache(data)
+        else:
+            self.backrefs_cache = {}
+
+    def _save_backrefs_cache(self):
+        cache_file = Path(self.backrefs_cache_file)
+        cache_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(cache_file, 'w', encoding="utf-8") as file:
+            json.dump(self.backrefs_cache, file, indent=2)
+
+    def _prune_backrefs_cache(self):
+        pruned = {}
+        for source_code, referencing_pages in self.backrefs_cache.items():
+            kept = [
+                referencing_page for referencing_page in referencing_pages
+                if referencing_page['input_file'] in self._document_inputs
+            ]
+            if kept:
+                pruned[source_code] = kept
+        self.backrefs_cache = pruned
+
+    def _populate_references_from_cache(self, references):
+        for source_code, referencing_pages in self.backrefs_cache.items():
+            for referencing_page in referencing_pages:
+                page = _page_location_from_cache_ref_item(referencing_page)
+                for anchor_id in referencing_page['anchor_ids']:
+                    references.setdefault(source_code, []).append(Reference(page, anchor_id))
+
+    def _remove_page_from_definitions(self, page_input: str):
+        for source_code, definition in list(self.definitions.items()):
+            if definition.page.input_file == page_input:
+                del self.definitions[source_code]
+
+    def _remove_referencing_page_from_cache(self, page_input: str):
+        if not self._backrefs_cache_enabled():
+            return
+        for source_code, referencing_pages in list(self.backrefs_cache.items()):
+            referencing_pages = [
+                referencing_page for referencing_page in referencing_pages
+                if referencing_page['input_file'] != page_input
+            ]
+            if referencing_pages:
+                self.backrefs_cache[source_code] = referencing_pages
+            else:
+                del self.backrefs_cache[source_code]
+
+    def _remove_referencing_page_from_references(self, page_input: str):
+        for source_code, references in list(self.references.items()):
+            references = [
+                reference for reference in references
+                if reference.page.input_file != page_input
+            ]
+            if references:
+                self.references[source_code] = references
+            else:
+                del self.references[source_code]
+
+    def _store_reference(self, source_code: str, ref_page: PageLocation, ref_anchor_id: str):
+        reference = Reference(ref_page, ref_anchor_id)
+        self.references.setdefault(source_code, []).append(reference)
+        if not self._backrefs_cache_enabled():
+            return
+        referencing_pages = self.backrefs_cache.setdefault(source_code, [])
+        for referencing_page in referencing_pages:
+            if referencing_page['input_file'] == ref_page.input_file:
+                referencing_page['anchor_ids'].append(ref_anchor_id)
+                return
+        referencing_pages.append({
+            'input_file': ref_page.input_file,
+            'output_file': ref_page.output_file,
+            'anchor_ids': [ref_anchor_id],
+        })
+
+
+def _normalize_loaded_cache(data: dict) -> Dict[str, List[dict]]:
+    if not isinstance(data, dict):
+        return {}
+    normalized = {}
+    for source_code, referencing_pages in data.items():
+        if not isinstance(referencing_pages, list):
+            continue
+        source_entries = []
+        for referencing_page in referencing_pages:
+            if not isinstance(referencing_page, dict):
+                continue
+            input_file = referencing_page.get('input_file')
+            output_file = referencing_page.get('output_file')
+            anchor_ids = referencing_page.get('anchor_ids')
+            if not input_file or not output_file or not anchor_ids:
+                continue
+            source_entries.append({
+                'input_file': _normalize_dependency_path(input_file),
+                'output_file': _normalize_dependency_path(output_file),
+                'anchor_ids': list(anchor_ids),
+            })
+        if source_entries:
+            normalized[source_code] = source_entries
+    return normalized
