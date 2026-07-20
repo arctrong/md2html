@@ -1,0 +1,23 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesPluginContentMinimalTest/template.html",
+        "verbose": false,
+        "link-css": ["common_styles.css", "test_input/BackReferencesPluginContentMinimalTest/custom.css"]
+    },
+    "documents": [
+        {
+            "input": "minimal_def.txt",
+            "output": "minimal_def.html"
+        },
+        {
+            "input": "minimal_ref.txt",
+            "output": "minimal_ref.html"
+        }
+    ],
+    "plugins": {
+        "back-references": {}
+    }
+}

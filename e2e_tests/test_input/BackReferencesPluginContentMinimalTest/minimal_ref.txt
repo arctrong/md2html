@@ -1,0 +1,3 @@
+# Referencing page
+
+See <!--ref example-->.
