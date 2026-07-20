@@ -1,6 +1,14 @@
 import os
 import re
 from pathlib import Path
+from typing import Dict, List, Union
+
+
+class _NamedPlaceholder:
+    __slots__ = ('name',)
+
+    def __init__(self, name: str):
+        self.name = name
 
 
 class UserError(Exception):
@@ -133,6 +141,23 @@ class VariableReplacerError(Exception):
     pass
 
 
+_PLACEHOLDER_NAME_PATTERN = re.compile(r'[A-Za-z_][A-Za-z0-9_]*$')
+
+
+def _parse_placeholder_token(token: str):
+    placeholder = token.strip()
+    if not placeholder:
+        raise VariableReplacerError("Empty placeholder")
+    if placeholder.isdigit():
+        index = int(placeholder)
+        if index < 1:
+            raise VariableReplacerError(f"Replacement position is less that 1: {placeholder}")
+        return index
+    if _PLACEHOLDER_NAME_PATTERN.fullmatch(placeholder):
+        return _NamedPlaceholder(placeholder)
+    raise VariableReplacerError(f"Invalid placeholder: {placeholder}")
+
+
 class VariableReplacer:
 
     TOKEN_MARKER = "$"
@@ -163,13 +188,7 @@ class VariableReplacer:
                     state = 0
             elif state == 2:
                 if char == self.TOKEN_END:
-                    index = "".join(token).strip()
-                    if not index.isdigit():
-                        raise VariableReplacerError(f"Replacement position is not a number: {index}")
-                    index = int(index)
-                    if index < 1:
-                        raise VariableReplacerError(f"Replacement position is less that 1: {index}")
-                    self.parts.append(index)
+                    self.parts.append(_parse_placeholder_token("".join(token)))
                     token = []
                     state = 0
                 else:
@@ -180,14 +199,28 @@ class VariableReplacer:
             token.append(self.TOKEN_MARKER)
         self.parts.append("".join(token))
 
-    def replace(self, substitutions: list):
+    def replace(self, substitutions: Union[List[str], Dict[str, str]]):
+        if isinstance(substitutions, dict):
+            return self._replace_named(substitutions)
+        return self._replace_positional(substitutions)
+
+    def _replace_positional(self, substitutions: List[str]):
         result = []
         for part in self.parts:
             if type(part) == int:
                 if len(substitutions) >= part:
                     result.append(substitutions[part - 1])
-            else:
+            elif isinstance(part, str):
                 result.append(part)
+        return "".join(result)
+
+    def _replace_named(self, substitutions: Dict[str, str]):
+        result = []
+        for part in self.parts:
+            if isinstance(part, str):
+                result.append(part)
+            elif isinstance(part, _NamedPlaceholder) and part.name in substitutions:
+                result.append(substitutions[part.name])
         return "".join(result)
 
 
