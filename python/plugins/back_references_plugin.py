@@ -1,4 +1,3 @@
-import itertools
 import json
 import re
 from dataclasses import dataclass
@@ -129,6 +128,86 @@ def _build_reverse_map_references_by_page_from_cache(backrefs_cache: Dict[str, D
     return reverse_map
 
 
+def _validate_marker_lists(def_markers: List[str], ref_markers: List[str]) -> None:
+    seen = set()
+    for markers in (def_markers, ref_markers):
+        for marker in markers:
+            if marker in seen:
+                raise UserError(f"Marker duplication (case-insensitively): {marker}")
+            seen.add(marker)
+
+
+class _DefMetadataHandler:
+
+    def __init__(self, plugin: 'BackReferencesPlugin'):
+        self._plugin = plugin
+
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
+        plugin = self._plugin
+        source_code, ref_content = parse_def_metadata(metadata)
+        if phase == 1:
+            if source_code in plugin.definitions:
+                raise UserError(f"Source '{source_code}' is defined multiple times")
+            anchor_id = plugin.code_prefix + "def_" + source_code
+            definition = Definition(_page_location_from_doc(doc), anchor_id, ref_content)
+            plugin._add_definition(definition, source_code)
+            return MetadataProcessingResult(anchor_id, defer=True)
+        if phase == 2:
+            anchor_id = data_from_prev_phase
+            back_ref_list = []
+            back_ref_index = 0
+            back_ref_replacer = find_replacer(plugin.back_ref_templates, "")
+            for refs in plugin.references.get(source_code, {}).values():
+                for ref in refs:
+                    back_ref_index += 1
+                    ref_link = relativize_relative_resource(
+                        ref.page.output_file, doc.output_file)
+                    back_ref_list.append(back_ref_replacer.replace(
+                        [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
+            back_ref_html = ", ".join(back_ref_list)
+            replacer = find_replacer(plugin.def_templates, "")
+            return MetadataProcessingResult(replacer.replace([
+                source_code, anchor_id, back_ref_html, ref_content]))
+        raise Exception(f"Unknown phase: '{phase}'")
+
+
+class _RefMetadataHandler:
+
+    def __init__(self, plugin: 'BackReferencesPlugin'):
+        self._plugin = plugin
+
+    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
+        plugin = self._plugin
+        source_code, format_name = parse_ref_metadata(metadata)
+        if phase == 1:
+            ref_anchor_id = plugin.code_prefix + "ref_" + source_code
+            ref_anchor_id = plugin.unique_indexer.get_unique(ref_anchor_id)
+            ref_page = _page_location_from_doc(doc)
+
+            plugin._add_reference(source_code, ref_page, ref_anchor_id)
+
+            if source_code in plugin.definitions:
+                return MetadataProcessingResult(
+                    plugin._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
+            return MetadataProcessingResult(ref_anchor_id, defer=True)
+
+        if phase == 2:
+            ref_anchor_id = data_from_prev_phase
+            if source_code not in plugin.definitions:
+                raise UserError(f"Source '{source_code}' referenced but not defined")
+            return MetadataProcessingResult(
+                plugin._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
+        raise Exception(f"Unknown phase: '{phase}'")
+
+
 class BackReferencesPlugin(Md2HtmlPlugin):
 
     def __init__(self):
@@ -153,12 +232,15 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         self.assure_accept_data_once()
         self.validate_data_with_file(data, MODULE_DIR.joinpath('back_references_schema.json'))
 
-        def_markers = data.get("def-markers")
-        self.def_markers.extend(DEFAULT_DEF_MARKERS if def_markers is None else
-                                [m.upper() for m in def_markers])
-        ref_markers = data.get("ref-markers")
-        self.ref_markers.extend(DEFAULT_REF_MARKERS if ref_markers is None else
-                                [m.upper() for m in ref_markers])
+        raw_def_markers = data.get("def-markers")
+        raw_ref_markers = data.get("ref-markers")
+        def_markers = [m.upper() for m in (
+            DEFAULT_DEF_MARKERS if raw_def_markers is None else raw_def_markers)]
+        ref_markers = [m.upper() for m in (
+            DEFAULT_REF_MARKERS if raw_ref_markers is None else raw_ref_markers)]
+        _validate_marker_lists(def_markers, ref_markers)
+        self.def_markers = def_markers
+        self.ref_markers = ref_markers
         code_prefix = data.get("code-prefix")
 
         if code_prefix:
@@ -210,72 +292,15 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         return not (bool(self.def_markers) or bool(self.ref_markers))
 
     def page_metadata_handlers(self):
-        return [(self, marker, False) for marker in itertools.chain(self.def_markers,
-                                                                    self.ref_markers)]
-
-    def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
-                             metadata_section: str,
-                             visited_markers: Union[Dict[str, None], None] = None,
-                             phase: int = 1, data_from_prev_phase=None
-                             ) -> MetadataProcessingResult:
-        marker = marker.upper()
-
-        # TODO Consider defining separate metadata handlers for `def_markers` and `ref_markers`.
-        #  This will make the methods smaller and avoid the lookups.
-        if marker in self.def_markers:
-            source_code, ref_content = parse_def_metadata(metadata)
-            if phase == 1:
-                if source_code in self.definitions:
-                    raise UserError(f"Source '{source_code}' is defined multiple times")
-                anchor_id = self.code_prefix + "def_" + source_code
-                definition = Definition(_page_location_from_doc(doc), anchor_id, ref_content)
-                self._add_definition(definition, source_code)
-                return MetadataProcessingResult(anchor_id, defer=True)
-            elif phase == 2:
-                anchor_id = data_from_prev_phase
-                back_ref_list = []
-                back_ref_index = 0
-                back_ref_replacer = find_replacer(self.back_ref_templates, "")
-                for refs in self.references.get(source_code, {}).values():
-                    for ref in refs:
-                        back_ref_index += 1
-                        ref_link = relativize_relative_resource(
-                            ref.page.output_file, doc.output_file)
-                        back_ref_list.append(back_ref_replacer.replace(
-                            [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
-                back_ref_html = ", ".join(back_ref_list)
-                replacer = find_replacer(self.def_templates, "")
-                return MetadataProcessingResult(replacer.replace([
-                    source_code, anchor_id, back_ref_html, ref_content]))
-            else:
-                raise Exception(f"Unknown phase: '{phase}'")
-
-        elif marker in self.ref_markers:
-            source_code, format_name = parse_ref_metadata(metadata)
-            if phase == 1:
-                ref_anchor_id = self.code_prefix + "ref_" + source_code
-                ref_anchor_id = self.unique_indexer.get_unique(ref_anchor_id)
-                ref_page = _page_location_from_doc(doc)
-
-                self._add_reference(source_code, ref_page, ref_anchor_id)
-
-                if source_code in self.definitions:
-                    return MetadataProcessingResult(
-                        self._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
-                else:
-                    return MetadataProcessingResult(ref_anchor_id, defer=True)
-
-            elif phase == 2:
-                ref_anchor_id = data_from_prev_phase
-                if source_code not in self.definitions:
-                    raise UserError(f"Source '{source_code}' referenced but not defined")
-                return MetadataProcessingResult(
-                        self._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
-            else:
-                raise Exception(f"Unknown phase: '{phase}'")
-        else:
-            raise Exception(f"Unknown marker: '{marker}'")
-
+        handlers = []
+        if self.def_markers:
+            def_handler = _DefMetadataHandler(self)
+            handlers.extend([(def_handler, marker, False) for marker in self.def_markers])
+        if self.ref_markers:
+            ref_handler = _RefMetadataHandler(self)
+            handlers.extend([(ref_handler, marker, False) for marker in self.ref_markers])
+        return handlers
+ 
     def _add_definition(self, definition: Definition, source_code: str):
         self.definitions[source_code] = definition
         self._reverse_map_definitions_by_page.setdefault(

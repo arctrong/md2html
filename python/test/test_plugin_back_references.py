@@ -9,8 +9,10 @@ from md2html import load_json_argument_file, register_page_metadata_handlers
 from models.document import Document
 from models.options import Options
 from page_metadata_utils import apply_metadata_handlers, join_parsing_results
-from plugins.back_references_plugin import BackReferencesPlugin, _normalize_loaded_cache, \
+from plugins.back_references_plugin import BackReferencesPlugin, _DefMetadataHandler, \
+    _RefMetadataHandler, _normalize_loaded_cache, \
     _build_reverse_map_references_by_page_from_cache, _prepare_cache_for_save
+from utils import UserError
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
@@ -31,6 +33,20 @@ def _set_cache_referencing_pages(plugin, referencing_pages_by_source):
     plugin._reverse_map_references_by_page = _build_reverse_map_references_by_page_from_cache(
         plugin.backrefs_cache)    
     plugin._populate_references_from_cache(plugin.references)
+
+
+def _accept_def_metadata(plugin, doc, metadata, metadata_section='<!--REFDEF-->', phase=1,
+                         data_from_prev_phase=None):
+    return _DefMetadataHandler(plugin).accept_page_metadata(
+        doc, 'REFDEF', metadata, metadata_section, phase=phase,
+        data_from_prev_phase=data_from_prev_phase)
+
+
+def _accept_ref_metadata(plugin, doc, metadata, metadata_section='<!--REF-->', phase=1,
+                         data_from_prev_phase=None):
+    return _RefMetadataHandler(plugin).accept_page_metadata(
+        doc, 'REF', metadata, metadata_section, phase=phase,
+        data_from_prev_phase=data_from_prev_phase)
 
 
 class BackReferencesPluginTest(unittest.TestCase):
@@ -98,8 +114,8 @@ class BackReferencesPluginTest(unittest.TestCase):
         })
 
         plugin.new_page(page1_doc)
-        plugin.accept_page_metadata(
-            page1_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
+        _accept_ref_metadata(
+            plugin, page1_doc, 'foo', '<!--REF foo-->', phase=1)
 
         referencer_inputs = set(plugin.references.get('foo', {}).keys())
         self.assertEqual(referencer_inputs, {'page_01.txt', 'page_02.txt'})
@@ -154,10 +170,10 @@ class BackReferencesPluginTest(unittest.TestCase):
         plugin.accept_document_list([refs_doc, page_doc])
 
         plugin.new_page(refs_doc)
-        plugin.accept_page_metadata(
-            refs_doc, 'REFDEF', 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
         plugin.new_page(page_doc)
-        plugin.accept_page_metadata(page_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
+        _accept_ref_metadata(plugin, page_doc, 'foo', '<!--REF foo-->', phase=1)
 
         plugin.finalize()
 
@@ -206,8 +222,8 @@ class BackReferencesPluginTest(unittest.TestCase):
         plugin.accept_document_list([page_doc])
 
         plugin.new_page(page_doc)
-        plugin.accept_page_metadata(page_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
-        plugin.accept_page_metadata(page_doc, 'REF', 'foo', '<!--REF foo-->', phase=1)
+        _accept_ref_metadata(plugin, page_doc, 'foo', '<!--REF foo-->', phase=1)
+        _accept_ref_metadata(plugin, page_doc, 'foo', '<!--REF foo-->', phase=1)
 
         record = plugin.backrefs_cache['foo']['page_01.txt']
         self.assertEqual(record['input_file'], 'page_01.txt')
@@ -287,10 +303,10 @@ class BackReferencesPluginTest(unittest.TestCase):
         refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
 
         plugin.new_page(refs_doc)
-        plugin.accept_page_metadata(
-            refs_doc, 'REFDEF', 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
-        plugin.accept_page_metadata(
-            refs_doc, 'REFDEF', 'bar Bar display', '<!--REFDEF bar Bar display-->', phase=1)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        _accept_def_metadata(
+            plugin, refs_doc, 'bar Bar display', '<!--REFDEF bar Bar display-->', phase=1)
 
         self.assertEqual(plugin._reverse_map_definitions_by_page['refs.txt'], {'foo', 'bar'})
 
@@ -322,10 +338,10 @@ class BackReferencesPluginTest(unittest.TestCase):
         })
 
         plugin.new_page(refs_doc)
-        result = plugin.accept_page_metadata(
-            refs_doc, 'REFDEF', 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
-        html = plugin.accept_page_metadata(
-            refs_doc, 'REFDEF', 'foo Foo display', '<!--REFDEF foo Foo display-->',
+        result = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        html = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->',
             phase=2, data_from_prev_phase=result.result).result
 
         self.assertIn('page_01.html#backref_ref_foo', html)
@@ -361,6 +377,18 @@ class BackReferencesPluginTest(unittest.TestCase):
             saved = json.load(file)
         self.assertEqual(saved['foo'][0]['input_file'], 'page_01.txt')
         self.assertEqual(saved['foo'][0]['anchor_ids'], ['backref_ref_foo'])
+
+    def test_duplicate_markers_must_raise_error(self):
+        for plugin_definition in [
+            {'def-markers': ['REFDEF', 'refdef']},
+            {'ref-markers': ['REF', 'ref']},
+            {'def-markers': ['REFDEF'], 'ref-markers': ['refdef']},
+        ]:
+            with self.subTest(plugin_definition):
+                plugin = BackReferencesPlugin()
+                with self.assertRaises(UserError) as cm:
+                    plugin.accept_data(plugin_definition)
+                self.assertIn('duplication', str(cm.exception).lower())
 
 
 if __name__ == '__main__':
