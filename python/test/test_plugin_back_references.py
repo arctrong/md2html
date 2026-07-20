@@ -10,7 +10,7 @@ from models.document import Document
 from models.options import Options
 from page_metadata_utils import apply_metadata_handlers, join_parsing_results
 from plugins.back_references_plugin import BackReferencesPlugin, _DefMetadataHandler, \
-    _RefMetadataHandler, _normalize_loaded_cache, \
+    _RefMetadataHandler, _normalize_loaded_cache, PageLocation, Reference, \
     _build_reverse_map_references_by_page_from_cache, _prepare_cache_for_save
 from utils import UserError
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
@@ -35,16 +35,32 @@ def _set_cache_referencing_pages(plugin, referencing_pages_by_source):
     plugin._populate_references_from_cache(plugin.references)
 
 
+def _def_handler(plugin, marker='REFDEF'):
+    marker = marker.upper()
+    for fmt in plugin.def_formats:
+        if marker in fmt.markers:
+            return _DefMetadataHandler(plugin, fmt)
+    raise ValueError(f"No def-format registered for marker '{marker}'")
+
+
+def _ref_handler(plugin, marker='REF'):
+    marker = marker.upper()
+    for fmt in plugin.ref_formats:
+        if marker in fmt.markers:
+            return _RefMetadataHandler(plugin, fmt)
+    raise ValueError(f"No ref-format registered for marker '{marker}'")
+
+
 def _accept_def_metadata(plugin, doc, metadata, metadata_section='<!--REFDEF-->', phase=1,
                          data_from_prev_phase=None):
-    return _DefMetadataHandler(plugin).accept_page_metadata(
+    return _def_handler(plugin).accept_page_metadata(
         doc, 'REFDEF', metadata, metadata_section, phase=phase,
         data_from_prev_phase=data_from_prev_phase)
 
 
 def _accept_ref_metadata(plugin, doc, metadata, metadata_section='<!--REF-->', phase=1,
                          data_from_prev_phase=None):
-    return _RefMetadataHandler(plugin).accept_page_metadata(
+    return _ref_handler(plugin).accept_page_metadata(
         doc, 'REF', metadata, metadata_section, phase=phase,
         data_from_prev_phase=data_from_prev_phase)
 
@@ -380,15 +396,97 @@ class BackReferencesPluginTest(unittest.TestCase):
 
     def test_duplicate_markers_must_raise_error(self):
         for plugin_definition in [
-            {'def-markers': ['REFDEF', 'refdef']},
-            {'ref-markers': ['REF', 'ref']},
-            {'def-markers': ['REFDEF'], 'ref-markers': ['refdef']},
+            {'def-formats': [{'markers': ['REFDEF', 'refdef']}]},
+            {'ref-formats': [{'markers': ['REF', 'ref']}]},
+            {'def-formats': [{'markers': ['REFDEF']}],
+             'ref-formats': [{'markers': ['refdef']}]},
         ]:
             with self.subTest(plugin_definition):
                 plugin = BackReferencesPlugin()
                 with self.assertRaises(UserError) as cm:
                     plugin.accept_data(plugin_definition)
                 self.assertIn('duplication', str(cm.exception).lower())
+
+    def test_ref_metadata_with_format_field_must_raise_error(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({})
+        page_doc = Document(input_file='page.txt', output_file='page.html')
+        plugin.new_page(page_doc)
+        with self.assertRaises(UserError) as cm:
+            _accept_ref_metadata(plugin, page_doc, 'foo compact', '<!--REF foo compact-->', phase=1)
+        self.assertIn('exactly one field', str(cm.exception))
+
+    def test_custom_back_ref_delimiter(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'def-formats': [{
+                'markers': ['REFDEF'],
+                'back-ref-delimiter': '; ',
+            }],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
+        page1_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
+        page2_doc = Document(input_file='page_02.txt', output_file='doc/page_02.html')
+        plugin.accept_document_list([refs_doc, page1_doc, page2_doc])
+        plugin.references['foo'] = {
+            'page_01.txt': [Reference(
+                PageLocation('page_01.txt', 'doc/page_01.html'), 'backref_ref_foo')],
+            'page_02.txt': [Reference(
+                PageLocation('page_02.txt', 'doc/page_02.html'), 'backref_ref_foo_2')],
+        }
+
+        plugin.new_page(refs_doc)
+        result = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        html = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->',
+            phase=2, data_from_prev_phase=result.result).result
+
+        self.assertIn('; ', html)
+        self.assertNotIn(', ', html.split('Foo display')[-1])
+
+    def test_omitted_format_arrays_use_defaults(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({})
+        self.assertEqual(plugin.def_formats[0].markers, ['REFDEF'])
+        self.assertEqual(plugin.ref_formats[0].markers, ['REF'])
+
+    def test_empty_ref_formats_disables_ref_side(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({'ref-formats': []})
+        self.assertEqual(len(plugin.ref_formats), 0)
+        self.assertEqual(plugin.def_formats[0].markers, ['REFDEF'])
+        self.assertFalse(plugin.is_blank())
+        handlers = plugin.page_metadata_handlers()
+        self.assertEqual([marker for _, marker, _ in handlers], ['REFDEF'])
+
+    def test_empty_def_formats_disables_def_side(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({'def-formats': []})
+        self.assertEqual(len(plugin.def_formats), 0)
+        self.assertEqual(plugin.ref_formats[0].markers, ['REF'])
+        self.assertFalse(plugin.is_blank())
+
+    def test_both_format_arrays_empty_makes_plugin_blank(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({'def-formats': [], 'ref-formats': []})
+        self.assertTrue(plugin.is_blank())
+        self.assertEqual(plugin.page_metadata_handlers(), [])
+
+    def test_empty_ref_template_renders_nothing(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'ref-formats': [{'markers': ['REF'], 'template': ''}],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='refs.html')
+        page_doc = Document(input_file='page.txt', output_file='page.html')
+        plugin.accept_document_list([refs_doc, page_doc])
+        plugin.new_page(refs_doc)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        plugin.new_page(page_doc)
+        result = _accept_ref_metadata(plugin, page_doc, 'foo', '<!--REF foo-->', phase=1)
+        self.assertEqual(result.result, '')
 
 
 if __name__ == '__main__':

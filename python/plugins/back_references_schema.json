@@ -2,22 +2,40 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
-        "def-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
-        "ref-markers": { "type": "array", "items": { "type": "string", "pattern": "^[\\w\\d_]+$" } },
         "code-prefix": { "type": "string" },
-        "def-template": { "type": "string" },
-        "ref-template": { "type": "string" },
-        "back-ref-template": { "type": "string" },
         "cache": { "type": "string" },
-        "formats": {
-            "type": "object",
-            "patternProperties": {
-                "^[\\w\\d_]+$": {
-                    "type": "object",
-                    "properties": {
-                        "ref-template": { "type": "string" }
-                    }
-                }
+        "def-formats": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "markers": {
+                        "type": "array",
+                        "items": { "type": "string", "pattern": "^[\\w\\d_]+$" },
+                        "minItems": 1
+                    },
+                    "template": { "type": "string" },
+                    "back-ref-template": { "type": "string" },
+                    "back-ref-delimiter": { "type": "string" }
+                },
+                "required": ["markers"],
+                "additionalProperties": false
+            }
+        },
+        "ref-formats": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "markers": {
+                        "type": "array",
+                        "items": { "type": "string", "pattern": "^[\\w\\d_]+$" },
+                        "minItems": 1
+                    },
+                    "template": { "type": "string" }
+                },
+                "required": ["markers"],
+                "additionalProperties": false
             }
         }
     },

@@ -2,7 +2,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set, Union, Tuple
 
 from build_cache import build_cache_manager
 from models.document import Document
@@ -13,12 +13,20 @@ from utils import UserError, relativize_relative_resource, UniqueIndexer, Variab
 
 MODULE_DIR = Path(__file__).resolve().parent
 
-DEFAULT_DEF_MARKERS = ["REFDEF"]
-DEFAULT_REF_MARKERS = ["REF"]
-DEFAULT_REFDEF_TEMPLATE = """<a name="${2}"></a><span class="ref-def">[${1}]</span> ${4}""" \
-                          "<sup>${3}</sup>"
-DEFAULT_REF_TEMPLATE = """${4}<sup><a name="${2}"></a><a class="ref" href="${3}">[${1}]</a></sup>"""
-DEFAULT_BACK_REF_TEMPLATE = "<a class=\"ref\" href=\"${1}\">${2}</a>"
+DEFAULT_DEF_FORMAT = {
+    "markers": ["REFDEF"],
+    "template": """<a name="${2}"></a><span class="ref-def">[${1}]</span> ${4}""" \
+                 "<sup>${3}</sup>",
+    "back-ref-template": "<a class=\"ref\" href=\"${1}\">${2}</a>",
+    "back-ref-delimiter": ", ",
+}
+
+DEFAULT_REF_FORMAT = {
+    "markers": ["REF"],
+    "template": """${4}<sup><a name="${2}"></a><a class="ref" href="${3}">[${1}]</a></sup>""",
+}
+
+DEFAULT_CODE_PREFIX = "backref_"
 
 DEF_METADATA_PATTERN = re.compile(r'([^\s]+)\s+(.*)')
 
@@ -29,11 +37,26 @@ class PageLocation:
     output_file: str
 
 
+@dataclass
+class DefFormatConfig:
+    markers: List[str]
+    template: VariableReplacer
+    back_ref_template: VariableReplacer
+    back_ref_delimiter: str
+
+
+@dataclass
+class RefFormatConfig:
+    markers: List[str]
+    template: VariableReplacer
+
+
 @dataclass(frozen=True)
 class Definition:
     page: PageLocation
     anchor_id: str
     ref_content: str
+    def_format: DefFormatConfig
 
 
 @dataclass(frozen=True)
@@ -42,32 +65,21 @@ class Reference:
     anchor_id: str
 
 
-def parse_ref_metadata(metadata):
+def parse_ref_metadata(metadata) -> str:
     fields = metadata.split()
-    if not 1 <= len(fields) <= 2:
-        raise UserError(f"Metadata error: '{metadata}' - should contain 1 or 2 fields "
-                        f"(source code and optionally format name) separated by spaces.")
-    source_code = fields[0]
-    format_name = fields[1] if len(fields) == 2 else ""
-    return source_code, format_name
+    if len(fields) != 1:
+        raise UserError(f"Metadata error: '{metadata}' - should contain exactly one field "
+                        f"(source code).")
+    return fields[0]
 
 
-def parse_def_metadata(metadata):
+def parse_def_metadata(metadata) -> Tuple[str, str]:
     metadata = metadata.strip()
     matcher = DEF_METADATA_PATTERN.match(metadata)
     if not matcher:
         raise UserError(f"Metadata error: '{metadata}' - should contain source code and "
                         f"reference display value separated by spaces.")
     return matcher.group(1), matcher.group(2)
-
-
-def find_replacer(replacers, format_name):
-    replacer = replacers.get(format_name)
-    if not replacer:
-        replacer = replacers.get("")
-    if not replacer:
-        raise UserError(f"Template is not defined for format '{format_name}'.")
-    return replacer
 
 
 def _normalize_dependency_path(path: str) -> str:
@@ -128,10 +140,49 @@ def _build_reverse_map_references_by_page_from_cache(backrefs_cache: Dict[str, D
     return reverse_map
 
 
-def _validate_marker_lists(def_markers: List[str], ref_markers: List[str]) -> None:
+def _parse_def_format(entry: dict) -> DefFormatConfig:
+    merged = {**DEFAULT_DEF_FORMAT, **entry}
+    raw_markers = merged.get("markers")
+    if not raw_markers:
+        raise UserError("Each def-format entry must declare at least one marker.")
+    return DefFormatConfig(
+        markers=[m.upper() for m in raw_markers],
+        template=VariableReplacer(merged["template"]),
+        back_ref_template=VariableReplacer(merged["back-ref-template"]),
+        back_ref_delimiter=merged["back-ref-delimiter"],
+    )
+
+
+def _parse_ref_format(entry: dict) -> RefFormatConfig:
+    merged = {**DEFAULT_REF_FORMAT, **entry}
+    raw_markers = merged.get("markers")
+    if not raw_markers:
+        raise UserError("Each ref-format entry must declare at least one marker.")
+    return RefFormatConfig(
+        markers=[m.upper() for m in raw_markers],
+        template=VariableReplacer(merged["template"]),
+    )
+
+
+def _parse_def_formats(data) -> List[DefFormatConfig]:
+    raw_formats = data.get("def-formats")
+    if raw_formats is None:
+        return [_parse_def_format({})]
+    return [_parse_def_format(entry) for entry in raw_formats]
+
+
+def _parse_ref_formats(data) -> List[RefFormatConfig]:
+    raw_formats = data.get("ref-formats")
+    if raw_formats is None:
+        return [_parse_ref_format({})]
+    return [_parse_ref_format(entry) for entry in raw_formats]
+
+
+def _validate_format_markers(def_formats: List[DefFormatConfig],
+                             ref_formats: List[RefFormatConfig]) -> None:
     seen = set()
-    for markers in (def_markers, ref_markers):
-        for marker in markers:
+    for fmt in def_formats + ref_formats:
+        for marker in fmt.markers:
             if marker in seen:
                 raise UserError(f"Marker duplication (case-insensitively): {marker}")
             seen.add(marker)
@@ -139,8 +190,9 @@ def _validate_marker_lists(def_markers: List[str], ref_markers: List[str]) -> No
 
 class _DefMetadataHandler:
 
-    def __init__(self, plugin: 'BackReferencesPlugin'):
+    def __init__(self, plugin: 'BackReferencesPlugin', format_config: DefFormatConfig):
         self._plugin = plugin
+        self._format = format_config
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
                              metadata_section: str,
@@ -153,32 +205,33 @@ class _DefMetadataHandler:
             if source_code in plugin.definitions:
                 raise UserError(f"Source '{source_code}' is defined multiple times")
             anchor_id = plugin.code_prefix + "def_" + source_code
-            definition = Definition(_page_location_from_doc(doc), anchor_id, ref_content)
+            definition = Definition(
+                _page_location_from_doc(doc), anchor_id, ref_content, self._format)
             plugin._add_definition(definition, source_code)
             return MetadataProcessingResult(anchor_id, defer=True)
         if phase == 2:
             anchor_id = data_from_prev_phase
+            def_format = plugin.definitions[source_code].def_format
             back_ref_list = []
             back_ref_index = 0
-            back_ref_replacer = find_replacer(plugin.back_ref_templates, "")
             for refs in plugin.references.get(source_code, {}).values():
                 for ref in refs:
                     back_ref_index += 1
                     ref_link = relativize_relative_resource(
                         ref.page.output_file, doc.output_file)
-                    back_ref_list.append(back_ref_replacer.replace(
+                    back_ref_list.append(def_format.back_ref_template.replace(
                         [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
-            back_ref_html = ", ".join(back_ref_list)
-            replacer = find_replacer(plugin.def_templates, "")
-            return MetadataProcessingResult(replacer.replace([
+            back_ref_html = def_format.back_ref_delimiter.join(back_ref_list)
+            return MetadataProcessingResult(def_format.template.replace([
                 source_code, anchor_id, back_ref_html, ref_content]))
         raise Exception(f"Unknown phase: '{phase}'")
 
 
 class _RefMetadataHandler:
 
-    def __init__(self, plugin: 'BackReferencesPlugin'):
+    def __init__(self, plugin: 'BackReferencesPlugin', format_config: RefFormatConfig):
         self._plugin = plugin
+        self._format = format_config
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata: str,
                              metadata_section: str,
@@ -186,7 +239,7 @@ class _RefMetadataHandler:
                              phase: int = 1, data_from_prev_phase=None
                              ) -> MetadataProcessingResult:
         plugin = self._plugin
-        source_code, format_name = parse_ref_metadata(metadata)
+        source_code = parse_ref_metadata(metadata)
         if phase == 1:
             ref_anchor_id = plugin.code_prefix + "ref_" + source_code
             ref_anchor_id = plugin.unique_indexer.get_unique(ref_anchor_id)
@@ -196,7 +249,7 @@ class _RefMetadataHandler:
 
             if source_code in plugin.definitions:
                 return MetadataProcessingResult(
-                    plugin._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
+                    self._generate_ref_html(source_code, ref_anchor_id, doc))
             return MetadataProcessingResult(ref_anchor_id, defer=True)
 
         if phase == 2:
@@ -204,8 +257,15 @@ class _RefMetadataHandler:
             if source_code not in plugin.definitions:
                 raise UserError(f"Source '{source_code}' referenced but not defined")
             return MetadataProcessingResult(
-                plugin._generate_ref_html(source_code, ref_anchor_id, doc, format_name))
+                self._generate_ref_html(source_code, ref_anchor_id, doc))
         raise Exception(f"Unknown phase: '{phase}'")
+
+    def _generate_ref_html(self, source_code, ref_anchor_id, doc):
+        definition = self._plugin.definitions[source_code]
+        link = relativize_relative_resource(definition.page.output_file, doc.output_file)
+        return self._format.template.replace([
+            source_code, ref_anchor_id, f"{link}#{definition.anchor_id}",
+            definition.ref_content])
 
 
 class BackReferencesPlugin(Md2HtmlPlugin):
@@ -214,12 +274,9 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         super().__init__()
         self.definitions: Dict[str, Definition] = {}
         self.references: Dict[str, Dict[str, List[Reference]]] = {}
-        self.def_markers = []
-        self.ref_markers = []
-        self.code_prefix = "backref_"
-        self.def_templates: Dict[str, VariableReplacer] = {}    # format -> template
-        self.ref_templates: Dict[str, VariableReplacer] = {}       # format -> template
-        self.back_ref_templates: Dict[str, VariableReplacer] = {}  # format -> template
+        self.def_formats: List[DefFormatConfig] = []
+        self.ref_formats: List[RefFormatConfig] = []
+        self.code_prefix = DEFAULT_CODE_PREFIX
         self.unique_indexer: Optional[UniqueIndexer] = None
         self.backrefs_cache_file: Optional[str] = None
         self.backrefs_cache: Dict[str, Dict[str, dict]] = {}
@@ -232,45 +289,17 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         self.assure_accept_data_once()
         self.validate_data_with_file(data, MODULE_DIR.joinpath('back_references_schema.json'))
 
-        raw_def_markers = data.get("def-markers")
-        raw_ref_markers = data.get("ref-markers")
-        def_markers = [m.upper() for m in (
-            DEFAULT_DEF_MARKERS if raw_def_markers is None else raw_def_markers)]
-        ref_markers = [m.upper() for m in (
-            DEFAULT_REF_MARKERS if raw_ref_markers is None else raw_ref_markers)]
-        _validate_marker_lists(def_markers, ref_markers)
-        self.def_markers = def_markers
-        self.ref_markers = ref_markers
-        code_prefix = data.get("code-prefix")
+        self.def_formats = _parse_def_formats(data)
+        self.ref_formats = _parse_ref_formats(data)
+        _validate_format_markers(self.def_formats, self.ref_formats)
 
+        code_prefix = data.get("code-prefix")
         if code_prefix:
             self.code_prefix = code_prefix
 
         raw_backrefs_cache_file = data.get("cache")
         if raw_backrefs_cache_file:
             self.backrefs_cache_file = raw_backrefs_cache_file.replace('\\', '/')
-
-        self._set_templates(data)
-
-    def _set_templates(self, data):
-        default_refdef_template = data.get("def-template")
-        self.def_templates[""] = VariableReplacer(
-            default_refdef_template if default_refdef_template else DEFAULT_REFDEF_TEMPLATE)
-        default_ref_template = data.get("ref-template")
-        self.ref_templates[""] = VariableReplacer(
-            default_ref_template if default_ref_template else DEFAULT_REF_TEMPLATE)
-        default_back_ref_template = data.get("back-ref-template")
-        self.back_ref_templates[""] = VariableReplacer(
-            default_back_ref_template if default_back_ref_template else DEFAULT_BACK_REF_TEMPLATE)
-        template_formats = data.get("formats")
-        if template_formats:
-            for format_code, formats in template_formats.items():
-                for template_code, template in formats.items():
-                    # There's only one template that may have alternative formats.
-                    # For others, it looks like not making sense. But if in future we need to add
-                    # other templates, this will be easy to do.
-                    if template_code == "ref-template":
-                        self.ref_templates[format_code] = VariableReplacer(template)
 
     def accept_document_list(self, docs: List[Document]):
         self._document_inputs = {
@@ -287,20 +316,18 @@ class BackReferencesPlugin(Md2HtmlPlugin):
             self._populate_references_from_cache(self.references)
 
     def is_blank(self) -> bool:
-        # This plugin has default configuration, so it should never be blank, but theoretically
-        # the user may set empty markers and the plugin won't work in fact.
-        return not (bool(self.def_markers) or bool(self.ref_markers))
+        return not (bool(self.def_formats) or bool(self.ref_formats))
 
     def page_metadata_handlers(self):
         handlers = []
-        if self.def_markers:
-            def_handler = _DefMetadataHandler(self)
-            handlers.extend([(def_handler, marker, False) for marker in self.def_markers])
-        if self.ref_markers:
-            ref_handler = _RefMetadataHandler(self)
-            handlers.extend([(ref_handler, marker, False) for marker in self.ref_markers])
+        for fmt in self.def_formats:
+            handler = _DefMetadataHandler(self, fmt)
+            handlers.extend([(handler, marker, False) for marker in fmt.markers])
+        for fmt in self.ref_formats:
+            handler = _RefMetadataHandler(self, fmt)
+            handlers.extend([(handler, marker, False) for marker in fmt.markers])
         return handlers
- 
+
     def _add_definition(self, definition: Definition, source_code: str):
         self.definitions[source_code] = definition
         self._reverse_map_definitions_by_page.setdefault(
@@ -323,13 +350,6 @@ class BackReferencesPlugin(Md2HtmlPlugin):
         if self.backrefs_cache_file:
             self._save_backrefs_cache()
             build_cache_manager.record_standalone_derived_document(self.backrefs_cache_file)
-
-    def _generate_ref_html(self, source_code, ref_anchor_id, doc, format_name):
-        definition = self.definitions[source_code]
-        link = relativize_relative_resource(definition.page.output_file, doc.output_file)
-        replacer = find_replacer(self.ref_templates, format_name)
-        return replacer.replace([source_code, ref_anchor_id, f"{link}#{definition.anchor_id}",
-                                 definition.ref_content])
 
     def _backrefs_cache_enabled(self) -> bool:
         return self.backrefs_cache_file is not None
