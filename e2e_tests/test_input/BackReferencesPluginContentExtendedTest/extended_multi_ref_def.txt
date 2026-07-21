@@ -1,0 +1,3 @@
+# Definition for multiple refs on same page
+
+<!--refdef code1 [Example.com](https://example.com/)-->

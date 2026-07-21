@@ -1,0 +1,23 @@
+/* Extended back-references fixture — visual hints for manual inspection (not asserted). */
+
+.ref {
+    background-color: aliceblue;
+}
+
+.ref-def {
+    font-weight: bold;
+    background-color: aliceblue;
+}
+
+.bib-def {
+    border-left: 3px solid #ccc;
+    padding-left: 0.5em;
+}
+
+.bib-back {
+    font-style: italic;
+}
+
+.compact-ref {
+    font-size: 0.9em;
+}

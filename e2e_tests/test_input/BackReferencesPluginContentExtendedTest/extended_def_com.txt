@@ -1,0 +1,5 @@
+# Definition for example.com
+
+<!--refdef example_com [Example.com](https://example.com/)-->
+
+Also see <!--ref example_com-->.

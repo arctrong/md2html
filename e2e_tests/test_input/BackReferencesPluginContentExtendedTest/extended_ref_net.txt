@@ -1,0 +1,3 @@
+# Referencer for example.net
+
+See <!--ref example_net-->.

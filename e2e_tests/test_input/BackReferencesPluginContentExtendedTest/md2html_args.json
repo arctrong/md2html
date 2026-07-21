@@ -1,0 +1,43 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesPluginContentExtendedTest/template.html",
+        "verbose": false,
+        "link-css": [
+            "common_styles.css",
+            "test_input/BackReferencesPluginContentExtendedTest/custom.css"
+        ]
+    },
+    "documents": [
+        { "input": "extended_ref_first.txt" },
+        { "input": "extended_ref_second.txt" },
+        { "input": "extended_multi_ref.txt" },
+        { "input": "extended_multi_ref_def.txt" },
+        { "input": "extended_def_com.txt" },
+        { "input": "extended_def_net.txt" },
+        { "input": "extended_ref_net.txt" },
+        { "input": "defs/extended_subdir_def.txt" },
+        { "input": "pages/extended_subdir_ref.txt" }
+    ],
+    "plugins": {
+        "back-references": {
+            "code-prefix": "xref_",
+            "def-formats": [
+                {
+                    "markers": ["refdef"],
+                    "template": "<a name=\"${anchor}\"></a><span class=\"ref-def\">[${code}]</span> ${content}<sup>${back_refs_html}</sup>",
+                    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${link_text}</a>",
+                    "back-ref-delimiter": ", "
+                }
+            ],
+            "ref-formats": [
+                {
+                    "markers": ["ref"],
+                    "template": "${content}<sup><a name=\"${anchor}\"></a><a class=\"ref\" href=\"${href}\">[${code}]</a></sup>"
+                }
+            ]
+        }
+    }
+}
