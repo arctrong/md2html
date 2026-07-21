@@ -1,0 +1,3 @@
+# Standard definition
+
+<!--refdef format_dual [Format Dual](https://example.org/dual/)-->

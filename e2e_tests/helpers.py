@@ -37,9 +37,23 @@ def prepare_output_directory(dir_name):
     return str(test_output_dir)
 
 
+class HtmlOutputCache:
+
+    def __init__(self, output_dir):
+        self._output_dir = Path(output_dir)
+        self._cache = {}
+
+    def read(self, file_name, *, encoding='utf-8'):
+        if file_name not in self._cache:
+            path = self._output_dir.joinpath(file_name)
+            with open(path, encoding=encoding) as html_file:
+                self._cache[file_name] = BeautifulSoup(html_file, 'html.parser')
+        return self._cache[file_name]
+
+
 def execute(params, output_file):
     run_with_parameters(params)
-    with open(output_file) as html_file:
+    with open(output_file, encoding='utf-8') as html_file:
         root = BeautifulSoup(html_file, 'html.parser')
     return root
 

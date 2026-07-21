@@ -1,0 +1,3 @@
+# Bibliography definition
+
+<!--bibdef format_bib Some book (without a link)-->

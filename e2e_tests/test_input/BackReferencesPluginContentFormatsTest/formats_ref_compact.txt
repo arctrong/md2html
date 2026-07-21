@@ -1,0 +1,3 @@
+# Compact referencer
+
+See <!--citeref format_dual-->.

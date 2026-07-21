@@ -1,0 +1,3 @@
+# Standard referencer
+
+See <!--ref format_dual-->.

@@ -1,0 +1,3 @@
+# Bib referencer
+
+See <!--ref format_bib-->.
