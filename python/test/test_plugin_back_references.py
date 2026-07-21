@@ -12,7 +12,7 @@ from page_metadata_utils import apply_metadata_handlers, join_parsing_results
 from plugins.back_references_plugin import BackReferencesPlugin, _DefMetadataHandler, \
     _RefMetadataHandler, _normalize_loaded_cache, PageLocation, Reference, \
     _build_reverse_map_references_by_page_from_cache, _prepare_cache_for_save
-from utils import UserError
+from utils import UserError, VariableReplacerError
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
@@ -444,6 +444,186 @@ class BackReferencesPluginTest(unittest.TestCase):
 
         self.assertIn('; ', html)
         self.assertNotIn(', ', html.split('Foo display')[-1])
+
+    def test_custom_ref_template_uses_named_placeholders_from_config(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'ref-formats': [{
+                'markers': ['REF'],
+                'template': (
+                    '<span data-code="${code}" data-anchor="${anchor}" '
+                    'href="${href}">${content}</span>'),
+            }],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='refs.html')
+        page_doc = Document(input_file='page.txt', output_file='page.html')
+        plugin.accept_document_list([refs_doc, page_doc])
+        plugin.new_page(refs_doc)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        plugin.new_page(page_doc)
+        html = _accept_ref_metadata(
+            plugin, page_doc, 'foo', '<!--REF foo-->', phase=1).result
+
+        self.assertIn('data-code="foo"', html)
+        self.assertIn('data-anchor="backref_ref_foo"', html)
+        self.assertIn('href="refs.html#backref_def_foo"', html)
+        self.assertIn('>Foo display</span>', html)
+
+    def test_custom_def_template_uses_named_placeholders_from_config(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'def-formats': [{
+                'markers': ['REFDEF'],
+                'template': (
+                    '<div data-code="${code}" id="${anchor}">${content}'
+                    '<sup>${back_refs_html}</sup></div>'),
+                'back-ref-template': '<a href="${href}">${link_text}</a>',
+            }],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
+        page_doc = Document(input_file='page.txt', output_file='doc/page.html')
+        plugin.accept_document_list([refs_doc, page_doc])
+        plugin.references['foo'] = {
+            'page.txt': [Reference(
+                PageLocation('page.txt', 'doc/page.html'), 'backref_ref_foo')],
+        }
+
+        plugin.new_page(refs_doc)
+        phase1 = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        html = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->',
+            phase=2, data_from_prev_phase=phase1.result).result
+
+        self.assertIn('data-code="foo"', html)
+        self.assertIn('id="backref_def_foo"', html)
+        self.assertIn('>Foo display<sup>', html)
+        self.assertIn('href="page.html#backref_ref_foo">1</a>', html)
+
+    def test_code_prefix_from_config(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({'code-prefix': 'xref_'})
+        refs_doc = Document(input_file='refs.txt', output_file='refs.html')
+        page_doc = Document(input_file='page.txt', output_file='page.html')
+        plugin.accept_document_list([refs_doc, page_doc])
+        plugin.new_page(refs_doc)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        plugin.new_page(page_doc)
+        html = _accept_ref_metadata(
+            plugin, page_doc, 'foo', '<!--REF foo-->', phase=1).result
+
+        self.assertIn('xref_ref_foo', html)
+        self.assertIn('refs.html#xref_def_foo', html)
+
+    def test_multiple_ref_formats_use_respective_templates(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'def-formats': [{'markers': ['REFDEF']}],
+            'ref-formats': [
+                {'markers': ['REF'], 'template': '<ref>${code}</ref>'},
+                {'markers': ['CITEREF'], 'template': '<cite>${code}</cite>'},
+            ],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='refs.html')
+        page_ref_doc = Document(input_file='page_ref.txt', output_file='page_ref.html')
+        page_cite_doc = Document(input_file='page_cite.txt', output_file='page_cite.html')
+        plugin.accept_document_list([refs_doc, page_ref_doc, page_cite_doc])
+        plugin.new_page(refs_doc)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo', '<!--REFDEF foo Foo-->', phase=1)
+        _accept_def_metadata(
+            plugin, refs_doc, 'bar Bar', '<!--REFDEF bar Bar-->', phase=1)
+
+        plugin.new_page(page_ref_doc)
+        ref_html = _ref_handler(plugin, 'REF').accept_page_metadata(
+            page_ref_doc, 'REF', 'foo', '<!--REF foo-->', phase=1).result
+        plugin.new_page(page_cite_doc)
+        cite_html = _ref_handler(plugin, 'CITEREF').accept_page_metadata(
+            page_cite_doc, 'CITEREF', 'bar', '<!--CITEREF bar-->', phase=1).result
+
+        self.assertEqual('<ref>foo</ref>', ref_html)
+        self.assertEqual('<cite>bar</cite>', cite_html)
+
+    def test_positional_placeholders_in_custom_template_are_not_substituted(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'ref-formats': [{
+                'markers': ['REF'],
+                'template': 'pos=${1} named=${code}',
+            }],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='refs.html')
+        page_doc = Document(input_file='page.txt', output_file='page.html')
+        plugin.accept_document_list([refs_doc, page_doc])
+        plugin.new_page(refs_doc)
+        _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        plugin.new_page(page_doc)
+        html = _accept_ref_metadata(
+            plugin, page_doc, 'foo', '<!--REF foo-->', phase=1).result
+
+        self.assertEqual('pos= named=foo', html)
+
+    def test_custom_templates_loaded_from_argument_file(self):
+        argument_file_dict = load_json_argument_file(
+            '{"documents": ['
+            '  {"input": "refs.txt", "output": "refs.html"},'
+            '  {"input": "page.txt", "output": "page.html"}'
+            '], "plugins": {"back-references": {'
+            '  "code-prefix": "cfg_",'
+            '  "ref-formats": [{"markers": ["REF"], "template": "<r code=\\"${code}\\">${content}</r>"}]'
+            '}}}')
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+        metadata_handlers = register_page_metadata_handlers(args.plugins)
+
+        refs_doc = args.documents[0]
+        page_doc = args.documents[1]
+        plugin.new_page(refs_doc)
+        apply_metadata_handlers(
+            '<!--REFDEF foo Foo display-->', metadata_handlers, refs_doc)
+        plugin.new_page(page_doc)
+        page_result = apply_metadata_handlers(
+            'See <!--REF foo-->', metadata_handlers, page_doc)
+        html = join_parsing_results(page_result.parsingResults, metadata_handlers, page_doc)
+
+        self.assertEqual('cfg_', plugin.code_prefix)
+        self.assertIn('<r code="foo">Foo display</r>', html)
+
+    def test_invalid_template_in_config_raises_at_accept_data(self):
+        plugin = BackReferencesPlugin()
+        with self.assertRaises(VariableReplacerError):
+            plugin.accept_data({
+                'ref-formats': [{'markers': ['REF'], 'template': 'start${}end'}],
+            })
+
+    def test_def_format_partial_entry_inherits_default_back_ref_template(self):
+        plugin = BackReferencesPlugin()
+        plugin.accept_data({
+            'def-formats': [{
+                'markers': ['REFDEF'],
+                'template': '<wrap>${content}<sup>${back_refs_html}</sup></wrap>',
+            }],
+        })
+        refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
+        page_doc = Document(input_file='page.txt', output_file='doc/page.html')
+        plugin.accept_document_list([refs_doc, page_doc])
+        plugin.references['foo'] = {
+            'page.txt': [Reference(
+                PageLocation('page.txt', 'doc/page.html'), 'backref_ref_foo')],
+        }
+
+        plugin.new_page(refs_doc)
+        phase1 = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->', phase=1)
+        html = _accept_def_metadata(
+            plugin, refs_doc, 'foo Foo display', '<!--REFDEF foo Foo display-->',
+            phase=2, data_from_prev_phase=phase1.result).result
+
+        self.assertIn('<wrap>Foo display<sup>', html)
+        self.assertIn('class="ref" href="page.html#backref_ref_foo">1</a>', html)
 
     def test_omitted_format_arrays_use_defaults(self):
         plugin = BackReferencesPlugin()

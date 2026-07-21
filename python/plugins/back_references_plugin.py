@@ -15,15 +15,16 @@ MODULE_DIR = Path(__file__).resolve().parent
 
 DEFAULT_DEF_FORMAT = {
     "markers": ["REFDEF"],
-    "template": """<a name="${2}"></a><span class="ref-def">[${1}]</span> ${4}""" \
-                 "<sup>${3}</sup>",
-    "back-ref-template": "<a class=\"ref\" href=\"${1}\">${2}</a>",
+    "template": """<a name="${anchor}"></a><span class="ref-def">[${code}]</span> ${content}""" \
+                 "<sup>${back_refs_html}</sup>",
+    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${link_text}</a>",
     "back-ref-delimiter": ", ",
 }
 
 DEFAULT_REF_FORMAT = {
     "markers": ["REF"],
-    "template": """${4}<sup><a name="${2}"></a><a class="ref" href="${3}">[${1}]</a></sup>""",
+    "template": """${content}<sup><a name="${anchor}"></a><a class="ref" """
+                """href="${href}">[${code}]</a></sup>""",
 }
 
 DEFAULT_CODE_PREFIX = "backref_"
@@ -219,11 +220,17 @@ class _DefMetadataHandler:
                     back_ref_index += 1
                     ref_link = relativize_relative_resource(
                         ref.page.output_file, doc.output_file)
-                    back_ref_list.append(def_format.back_ref_template.replace(
-                        [f"{ref_link}#{ref.anchor_id}", str(back_ref_index)]))
+                    back_ref_list.append(def_format.back_ref_template.replace({
+                        "href": f"{ref_link}#{ref.anchor_id}",
+                        "link_text": str(back_ref_index),
+                    }))
             back_ref_html = def_format.back_ref_delimiter.join(back_ref_list)
-            return MetadataProcessingResult(def_format.template.replace([
-                source_code, anchor_id, back_ref_html, ref_content]))
+            return MetadataProcessingResult(def_format.template.replace({
+                "code": source_code,
+                "anchor": anchor_id,
+                "back_refs_html": back_ref_html,
+                "content": ref_content,
+            }))
         raise Exception(f"Unknown phase: '{phase}'")
 
 
@@ -263,9 +270,12 @@ class _RefMetadataHandler:
     def _generate_ref_html(self, source_code, ref_anchor_id, doc):
         definition = self._plugin.definitions[source_code]
         link = relativize_relative_resource(definition.page.output_file, doc.output_file)
-        return self._format.template.replace([
-            source_code, ref_anchor_id, f"{link}#{definition.anchor_id}",
-            definition.ref_content])
+        return self._format.template.replace({
+            "code": source_code,
+            "anchor": ref_anchor_id,
+            "href": f"{link}#{definition.anchor_id}",
+            "content": definition.ref_content,
+        })
 
 
 class BackReferencesPlugin(Md2HtmlPlugin):
