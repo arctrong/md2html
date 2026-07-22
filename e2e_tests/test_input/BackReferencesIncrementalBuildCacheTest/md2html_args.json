@@ -1,0 +1,26 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesIncrementalBuildCacheTest/template.html",
+        "verbose": false,
+        "link-css": [
+            "common_styles.css",
+            "test_input/BackReferencesIncrementalBuildCacheTest/custom.css"
+        ]
+    },
+    "documents": [
+        {
+            "input": "incr_build_cache_def.txt",
+            "output": "incr_build_cache_def.html"
+        },
+        {
+            "input": "incr_build_cache_ref.txt",
+            "output": "incr_build_cache_ref.html"
+        }
+    ],
+    "plugins": {
+        "back-references": {}
+    }
+}
