@@ -1,0 +1,32 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesIncrementalPluginCacheTest/template.html",
+        "verbose": false,
+        "link-css": [
+            "common_styles.css",
+            "test_input/BackReferencesIncrementalPluginCacheTest/custom.css"
+        ]
+    },
+    "documents": [
+        {
+            "input": "incr_plugin_cache_def.txt",
+            "output": "incr_plugin_cache_def.html"
+        },
+        {
+            "input": "incr_plugin_cache_ref_first.txt",
+            "output": "incr_plugin_cache_ref_first.html"
+        },
+        {
+            "input": "incr_plugin_cache_ref_second.txt",
+            "output": "incr_plugin_cache_ref_second.html"
+        }
+    ],
+    "plugins": {
+        "back-references": {
+            "cache": "test_output/common/BackReferencesIncrementalPluginCacheE2eTest/backrefs_cache.json"
+        }
+    }
+}
