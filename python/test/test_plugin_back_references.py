@@ -12,12 +12,41 @@ from page_metadata_utils import apply_metadata_handlers, join_parsing_results
 from plugins.back_references_plugin import BackReferencesPlugin, _DefMetadataHandler, \
     _RefMetadataHandler, _normalize_loaded_cache, PageLocation, Reference, \
     _build_reverse_map_references_by_page_from_cache, _prepare_cache_for_save
-from utils import UserError, VariableReplacerError
+from utils import UserError, VariableReplacer, VariableReplacerError
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
+
+
+MINIMAL_CODE_PREFIX = 'backref_'
+
+MINIMAL_DEF_FORMAT = {
+    'markers': ['REFDEF'],
+    'template': (
+        '<a name="${anchor}"></a><span class="ref-def">[${code}]</span> ${content}'
+        '<sup>${back_refs_html}</sup>'),
+    'back-ref-template': '<a class="ref" href="${href}">${link_text}</a>',
+    'back-ref-delimiter': ', ',
+}
+
+MINIMAL_REF_FORMAT = {
+    'markers': ['REF'],
+    'template': (
+        '${content}<sup><a name="${anchor}"></a><a class="ref" '
+        'href="${href}">[${code}]</a></sup>'),
+}
 
 
 def _find_single_plugin(plugins):
     return find_single_instance_of_type(plugins, BackReferencesPlugin)
+
+
+def _variable_replacer_signature(replacer):
+    signature = []
+    for part in replacer.parts:
+        if isinstance(part, (str, int)):
+            signature.append(part)
+        else:
+            signature.append(('named', part.name))
+    return signature
 
 
 def _plugin_with_cache(temp_dir: str) -> BackReferencesPlugin:
@@ -69,46 +98,116 @@ class BackReferencesPluginTest(unittest.TestCase):
 
     def setUp(self):
         self._temp_dir = tempfile.TemporaryDirectory()
-        self.temp_dir = self._temp_dir.name
+        self.temp_dir_name = self._temp_dir.name
 
     def tearDown(self):
         self._temp_dir.cleanup()
 
-    def test_activated_with_empty_plugin_def(self):
+    def _assert_variable_replacer_equal(self, actual, expected_template):
+        expected = VariableReplacer(expected_template)
+        self.assertEqual(
+            _variable_replacer_signature(actual),
+            _variable_replacer_signature(expected))
+
+    def _assert_def_format_config(self, actual, expected):
+        self.assertEqual(actual.markers, [marker.upper() for marker in expected['markers']])
+        self.assertEqual(actual.back_ref_delimiter, expected['back-ref-delimiter'])
+        self._assert_variable_replacer_equal(actual.template, expected['template'])
+        self._assert_variable_replacer_equal(
+            actual.back_ref_template, expected['back-ref-template'])
+
+    def _assert_ref_format_config(self, actual, expected):
+        self.assertEqual(actual.markers, [marker.upper() for marker in expected['markers']])
+        self._assert_variable_replacer_equal(actual.template, expected['template'])
+
+    def _assert_plugin_config(self, plugin, *, code_prefix, backrefs_cache_file,
+                              def_format, ref_format):
+        self.assertEqual(plugin.code_prefix, code_prefix)
+        self.assertEqual(plugin.backrefs_cache_file, backrefs_cache_file)
+        self.assertEqual(len(plugin.def_formats), 1)
+        self.assertEqual(len(plugin.ref_formats), 1)
+        self._assert_def_format_config(plugin.def_formats[0], def_format)
+        self._assert_ref_format_config(plugin.ref_formats[0], ref_format)
+
+    def test_minimal_config(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "page.txt"}], "plugins": {"back-references": {}}}')
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         self.assertIsNotNone(plugin)
         self.assertFalse(plugin.is_blank())
+        self._assert_plugin_config(
+            plugin,
+            code_prefix=MINIMAL_CODE_PREFIX,
+            backrefs_cache_file=None,
+            def_format=MINIMAL_DEF_FORMAT,
+            ref_format=MINIMAL_REF_FORMAT,
+        )
+
+    def test_full_config(self):
+        cache_file = str(
+            Path(self.temp_dir_name).joinpath('full_config_cache.json')).replace('\\', '/')
+        argument_file_dict = load_json_argument_file(
+            '{"documents": [{"input": "page.txt"}], "plugins": {"back-references": {'
+            '"code-prefix": "xref_",'
+            '"cache": "' + cache_file.replace('\\', '\\\\') + '",'
+            '"def-formats": [{'
+            '    "markers": ["bibdef"],'
+            '    "template": "<div id=\\"${anchor}\\">${content}<sup>${back_refs_html}</sup></div>",'
+            '    "back-ref-template": "<a class=\\"bib-back\\" href=\\"${href}\\">${link_text}</a>",'
+            '    "back-ref-delimiter": "; "'
+            '}],'
+            '"ref-formats": [{'
+            '    "markers": ["citeref"],'
+            '    "template": "<cite><a name=\\"${anchor}\\"></a><a href=\\"${href}\\">${code}</a></cite>"'
+            '}]'
+            '}}}')
+        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
+        plugin = _find_single_plugin(args.plugins)
+        self.assertIsNotNone(plugin)
+        self.assertFalse(plugin.is_blank())
+        self._assert_plugin_config(
+            plugin,
+            code_prefix='xref_',
+            backrefs_cache_file=cache_file,
+            def_format={
+                'markers': ['bibdef'],
+                'template': '<div id="${anchor}">${content}<sup>${back_refs_html}</sup></div>',
+                'back-ref-template': '<a class="bib-back" href="${href}">${link_text}</a>',
+                'back-ref-delimiter': '; ',
+            },
+            ref_format={
+                'markers': ['citeref'],
+                'template': '<cite><a name="${anchor}"></a><a href="${href}">${code}</a></cite>',
+            },
+        )
 
     def test_ref_and_refdef_phase1(self):
         argument_file_dict = load_json_argument_file(
-            '{"documents": ['
-            '  {"input": "refs.txt", "output": "refs.html"},'
-            '  {"input": "page.txt", "output": "page.html"}'
-            '], "plugins": {"back-references": {}}}')
+            '{"documents": [{"input": "refs.txt"}, {"input": "defs.txt"}], '
+            '"plugins": {"back-references": {}}}')
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         refs_doc = args.documents[0]
-        page_doc = args.documents[1]
+        defs_doc = args.documents[1]
 
         plugin.new_page(refs_doc)
         refs_result = apply_metadata_handlers(
             'Intro <!--REFDEF foo Foo display-->', metadata_handlers, refs_doc)
         self.assertTrue(refs_result.deferPage)
 
-        plugin.new_page(page_doc)
+        plugin.new_page(defs_doc)
         page_result = apply_metadata_handlers(
-            'See <!--REF foo-->', metadata_handlers, page_doc)
+            'See <!--REF foo-->', metadata_handlers, defs_doc)
         self.assertFalse(page_result.deferPage)
-        html = join_parsing_results(page_result.parsingResults, metadata_handlers, page_doc)
+        html = join_parsing_results(page_result.parsingResults, metadata_handlers, defs_doc)
+        self.assertIn('Foo display', html)
         self.assertIn('refs.html#backref_def_foo', html)
 
     def test_ref_cache_preserves_skipped_referencer(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
         page1_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         page2_doc = Document(input_file='page_02.txt', output_file='doc/page_02.html')
@@ -137,7 +236,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertEqual(referencer_inputs, {'page_01.txt', 'page_02.txt'})
 
     def test_ref_cache_new_page_clears_only_current_page(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         page1_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         page2_doc = Document(input_file='page_02.txt', output_file='doc/page_02.html')
         plugin.accept_document_list([page1_doc, page2_doc])
@@ -164,7 +263,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertEqual(len(refs_by_page['page_02.txt']), 1)
 
     def test_new_page_with_no_input_file_skips_cache_reset(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         _set_cache_referencing_pages(plugin, {
             'foo': [{
                 'input_file': 'page_01.txt',
@@ -180,7 +279,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertEqual(len(plugin.references.get('foo', {})), 1)
 
     def test_ref_cache_finalize_writes_file(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
         page_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         plugin.accept_document_list([refs_doc, page_doc])
@@ -202,7 +301,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertEqual(saved['foo'][0]['anchor_ids'], ['backref_ref_foo'])
 
     def test_ref_cache_load_and_prune_removed_documents(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         cache_path = Path(plugin.backrefs_cache_file)
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(cache_path, 'w', encoding='utf-8') as file:
@@ -233,7 +332,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertEqual(len(plugin.references.get('foo', {})), 1)
 
     def test_ref_cache_groups_multiple_anchors_on_same_page(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         page_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         plugin.accept_document_list([page_doc])
 
@@ -287,7 +386,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertEqual(saved['zebra'][1]['anchor_ids'], ['ref_b1', 'ref_b2'])
 
     def test_reverse_map_references_by_page_after_cache_load(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         cache_path = Path(plugin.backrefs_cache_file)
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(cache_path, 'w', encoding='utf-8') as file:
@@ -333,7 +432,7 @@ class BackReferencesPluginTest(unittest.TestCase):
 
     @patch('plugins.back_references_plugin.build_cache_manager')
     def test_refdef_phase2_uses_cached_references_from_skipped_page(self, mock_cache_manager):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
         page1_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         page2_doc = Document(input_file='page_02.txt', output_file='doc/page_02.html')
@@ -364,7 +463,7 @@ class BackReferencesPluginTest(unittest.TestCase):
         self.assertIn('page_02.html#backref_ref_foo_2', html)
 
     def test_refdef_phase2_uses_phase1_references_without_new_page(self):
-        plugin = _plugin_with_cache(self.temp_dir)
+        plugin = _plugin_with_cache(self.temp_dir_name)
         refs_doc = Document(input_file='refs.txt', output_file='doc/refs.html')
         page1_doc = Document(input_file='page_01.txt', output_file='doc/page_01.html')
         plugin.accept_document_list([refs_doc, page1_doc])
@@ -566,32 +665,6 @@ class BackReferencesPluginTest(unittest.TestCase):
 
         self.assertEqual('pos= named=foo', html)
 
-    def test_custom_templates_loaded_from_argument_file(self):
-        argument_file_dict = load_json_argument_file(
-            '{"documents": ['
-            '  {"input": "refs.txt", "output": "refs.html"},'
-            '  {"input": "page.txt", "output": "page.html"}'
-            '], "plugins": {"back-references": {'
-            '  "code-prefix": "cfg_",'
-            '  "ref-formats": [{"markers": ["REF"], "template": "<r code=\\"${code}\\">${content}</r>"}]'
-            '}}}')
-        args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
-        plugin = _find_single_plugin(args.plugins)
-        metadata_handlers = register_page_metadata_handlers(args.plugins)
-
-        refs_doc = args.documents[0]
-        page_doc = args.documents[1]
-        plugin.new_page(refs_doc)
-        apply_metadata_handlers(
-            '<!--REFDEF foo Foo display-->', metadata_handlers, refs_doc)
-        plugin.new_page(page_doc)
-        page_result = apply_metadata_handlers(
-            'See <!--REF foo-->', metadata_handlers, page_doc)
-        html = join_parsing_results(page_result.parsingResults, metadata_handlers, page_doc)
-
-        self.assertEqual('cfg_', plugin.code_prefix)
-        self.assertIn('<r code="foo">Foo display</r>', html)
-
     def test_invalid_template_in_config_raises_at_accept_data(self):
         plugin = BackReferencesPlugin()
         with self.assertRaises(VariableReplacerError):
@@ -624,12 +697,6 @@ class BackReferencesPluginTest(unittest.TestCase):
 
         self.assertIn('<wrap>Foo display<sup>', html)
         self.assertIn('class="ref" href="page.html#backref_ref_foo">1</a>', html)
-
-    def test_omitted_format_arrays_use_defaults(self):
-        plugin = BackReferencesPlugin()
-        plugin.accept_data({})
-        self.assertEqual(plugin.def_formats[0].markers, ['REFDEF'])
-        self.assertEqual(plugin.ref_formats[0].markers, ['REF'])
 
     def test_empty_ref_formats_disables_ref_side(self):
         plugin = BackReferencesPlugin()
