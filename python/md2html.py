@@ -95,7 +95,7 @@ def md2html_phase2(arguments, deferred_pages):
             logger.info('Output file generated: %s', document.output_file)
 
         except UserError as e:
-            raise UserError(f"Error rendering deferred page '{document.output_file}': "
+            raise UserError(f"Error processing input file '{document.input_file}': "
                             f"{type(e).__name__}: {e}")
 
 

@@ -9,7 +9,8 @@ from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
 from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
-from utils import UserError, relativize_relative_resource, UniqueIndexer, VariableReplacer
+from utils import UserError, relativize_relative_resource, UniqueIndexer, VariableReplacer, \
+    VariableReplacerError
 
 MODULE_DIR = Path(__file__).resolve().parent
 
@@ -69,8 +70,8 @@ class Reference:
 def parse_ref_metadata(metadata) -> str:
     fields = metadata.split()
     if len(fields) != 1:
-        raise UserError(f"Metadata error: '{metadata}' - should contain exactly one field "
-                        f"(source code).")
+        raise UserError(f"Metadata error: '{metadata}' - the source code must be a single word "
+                        f"(no spaces).")
     return fields[0]
 
 
@@ -141,6 +142,13 @@ def _build_reverse_map_references_by_page_from_cache(backrefs_cache: Dict[str, D
     return reverse_map
 
 
+def _parse_template(template: str, field_name: str) -> VariableReplacer:
+    try:
+        return VariableReplacer(template)
+    except VariableReplacerError as e:
+        raise UserError(f"Invalid {field_name}: {e}") from e
+
+
 def _parse_def_format(entry: dict) -> DefFormatConfig:
     merged = {**DEFAULT_DEF_FORMAT, **entry}
     raw_markers = merged.get("markers")
@@ -148,8 +156,8 @@ def _parse_def_format(entry: dict) -> DefFormatConfig:
         raise UserError("Each def-format entry must declare at least one marker.")
     return DefFormatConfig(
         markers=[m.upper() for m in raw_markers],
-        template=VariableReplacer(merged["template"]),
-        back_ref_template=VariableReplacer(merged["back-ref-template"]),
+        template=_parse_template(merged["template"], "template"),
+        back_ref_template=_parse_template(merged["back-ref-template"], "back-ref-template"),
         back_ref_delimiter=merged["back-ref-delimiter"],
     )
 
@@ -161,7 +169,7 @@ def _parse_ref_format(entry: dict) -> RefFormatConfig:
         raise UserError("Each ref-format entry must declare at least one marker.")
     return RefFormatConfig(
         markers=[m.upper() for m in raw_markers],
-        template=VariableReplacer(merged["template"]),
+        template=_parse_template(merged["template"], "template"),
     )
 
 
