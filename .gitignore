@@ -1,3 +1,5 @@
+.cursor/
+
 __pycache__
 /java/target/
 /**/.idea/
