@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import org.apache.commons.lang3.StringUtils;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,14 +61,14 @@ public class IgnorePlugin extends AbstractMd2HtmlPlugin implements PageMetadataH
     }
 
     @Override
-    public String acceptPageMetadata(
-            Document document, String marker, String metadata,
-            String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         int contentStart = metadataSection.indexOf(metadata);
         String prefix = metadataSection.substring(0, contentStart - marker.length());
         String suffix = metadataSection.substring(contentStart + metadata.length());
-        return prefix + StringUtils.stripStart(metadata, null) + suffix;
+        return MetadataProcessingResult.immediate(
+                prefix + StringUtils.stripStart(metadata, null) + suffix);
     }
 }

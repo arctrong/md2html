@@ -8,6 +8,7 @@ import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.raw.ArgFileRaw;
+import world.md2html.pagemetadata.DeferredPage;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.Logging;
@@ -16,6 +17,8 @@ import world.md2html.utils.UserError;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,13 +107,23 @@ public class Md2HtmlRunner {
         PageMetadataHandlersWrapper metadataHandlersWrapper =
                 PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
 
+        Map<String, DeferredPage> deferredPages = new LinkedHashMap<>();
+
         for (Document doc : argFile.getDocuments()) {
             try {
                 Md2Html.execute(doc, argFile.getPlugins(), metadataHandlersWrapper,
-                        argFile.getOptions());
+                        argFile.getOptions(), deferredPages);
             } catch(UserError ue) {
                 throw new UserError("Error processing input file '" + doc.getInput() +
                         "': " + ue.getClass().getSimpleName() + ": " + ue.getMessage());
+            }
+        }
+
+        if (!deferredPages.isEmpty()) {
+            try {
+                Md2Html.executePhase2(deferredPages, argFile.getPlugins(), metadataHandlersWrapper);
+            } catch (UserError ue) {
+                throw new UserError(ue.getMessage());
             }
         }
 

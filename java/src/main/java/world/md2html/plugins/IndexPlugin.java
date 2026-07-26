@@ -18,6 +18,7 @@ import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
@@ -296,8 +297,8 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         IndexData indexData = this.indexData.get(marker.toUpperCase());
@@ -332,7 +333,7 @@ public class IndexPlugin extends AbstractMd2HtmlPlugin implements PageMetadataHa
             anchors.add(indexEntry);
         }
 
-        return anchorText;
+        return MetadataProcessingResult.immediate(anchorText);
     }
 
     private static String generateIndexHtml(Map<String, List<IndexEntry>> indexCache,

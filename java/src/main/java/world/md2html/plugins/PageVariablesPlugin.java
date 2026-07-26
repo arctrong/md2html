@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,8 +57,8 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
         ObjectNode metadataNode;
         try {
@@ -67,7 +68,7 @@ public class PageVariablesPlugin extends AbstractMd2HtmlPlugin implements PageMe
         }
         //noinspection unchecked
         this.pageVariables.putAll((Map<String, Object>) deJson(metadataNode));
-        return "";
+        return MetadataProcessingResult.immediate("");
     }
 
     private ObjectNode parseAndValidatePageVariableMetadata(String metadata)

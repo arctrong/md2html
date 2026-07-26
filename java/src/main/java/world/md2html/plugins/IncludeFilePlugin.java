@@ -7,6 +7,7 @@ import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.SmartSubstringer;
@@ -95,8 +96,8 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         IncludeFileData markerData = this.data.get(marker);
@@ -143,9 +144,9 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         } else {
             recursive = markerData.recursive;
         }
-        return recursive ?
-                metadataHandlers.applyMetadataHandlers(content, document, visitedMarkers,
+        return MetadataProcessingResult.immediate(recursive ?
+                metadataHandlers.applyAndMergeMetadataHandlers(content, document, visitedMarkers,
                         "INCLUDE_FILE_PLUGIN:" + includeFile) :
-                content;
+                content);
     }
 }

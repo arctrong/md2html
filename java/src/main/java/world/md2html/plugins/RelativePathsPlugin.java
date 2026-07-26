@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.UserError;
 
@@ -74,16 +75,17 @@ public class RelativePathsPlugin extends AbstractMd2HtmlPlugin implements PageMe
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         String path = this.paths.get(metadata.trim());
         if (path == null) {
-            return metadataSection;
+            return MetadataProcessingResult.immediate(metadataSection);
         } else {
             try {
-                return relativizeRelativePath(path, document.getOutput());
+                return MetadataProcessingResult.immediate(
+                        relativizeRelativePath(path, document.getOutput()));
             } catch (CheckedIllegalArgumentException e) {
                 throw new PageMetadataException("Plugin '" + this.getClass().getSimpleName() +
                         "': Cannot relativize '" + path + "' against '" +
