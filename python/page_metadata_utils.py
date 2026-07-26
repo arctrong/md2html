@@ -104,7 +104,7 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers,
             raise UserError(f"Cycle detected at marker: {recursive_marker}, "
                             f"the path is [{','.join(visited_markers)}]")
         visited_markers[recursive_marker] = None
-        # Different plugin may have their peculiarities, so we cannot be completely sure
+        # Different plugins may have their peculiarities, so we cannot be completely sure
         # that ALL cycles are detected in ALL possible cases.
         if len(visited_markers) > RECURSIVE_MAX_DEPTH:
             cycle_path = '\n'.join(visited_markers)
@@ -167,20 +167,24 @@ def join_parsing_results(parsing_results: List[ParsingResultItem],
         replacement = item.result
         if item.marker_key:
             handlers = marker_handlers.get(item.marker_key)
-            if handlers:
-                for h in handlers:
-                    accept_result = h.accept_page_metadata(
-                        doc, item.marker, item.metadata, item.metadata_section,
-                        # When we join parsing result, final substitution string should be returned
-                        phase=2,
-                        data_from_prev_phase=item.result)
-                    # Deferring is not acceptable as there will be no further processing
-                    if accept_result.defer:
-                        raise UserError("Deferred result encountered when processing metadata "
-                                        f"marker '{item.marker}' on phase 2. This may mean that "
-                                        "this marker cannot be nested inside the other metadata"
-                                        "block.")
-                    replacement = accept_result.result
+            if not handlers:
+                raise Exception(
+                    f"Deferred metadata marker '{item.marker}' has no handler for phase-2 join "
+                    f"(marker key: {item.marker_key!r}). Check plugin registration, "
+                    f"e.g. only-at-page-start mismatch.")
+            for h in handlers:
+                accept_result = h.accept_page_metadata(
+                    doc, item.marker, item.metadata, item.metadata_section,
+                    # When we join parsing result, final substitution string should be returned
+                    phase=2,
+                    data_from_prev_phase=item.result)
+                # Deferring is not acceptable as there will be no further processing
+                if accept_result.defer:
+                    raise UserError("Deferred result encountered when processing metadata "
+                                    f"marker '{item.marker}' on phase 2. This may mean that "
+                                    "this marker cannot be nested inside the other metadata"
+                                    "block.")
+                replacement = accept_result.result
         result.append(replacement)
     return ''.join(result)
 
