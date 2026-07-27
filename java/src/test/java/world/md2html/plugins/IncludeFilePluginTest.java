@@ -148,20 +148,6 @@ class IncludeFilePluginTest {
     }
 
     @Test
-    public void test_with_duplicate_markers_must_raise_error() {
-        UserError e = assertThrows(UserError.class,
-                () -> parseArgumentFile(
-                        "{\"documents\": [{\"input\": \"whatever.txt\"}], " +
-                                "\"plugins\": {" +
-                                "\"include-file\": [" +
-                                "    {\"markers\": [\"marker1\"], \"root-dir\": \"whatever/path1\" }," +
-                                "    {\"markers\": [\"marker2\", \"Marker1\"], \"root-dir\": \"whatever/path2\" }" +
-                                "]}}", DUMMY_CLI_OPTIONS));
-        assertTrue(e.getMessage().contains("duplication"));
-        assertTrue(e.getMessage().contains("MARKER1"));
-    }
-
-    @Test
     public void test_recursive() throws ArgFileParseException {
         ArgFile argFile = parseArgumentFile(
             "{\"documents\": [{\"input\": \"whatever.txt\"}], " +

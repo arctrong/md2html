@@ -13,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -48,6 +49,7 @@ public class PageMetadataHandlersWrapper {
 
     public static PageMetadataHandlersWrapper fromPlugins(List<Md2HtmlPlugin> plugins) {
         Map<MarkerKey, List<PageMetadataHandler>> markerHandlers = new HashMap<>();
+        Set<String> registeredMarkers = new HashSet<>();
         boolean allOnlyAtPageStart = true;
         for (Md2HtmlPlugin plugin : plugins) {
             List<PageMetadataHandlerInfo> handlerInfoList = plugin.pageMetadataHandlers();
@@ -56,13 +58,14 @@ public class PageMetadataHandlersWrapper {
                     if (!info.isOnlyAtPageStart()) {
                         allOnlyAtPageStart = false;
                     }
-                    MarkerKey markerKey = new MarkerKey(info.getMarker().toUpperCase(),
-                            info.isOnlyAtPageStart());
+                    String marker = info.getMarker().toUpperCase();
+                    if (!registeredMarkers.add(marker)) {
+                        throw new UserError("Marker duplication (case-insensitively): " + marker);
+                    }
+                    MarkerKey markerKey = new MarkerKey(marker, info.isOnlyAtPageStart());
                     List<PageMetadataHandler> handlers = new ArrayList<>();
-                    List<PageMetadataHandler> oldValue = markerHandlers.putIfAbsent(markerKey,
-                            handlers);
-                    handlers = oldValue == null ? handlers : oldValue;
                     handlers.add(info.getPageMetadataHandler());
+                    markerHandlers.put(markerKey, handlers);
                 }
             }
         }
