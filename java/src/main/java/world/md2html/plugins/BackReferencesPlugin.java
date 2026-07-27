@@ -320,12 +320,12 @@ public class BackReferencesPlugin extends AbstractMd2HtmlPlugin {
     }
 
     private static String parseRefMetadata(String metadata) throws PageMetadataException {
-        String[] fields = metadata.trim().split("\\s+");
-        if (fields.length != 1) {
-            throw new PageMetadataException("Metadata error: '" + metadata.trim()
+        String trimmed = metadata.trim();
+        if (!trimmed.matches("\\S+")) {
+            throw new PageMetadataException("Metadata error: '" + trimmed
                     + "' - the source code must be a single word (no spaces).");
         }
-        return fields[0];
+        return trimmed;
     }
 
     private static String[] parseDefMetadata(String metadata) throws PageMetadataException {

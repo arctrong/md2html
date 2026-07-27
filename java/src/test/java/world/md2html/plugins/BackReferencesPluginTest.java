@@ -1,10 +1,13 @@
 package world.md2html.plugins;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.ValueSource;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
@@ -24,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -109,7 +115,7 @@ class BackReferencesPluginTest {
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref example-->.")));
 
         assertFalse(result.plugin.isBlank());
-        assertEquals(Arrays.asList("REF", "REFDEF"), sorted(result.markers));
+        assertThat(result.markers, containsInAnyOrder("REF", "REFDEF"));
         assertEquals(
                 "Def <a name=\"backref_def_example\"></a><span class=\"ref-def\">[example]</span> "
                         + "[Example Domain](https://example.com/)"
@@ -148,7 +154,7 @@ class BackReferencesPluginTest {
                 new AbstractMap.SimpleEntry<>(1, "Cite <!--citeref src1-->.")));
 
         assertFalse(result.plugin.isBlank());
-        assertEquals(Arrays.asList("BIBDEF", "CITEREF"), sorted(result.markers));
+        assertThat(result.markers, containsInAnyOrder("BIBDEF", "CITEREF"));
         assertEquals(
                 "Book <div id=\"xref_def_src1\">Some book text"
                         + "<sup><a class=\"bib-back\" href=\"ref.html#xref_ref_src1\">1</a></sup></div>",
@@ -173,8 +179,8 @@ class BackReferencesPluginTest {
 
     static Stream<Arguments> emptyFormatArraysCases() {
         return Stream.of(
-                Arguments.of("{\"ref-formats\": []}", false, Arrays.asList("REFDEF")),
-                Arguments.of("{\"def-formats\": []}", false, Arrays.asList("REF")),
+                Arguments.of("{\"ref-formats\": []}", false, Collections.singletonList("REFDEF")),
+                Arguments.of("{\"def-formats\": []}", false, Collections.singletonList("REF")),
                 Arguments.of("{\"def-formats\": [], \"ref-formats\": []}", true,
                         Collections.<String>emptyList())
         );
@@ -194,37 +200,313 @@ class BackReferencesPluginTest {
         } else {
             assertFalse(result.plugin.isBlank());
         }
-        assertEquals(sorted(expectedMarkers), sorted(result.markers));
+        assertThat(result.markers, containsInAnyOrder(expectedMarkers.toArray(new String[0])));
     }
 
-    private static List<String> sorted(List<String> markers) {
-        List<String> copy = new ArrayList<>(markers);
-        Collections.sort(copy);
-        return copy;
+    @Test
+    void refdefThenRefWithDefFirst() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "Entry <!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
+
+        assertEquals(
+                "Entry <a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
+                        + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup>",
+                result.html.get(0));
+        assertEquals(
+                "See Foo display<sup><a name=\"backref_ref_foo\"></a>"
+                        + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>.",
+                result.html.get(1));
     }
 
+    @Test
+    void refThenRefdefWithRefFirstShouldDefer() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"},"
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"}"
+                + "], \"plugins\": {\"back-references\": {}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "See <!--ref foo-->."),
+                new AbstractMap.SimpleEntry<>(1, "<!--refdef foo Foo display-->")));
+
+        assertTrue(result.deferredPages.get(0));
+        assertTrue(result.deferredPages.get(1));
+        assertEquals(
+                "See Foo display<sup><a name=\"backref_ref_foo\"></a>"
+                        + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>.",
+                result.html.get(0));
+        assertEquals(
+                "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
+                        + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup>",
+                result.html.get(1));
+    }
+
+    static Stream<Arguments> refToUndefinedDefCases() {
+        return Stream.of(
+                Arguments.of(
+                        "[{\"input\": \"ref.txt\", \"output\": \"ref.html\"}]",
+                        Collections.singletonList(new AbstractMap.SimpleEntry<>(0,
+                                "See <!--ref missing-->."))),
+                Arguments.of(
+                        "[{\"input\": \"ref.txt\", \"output\": \"ref.html\"},"
+                                + " {\"input\": \"other.txt\", \"output\": \"other.html\"}]",
+                        Arrays.asList(
+                                new AbstractMap.SimpleEntry<>(0, "See <!--ref missing-->."),
+                                new AbstractMap.SimpleEntry<>(1, "Other page.")))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("refToUndefinedDefCases")
+    void refToUndefinedDefShouldFail(String documentsJson,
+            List<Map.Entry<Integer, String>> pages) {
+        String argFileStr = "{\"documents\": " + documentsJson
+                + ", \"plugins\": {\"back-references\": {}}}";
+        UserError error = assertThrows(UserError.class, () -> simulateBuild(argFileStr, pages));
+        String message = error.getMessage().toLowerCase();
+        assertThat(message, containsString("referenced but not defined"));
+        assertThat(message, containsString("missing"));
+    }
+
+    static Stream<Arguments> duplicateRefdefCases() {
+        return Stream.of(
+                Arguments.of(
+                        "[{\"input\": \"def.txt\", \"output\": \"def.html\"}]",
+                        Collections.singletonList(new AbstractMap.SimpleEntry<>(0,
+                                "A <!--refdef foo One--> B <!--refdef foo Two-->"))),
+                Arguments.of(
+                        "[{\"input\": \"def1.txt\", \"output\": \"def1.html\"},"
+                                + " {\"input\": \"def2.txt\", \"output\": \"def2.html\"}]",
+                        Arrays.asList(
+                                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo One-->"),
+                                new AbstractMap.SimpleEntry<>(1, "<!--refdef foo Two-->")))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("duplicateRefdefCases")
+    void duplicateRefdefShouldFail(String documentsJson,
+            List<Map.Entry<Integer, String>> pages) {
+        String argFileStr = "{\"documents\": " + documentsJson
+                + ", \"plugins\": {\"back-references\": {}}}";
+        UserError error = assertThrows(UserError.class, () -> simulateBuild(argFileStr, pages));
+        String message = error.getMessage().toLowerCase();
+        assertThat(message, containsString("defined multiple times"));
+        assertThat(message, containsString("foo"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "See <!--ref foo compact-->.",
+            "See <!--ref-->."
+    })
+    void refWrongFieldCountShouldFail(String pageText) {
+        String argFileStr =
+                "{\"documents\": [{\"input\": \"ref.txt\", \"output\": \"ref.html\"}], "
+                + "\"plugins\": {\"back-references\": {}}}";
+        UserError error = assertThrows(UserError.class, () -> simulateBuild(argFileStr,
+                Collections.singletonList(new AbstractMap.SimpleEntry<>(0, pageText))));
+        assertTrue(error.getMessage().toLowerCase().contains("single word"));
+    }
+
+    @Test
+    void multipleRefsToSameDefOnSamePage() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0,
+                        "<!--refdef code1 [Example.com](https://example.com/)-->"),
+                new AbstractMap.SimpleEntry<>(1,
+                        "First <!--ref code1--> and second <!--ref code1-->.")));
+
+        assertTrue(result.deferredPages.get(0));
+        assertFalse(result.deferredPages.get(1));
+        assertEquals(
+                "First [Example.com](https://example.com/)"
+                        + "<sup><a name=\"backref_ref_code1\"></a>"
+                        + "<a class=\"ref\" href=\"def.html#backref_def_code1\">[code1]</a></sup>"
+                        + " and second [Example.com](https://example.com/)"
+                        + "<sup><a name=\"backref_ref_code1_1\"></a>"
+                        + "<a class=\"ref\" href=\"def.html#backref_def_code1\">[code1]</a></sup>.",
+                result.html.get(1));
+        assertEquals(
+                "<a name=\"backref_def_code1\"></a><span class=\"ref-def\">[code1]</span> "
+                        + "[Example.com](https://example.com/)<sup>"
+                        + "<a class=\"ref\" href=\"ref.html#backref_ref_code1\">1</a>, "
+                        + "<a class=\"ref\" href=\"ref.html#backref_ref_code1_1\">2</a>"
+                        + "</sup>",
+                result.html.get(0));
+    }
+
+    @Test
+    void refAndDefWithRelativeOutputPaths() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"defs/subdir_def.txt\", \"output\": \"defs/subdir_def.html\"},"
+                + "  {\"input\": \"pages/subdir_ref.txt\", \"output\": \"pages/subdir_ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0,
+                        "<!--refdef subdir_example [Subdir Example](https://example.org/subdir/)-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref subdir_example-->.")));
+
+        assertTrue(result.deferredPages.get(0));
+        assertFalse(result.deferredPages.get(1));
+        assertEquals(
+                "See [Subdir Example](https://example.org/subdir/)"
+                        + "<sup><a name=\"backref_ref_subdir_example\"></a>"
+                        + "<a class=\"ref\" href=\"../defs/subdir_def.html#backref_def_subdir_example\">"
+                        + "[subdir_example]</a></sup>.",
+                result.html.get(1));
+        assertEquals(
+                "<a name=\"backref_def_subdir_example\"></a>"
+                        + "<span class=\"ref-def\">[subdir_example]</span> "
+                        + "[Subdir Example](https://example.org/subdir/)"
+                        + "<sup><a class=\"ref\" href=\"../pages/subdir_ref.html#backref_ref_subdir_example\">"
+                        + "1</a></sup>",
+                result.html.get(0));
+    }
+
+    @Test
+    void customRefTemplateAndCodePrefix() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"code-prefix\": \"xref_\","
+                + "\"ref-formats\": [{"
+                + "    \"markers\": [\"REF\"],"
+                + "    \"template\": \"<span data-code=\\\"${code}\\\" data-anchor=\\\"${anchor}\\\" "
+                + "href=\\\"${href}\\\">${content}</span>\""
+                + "}]"
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
+
+        assertEquals(
+                "See <span data-code=\"foo\" data-anchor=\"xref_ref_foo\" "
+                        + "href=\"def.html#xref_def_foo\">Foo display</span>.",
+                result.html.get(1));
+    }
+
+    @Test
+    void customDefTemplatesAndBackRefDelimiter() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref1.txt\", \"output\": \"ref1.html\"},"
+                + "  {\"input\": \"ref2.txt\", \"output\": \"ref2.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"def-formats\": [{"
+                + "    \"markers\": [\"REFDEF\"],"
+                + "    \"template\": \"<div data-code=\\\"${code}\\\" id=\\\"${anchor}\\\">${content}"
+                + "<sup>${back_refs_html}</sup></div>\","
+                + "    \"back-ref-template\": \"<a href=\\\"${href}\\\">${link_text}</a>\","
+                + "    \"back-ref-delimiter\": \"; \""
+                + "}]"
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->."),
+                new AbstractMap.SimpleEntry<>(2, "Also <!--ref foo-->.")));
+
+        assertTrue(result.deferredPages.get(0));
+        assertFalse(result.deferredPages.get(1));
+        assertFalse(result.deferredPages.get(2));
+        assertEquals(
+                "<div data-code=\"foo\" id=\"backref_def_foo\">Foo display"
+                        + "<sup><a href=\"ref1.html#backref_ref_foo\">1</a>; "
+                        + "<a href=\"ref2.html#backref_ref_foo\">2</a></sup></div>",
+                result.html.get(0));
+    }
+
+    @Test
+    void twoRefMarkersUseRespectiveTemplates() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"defs.txt\", \"output\": \"defs.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"},"
+                + "  {\"input\": \"cite.txt\", \"output\": \"cite.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"def-formats\": [{\"markers\": [\"REFDEF\"]}],"
+                + "\"ref-formats\": ["
+                + "    {\"markers\": [\"REF\"], \"template\": \"<ref>${code}</ref>\"},"
+                + "    {\"markers\": [\"CITEREF\"], \"template\": \"<cite>${code}</cite>\"}"
+                + "]"
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo-->\n<!--refdef bar Bar-->"),
+                new AbstractMap.SimpleEntry<>(1, "Ref <!--ref foo-->."),
+                new AbstractMap.SimpleEntry<>(2, "Cite <!--citeref bar-->.")));
+
+        assertThat(result.markers, containsInAnyOrder("CITEREF", "REF", "REFDEF"));
+        assertTrue(result.deferredPages.get(0));
+        assertFalse(result.deferredPages.get(1));
+        assertFalse(result.deferredPages.get(2));
+        assertEquals("Ref <ref>foo</ref>.", result.html.get(1));
+        assertEquals("Cite <cite>bar</cite>.", result.html.get(2));
+    }
+
+    @Test
+    void emptyRefTemplateRendersNothing() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"ref-formats\": [{\"markers\": [\"REF\"], \"template\": \"\"}]"
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
+
+        assertEquals("See .", result.html.get(1));
+    }
+
+    @Test
+    void partialDefFormatInheritsDefaultBackRefTemplate() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"def-formats\": [{"
+                + "    \"markers\": [\"REFDEF\"],"
+                + "    \"template\": \"<wrap>${content}<sup>${back_refs_html}</sup></wrap>\""
+                + "}]"
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
+
+        assertEquals(
+                "<wrap>Foo display"
+                        + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup></wrap>",
+                result.html.get(0));
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     private static class PluginMarkers {
         private final BackReferencesPlugin plugin;
         private final List<String> markers;
-
-        private PluginMarkers(BackReferencesPlugin plugin, List<String> markers) {
-            this.plugin = plugin;
-            this.markers = markers;
-        }
     }
 
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     private static class SimulateBuildResult {
         private final BackReferencesPlugin plugin;
         private final List<String> markers;
         private final Map<Integer, String> html;
         private final Map<Integer, Boolean> deferredPages;
-
-        private SimulateBuildResult(BackReferencesPlugin plugin, List<String> markers,
-                Map<Integer, String> html, Map<Integer, Boolean> deferredPages) {
-            this.plugin = plugin;
-            this.markers = markers;
-            this.html = html;
-            this.deferredPages = deferredPages;
-        }
     }
 }
