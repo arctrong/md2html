@@ -187,16 +187,6 @@ def _parse_ref_formats(data) -> List[RefFormatConfig]:
     return [_parse_ref_format(entry) for entry in raw_formats]
 
 
-def _validate_format_markers(def_formats: List[DefFormatConfig],
-                             ref_formats: List[RefFormatConfig]) -> None:
-    seen = set()
-    for fmt in def_formats + ref_formats:
-        for marker in fmt.markers:
-            if marker in seen:
-                raise UserError(f"Marker duplication (case-insensitively): {marker}")
-            seen.add(marker)
-
-
 class _DefMetadataHandler:
 
     def __init__(self, plugin: 'BackReferencesPlugin', format_config: DefFormatConfig):
@@ -309,7 +299,6 @@ class BackReferencesPlugin(Md2HtmlPlugin):
 
         self.def_formats = _parse_def_formats(data)
         self.ref_formats = _parse_ref_formats(data)
-        _validate_format_markers(self.def_formats, self.ref_formats)
 
         code_prefix = data.get("code-prefix")
         if code_prefix:

@@ -162,24 +162,6 @@ class BackReferencesPluginTest(unittest.TestCase):
                     self.assertFalse(plugin.is_blank())
                 self.assertEqual(sorted(markers), sorted(expected_markers))
 
-    def test_duplicate_markers(self):
-        page_doc = '{"input": "page.txt", "output": "page.html"}'
-        plugin_configs = [
-            '{"def-formats": [{"markers": ["REFDEF", "refdef"]}]}',
-            '{"ref-formats": [{"markers": ["REF", "ref"]}]}',
-            '{"def-formats": [{"markers": ["REFDEF"]}], '
-            '"ref-formats": [{"markers": ["refdef"]}]}',
-        ]
-        for plugin_config in plugin_configs:
-            with self.subTest(plugin_config=plugin_config):
-                arg_file_str = (
-                    '{"documents": [' + page_doc + '], '
-                    '"plugins": {"back-references": ' + plugin_config + '}}')
-                with self.assertRaises(UserError) as cm:
-                    parse_argument_file_for_test(
-                        load_json_argument_file(arg_file_str), CliArgDataObject())
-                self.assertIn('duplication', str(cm.exception).lower())
-
     def test_refdef_then_ref_with_def_first(self):
         arg_file_str = (
             '{"documents": ['

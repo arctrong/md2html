@@ -29,6 +29,7 @@ class IncludeFilePlugin(Md2HtmlPlugin):
     def __init__(self):
         super().__init__()
         self.data: Dict[str, IncludeFileData] = {}
+        self.handler_infos = []
         self.all_metadata_handlers = None
         with open(MODULE_DIR.joinpath('include_file_metadata_schema.json'), 'r',
                   encoding="utf-8") as schema_file:
@@ -38,21 +39,25 @@ class IncludeFilePlugin(Md2HtmlPlugin):
         self.assure_accept_data_once()
         self.validate_data_with_file(data, MODULE_DIR.joinpath('include_file_schema.json'))
 
+        data_map = {}
+        handler_infos = []
         for item in data:
+            substringer = SmartSubstringer(start_with=item.get("start-with", ""),
+                                           end_with=item.get("end-with", ""),
+                                           start_marker=item.get("start-marker", ""),
+                                           end_marker=item.get("end-marker", ""),
+                                           )
+            include_file_data = IncludeFileData(root_dir=item["root-dir"],
+                                                trim=item.get("trim", "all"),
+                                                recursive=item.get("recursive", False),
+                                                subsringer=substringer,
+                                                )
             for marker in item["markers"]:
                 marker = marker.upper()
-                if marker in self.data:
-                    raise UserError(f"Marker duplication (case-insensitively): {marker}")
-                substringer = SmartSubstringer(start_with=item.get("start-with", ""),
-                                               end_with=item.get("end-with", ""),
-                                               start_marker=item.get("start-marker", ""),
-                                               end_marker=item.get("end-marker", ""),
-                                               )
-                self.data[marker] = IncludeFileData(root_dir=item["root-dir"],
-                                                    trim=item.get("trim", "all"),
-                                                    recursive=item.get("recursive", False),
-                                                    subsringer=substringer,
-                                                    )
+                handler_infos.append((self, marker, False))
+                data_map[marker] = include_file_data
+        self.data = data_map
+        self.handler_infos = handler_infos
 
     def is_blank(self) -> bool:
         return not bool(self.data)
@@ -61,7 +66,7 @@ class IncludeFilePlugin(Md2HtmlPlugin):
         self.all_metadata_handlers = metadata_handlers
 
     def page_metadata_handlers(self):
-        return [(self, marker, False) for marker in self.data.keys()]
+        return self.handler_infos
 
     def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
                              metadata_section: str,

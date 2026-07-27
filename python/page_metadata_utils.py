@@ -45,13 +45,19 @@ class MetadataHandlersApplicationResult:
 
 def register_page_metadata_handlers(plugins: List[Md2HtmlPlugin]) -> PageMetadataHandlers:
     marker_handlers = {}
+    registered_markers = set()
     all_only_at_page_start = True
     for plugin in plugins:
         handlers = plugin.page_metadata_handlers()
         if handlers is not None:
             for handler, marker, only_at_page_start in handlers:
                 all_only_at_page_start &= only_at_page_start
-                key = marker.upper(), only_at_page_start
+                marker_upper = marker.upper()
+                if marker_upper in registered_markers:
+                    raise UserError(
+                        f"Marker duplication (case-insensitively): {marker_upper}")
+                registered_markers.add(marker_upper)
+                key = marker_upper, only_at_page_start
                 marker_handlers.setdefault(key, []).append(handler)
     return PageMetadataHandlers(marker_handlers, all_only_at_page_start)
 

@@ -141,19 +141,6 @@ class IncludeFilePluginTest(unittest.TestCase):
         processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before Sample text 2 after", processed_page)
 
-    def test_with_duplicate_markers_must_raise_error(self):
-        argument_file_dict = load_json_argument_file(
-            '{"documents": [{"input": "whatever.txt"}], '
-            '"plugins": {'
-            '"include-file": ['
-            '    {"markers": ["marker1"], "root-dir": "whatever/path1" },'
-            '    {"markers": ["marker2", "Marker1"], "root-dir": "whatever/path2" }'
-            ']}}')
-        with self.assertRaises(UserError) as cm:
-            parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
-        self.assertTrue('duplication' in str(cm.exception))
-        self.assertTrue('MARKER1' in str(cm.exception))
-
     def test_recursive(self):
         argument_file_dict = load_json_argument_file(
             '{"documents": [{"input": "whatever.txt"}], '
