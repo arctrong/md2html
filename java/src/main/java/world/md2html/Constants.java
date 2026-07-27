@@ -4,6 +4,7 @@ import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.plugins.IgnorePlugin;
 import world.md2html.plugins.IncludeFilePlugin;
 import world.md2html.plugins.IndexPlugin;
+import world.md2html.plugins.BackReferencesPlugin;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.plugins.PageFlowsPlugin;
 import world.md2html.plugins.PageLinksPlugin;
@@ -44,6 +45,7 @@ public final class Constants {
         PLUGIN_PROVIDERS.put("wrap-code", WrapCodePlugin::new);
         PLUGIN_PROVIDERS.put("include-file", IncludeFilePlugin::new);
         PLUGIN_PROVIDERS.put("replace", mgr -> new ReplacePlugin());
+        PLUGIN_PROVIDERS.put("back-references", BackReferencesPlugin::new);
     }
 
     static {

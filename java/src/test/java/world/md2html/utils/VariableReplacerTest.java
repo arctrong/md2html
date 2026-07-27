@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -14,6 +15,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static world.md2html.utils.Utils.mapOf;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VariableReplacerTest {
@@ -75,5 +77,26 @@ class VariableReplacerTest {
                     assertEquals(expected, replacer.replace(values));
                 });
         assertTrue(e.getMessage().contains(expected));
+    }
+
+    public Stream<Arguments> namedPlaceholderTest() {
+        return Stream.of(
+                Arguments.of("single named", "Hello ${name}!",
+                        mapOf("name", "World"), "Hello World!"),
+                Arguments.of("several named", "${greeting} ${name}",
+                        mapOf("greeting", "Hi", "name", "there"), "Hi there"),
+                Arguments.of("missing value omitted", "a${missing}b",
+                        mapOf("present", "x"), "ab"),
+                Arguments.of("named and positional separate", "n:${anchor} p:${1}",
+                        mapOf("anchor", "id1"), "n:id1 p:")
+        );
+    }
+
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource
+    public void namedPlaceholderTest(String name, String template, Map<String, String> values,
+                                     String expected) throws VariableReplacer.VariableReplacerException {
+        VariableReplacer replacer = new VariableReplacer(template);
+        assertEquals(expected, replacer.replace(values));
     }
 }
