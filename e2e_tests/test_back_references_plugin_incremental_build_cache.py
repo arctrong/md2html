@@ -1,4 +1,3 @@
-import os
 import shutil
 import time
 import unittest
@@ -7,10 +6,6 @@ from pathlib import Path
 import helpers as h
 
 
-@unittest.skipUnless(
-    os.getenv("IMPLEMENTATION") == "py",
-    "Skipping class because IMPLEMENTATION is not 'py'. Java version is not implemented yet.",
-)
 class BackReferencesPluginIncrementalBuildCacheE2eTest(unittest.TestCase):
 
     @classmethod
