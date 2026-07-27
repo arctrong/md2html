@@ -1,4 +1,3 @@
-import os
 import unittest
 from pathlib import Path
 
@@ -7,11 +6,8 @@ from bs4 import BeautifulSoup
 import helpers as h
 
 
-@unittest.skipUnless(
-    os.getenv("IMPLEMENTATION") == "py",
-    "Skipping class because IMPLEMENTATION is not 'py'. Java version is not implemented yet.",
-)
 class BackReferencesPluginContentMinimalE2eTest(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         cls.OUTPUT_DIR = h.prepare_output_directory(cls.__name__)
