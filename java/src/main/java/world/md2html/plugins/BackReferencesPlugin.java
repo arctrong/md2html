@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
+import static world.md2html.utils.JsonUtils.OBJECT_WRITER;
 
 public class BackReferencesPlugin extends AbstractMd2HtmlPlugin {
 
@@ -196,6 +197,31 @@ public class BackReferencesPlugin extends AbstractMd2HtmlPlugin {
         String pageInput = normalizeDependencyPath(document.getInput());
         removePageFromDefinitions(pageInput);
         removeReferencingPage(pageInput);
+    }
+
+    @Override
+    public void finalizePlugin() {
+        for (Map.Entry<String, Definition> entry : definitions.entrySet()) {
+            String sourceCode = entry.getKey();
+            Definition definition = entry.getValue();
+            Map<String, List<Reference>> refsByPage = references.get(sourceCode);
+            if (refsByPage != null) {
+                for (List<Reference> refs : refsByPage.values()) {
+                    for (Reference ref : refs) {
+                        recordDependencyPair(ref.getPage(), definition.getPage());
+                    }
+                }
+            }
+        }
+        if (isBackrefsCacheEnabled()) {
+            saveBackrefsCache();
+            buildCacheManager.recordStandaloneDerivedDocument(backrefsCacheFile);
+        }
+    }
+
+    private void recordDependencyPair(PageLocation refPage, PageLocation defPage) {
+        buildCacheManager.recordDependency(refPage.getInputFile(), defPage.getInputFile());
+        buildCacheManager.recordDependency(defPage.getInputFile(), refPage.getInputFile());
     }
 
     private class DefMetadataHandler implements PageMetadataHandler {
@@ -486,6 +512,32 @@ public class BackReferencesPlugin extends AbstractMd2HtmlPlugin {
             }
         }
         backrefsCache = pruned;
+    }
+
+    private void saveBackrefsCache() {
+        Path cacheFile = Paths.get(backrefsCacheFile);
+        try {
+            if (cacheFile.getParent() != null) {
+                Files.createDirectories(cacheFile.getParent());
+            }
+            OBJECT_WRITER.writeValue(cacheFile.toFile(), prepareCacheForSave(backrefsCache));
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing backrefs cache file '" +
+                    backrefsCacheFile + "'", e);
+        }
+    }
+
+    private static Map<String, List<Map<String, Object>>> prepareCacheForSave(
+            Map<String, Map<String, Map<String, Object>>> byPageCache) {
+        Map<String, List<Map<String, Object>>> listsCache = new LinkedHashMap<>();
+        byPageCache.keySet().stream().sorted().forEach(sourceCode -> {
+            Map<String, Map<String, Object>> byPage = byPageCache.get(sourceCode);
+            List<Map<String, Object>> referencingPages = new ArrayList<>();
+            byPage.keySet().stream().sorted()
+                    .forEach(inputFile -> referencingPages.add(byPage.get(inputFile)));
+            listsCache.put(sourceCode, referencingPages);
+        });
+        return listsCache;
     }
 
     private void populateReferencesFromCache(Map<String, Map<String, List<Reference>>> references) {

@@ -17,7 +17,11 @@ import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.testutils.PluginTestUtils;
 import world.md2html.utils.UserError;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +29,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static world.md2html.options.TestUtils.parseArgumentFile;
+import static world.md2html.utils.JsonUtils.OBJECT_MAPPER;
 
 class BackReferencesPluginTest {
 
@@ -494,6 +501,129 @@ class BackReferencesPluginTest {
                 "<wrap>Foo display"
                         + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup></wrap>",
                 result.html.get(0));
+    }
+
+    @Test
+    void firstRunWithCacheEnabledCreatesCacheFile() throws Exception {
+        String cacheFile = cacheFilePath("back_refs_cache.json");
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"cache\": \"" + cacheFile + "\""
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
+        result.plugin.finalizePlugin();
+
+        Path cachePath = Paths.get(cacheFile);
+        assertTrue(Files.exists(cachePath));
+        Map<String, List<Map<String, Object>>> saved = OBJECT_MAPPER.readValue(cachePath.toFile(),
+                new TypeReference<Map<String, List<Map<String, Object>>>>() {});
+        assertThat(saved.keySet(), contains("foo"));
+        assertEquals("ref.txt", saved.get("foo").get(0).get("input_file"));
+        assertEquals(Collections.singletonList("backref_ref_foo"),
+                saved.get("foo").get(0).get("anchor_ids"));
+    }
+
+    @Test
+    void secondRunRebuiltReferencerPreservesSkippedBackLinks() throws Exception {
+        String cacheFile = cacheFilePath("back_refs_cache.json");
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref1.txt\", \"output\": \"ref1.html\"},"
+                + "  {\"input\": \"ref2.txt\", \"output\": \"ref2.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"cache\": \"" + cacheFile + "\""
+                + "}}}";
+        simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo--> (one)."),
+                new AbstractMap.SimpleEntry<>(2, "See <!--ref foo--> (two)."))).plugin.finalizePlugin();
+
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo--> (one rebuilt)."),
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->")));
+
+        assertEquals(
+                "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
+                        + "<sup><a class=\"ref\" href=\"ref2.html#backref_ref_foo\">1</a>, "
+                        + "<a class=\"ref\" href=\"ref1.html#backref_ref_foo\">2</a></sup>",
+                result.html.get(0));
+    }
+
+    @Test
+    void secondRunIfRefPageGainsSecondRefThenDefListsBothAnchors() throws Exception {
+        String cacheFile = cacheFilePath("back_refs_cache.json");
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"cache\": \"" + cacheFile + "\""
+                + "}}}";
+        simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->."))).plugin.finalizePlugin();
+
+        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(1, "First <!--ref foo--> and second <!--ref foo-->."),
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->")));
+
+        assertEquals(
+                "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
+                        + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a>, "
+                        + "<a class=\"ref\" href=\"ref.html#backref_ref_foo_1\">2</a></sup>",
+                result.html.get(0));
+    }
+
+    @Test
+    void secondRunSmallerDocumentListDropsRemovedReferencerAndPrunesCache() throws Exception {
+        String cacheFile = cacheFilePath("back_refs_cache.json");
+        String fullArgFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref1.txt\", \"output\": \"ref1.html\"},"
+                + "  {\"input\": \"ref2.txt\", \"output\": \"ref2.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"cache\": \"" + cacheFile + "\""
+                + "}}}";
+        simulateBuild(fullArgFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo--> (one)."),
+                new AbstractMap.SimpleEntry<>(2, "See <!--ref foo--> (two)."))).plugin.finalizePlugin();
+
+        String smallerArgFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
+                + "  {\"input\": \"ref1.txt\", \"output\": \"ref1.html\"}"
+                + "], \"plugins\": {\"back-references\": {"
+                + "\"cache\": \"" + cacheFile + "\""
+                + "}}}";
+        SimulateBuildResult result = simulateBuild(smallerArgFileStr, Collections.singletonList(
+                new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->")));
+        result.plugin.finalizePlugin();
+
+        assertEquals(
+                "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
+                        + "<sup><a class=\"ref\" href=\"ref1.html#backref_ref_foo\">1</a></sup>",
+                result.html.get(0));
+
+        Map<String, List<Map<String, Object>>> saved = OBJECT_MAPPER.readValue(
+                Paths.get(cacheFile).toFile(),
+                new TypeReference<Map<String, List<Map<String, Object>>>>() {});
+        assertTrue(saved.containsKey("foo"));
+        List<String> inputFiles = saved.get("foo").stream()
+                .map(entry -> (String) entry.get("input_file"))
+                .collect(Collectors.toList());
+        assertEquals(Collections.singletonList("ref1.txt"), inputFiles);
+    }
+
+    private String cacheFilePath(String fileName) {
+        return tempDir.resolve(fileName).toString().replace('\\', '/');
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
