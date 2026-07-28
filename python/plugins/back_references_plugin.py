@@ -18,7 +18,7 @@ DEFAULT_DEF_FORMAT = {
     "markers": ["REFDEF"],
     "template": """<a name="${anchor}"></a><span class="ref-def">[${code}]</span> ${content}""" \
                  "<sup>${back_refs_html}</sup>",
-    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${link_text}</a>",
+    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${index}</a>",
     "back-ref-delimiter": ", ",
 }
 
@@ -220,7 +220,7 @@ class _DefMetadataHandler:
                         ref.page.output_file, doc.output_file)
                     back_ref_list.append(def_format.back_ref_template.replace({
                         "href": f"{ref_link}#{ref.anchor_id}",
-                        "link_text": str(back_ref_index),
+                        "index": str(back_ref_index),
                     }))
             back_ref_html = def_format.back_ref_delimiter.join(back_ref_list)
             return MetadataProcessingResult(def_format.template.replace({

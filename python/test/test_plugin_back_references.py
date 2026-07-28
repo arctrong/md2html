@@ -107,7 +107,7 @@ class BackReferencesPluginTest(unittest.TestCase):
             '"def-formats": [{'
             '    "markers": ["bibdef"],'
             '    "template": "<div id=\\"${anchor}\\">${content}<sup>${back_refs_html}</sup></div>",'
-            '    "back-ref-template": "<a class=\\"bib-back\\" href=\\"${href}\\">${link_text}</a>",'
+            '    "back-ref-template": "<a class=\\"bib-back\\" href=\\"${href}\\">${index}</a>",'
             '    "back-ref-delimiter": "; "'
             '}],'
             '"ref-formats": [{'
@@ -340,7 +340,7 @@ class BackReferencesPluginTest(unittest.TestCase):
             '    "markers": ["REFDEF"],'
             '    "template": "<div data-code=\\"${code}\\" id=\\"${anchor}\\">${content}'
             '<sup>${back_refs_html}</sup></div>",'
-            '    "back-ref-template": "<a href=\\"${href}\\">${link_text}</a>",'
+            '    "back-ref-template": "<a href=\\"${href}\\">${index}</a>",'
             '    "back-ref-delimiter": "; "'
             '}]'
             '}}}')

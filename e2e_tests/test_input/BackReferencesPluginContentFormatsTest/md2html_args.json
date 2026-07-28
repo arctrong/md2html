@@ -26,13 +26,13 @@
                 {
                     "markers": ["refdef"],
                     "template": "<a name=\"${anchor}\"></a><span class=\"ref-def\">[${code}]</span> ${content}<sup>${back_refs_html}</sup>",
-                    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${link_text}</a>",
+                    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${index}</a>",
                     "back-ref-delimiter": ", "
                 },
                 {
                     "markers": ["bibdef"],
                     "template": "<div class=\"bib-def\" id=\"${anchor}\">${content}<sup>${back_refs_html}</sup></div>",
-                    "back-ref-template": "<a class=\"bib-back\" href=\"${href}\">${link_text}</a>",
+                    "back-ref-template": "<a class=\"bib-back\" href=\"${href}\">${index}</a>",
                     "back-ref-delimiter": "; "
                 }
             ],

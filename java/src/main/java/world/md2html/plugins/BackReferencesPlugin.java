@@ -52,7 +52,7 @@ public class BackReferencesPlugin extends AbstractMd2HtmlPlugin {
                 "<a name=\"${anchor}\"></a><span class=\"ref-def\">[${code}]</span> ${content}"
                         + "<sup>${back_refs_html}</sup>");
         defaults.put("back-ref-template",
-                "<a class=\"ref\" href=\"${href}\">${link_text}</a>");
+                "<a class=\"ref\" href=\"${href}\">${index}</a>");
         defaults.put("back-ref-delimiter", ", ");
         return defaults;
     }
@@ -273,7 +273,7 @@ public class BackReferencesPlugin extends AbstractMd2HtmlPlugin {
                                     ref.getPage().getOutputFile(), document.getOutput());
                             backRefList.add(defFormat.getBackRefTemplate().replace(namedMap(
                                     "href", refLink + "#" + ref.getAnchorId(),
-                                    "link_text", String.valueOf(backRefIndex))));
+                                    "index", String.valueOf(backRefIndex))));
                         }
                     }
                 }
