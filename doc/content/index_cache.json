@@ -273,6 +273,16 @@
       "entry": "index",
       "link": "sections/plugins.html#index_entry_index_index",
       "title": "Plugins"
+    },
+    {
+      "entry": "back references plugin",
+      "link": "sections/plugins.html#index_entry_index_back_references_plugin_cross_references",
+      "title": "Plugins"
+    },
+    {
+      "entry": "cross references",
+      "link": "sections/plugins.html#index_entry_index_back_references_plugin_cross_references",
+      "title": "Plugins"
     }
   ],
   "doc/content/sections/reference.html": [

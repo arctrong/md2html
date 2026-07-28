@@ -519,6 +519,132 @@ become `[](../page1.html)`.
     2. Changing a page's `code` will invalidate all links that reference this page by its `code`.
 
 ----------------------------------------------------------------------------------------------------
+<!--index ["back references plugin", "cross references"]-->
+# "back-references" plugin {#back_references_plugin}
+
+**Motivation**
+
+Centralized reference lists may be achieved using the ["replace" plugin](#replace_plugin).
+All definitions (like books, external links, terms) may be collected on one page, and the other
+pages may reference them by code. This method works, but it has limitations:
+
+- only one definition page (extra ones need to be configured separately with different markers);
+- with a reference on a page, the user needs an extra click to navigate to the definition;
+- no definition code uniqueness control. With duplicated codes, the first definition on the page
+    will be navigated;
+- no way to know all references to a definition.
+
+This plugin provides the following possibilities:
+
+- definitions and references location is not restricted, they may be on any pages;
+- a reference may contain the clickable external link directly, the book title or the other
+    display element from the definition --- no extra click required. Still a reference to the
+    definition may be included as well;
+- the definition codes uniqueness is under control;
+- definitions may display a list of back references that allow navigation to all the points
+    where these definitions are referenced.
+
+!!! note "Implementation note"
+    During incremental builds, the plugin currently treats any edit to a definition or reference
+    page as a reason to rebuild that page and its partners --- even when only unrelated
+    body text changed outside the plugin metadata. For typical writing projects the extra
+    rebuild cost is usually negligible. The output stays correct; the extra rebuilds are
+    a known limitation and finer-grained invalidation is planned.
+
+**Definition**
+
+Minimal configuration:
+
+````json
+{
+    "documents": [
+        { "input": "terms/glossary.txt", "output": "terms/glossary.html" },
+        { "input": "pages/chapter1.txt", "output": "pages/chapter1.html" }
+    ],
+    "plugins": {
+        "cache": "path/to/backrefs_cache.json",
+        "back-references": {}
+    }
+}
+````
+
+Technically, the `"cache"` field is not a part of the built-in defaults, but it's a recommended
+setting (see below).
+
+The minimal configuration activates the plugin with the following built-in defaults:
+
+````json
+"back-references": {
+    "code-prefix": "backref_",
+    "cache": "path/to/backrefs_cache.json",
+    "def-formats": [
+        {
+            "markers": ["REFDEF"],
+            "template": "<a name=\"${anchor}\"></a><span class=\"ref-def\">[${code}]</span> ${content}<sup>${back_refs_html}</sup>",
+            "back-ref-template": "<a class=\"ref\" href=\"${href}\">${index}</a>",
+            "back-ref-delimiter": ", "
+        }
+    ],
+    "ref-formats": [
+        {
+            "markers": ["REF"],
+            "template": "${content}<sup><a name=\"${anchor}\"></a><a class=\"ref\" href=\"${href}\">[${code}]</a></sup>"
+        }
+    ]
+}
+````
+
+There may be several `"def-formats"` and `"ref-formats"` items with different markers; each
+marker must be unique across all format entries (and across all other plugins).
+The formats define how definitions and references are rendered, not the referencing logic.
+The following placeholders may be used in the format definitions:
+
+Placeholder         | Description
+--------------------|------------
+`${code}`           | The definition unique code from the metadata
+`${anchor}`         | Anchor ID for this definition or reference. Generated automatically with the configured `code-prefix`
+`${content}`        | The displayed content from the definition metadata
+`${href}`           | Relative URL to the partner HTML page point (with the anchor)
+`${back_refs_html}` | All back-reference links on a definition. Built from `back-ref-template` and `back-ref-delimiter`
+`${index}`          | Numeric counter inside the definition (`1`, `2`, `3`, ...)
+
+**Usage**
+
+Definition metadata --- source code plus display text:
+
+````
+The <!--ignore refdef my_term My Term--> is explained below.
+````
+
+- The first token is the _source code_ (unique in the project, no spaces).
+- The remainder is the _display content_ which substitutes the `${content}` placeholder in the
+    templates.
+
+Reference metadata — source code only:
+
+````
+See the <!--ignore ref my_term--> for details.
+````
+
+- A reference must use a source code that is defined on some page; undefined reference codes
+    are reported as errors.
+
+**Plugin cache**
+
+When the `"cache"` field is set in the plugin configuration, the plugin uses this file to keep 
+its data and reuses this data between builds. It is required for correct back-links to
+referencing pages that were **skipped** during an incremental run.
+
+Without the plugin cache, back references are only guaranteed correct when every build uses
+[force page regeneration](<!--page reference-->#force_page_regeneration).
+
+**Build cache and incremental builds**
+
+For correct incremental builds this plugin also requires the application-wide
+[build cache](<!--page reference-->#build_cache). Without it, use
+[force page regeneration](<!--page reference-->#force_page_regeneration) on each build.
+
+----------------------------------------------------------------------------------------------------
 # "ignore" plugin {#ignore_plugin}
 
 **Motivation**
@@ -755,7 +881,7 @@ The result will look like this:
 ````
 
 ----------------------------------------------------------------------------------------------------
-# "replace" plugin
+# "replace" plugin {#replace_plugin}
 
 **Motivation**
 
@@ -778,6 +904,7 @@ The plugin is defined the following way:
         "replace": [
             { "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" },
             { "markers": ["blue"], "replace-with": "<span style=\"color:blue;\">${1}</span>" },
+            { "markers": ["version"], "replace-with": "1.1.0" },
             { "markers": ["pict"], "replace-with": "![](<!--ignore path pict-->${1})", "recursive": true }
         ],
         . . .
@@ -797,7 +924,11 @@ In this example:
 - if the `recursive` flag is set to `true` then the resulting text (after the template is
     extending) will be considered as containing metadata blocks. In the replacement definition
     with marker `pict` the fragment `<!--ignore path pict-->` will be processed and replaced if
-    the marker `path` is defined.
+    the marker `path` is defined;
+- a replacement may use a fixed `replace-with` string with no `${…}` placeholders. This
+    documentation project defines `"version"` that way so the current program version appears
+    in the source text via `<!--version -->` while the version number is maintained only in
+    the *argument file* (see below).
 
 
 **Usage**
@@ -806,15 +937,19 @@ The content may be added the following ways:
 
 - `<!--ignore red some text -->` --- using a string, only one value may be specified;
 - `<!--ignore red ["some text ", "some other text"] -->` --- using a list. Unused items will be
-    ignored.
+    ignored;
+- `<!--version -->` --- empty metadata; expands to the fixed version string from the
+    `version` replacement entry (used in this documentation for `{{exec_version}}` examples).
 
-The output will be the same in both cases:
+For `red` / list examples the output is:
 
 ````code
 <span style="color:red;">some text </span>
 ````
 
 This result may look like this: <!--red some text -->.
+
+The configured program version appears in prose as <!--version -->.
 
 If there are not enough values provided for the template, the missing positions will be replaced
 with empty strings.

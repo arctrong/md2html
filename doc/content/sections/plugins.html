@@ -82,7 +82,7 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
             </div>
         </td></tr>
         <tr><td class="bottom valign_bottom"><span class="poweredBy">Powered by <a class="poweredByLink"
-            href="https://github.com/arctrong/md2html">md2html_py</a> 1.0.8</span>
+            href="https://github.com/arctrong/md2html">md2html_py</a> 1.1.0</span>
         </td></tr>
     </table>
 </div>
@@ -99,10 +99,11 @@ src="../../layout/pict/next_page_h21px.png" alt="Next"></a>
 <li><a href="#variables-plugin">"variables" plugin</a></li>
 <li><a href="#index_plugin">"index" plugin</a></li>
 <li><a href="#page_links_plugin">"page-links" plugin</a></li>
+<li><a href="#back_references_plugin">"back-references" plugin</a></li>
 <li><a href="#ignore_plugin">"ignore" plugin</a></li>
 <li><a href="#wrap-code-plugin">"wrap-code" plugin</a></li>
 <li><a href="#include_file_plugin">"include-file" plugin</a></li>
-<li><a href="#replace-plugin">"replace" plugin</a></li>
+<li><a href="#replace_plugin">"replace" plugin</a></li>
 </ul>
 </div>
 <hr />
@@ -653,6 +654,133 @@ become <code>[](../page1.html)</code>.</p>
 </ol>
 </div>
 <hr />
+<p><a name="index_entry_index_back_references_plugin_cross_references"></a></p>
+<h1 id="back_references_plugin">"back-references" plugin</h1>
+<p><strong>Motivation</strong></p>
+<p>Centralized reference lists may be achieved using the <a href="#replace_plugin">"replace" plugin</a>.
+All definitions (like books, external links, terms) may be collected on one page, and the other
+pages may reference them by code. This method works, but it has limitations:</p>
+<ul>
+<li>only one definition page (extra ones need to be configured separately with different markers);</li>
+<li>with a reference on a page, the user needs an extra click to navigate to the definition;</li>
+<li>no definition code uniqueness control. With duplicated codes, the first definition on the page
+    will be navigated;</li>
+<li>no way to know all references to a definition.</li>
+</ul>
+<p>This plugin provides the following possibilities:</p>
+<ul>
+<li>definitions and references location is not restricted, they may be on any pages;</li>
+<li>a reference may contain the clickable external link directly, the book title or the other
+    display element from the definition &mdash; no extra click required. Still a reference to the
+    definition may be included as well;</li>
+<li>the definition codes uniqueness is under control;</li>
+<li>definitions may display a list of back references that allow navigation to all the points
+    where these definitions are referenced.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Implementation note</p>
+<p>During incremental builds, the plugin currently treats any edit to a definition or reference
+page as a reason to rebuild that page and its partners &mdash; even when only unrelated
+body text changed outside the plugin metadata. For typical writing projects the extra
+rebuild cost is usually negligible. The output stays correct; the extra rebuilds are
+a known limitation and finer-grained invalidation is planned.</p>
+</div>
+<p><strong>Definition</strong></p>
+<p>Minimal configuration:</p>
+<pre class="highlight"><code class="language-json">{
+    "documents": [
+        { "input": "terms/glossary.txt", "output": "terms/glossary.html" },
+        { "input": "pages/chapter1.txt", "output": "pages/chapter1.html" }
+    ],
+    "plugins": {
+        "cache": "path/to/backrefs_cache.json",
+        "back-references": {}
+    }
+}</code></pre>
+<p>Technically, the <code>"cache"</code> field is not a part of the built-in defaults, but it's a recommended
+setting (see below).</p>
+<p>The minimal configuration activates the plugin with the following built-in defaults:</p>
+<pre class="highlight"><code class="language-json">"back-references": {
+    "code-prefix": "backref_",
+    "cache": "path/to/backrefs_cache.json",
+    "def-formats": [
+        {
+            "markers": ["REFDEF"],
+            "template": "&lt;a name=\"${anchor}\"&gt;&lt;/a&gt;&lt;span class=\"ref-def\"&gt;[${code}]&lt;/span&gt; ${content}&lt;sup&gt;${back_refs_html}&lt;/sup&gt;",
+            "back-ref-template": "&lt;a class=\"ref\" href=\"${href}\"&gt;${index}&lt;/a&gt;",
+            "back-ref-delimiter": ", "
+        }
+    ],
+    "ref-formats": [
+        {
+            "markers": ["REF"],
+            "template": "${content}&lt;sup&gt;&lt;a name=\"${anchor}\"&gt;&lt;/a&gt;&lt;a class=\"ref\" href=\"${href}\"&gt;[${code}]&lt;/a&gt;&lt;/sup&gt;"
+        }
+    ]
+}</code></pre>
+<p>There may be several <code>"def-formats"</code> and <code>"ref-formats"</code> items with different markers; each
+marker must be unique across all format entries (and across all other plugins).
+The formats define how definitions and references are rendered, not the referencing logic.
+The following placeholders may be used in the format definitions:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>${code}</code></td>
+<td>The definition unique code from the metadata</td>
+</tr>
+<tr>
+<td><code>${anchor}</code></td>
+<td>Anchor ID for this definition or reference. Generated automatically with the configured <code>code-prefix</code></td>
+</tr>
+<tr>
+<td><code>${content}</code></td>
+<td>The displayed content from the definition metadata</td>
+</tr>
+<tr>
+<td><code>${href}</code></td>
+<td>Relative URL to the partner HTML page point (with the anchor)</td>
+</tr>
+<tr>
+<td><code>${back_refs_html}</code></td>
+<td>All back-reference links on a definition. Built from <code>back-ref-template</code> and <code>back-ref-delimiter</code></td>
+</tr>
+<tr>
+<td><code>${index}</code></td>
+<td>Numeric counter inside the definition (<code>1</code>, <code>2</code>, <code>3</code>, ...)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage</strong></p>
+<p>Definition metadata &mdash; source code plus display text:</p>
+<pre class="highlight"><code>The &lt;!--refdef my_term My Term--&gt; is explained below.</code></pre>
+<ul>
+<li>The first token is the <em>source code</em> (unique in the project, no spaces).</li>
+<li>The remainder is the <em>display content</em> which substitutes the <code>${content}</code> placeholder in the
+    templates.</li>
+</ul>
+<p>Reference metadata — source code only:</p>
+<pre class="highlight"><code>See the &lt;!--ref my_term--&gt; for details.</code></pre>
+<ul>
+<li>A reference must use a source code that is defined on some page; undefined reference codes
+    are reported as errors.</li>
+</ul>
+<p><strong>Plugin cache</strong></p>
+<p>When the <code>"cache"</code> field is set in the plugin configuration, the plugin uses this file to keep 
+its data and reuses this data between builds. It is required for correct back-links to
+referencing pages that were <strong>skipped</strong> during an incremental run.</p>
+<p>Without the plugin cache, back references are only guaranteed correct when every build uses
+<a href="reference.html#force_page_regeneration">force page regeneration</a>.</p>
+<p><strong>Build cache and incremental builds</strong></p>
+<p>For correct incremental builds this plugin also requires the application-wide
+<a href="reference.html#build_cache">build cache</a>. Without it, use
+<a href="reference.html#force_page_regeneration">force page regeneration</a> on each build.</p>
+<hr />
 <h1 id="ignore_plugin">"ignore" plugin</h1>
 <p><strong>Motivation</strong></p>
 <p>Different plugins fulfill page metadata substitution. But sometimes it's required to show a
@@ -911,7 +1039,7 @@ described. This plugin implements such inclusions.</p>
         System.out.println("Hi!");
     }</code></pre>
 <hr />
-<h1 id="replace-plugin">"replace" plugin</h1>
+<h1 id="replace_plugin">"replace" plugin</h1>
 <p><strong>Motivation</strong></p>
 <p>This plugin makes replacements by template. It may be helpful for contracting long and recurring
 fragments. Probably, long and cumbersome HTML inclusions are the first  use case for this plugin.</p>
@@ -928,6 +1056,7 @@ readability and compatibility in source text.</p>
         "replace": [
             { "markers": ["red"], "replace-with": "&lt;span style=\"color:red;\"&gt;${1}&lt;/span&gt;" },
             { "markers": ["blue"], "replace-with": "&lt;span style=\"color:blue;\"&gt;${1}&lt;/span&gt;" },
+            { "markers": ["version"], "replace-with": "1.1.0" },
             { "markers": ["pict"], "replace-with": "![](&lt;!--path pict--&gt;${1})", "recursive": true }
         ],
         . . .
@@ -945,18 +1074,25 @@ readability and compatibility in source text.</p>
 <li>if the <code>recursive</code> flag is set to <code>true</code> then the resulting text (after the template is
     extending) will be considered as containing metadata blocks. In the replacement definition
     with marker <code>pict</code> the fragment <code>&lt;!--path pict--&gt;</code> will be processed and replaced if
-    the marker <code>path</code> is defined.</li>
+    the marker <code>path</code> is defined;</li>
+<li>a replacement may use a fixed <code>replace-with</code> string with no <code>${…}</code> placeholders. This
+    documentation project defines <code>"version"</code> that way so the current program version appears
+    in the source text via <code>1.1.0</code> while the version number is maintained only in
+    the <em>argument file</em> (see below).</li>
 </ul>
 <p><strong>Usage</strong></p>
 <p>The content may be added the following ways:</p>
 <ul>
 <li><code>&lt;!--red some text --&gt;</code> &mdash; using a string, only one value may be specified;</li>
 <li><code>&lt;!--red ["some text ", "some other text"] --&gt;</code> &mdash; using a list. Unused items will be
-    ignored.</li>
+    ignored;</li>
+<li><code>1.1.0</code> &mdash; empty metadata; expands to the fixed version string from the
+    <code>version</code> replacement entry (used in this documentation for <code>{{exec_version}}</code> examples).</li>
 </ul>
-<p>The output will be the same in both cases:</p>
+<p>For <code>red</code> / list examples the output is:</p>
 <pre class="highlight"><code class="language-code">&lt;span style="color:red;"&gt;some text &lt;/span&gt;</code></pre>
 <p>This result may look like this: <span style="color:red;">some text </span>.</p>
+<p>The configured program version appears in prose as 1.1.0.</p>
 <p>If there are not enough values provided for the template, the missing positions will be replaced
 with empty strings.</p>
 <p>&nbsp;</p>

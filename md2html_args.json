@@ -78,6 +78,7 @@
         ],
         "replace": [
             { "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" },
+            { "markers": ["version"], "replace-with": "1.1.0" },
             { "markers": ["ref"], "replace-with":
                 "<a class=\"ref\" href=\"<!--page refs-->#${1}\">${1}</a>",
                 "recursive": true },

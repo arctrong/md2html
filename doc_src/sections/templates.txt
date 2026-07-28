@@ -47,7 +47,7 @@ Tag key | Description
 `{{{styles}}}`        | Included and/or linked CSS
 `{{{content}}}`       | The result of the Markdown document processing
 `{{exec_name}}`       | The executable name reported by the program (like "md2html_py")
-`{{exec_version}}`    | The program version (like "1.0.8")
+`{{exec_version}}`    | The program version (like <!--version -->)
 `{{generation_date}}` | The generation date (YYYY-MM-DD)
 `{{generation_time}}` | The generation time (hh:mm:ss)
 `{{source_file}}`     | The source text file path resolved relative to the current HTML page
