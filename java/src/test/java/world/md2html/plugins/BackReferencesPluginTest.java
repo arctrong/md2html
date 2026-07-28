@@ -211,7 +211,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void refdefThenRefWithDefFirst() throws ArgFileParseException {
+    void refdefThenRef_whenDefFirst() throws ArgFileParseException {
         String argFileStr =
                 "{\"documents\": ["
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
@@ -232,7 +232,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void refThenRefdefWithRefFirstShouldDefer() throws ArgFileParseException {
+    void refThenRefdef_whenRefFirst_shouldDefer() throws ArgFileParseException {
         String argFileStr =
                 "{\"documents\": ["
                 + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"},"
@@ -271,7 +271,7 @@ class BackReferencesPluginTest {
 
     @ParameterizedTest
     @MethodSource("refToUndefinedDefCases")
-    void refToUndefinedDefShouldFail(String documentsJson,
+    void refToUndefinedDef_shouldFail(String documentsJson,
             List<Map.Entry<Integer, String>> pages) {
         String argFileStr = "{\"documents\": " + documentsJson
                 + ", \"plugins\": {\"back-references\": {}}}";
@@ -298,7 +298,7 @@ class BackReferencesPluginTest {
 
     @ParameterizedTest
     @MethodSource("duplicateRefdefCases")
-    void duplicateRefdefShouldFail(String documentsJson,
+    void duplicateRefdef_shouldFail(String documentsJson,
             List<Map.Entry<Integer, String>> pages) {
         String argFileStr = "{\"documents\": " + documentsJson
                 + ", \"plugins\": {\"back-references\": {}}}";
@@ -313,7 +313,7 @@ class BackReferencesPluginTest {
             "See <!--ref foo compact-->.",
             "See <!--ref-->."
     })
-    void refWrongFieldCountShouldFail(String pageText) {
+    void refWrongFieldCount_shouldFail(String pageText) {
         String argFileStr =
                 "{\"documents\": [{\"input\": \"ref.txt\", \"output\": \"ref.html\"}], "
                 + "\"plugins\": {\"back-references\": {}}}";
@@ -466,7 +466,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void emptyRefTemplateRendersNothing() throws ArgFileParseException {
+    void emptyRefTemplate_rendersNothing() throws ArgFileParseException {
         String argFileStr =
                 "{\"documents\": ["
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
@@ -482,7 +482,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void partialDefFormatInheritsDefaultBackRefTemplate() throws ArgFileParseException {
+    void partialDefFormat_inheritsDefaultBackRefTemplate() throws ArgFileParseException {
         String argFileStr =
                 "{\"documents\": ["
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
@@ -504,7 +504,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void firstRunWithCacheEnabledCreatesCacheFile() throws Exception {
+    void firstRun_whenCacheEnabled_createsCacheFile() throws Exception {
         String cacheFile = cacheFilePath("back_refs_cache.json");
         String argFileStr =
                 "{\"documents\": ["
@@ -529,7 +529,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void secondRunRebuiltReferencerPreservesSkippedBackLinks() throws Exception {
+    void secondRun_whenRebuiltReferencer_preservesSkippedBackLinks() throws Exception {
         String cacheFile = cacheFilePath("back_refs_cache.json");
         String argFileStr =
                 "{\"documents\": ["
@@ -556,7 +556,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void secondRunIfRefPageGainsSecondRefThenDefListsBothAnchors() throws Exception {
+    void secondRun_ifRefPageGainsSecondRef_thenDefListsBothAnchors() throws Exception {
         String cacheFile = cacheFilePath("back_refs_cache.json");
         String argFileStr =
                 "{\"documents\": ["
@@ -581,7 +581,7 @@ class BackReferencesPluginTest {
     }
 
     @Test
-    void secondRunSmallerDocumentListDropsRemovedReferencerAndPrunesCache() throws Exception {
+    void secondRun_whenSmallerDocumentList_dropsRemovedReferencerAndPrunesCache() throws Exception {
         String cacheFile = cacheFilePath("back_refs_cache.json");
         String fullArgFileStr =
                 "{\"documents\": ["
