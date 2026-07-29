@@ -1,7 +1,7 @@
 import json
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Union, Dict
+from typing import Union, Dict, Optional
 
 from jsonschema import validate, ValidationError
 
@@ -16,7 +16,11 @@ class PageVariablesPlugin(Md2HtmlPlugin):
     def __init__(self):
         super().__init__()
         self.data = {}
-        self.page_metadata_handler = PageVariablesCollectingMetadataHandler()
+        self._variables_by_input_file: Dict[str, dict] = {}
+        self._variables_without_input_file: dict = {}
+        with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r',
+                  encoding="utf-8") as schema_file:
+            self._metadata_schema = json.load(schema_file)
 
     def accept_data(self, data):
         self.assure_accept_data_once()
@@ -35,41 +39,42 @@ class PageVariablesPlugin(Md2HtmlPlugin):
             self.data.setdefault(k, v)
 
     def page_metadata_handlers(self):
-        result = []
-        for k, v in self.data.items():
-            result.append((self.page_metadata_handler, k,
-                           first_not_none(v.get("only-at-page-start"), True)))
-        return result
+        return [(self, k, first_not_none(v.get("only-at-page-start"), True))
+                for k, v in self.data.items()]
 
-    def variables(self, doc: Document) -> dict:
-        return self.page_metadata_handler.variables()
+    def accept_page_metadata(self, doc: Optional[Document], marker: str, metadata_str: str,
+                             metadata_section, visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
+        metadata = self._parse_and_validate_metadata(metadata_str)
+        self._variables_without_input_file.update(metadata)
+        input_file = _document_input_file(doc)
+        if input_file:
+            self._variables_by_input_file.setdefault(input_file, {}).update(metadata)
+        return MetadataProcessingResult('')
 
-    def new_page(self, doc: Document):
-        self.page_metadata_handler.reset()
+    def variables(self, doc: Optional[Document]) -> dict:
+        input_file = _document_input_file(doc)
+        return (self._variables_by_input_file.get(input_file, {}) if input_file 
+                else self._variables_without_input_file)
 
+    def new_page(self, doc: Optional[Document]):
+        self._variables_without_input_file = {}
+        input_file = _document_input_file(doc)
+        if input_file:
+            self._variables_by_input_file[input_file] = {}
 
-class PageVariablesCollectingMetadataHandler:
-    def __init__(self):
-        self.page_variables = {}
-        with open(MODULE_DIR.joinpath('page_variables_metadata_schema.json'), 'r',
-                  encoding="utf-8") as schema_file:
-            self.metadata_schema = json.load(schema_file)
-
-    def accept_page_metadata(self, doc: dict, marker: str, metadata_str: str, metadata_section,
-                             visited_markers: Union[Dict[str, None]] = None):
+    def _parse_and_validate_metadata(self, metadata_str: str) -> dict:
         try:
             metadata = json.loads(metadata_str)
-            validate(instance=metadata, schema=self.metadata_schema)
+            validate(instance=metadata, schema=self._metadata_schema)
         except JSONDecodeError as e:
             raise UserError(f"Incorrect JSON in page metadata: {type(e).__name__}: {str(e)}")
         except ValidationError as e:
             raise UserError(f"Error validating page metadata: {type(e).__name__}: " +
                             reduce_json_validation_error_message(str(e)))
-        self.page_variables.update(metadata)
-        return MetadataProcessingResult('')
+        return metadata
 
-    def variables(self) -> dict:
-        return self.page_variables
 
-    def reset(self):
-        self.page_variables = {}
+def _document_input_file(doc: Optional[Document]) -> Optional[str]:
+    return None if doc is None else doc.input_file

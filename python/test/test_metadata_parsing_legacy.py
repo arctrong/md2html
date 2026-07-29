@@ -3,7 +3,7 @@ import unittest
 from argument_file_utils import *
 from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.page_variables_plugin import PageVariablesPlugin
-from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
+from .utils_for_tests import ANY_DOCUMENT, find_single_instance_of_type, parse_argument_file_for_test
 
 
 def _parse_metadata(metadata):
@@ -14,9 +14,9 @@ def _parse_metadata(metadata):
     plugin = find_single_instance_of_type(args.plugins, PageVariablesPlugin)
     metadata_handlers = register_page_metadata_handlers(args.plugins)
     page_content = 'text before<!--VARIABLES ' + metadata + '-->text after'
-    plugin.new_page({})
+    plugin.new_page(None)
     apply_and_merge_metadata_handlers(page_content, metadata_handlers, args.documents[0])
-    return plugin.variables({})
+    return plugin.variables(ANY_DOCUMENT)
 
 
 class PageMetadataUtilsTest(unittest.TestCase):

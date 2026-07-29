@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Test;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
+import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.testutils.PluginTestUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -160,5 +162,61 @@ class PageVariablesPluginTest {
         assertEquals("value", variables.get("key"));
         assertEquals("answer", variables.get("question"));
         assertEquals("     other text  some more text", result);
+    }
+
+    /**
+     * Regression: {@code variables(document)} after phase 1 must not leak across documents
+     * (deferred build).
+     */
+    @Test
+    public void variablesPerDocumentAfterMultiplePages() throws ArgFileParseException {
+        ArgFile argFile = parsePluginData("{}");
+        PageVariablesPlugin plugin = findSinglePlugin(argFile.getPlugins());
+        PageMetadataHandlersWrapper metadataHandlers =
+                PageMetadataHandlersWrapper.fromPlugins(argFile.getPlugins());
+
+        Document docReferencer = Document.builder()
+                .input("referencer.txt")
+                .output("referencer.html")
+                .title("Referencing page")
+                .build();
+        Document docDefinition = Document.builder()
+                .input("definition.txt")
+                .output("definition.html")
+                .title("Definition page")
+                .build();
+        Document docPlain = Document.builder()
+                .input("plain.txt")
+                .output("plain.html")
+                .title("Plain page")
+                .build();
+
+        plugin.newPage(docReferencer);
+        metadataHandlers.applyMetadataHandlers(
+                "<!--VARIABLES {\"title\": \"Referencing page\"}-->\n# Referencer",
+                docReferencer);
+
+        plugin.newPage(docDefinition);
+        metadataHandlers.applyMetadataHandlers(
+                "<!--VARIABLES {\"title\": \"Definition page\"}-->\n# Definition",
+                docDefinition);
+
+        plugin.newPage(docPlain);
+        metadataHandlers.applyMetadataHandlers(
+                "<!--VARIABLES {\"title\": \"Plain page\"}-->\n# Plain",
+                docPlain);
+
+        Map<String, Object> referencerVars = plugin.variables(docReferencer);
+        Map<String, Object> definitionVars = plugin.variables(docDefinition);
+        Map<String, Object> plainVars = plugin.variables(docPlain);
+
+        assertEquals("Referencing page", referencerVars.get("title"));
+        assertEquals("Definition page", definitionVars.get("title"));
+        assertEquals("Plain page", plainVars.get("title"));
+
+        Map<String, Object> substitutions = new HashMap<>();
+        substitutions.put("title", docReferencer.getTitle());
+        substitutions.putAll(plugin.variables(docReferencer));
+        assertEquals("Referencing page", substitutions.get("title"));
     }
 }
