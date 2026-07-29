@@ -1,11 +1,14 @@
 {
-  "arg_file_mtime": 1785220017.0820105,
+  "arg_file_mtime": 1785330397.5825913,
   "primary_documents": {
     "readme.txt": {
       "output_file": "readme.html"
     },
     "doc_src/sections/overview.txt": {
-      "output_file": "doc/content/sections/overview.html"
+      "output_file": "doc/content/sections/overview.html",
+      "dependencies": [
+        "doc_src/sections/ref/references.txt"
+      ]
     },
     "doc_src/sections/quick_start.txt": {
       "output_file": "doc/content/sections/quick_start.html"
@@ -29,7 +32,10 @@
       ]
     },
     "doc_src/sections/templates.txt": {
-      "output_file": "doc/content/sections/templates.html"
+      "output_file": "doc/content/sections/templates.html",
+      "dependencies": [
+        "doc_src/sections/ref/references.txt"
+      ]
     },
     "doc_src/sections/plugins.txt": {
       "output_file": "doc/content/sections/plugins.html",
@@ -38,11 +44,16 @@
         "doc/content/code/hello/geometric_distribution.r.html"
       ],
       "dependencies": [
+        "doc_src/sections/plugins.txt",
+        "doc_src/sections/ref/references.txt",
         "sample_code/hello/Main.java"
       ]
     },
     "doc_src/sections/reference.txt": {
-      "output_file": "doc/content/sections/reference.html"
+      "output_file": "doc/content/sections/reference.html",
+      "dependencies": [
+        "doc_src/sections/ref/references.txt"
+      ]
     },
     "doc_src/sections/troubleshooting.txt": {
       "output_file": "doc/content/sections/troubleshooting.html"
@@ -51,13 +62,24 @@
       "output_file": "doc/content/sections/development.html"
     },
     "doc_src/sections/ref/glossary.txt": {
-      "output_file": "doc/content/sections/ref/glossary.html"
+      "output_file": "doc/content/sections/ref/glossary.html",
+      "dependencies": [
+        "doc_src/sections/ref/references.txt"
+      ]
     },
     "doc_src/sections/ref/references.txt": {
-      "output_file": "doc/content/sections/ref/references.html"
+      "output_file": "doc/content/sections/ref/references.html",
+      "dependencies": [
+        "doc_src/sections/overview.txt",
+        "doc_src/sections/plugins.txt",
+        "doc_src/sections/ref/glossary.txt",
+        "doc_src/sections/reference.txt",
+        "doc_src/sections/templates.txt"
+      ]
     }
   },
   "standalone_derived_documents": [
+    "doc/content/backrefs_cache.json",
     "doc/content/index_cache.json",
     "doc/content/index_page.html"
   ]

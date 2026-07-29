@@ -110,12 +110,12 @@ provides an additional level of platform independence.
 <!--index ["Pelican static site generator"]-->
 # Alternative solution
 
-There's **Pelican** [<!--ref pelican-->] static site generator that may be considered quite close
+There's <!--ref pelican--> static site generator that may be considered quite close
 to **M<sub>2</sub>H** by its functionality. It looks mature and feature-rich enough, and has a
 similar motivation, see
 [Some history about Pelican](https://docs.getpelican.com/en/stable/report.html){.away}. 
 
-Pelican is written in Python only, uses the same Python-Markdown module [<!--ref py_markdown-->] and 
+Pelican is written in Python only, uses the same Markdown library <!--ref py_markdown--> and 
 also supports another markup language ---
 [reStructuredText](https://docutils.sourceforge.io/rst.html){.away}.
 

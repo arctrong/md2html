@@ -209,7 +209,7 @@ options:
 <p><a name="index_entry_index_glob"></a><a name="input_glob"></a>
     <code>--input-glob</code> &mdash; lets specify an input file set like this: <code>doc_src/*.txt</code> &mdash;
     that means "all files with <code>txt</code> extension in directory <code>doc_src</code>". Also see
-    [<a class="ref" href="ref/references.html#glob_wiki">glob_wiki</a>]</p>
+    <a name="backref_ref_glob_wiki"></a><a class="wiki" href="https://en.wikipedia.org/wiki/Glob_(programming)">GLOB</a><sup class="cross-refs"><a class="ref" href="ref/references.html#backref_def_glob_wiki">^</a></sup></p>
 </li>
 <li>
 <p><a name="index_entry_index_force_page_regeneration"></a><a name="force_page_regeneration"></a>
@@ -304,11 +304,11 @@ changes are not tracked yet. In case of doubt, or from time to time, please use 
             "index-cache": "index_cache.json" }
     }
 }</code></pre></p>
-<p><em>Argument file</em> format is JSON [<a class="ref" href="ref/references.html#json">json</a>].</p>
+<p><em>Argument file</em> format is JSON (see <a name="backref_ref_json"></a><a class="away" href="https://json.org/">JSON</a><sup class="cross-refs"><a class="ref" href="ref/references.html#backref_def_json">^</a></sup>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Comments are not allowed in JSON syntax, but in this program, whole-line comments may be added
-with <code>#</code> as the first non-blank symbol of the line; such lines will be ignored. </p>
+with <code>#</code> as the first non-blank symbol of the line; such lines will be ignored.</p>
 <p>Also the program ignores unknown keys that may be used for temporarily removing parameters. 
 For example, if <code>"plugins"</code> is replaced with <code>"plugins1"</code> then all plugins will be disabled.
 Still the <em>argument file</em> format defines necessary elements and other rules that will

@@ -407,7 +407,7 @@ and the tags <code>{{title}}</code> and <code>{{noPageTitle}}</code> will be rep
 this page is processed.</p>
 <p>The <em>page metadata</em> blocks will be removed from the source text if they are recognized and
 processed by the defined markers.</p>
-<p>The metadata content must be valid JSON [<a class="ref" href="ref/references.html#json">json</a>].</p>
+<p>The metadata content must be a valid JSON (see <a name="backref_ref_json"></a><a class="away" href="https://json.org/">JSON</a><sup class="cross-refs"><a class="ref" href="ref/references.html#backref_def_json">^</a></sup>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Opening <code>&lt;!--</code> and closing markers <code>--&gt;</code> must not be used inside the metadata
@@ -758,18 +758,22 @@ The following placeholders may be used in the format definitions:</p>
 </table>
 <p><strong>Usage</strong></p>
 <p>Definition metadata &mdash; source code plus display text:</p>
-<pre class="highlight"><code>The &lt;!--refdef my_term My Term--&gt; is explained below.</code></pre>
+<pre class="highlight"><code>&lt;!--refdef penrose [Penrose tiling](https://en.wikipedia.org/wiki/Penrose_tiling){.away}--&gt;</code></pre>
 <ul>
 <li>The first token is the <em>source code</em> (unique in the project, no spaces).</li>
 <li>The remainder is the <em>display content</em> which substitutes the <code>${content}</code> placeholder in the
     templates.</li>
 </ul>
+<p>This will add a definition like this:
+<a name="backref_def_penrose"></a><span class="ref-def">[penrose]</span><sup class="cross-refs"><a class="ref" href="plugins.html#backref_ref_penrose">1</a></sup> <a class="away" href="https://en.wikipedia.org/wiki/Penrose_tiling">Penrose tiling</a></p>
 <p>Reference metadata — source code only:</p>
-<pre class="highlight"><code>See the &lt;!--ref my_term--&gt; for details.</code></pre>
+<pre class="highlight"><code>Also see &lt;!--ref penrose--&gt;.</code></pre>
 <ul>
 <li>A reference must use a source code that is defined on some page; undefined reference codes
     are reported as errors.</li>
 </ul>
+<p>The result will be like this: Also see <a name="backref_ref_penrose"></a><a class="away" href="https://en.wikipedia.org/wiki/Penrose_tiling">Penrose tiling</a><sup class="cross-refs"><a class="ref" href="plugins.html#backref_def_penrose">^</a></sup>.</p>
+<p>For more examples see the <a href="ref/references.html">References page</a>.</p>
 <p><strong>Plugin cache</strong></p>
 <p>When the <code>"cache"</code> field is set in the plugin configuration, the plugin uses this file to keep 
 its data and reuses this data between builds. It is required for correct back-links to

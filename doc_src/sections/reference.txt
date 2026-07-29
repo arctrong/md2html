@@ -120,7 +120,7 @@ Here are some additional explanations:
 - <!--index GLOB--><a name="input_glob"></a>
     `--input-glob` --- lets specify an input file set like this: `doc_src/*.txt` ---
     that means "all files with `txt` extension in directory `doc_src`". Also see
-    [<!--ref glob_wiki-->]
+    <!--ref glob_wiki-->
 
 - <!--index force page regeneration--><a name="force_page_regeneration"></a>
     `--force` --- if it's not specified then only the input files that were changed 
@@ -219,11 +219,11 @@ Here is a quite complex example of an _argument file_ content:
 }
 ````
 
-_Argument file_ format is JSON [<!--ref json-->].
+_Argument file_ format is JSON (see <!--ref json-->).
 
 !!! note
     Comments are not allowed in JSON syntax, but in this program, whole-line comments may be added
-    with `#` as the first non-blank symbol of the line; such lines will be ignored. 
+    with `#` as the first non-blank symbol of the line; such lines will be ignored.
     
     Also the program ignores unknown keys that may be used for temporarily removing parameters. 
     For example, if `"plugins"` is replaced with `"plugins1"` then all plugins will be disabled.

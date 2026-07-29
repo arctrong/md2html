@@ -332,7 +332,7 @@ this page is processed.
 The _page metadata_ blocks will be removed from the source text if they are recognized and
 processed by the defined markers.
 
-The metadata content must be valid JSON [<!--ref json-->].
+The metadata content must be a valid JSON (see <!--ref json-->).
 
 !!! note
     Opening `<!--` and closing markers `-->` must not be used inside the metadata
@@ -613,21 +613,29 @@ Placeholder         | Description
 Definition metadata --- source code plus display text:
 
 ````
-The <!--ignore refdef my_term My Term--> is explained below.
+<!--ignore refdef penrose [Penrose tiling](https://en.wikipedia.org/wiki/Penrose_tiling){.away}-->
 ````
 
 - The first token is the _source code_ (unique in the project, no spaces).
 - The remainder is the _display content_ which substitutes the `${content}` placeholder in the
     templates.
+    
+This will add a definition like this:
+<!--refdef penrose [Penrose tiling](https://en.wikipedia.org/wiki/Penrose_tiling){.away}-->
 
 Reference metadata — source code only:
 
 ````
-See the <!--ignore ref my_term--> for details.
+Also see <!--ignore ref penrose-->.
 ````
 
 - A reference must use a source code that is defined on some page; undefined reference codes
     are reported as errors.
+    
+The result will be like this: Also see <!--ref penrose-->.
+
+For more examples see the [References page](<!--page refs-->).
+    
 
 **Plugin cache**
 

@@ -14,7 +14,7 @@ ones.
 <!--index ["template", "Mustache"] -->
 # What is a template
 
-This program uses the Mustache template engine [<!--ref mustache-->] for processing HTML
+This program uses the Mustache template engine (see <!--ref mustache-->) for processing HTML
 templates. A simple template file may look like this:
 
 ````html

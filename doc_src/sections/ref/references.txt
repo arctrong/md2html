@@ -1,23 +1,16 @@
 <!--VARIABLES {"title": "References", "SORT_ORDER": "020", "code": "refs"}-->
 
-!!! note
-    This form of a *page of references* is by now proved to be convenient and simple in use.
-    It is created using existing program functionality. Further improvements are planned to add:
-    
-    - reference codes uniqueness control
-    - back references
+<!--refdef markdown [Markdown](https://daringfireball.net/projects/markdown/){.away}--> 
 
-<!--refdef markdown--> [Markdown](https://daringfireball.net/projects/markdown/)
+<!--refdef mustache [Mustache](https://mustache.github.io/){.away}-->
 
-<!--refdef mustache--> Mustache: <https://mustache.github.io/>
+<!--refdef json [JSON](https://json.org/){.away}-->
 
-<!--refdef json--> JSON: <https://json.org/>
+<!--refdef glob_wiki [GLOB](https://en.wikipedia.org/wiki/Glob_(programming)){.wiki}-->
 
-<!--refdef glob_wiki--> Wikipedia: [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming))
+<!--refdef chat_gpt [ChatGPT](https://chat.openai.com/){.away}-->
 
-<!--refdef chat_gpt--> ChatGPT: <https://chat.openai.com/>
+<!--refdef pelican [Pelican](https://getpelican.com/){.away}--> --- static site generator
 
-<!--refdef pelican--> Pelican static site generator: <https://getpelican.com/>
-
-<!--refdef py_markdown--> Python-Markdown module: <https://python-markdown.github.io/>
+<!--refdef py_markdown [Python-Markdown](https://python-markdown.github.io/){.away}-->
 
