@@ -79,11 +79,6 @@ public class PageMetadataHandlersWrapper {
         return joinParsingResults(applicationResult.getParsingResults(), document);
     }
 
-    public String applyAndMergeMetadataHandlers(String text, Document document,
-            Set<String> visitedMarkers, String recursiveMarker) {
-        return applyMetadataHandlers(text, document, visitedMarkers, recursiveMarker);
-    }
-
     public MetadataHandlersApplicationResult applyMetadataHandlersWithResult(String text,
             Document document) {
         return applyMetadataHandlersWithResult(text, document, null, null);
@@ -161,36 +156,54 @@ public class PageMetadataHandlersWrapper {
         }
     }
 
+    public MetadataProcessingResult processNestedMetadata(String text, Document document,
+            Set<String> visitedMarkers, String recursiveMarker) {
+        MetadataHandlersApplicationResult applicationResult =
+                applyMetadataHandlersWithResult(text, document, visitedMarkers, recursiveMarker);
+        if (applicationResult.isDeferPage()) {
+            return MetadataProcessingResult.deferred(applicationResult);
+        }
+        return MetadataProcessingResult.immediate(
+                joinParsingResults(applicationResult.getParsingResults(), document));
+    }
+
     public String joinParsingResults(List<ParsingResultItem> parsingResults, Document document) {
         StringBuilder result = new StringBuilder();
         for (ParsingResultItem item : parsingResults) {
             Object replacement = item.getResult();
             if (item.isDeferred()) {
-                List<PageMetadataHandler> handlers = this.markerHandlers.get(item.getMarkerKey());
-                if (handlers == null) {
-                    throw new IllegalStateException(
-                            "Deferred metadata marker '" + item.getMarker() +
-                            "' has no handler for phase-2 join (marker key: " +
-                            item.getMarkerKey() + "). Check plugin registration, e.g. " +
-                            "only-at-page-start mismatch.");
-                }
-                for (PageMetadataHandler h : handlers) {
-                    MetadataProcessingResult acceptResult = h.acceptPageMetadata(
-                            document,
-                            item.getMarker(),
-                            item.getMetadata(),
-                            item.getMetadataSection(),
-                            null,
-                            MetadataProcessingPhase.PHASE_2,
-                            item.getResult());
-                    if (acceptResult.isDefer()) {
-                        throw new UserError(
-                                "Deferred result encountered when processing metadata " +
-                                "marker '" + item.getMarker() + "' on phase 2. " +
-                                "This may mean that this marker cannot be nested " +
-                                "inside the other metadata block.");
+                if (item.getResult() instanceof MetadataHandlersApplicationResult) {
+                    replacement = joinParsingResults(
+                            ((MetadataHandlersApplicationResult) item.getResult())
+                                    .getParsingResults(),
+                            document);
+                } else {
+                    List<PageMetadataHandler> handlers = this.markerHandlers.get(item.getMarkerKey());
+                    if (handlers == null) {
+                        throw new IllegalStateException(
+                                "Deferred metadata marker '" + item.getMarker() +
+                                "' has no handler for phase-2 join (marker key: " +
+                                item.getMarkerKey() + "). Check plugin registration, e.g. " +
+                                "only-at-page-start mismatch.");
                     }
-                    replacement = acceptResult.getResult();
+                    for (PageMetadataHandler h : handlers) {
+                        MetadataProcessingResult acceptResult = h.acceptPageMetadata(
+                                document,
+                                item.getMarker(),
+                                item.getMetadata(),
+                                item.getMetadataSection(),
+                                null,
+                                MetadataProcessingPhase.PHASE_2,
+                                item.getResult());
+                        if (acceptResult.isDefer()) {
+                            throw new UserError(
+                                    "Deferred result encountered when processing metadata " +
+                                    "marker '" + item.getMarker() + "' on phase 2. " +
+                                    "This may mean that this marker cannot be nested " +
+                                    "inside the other metadata block.");
+                        }
+                        replacement = acceptResult.getResult();
+                    }
                 }
             }
             result.append(replacement);

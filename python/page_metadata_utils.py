@@ -3,7 +3,7 @@ from typing import Iterator, List, Union, Dict, Tuple
 
 from models.document import Document
 from models.page_metadata_handlers import PageMetadataHandlers
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from utils import UserError
 
 METADATA_PATTERN = re.compile(r'^([\w_][\w\d_]*)([^\w\d_]*.*)$', re.DOTALL)
@@ -21,9 +21,9 @@ class ParsingResultItem:
     def __init__(self, result, marker: str = None, metadata=None, metadata_section: str = None,
                  marker_key: Union[Tuple[str, bool], None] = None):
         """
-        If `marker_key` is `None` the `result` is a direct substitution text, otherwise the page
-        is going to be deferred and the `result` is the object that the plugin wants to use later
-        (not necessary), when the page is processed of the next phase.
+        If `marker_key` is `None` the `result` is a resolved text, otherwise the page is going
+        to be deferred and the `result` is the object that the plugin wants to use later
+        (not necessary), when the page is processed on the next phase.
         """
         self.result = result
         self.marker: str = marker
@@ -36,7 +36,7 @@ class MetadataHandlersApplicationResult:
 
     def __init__(self, parsingResults, deferPage):
         """
-        `deferPage` is true is at least one `ParsingResultItem` is deferred, i.e. has the
+        `deferPage` is true if at least one `ParsingResultItem` is deferred, i.e. has the
             non-None `plugin`
         """
         self.parsingResults: List[ParsingResultItem] = parsingResults
@@ -97,7 +97,7 @@ def metadata_finder(text: str) -> Iterator[MetadataMatchObject]:
 
 def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers,
                             doc: Union[Document, None],
-                            # In the extract-only mode only the plugins state are modified,
+                            # In the extract-only mode only the plugins states are modified,
                             # the returned result is not supposed to be used
                             extract_only=False,
                             # Using a `dict` as there's no standard ordered set
@@ -163,6 +163,21 @@ def apply_metadata_handlers(text, page_metadata_handlers: PageMetadataHandlers,
             return MetadataHandlersApplicationResult([ParsingResultItem(text)], False)
 
 
+def process_nested_metadata(text, page_metadata_handlers: PageMetadataHandlers,
+                            doc: Union[Document, None],
+                            visited_markers: Union[Dict[str, None], None] = None,
+                            recursive_marker: Union[str, None] = None
+                            ) -> MetadataProcessingResult:
+    application_result = apply_metadata_handlers(
+        text, page_metadata_handlers, doc,
+        visited_markers=visited_markers,
+        recursive_marker=recursive_marker)
+    if application_result.deferPage:
+        return MetadataProcessingResult(application_result, defer=True)
+    return MetadataProcessingResult(join_parsing_results(
+        application_result.parsingResults, page_metadata_handlers, doc))
+
+
 def join_parsing_results(parsing_results: List[ParsingResultItem],
                          page_metadata_handlers: PageMetadataHandlers,
                          doc: Union[Document, None]) -> str:
@@ -172,25 +187,29 @@ def join_parsing_results(parsing_results: List[ParsingResultItem],
     for item in parsing_results:
         replacement = item.result
         if item.marker_key:
-            handlers = marker_handlers.get(item.marker_key)
-            if not handlers:
-                raise Exception(
-                    f"Deferred metadata marker '{item.marker}' has no handler for phase-2 join "
-                    f"(marker key: {item.marker_key!r}). Check plugin registration, "
-                    f"e.g. only-at-page-start mismatch.")
-            for h in handlers:
-                accept_result = h.accept_page_metadata(
-                    doc, item.marker, item.metadata, item.metadata_section,
-                    # When we join parsing result, final substitution string should be returned
-                    phase=2,
-                    data_from_prev_phase=item.result)
-                # Deferring is not acceptable as there will be no further processing
-                if accept_result.defer:
-                    raise UserError("Deferred result encountered when processing metadata "
-                                    f"marker '{item.marker}' on phase 2. This may mean that "
-                                    "this marker cannot be nested inside the other metadata"
-                                    "block.")
-                replacement = accept_result.result
+            if isinstance(item.result, MetadataHandlersApplicationResult):
+                replacement = join_parsing_results(
+                    item.result.parsingResults, page_metadata_handlers, doc)
+            else:
+                handlers = marker_handlers.get(item.marker_key)
+                if not handlers:
+                    raise Exception(
+                        f"Deferred metadata marker '{item.marker}' has no handler for phase-2 join "
+                        f"(marker key: {item.marker_key!r}). Check plugin registration, "
+                        f"e.g. only-at-page-start mismatch.")
+                for h in handlers:
+                    accept_result = h.accept_page_metadata(
+                        doc, item.marker, item.metadata, item.metadata_section,
+                        # When we join parsing result, final substitution string should be returned
+                        phase=2,
+                        data_from_prev_phase=item.result)
+                    # Deferring is not acceptable as there will be no further processing
+                    if accept_result.defer:
+                        raise UserError("Deferred result encountered when processing metadata "
+                                        f"marker '{item.marker}' on phase 2. This may mean that "
+                                        "this marker cannot be nested inside the other metadata"
+                                        "block.")
+                    replacement = accept_result.result
         result.append(replacement)
     return ''.join(result)
 

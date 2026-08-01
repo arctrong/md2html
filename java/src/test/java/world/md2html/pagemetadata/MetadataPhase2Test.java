@@ -14,10 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MetadataPhase2Test {
 
     private PageMetadataHandlersWrapper createWrapper() {
-        DeferPhaseTestPlugin plugin = new DeferPhaseTestPlugin();
-        plugin.activate();
         return PageMetadataHandlersWrapper.fromPlugins(
-                Collections.singletonList(plugin));
+                Collections.singletonList(new DeferPhaseTestPlugin()));
     }
 
     @Test
@@ -26,7 +24,7 @@ class MetadataPhase2Test {
         Document doc = PluginTestUtils.ANY_DOCUMENT;
 
         MetadataHandlersApplicationResult result = wrapper.applyMetadataHandlersWithResult(
-                "before <!--DEFER_TEST immediate--> after", doc);
+                "before <!--DEFER immediate--> after", doc);
 
         assertFalse(result.isDeferPage());
         assertEquals("before immediate after",
@@ -39,10 +37,10 @@ class MetadataPhase2Test {
         Document doc = PluginTestUtils.ANY_DOCUMENT;
 
         MetadataHandlersApplicationResult result = wrapper.applyMetadataHandlersWithResult(
-                "before <!--DEFER_TEST defer--> after", doc);
+                "before <!--DEFER payload--> after", doc);
 
         assertTrue(result.isDeferPage());
-        assertEquals("before resolved:defer after",
+        assertEquals("before resolved:payload after",
                 wrapper.joinParsingResults(result.getParsingResults(), doc));
     }
 
@@ -52,7 +50,7 @@ class MetadataPhase2Test {
         Document doc = PluginTestUtils.ANY_DOCUMENT;
 
         String processed = wrapper.applyMetadataHandlers(
-                "before <!--DEFER_TEST immediate--> after", doc);
+                "before <!--DEFER immediate--> after", doc);
 
         assertEquals("before immediate after", processed);
     }

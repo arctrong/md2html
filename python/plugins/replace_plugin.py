@@ -4,7 +4,7 @@ from typing import Union, Dict
 from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
-from page_metadata_utils import apply_and_merge_metadata_handlers
+from page_metadata_utils import process_nested_metadata
 from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from plugins.plugin_utils import list_from_string_or_array
 from utils import UserError, VariableReplacer
@@ -53,6 +53,7 @@ class ReplacePlugin(Md2HtmlPlugin):
                              visited_markers: Union[Dict[str, None], None] = None,
                              phase: int = 1, data_from_prev_phase=None
                              ) -> MetadataProcessingResult:
+
         # Preserving trailing spaces
         metadata_str = metadata_str.lstrip()
         try:
@@ -62,11 +63,9 @@ class ReplacePlugin(Md2HtmlPlugin):
 
         replacer, recursive = self.replacers[marker]
         result = replacer.replace(metadata)
+
         if recursive:
-            result = apply_and_merge_metadata_handlers(
-                result, self.all_metadata_handlers, doc,
-                visited_markers=visited_markers,
-                recursive_marker=marker
-            )
+            return process_nested_metadata(result, self.all_metadata_handlers, doc,
+                visited_markers=visited_markers, recursive_marker=marker)
 
         return MetadataProcessingResult(result)

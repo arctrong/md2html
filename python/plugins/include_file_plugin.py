@@ -6,7 +6,7 @@ from build_cache import build_cache_manager
 from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
-from page_metadata_utils import apply_and_merge_metadata_handlers
+from page_metadata_utils import process_nested_metadata
 from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from plugins.plugin_utils import dict_from_string_or_object
 from utils import read_lines_from_cached_file, UserError, SmartSubstringer, strip_empty_lines
@@ -108,7 +108,7 @@ class IncludeFilePlugin(Md2HtmlPlugin):
 
         recursive = metadata.get("recursive", marker_data.recursive)
         if recursive:
-            content = apply_and_merge_metadata_handlers(
+            return process_nested_metadata(
                 content, self.all_metadata_handlers, doc,
                 visited_markers=visited_markers,
                 recursive_marker=f"INCLUDE_FILE_PLUGIN:{include_file}")

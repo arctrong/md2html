@@ -6,10 +6,14 @@ import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
 import world.md2html.options.model.Document;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.testsupport.SimulateMetadataBuild;
 import world.md2html.testutils.PluginTestUtils;
 import world.md2html.utils.UserError;
 
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -188,5 +192,97 @@ class ReplacePluginTest {
         String message = e.getMessage().toUpperCase();
         assertTrue(message.contains("CYCLE"));
         assertTrue(message.contains("M1,M2,M3"));
+    }
+
+    @Test
+    void recursiveReplaceBackReferencesRefBeforeDef() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"},"
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"}"
+                + "], \"plugins\": {"
+                + "\"replace\": ["
+                + "  {\"markers\": [\"note\"],"
+                + "   \"replace-with\": \"<!--ref ${1}-->note text\","
+                + "   \"recursive\": true},"
+                + "  {\"markers\": [\"notedef\"],"
+                + "   \"replace-with\": \"<!--refdef ${1} ${2}-->\","
+                + "   \"recursive\": true}"
+                + "],"
+                + "\"back-references\": {}"
+                + "}}";
+        Map<Integer, String> html = SimulateMetadataBuild.simulateMetadataBuildFromArgFile(
+                argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "See <!--note foo-->."),
+                new AbstractMap.SimpleEntry<>(1, "Entry <!--notedef foo Foo display-->")),
+                DUMMY_CLI_OPTIONS).getOutput();
+        assertEquals(
+                "See Foo display<sup><a name=\"backref_ref_foo\"></a>"
+                + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>note text.",
+                html.get(0));
+        assertEquals(
+                "Entry <a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> "
+                + "Foo display"
+                + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup>",
+                html.get(1));
+    }
+
+    @Test
+    void recursiveReplaceBackReferencesMultipleNotesOneDef() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"ref1.txt\", \"output\": \"ref1.html\"},"
+                + "  {\"input\": \"ref2.txt\", \"output\": \"ref2.html\"},"
+                + "  {\"input\": \"def.txt\", \"output\": \"def.html\"}"
+                + "], \"plugins\": {"
+                + "\"replace\": ["
+                + "  {\"markers\": [\"note\"],"
+                + "   \"replace-with\": \"<!--ref ${1}-->\","
+                + "   \"recursive\": true},"
+                + "  {\"markers\": [\"notedef\"],"
+                + "   \"replace-with\": \"<!--refdef ${1} ${2}-->\","
+                + "   \"recursive\": true}"
+                + "],"
+                + "\"back-references\": {}"
+                + "}}";
+        Map<Integer, String> html = SimulateMetadataBuild.simulateMetadataBuildFromArgFile(
+                argFileStr, Arrays.asList(
+                new AbstractMap.SimpleEntry<>(0, "First <!--note foo-->."),
+                new AbstractMap.SimpleEntry<>(1, "Second <!--note foo-->."),
+                new AbstractMap.SimpleEntry<>(2, "<!--notedef foo Shared display-->")),
+                DUMMY_CLI_OPTIONS).getOutput();
+        assertEquals(
+                "First Shared display<sup><a name=\"backref_ref_foo\"></a>"
+                + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>.",
+                html.get(0));
+        assertEquals(
+                "Second Shared display<sup><a name=\"backref_ref_foo\"></a>"
+                + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>.",
+                html.get(1));
+        assertEquals(
+                "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Shared display"
+                + "<sup><a class=\"ref\" href=\"ref1.html#backref_ref_foo\">1</a>, "
+                + "<a class=\"ref\" href=\"ref2.html#backref_ref_foo\">2</a></sup>",
+                html.get(2));
+    }
+
+    @Test
+    void recursiveReplaceBackReferencesMissingDefShouldFail() throws ArgFileParseException {
+        String argFileStr =
+                "{\"documents\": ["
+                + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
+                + "], \"plugins\": {"
+                + "\"replace\": ["
+                + "  {\"markers\": [\"note\"],"
+                + "   \"replace-with\": \"<!--ref ${1}-->\","
+                + "   \"recursive\": true}"
+                + "],"
+                + "\"back-references\": {}"
+                + "}}";
+        UserError e = assertThrows(UserError.class, () ->
+                SimulateMetadataBuild.simulateMetadataBuildFromArgFile(argFileStr, Arrays.asList(
+                        new AbstractMap.SimpleEntry<>(0, "See <!--note missing-->.")),
+                        DUMMY_CLI_OPTIONS));
+        assertTrue(e.getMessage().toLowerCase().contains("referenced but not defined"));
     }
 }

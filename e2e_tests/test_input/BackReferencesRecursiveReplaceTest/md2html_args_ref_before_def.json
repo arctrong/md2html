@@ -1,0 +1,26 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesRecursiveReplaceTest/template.html",
+        "verbose": false,
+        "link-css": [
+            "common_styles.css",
+            "test_input/BackReferencesRecursiveReplaceTest/custom.css"
+        ]
+    },
+    "documents": [
+        { "input": "ref.txt", "output": "ref.html" },
+        { "input": "def.txt", "output": "def.html" }
+    ],
+    "plugins": {
+        "replace": [
+            { "markers": ["note"], "replace-with": "<!--ref ${1}--> note text",
+                "recursive": true },
+            { "markers": ["notedef"], "replace-with": "<!--refdef ${1} ${2}-->",
+                "recursive": true }
+        ],
+        "back-references": {}
+    }
+}

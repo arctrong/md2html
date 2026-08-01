@@ -1,5 +1,6 @@
 package world.md2html.plugins;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -11,13 +12,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.ArgFile;
 import world.md2html.options.model.CliOptions;
-import world.md2html.options.model.Document;
-import world.md2html.pagemetadata.MetadataHandlersApplicationResult;
-import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
+import world.md2html.testsupport.SimulateMetadataBuild;
+import world.md2html.testsupport.SimulateMetadataBuildResult;
 import world.md2html.testutils.PluginTestUtils;
 import world.md2html.utils.UserError;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +24,6 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,41 +69,10 @@ class BackReferencesPluginTest {
         return new PluginMarkers(plugin, markersFromPlugin(plugin));
     }
 
-    private SimulateBuildResult simulateBuild(String argFileStr,
+    private SimulateMetadataBuildResult simulateBuild(String argFileStr,
             List<Map.Entry<Integer, String>> pages) throws ArgFileParseException {
-        ArgFile argFile = parseArgumentFile(argFileStr, DUMMY_CLI_OPTIONS);
-        BackReferencesPlugin plugin = findSinglePlugin(argFile.getPlugins());
-        PageMetadataHandlersWrapper metadataHandlers = argFile.getMetadataHandlers();
-
-        Map<Integer, String> output = new HashMap<>();
-        Map<Integer, MetadataHandlersApplicationResult> deferred = new HashMap<>();
-        Map<Integer, Boolean> deferredPages = new HashMap<>();
-
-        for (Map.Entry<Integer, String> page : pages) {
-            int index = page.getKey();
-            String text = page.getValue();
-            Document doc = argFile.getDocuments().get(index);
-            if (plugin != null) {
-                plugin.newPage(doc);
-            }
-            MetadataHandlersApplicationResult result =
-                    metadataHandlers.applyMetadataHandlersWithResult(text, doc);
-            deferredPages.put(index, result.isDeferPage());
-            if (result.isDeferPage()) {
-                deferred.put(index, result);
-            } else {
-                output.put(index, metadataHandlers.joinParsingResults(
-                        result.getParsingResults(), doc));
-            }
-        }
-        for (Map.Entry<Integer, MetadataHandlersApplicationResult> entry : deferred.entrySet()) {
-            int index = entry.getKey();
-            Document doc = argFile.getDocuments().get(index);
-            output.put(index, metadataHandlers.joinParsingResults(
-                    entry.getValue().getParsingResults(), doc));
-        }
-
-        return new SimulateBuildResult(plugin, markersFromPlugin(plugin), output, deferredPages);
+        return SimulateMetadataBuild.simulateMetadataBuildFromArgFile(
+                argFileStr, pages, DUMMY_CLI_OPTIONS);
     }
 
     @Test
@@ -116,23 +82,24 @@ class BackReferencesPluginTest {
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
                 + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
                 + "], \"plugins\": {\"back-references\": {}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0,
                         "Def <!--refdef example [Example Domain](https://example.com/)-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref example-->.")));
 
-        assertFalse(result.plugin.isBlank());
-        assertThat(result.markers, containsInAnyOrder("REF", "REFDEF"));
+        BackReferencesPlugin plugin = findSinglePlugin(result.getPlugins());
+        assertFalse(plugin.isBlank());
+        assertThat(markersFromPlugin(plugin), containsInAnyOrder("REF", "REFDEF"));
         assertEquals(
                 "Def <a name=\"backref_def_example\"></a><span class=\"ref-def\">[example]</span> "
                         + "[Example Domain](https://example.com/)"
                         + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_example\">1</a></sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
         assertEquals(
                 "See [Example Domain](https://example.com/)"
                         + "<sup><a name=\"backref_ref_example\"></a>"
                         + "<a class=\"ref\" href=\"def.html#backref_def_example\">[example]</a></sup>.",
-                result.html.get(1));
+                result.getOutput().get(1));
     }
 
     @Test
@@ -156,20 +123,21 @@ class BackReferencesPluginTest {
                 + "    \"template\": \"<cite><a name=\\\"${anchor}\\\"></a><a href=\\\"${href}\\\">${code}</a></cite>\""
                 + "}]"
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "Book <!--bibdef src1 Some book text-->"),
                 new AbstractMap.SimpleEntry<>(1, "Cite <!--citeref src1-->.")));
 
-        assertFalse(result.plugin.isBlank());
-        assertThat(result.markers, containsInAnyOrder("BIBDEF", "CITEREF"));
+        BackReferencesPlugin plugin = findSinglePlugin(result.getPlugins());
+        assertFalse(plugin.isBlank());
+        assertThat(markersFromPlugin(plugin), containsInAnyOrder("BIBDEF", "CITEREF"));
         assertEquals(
                 "Book <div id=\"xref_def_src1\">Some book text"
                         + "<sup><a class=\"bib-back\" href=\"ref.html#xref_ref_src1\">1</a></sup></div>",
-                result.html.get(0));
+                result.getOutput().get(0));
         assertEquals(
                 "Cite <cite><a name=\"xref_ref_src1\"></a>"
                         + "<a href=\"def.html#xref_def_src1\">src1</a></cite>.",
-                result.html.get(1));
+                result.getOutput().get(1));
     }
 
     @Test
@@ -217,18 +185,18 @@ class BackReferencesPluginTest {
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
                 + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
                 + "], \"plugins\": {\"back-references\": {}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "Entry <!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
 
         assertEquals(
                 "Entry <a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
                         + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
         assertEquals(
                 "See Foo display<sup><a name=\"backref_ref_foo\"></a>"
                         + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>.",
-                result.html.get(1));
+                result.getOutput().get(1));
     }
 
     @Test
@@ -238,20 +206,20 @@ class BackReferencesPluginTest {
                 + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"},"
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"}"
                 + "], \"plugins\": {\"back-references\": {}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "See <!--ref foo-->."),
                 new AbstractMap.SimpleEntry<>(1, "<!--refdef foo Foo display-->")));
 
-        assertTrue(result.deferredPages.get(0));
-        assertTrue(result.deferredPages.get(1));
+        assertTrue(result.getDeferredPages().get(0));
+        assertTrue(result.getDeferredPages().get(1));
         assertEquals(
                 "See Foo display<sup><a name=\"backref_ref_foo\"></a>"
                         + "<a class=\"ref\" href=\"def.html#backref_def_foo\">[foo]</a></sup>.",
-                result.html.get(0));
+                result.getOutput().get(0));
         assertEquals(
                 "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
                         + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup>",
-                result.html.get(1));
+                result.getOutput().get(1));
     }
 
     static Stream<Arguments> refToUndefinedDefCases() {
@@ -329,14 +297,14 @@ class BackReferencesPluginTest {
                 + "  {\"input\": \"def.txt\", \"output\": \"def.html\"},"
                 + "  {\"input\": \"ref.txt\", \"output\": \"ref.html\"}"
                 + "], \"plugins\": {\"back-references\": {}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0,
                         "<!--refdef code1 [Example.com](https://example.com/)-->"),
                 new AbstractMap.SimpleEntry<>(1,
                         "First <!--ref code1--> and second <!--ref code1-->.")));
 
-        assertTrue(result.deferredPages.get(0));
-        assertFalse(result.deferredPages.get(1));
+        assertTrue(result.getDeferredPages().get(0));
+        assertFalse(result.getDeferredPages().get(1));
         assertEquals(
                 "First [Example.com](https://example.com/)"
                         + "<sup><a name=\"backref_ref_code1\"></a>"
@@ -344,14 +312,14 @@ class BackReferencesPluginTest {
                         + " and second [Example.com](https://example.com/)"
                         + "<sup><a name=\"backref_ref_code1_1\"></a>"
                         + "<a class=\"ref\" href=\"def.html#backref_def_code1\">[code1]</a></sup>.",
-                result.html.get(1));
+                result.getOutput().get(1));
         assertEquals(
                 "<a name=\"backref_def_code1\"></a><span class=\"ref-def\">[code1]</span> "
                         + "[Example.com](https://example.com/)<sup>"
                         + "<a class=\"ref\" href=\"ref.html#backref_ref_code1\">1</a>, "
                         + "<a class=\"ref\" href=\"ref.html#backref_ref_code1_1\">2</a>"
                         + "</sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
     }
 
     @Test
@@ -361,26 +329,26 @@ class BackReferencesPluginTest {
                 + "  {\"input\": \"defs/subdir_def.txt\", \"output\": \"defs/subdir_def.html\"},"
                 + "  {\"input\": \"pages/subdir_ref.txt\", \"output\": \"pages/subdir_ref.html\"}"
                 + "], \"plugins\": {\"back-references\": {}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0,
                         "<!--refdef subdir_example [Subdir Example](https://example.org/subdir/)-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref subdir_example-->.")));
 
-        assertTrue(result.deferredPages.get(0));
-        assertFalse(result.deferredPages.get(1));
+        assertTrue(result.getDeferredPages().get(0));
+        assertFalse(result.getDeferredPages().get(1));
         assertEquals(
                 "See [Subdir Example](https://example.org/subdir/)"
                         + "<sup><a name=\"backref_ref_subdir_example\"></a>"
                         + "<a class=\"ref\" href=\"../defs/subdir_def.html#backref_def_subdir_example\">"
                         + "[subdir_example]</a></sup>.",
-                result.html.get(1));
+                result.getOutput().get(1));
         assertEquals(
                 "<a name=\"backref_def_subdir_example\"></a>"
                         + "<span class=\"ref-def\">[subdir_example]</span> "
                         + "[Subdir Example](https://example.org/subdir/)"
                         + "<sup><a class=\"ref\" href=\"../pages/subdir_ref.html#backref_ref_subdir_example\">"
                         + "1</a></sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
     }
 
     @Test
@@ -397,14 +365,14 @@ class BackReferencesPluginTest {
                 + "href=\\\"${href}\\\">${content}</span>\""
                 + "}]"
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
 
         assertEquals(
                 "See <span data-code=\"foo\" data-anchor=\"xref_ref_foo\" "
                         + "href=\"def.html#xref_def_foo\">Foo display</span>.",
-                result.html.get(1));
+                result.getOutput().get(1));
     }
 
     @Test
@@ -423,19 +391,19 @@ class BackReferencesPluginTest {
                 + "    \"back-ref-delimiter\": \"; \""
                 + "}]"
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->."),
                 new AbstractMap.SimpleEntry<>(2, "Also <!--ref foo-->.")));
 
-        assertTrue(result.deferredPages.get(0));
-        assertFalse(result.deferredPages.get(1));
-        assertFalse(result.deferredPages.get(2));
+        assertTrue(result.getDeferredPages().get(0));
+        assertFalse(result.getDeferredPages().get(1));
+        assertFalse(result.getDeferredPages().get(2));
         assertEquals(
                 "<div data-code=\"foo\" id=\"backref_def_foo\">Foo display"
                         + "<sup><a href=\"ref1.html#backref_ref_foo\">1</a>; "
                         + "<a href=\"ref2.html#backref_ref_foo\">2</a></sup></div>",
-                result.html.get(0));
+                result.getOutput().get(0));
     }
 
     @Test
@@ -452,17 +420,18 @@ class BackReferencesPluginTest {
                 + "    {\"markers\": [\"CITEREF\"], \"template\": \"<cite>${code}</cite>\"}"
                 + "]"
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo-->\n<!--refdef bar Bar-->"),
                 new AbstractMap.SimpleEntry<>(1, "Ref <!--ref foo-->."),
                 new AbstractMap.SimpleEntry<>(2, "Cite <!--citeref bar-->.")));
 
-        assertThat(result.markers, containsInAnyOrder("CITEREF", "REF", "REFDEF"));
-        assertTrue(result.deferredPages.get(0));
-        assertFalse(result.deferredPages.get(1));
-        assertFalse(result.deferredPages.get(2));
-        assertEquals("Ref <ref>foo</ref>.", result.html.get(1));
-        assertEquals("Cite <cite>bar</cite>.", result.html.get(2));
+        assertThat(markersFromPlugin(findSinglePlugin(result.getPlugins())),
+                containsInAnyOrder("CITEREF", "REF", "REFDEF"));
+        assertTrue(result.getDeferredPages().get(0));
+        assertFalse(result.getDeferredPages().get(1));
+        assertFalse(result.getDeferredPages().get(2));
+        assertEquals("Ref <ref>foo</ref>.", result.getOutput().get(1));
+        assertEquals("Cite <cite>bar</cite>.", result.getOutput().get(2));
     }
 
     @Test
@@ -474,11 +443,11 @@ class BackReferencesPluginTest {
                 + "], \"plugins\": {\"back-references\": {"
                 + "\"ref-formats\": [{\"markers\": [\"REF\"], \"template\": \"\"}]"
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
 
-        assertEquals("See .", result.html.get(1));
+        assertEquals("See .", result.getOutput().get(1));
     }
 
     @Test
@@ -493,14 +462,14 @@ class BackReferencesPluginTest {
                 + "    \"template\": \"<wrap>${content}<sup>${back_refs_html}</sup></wrap>\""
                 + "}]"
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
 
         assertEquals(
                 "<wrap>Foo display"
                         + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a></sup></wrap>",
-                result.html.get(0));
+                result.getOutput().get(0));
     }
 
     @Test
@@ -513,10 +482,10 @@ class BackReferencesPluginTest {
                 + "], \"plugins\": {\"back-references\": {"
                 + "\"cache\": \"" + cacheFile + "\""
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->.")));
-        result.plugin.finalizePlugin();
+        findSinglePlugin(result.getPlugins()).finalizePlugin();
 
         Path cachePath = Paths.get(cacheFile);
         assertTrue(Files.exists(cachePath));
@@ -539,12 +508,13 @@ class BackReferencesPluginTest {
                 + "], \"plugins\": {\"back-references\": {"
                 + "\"cache\": \"" + cacheFile + "\""
                 + "}}}";
-        simulateBuild(argFileStr, Arrays.asList(
+        findSinglePlugin(simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo--> (one)."),
-                new AbstractMap.SimpleEntry<>(2, "See <!--ref foo--> (two)."))).plugin.finalizePlugin();
+                new AbstractMap.SimpleEntry<>(2, "See <!--ref foo--> (two)."))).getPlugins())
+                .finalizePlugin();
 
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo--> (one rebuilt)."),
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->")));
 
@@ -552,7 +522,7 @@ class BackReferencesPluginTest {
                 "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
                         + "<sup><a class=\"ref\" href=\"ref2.html#backref_ref_foo\">1</a>, "
                         + "<a class=\"ref\" href=\"ref1.html#backref_ref_foo\">2</a></sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
     }
 
     @Test
@@ -565,11 +535,12 @@ class BackReferencesPluginTest {
                 + "], \"plugins\": {\"back-references\": {"
                 + "\"cache\": \"" + cacheFile + "\""
                 + "}}}";
-        simulateBuild(argFileStr, Arrays.asList(
+        findSinglePlugin(simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
-                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->."))).plugin.finalizePlugin();
+                new AbstractMap.SimpleEntry<>(1, "See <!--ref foo-->."))).getPlugins())
+                .finalizePlugin();
 
-        SimulateBuildResult result = simulateBuild(argFileStr, Arrays.asList(
+        SimulateMetadataBuildResult result = simulateBuild(argFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(1, "First <!--ref foo--> and second <!--ref foo-->."),
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->")));
 
@@ -577,7 +548,7 @@ class BackReferencesPluginTest {
                 "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
                         + "<sup><a class=\"ref\" href=\"ref.html#backref_ref_foo\">1</a>, "
                         + "<a class=\"ref\" href=\"ref.html#backref_ref_foo_1\">2</a></sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
     }
 
     @Test
@@ -591,10 +562,11 @@ class BackReferencesPluginTest {
                 + "], \"plugins\": {\"back-references\": {"
                 + "\"cache\": \"" + cacheFile + "\""
                 + "}}}";
-        simulateBuild(fullArgFileStr, Arrays.asList(
+        findSinglePlugin(simulateBuild(fullArgFileStr, Arrays.asList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->"),
                 new AbstractMap.SimpleEntry<>(1, "See <!--ref foo--> (one)."),
-                new AbstractMap.SimpleEntry<>(2, "See <!--ref foo--> (two)."))).plugin.finalizePlugin();
+                new AbstractMap.SimpleEntry<>(2, "See <!--ref foo--> (two)."))).getPlugins())
+                .finalizePlugin();
 
         String smallerArgFileStr =
                 "{\"documents\": ["
@@ -603,14 +575,14 @@ class BackReferencesPluginTest {
                 + "], \"plugins\": {\"back-references\": {"
                 + "\"cache\": \"" + cacheFile + "\""
                 + "}}}";
-        SimulateBuildResult result = simulateBuild(smallerArgFileStr, Collections.singletonList(
+        SimulateMetadataBuildResult result = simulateBuild(smallerArgFileStr, Collections.singletonList(
                 new AbstractMap.SimpleEntry<>(0, "<!--refdef foo Foo display-->")));
-        result.plugin.finalizePlugin();
+        findSinglePlugin(result.getPlugins()).finalizePlugin();
 
         assertEquals(
                 "<a name=\"backref_def_foo\"></a><span class=\"ref-def\">[foo]</span> Foo display"
                         + "<sup><a class=\"ref\" href=\"ref1.html#backref_ref_foo\">1</a></sup>",
-                result.html.get(0));
+                result.getOutput().get(0));
 
         Map<String, List<Map<String, Object>>> saved = OBJECT_MAPPER.readValue(
                 Paths.get(cacheFile).toFile(),
@@ -630,13 +602,5 @@ class BackReferencesPluginTest {
     private static class PluginMarkers {
         private final BackReferencesPlugin plugin;
         private final List<String> markers;
-    }
-
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class SimulateBuildResult {
-        private final BackReferencesPlugin plugin;
-        private final List<String> markers;
-        private final Map<Integer, String> html;
-        private final Map<Integer, Boolean> deferredPages;
     }
 }

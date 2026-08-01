@@ -5,12 +5,11 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from cli_arguments_utils import CliArgDataObject
-from md2html import load_json_argument_file, register_page_metadata_handlers
-from models.options import Options
-from page_metadata_utils import apply_metadata_handlers, join_parsing_results
+from md2html import load_json_argument_file
 from plugins.back_references_plugin import BackReferencesPlugin
 from plugins.md2html_plugin import Md2HtmlPlugin
 from utils import UserError
+from .testsupport.simulate_metadata_build import simulate_metadata_build_from_arg_file
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
 
@@ -22,43 +21,23 @@ def _plugin_from_arg_file(arg_file_str: str) -> Tuple[Optional[BackReferencesPlu
     args = parse_argument_file_for_test(
         load_json_argument_file(arg_file_str), CliArgDataObject())
     plugin = _find_single_plugin(args.plugins)
-    if plugin is None:
-        return None, []
-    markers = [marker for _, marker, _ in plugin.page_metadata_handlers()]
-    return plugin, markers
+    return plugin, markers_from_plugin(plugin)
 
 
 def _simulate_build(
         arg_file_str: str,
         pages: Sequence[Tuple[int, str]],
 ) -> Tuple[BackReferencesPlugin, List[str], Dict[int, str], Dict[int, bool]]:
-    args = parse_argument_file_for_test(
-        load_json_argument_file(arg_file_str), CliArgDataObject())
-    plugin = _find_single_plugin(args.plugins)
-    metadata_handlers = register_page_metadata_handlers(args.plugins)
-    plugin.accept_document_list(args.documents)
-    plugin.accept_app_data([], Options(), metadata_handlers)
+    build = simulate_metadata_build_from_arg_file(arg_file_str, pages)
+    plugin = _find_single_plugin(build.plugins)
+    markers = markers_from_plugin(plugin)
+    return plugin, markers, build.output, build.deferred_pages
 
-    output: Dict[int, str] = {}
-    deferred = {}
-    deferred_pages: Dict[int, bool] = {}
-    for index, text in pages:
-        doc = args.documents[index]
-        plugin.new_page(doc)
-        result = apply_metadata_handlers(text, metadata_handlers, doc)
-        deferred_pages[index] = result.deferPage
-        if result.deferPage:
-            deferred[index] = result
-        else:
-            output[index] = join_parsing_results(
-                result.parsingResults, metadata_handlers, doc)
-    for index, result in deferred.items():
-        doc = args.documents[index]
-        output[index] = join_parsing_results(
-            result.parsingResults, metadata_handlers, doc)
 
-    markers = [marker for _, marker, _ in plugin.page_metadata_handlers()]
-    return plugin, markers, output, deferred_pages
+def markers_from_plugin(plugin: BackReferencesPlugin) -> List[str]:
+    if plugin is None:
+        return []
+    return [marker for _, marker, _ in plugin.page_metadata_handlers()]
 
 
 class BackReferencesPluginTest(unittest.TestCase):

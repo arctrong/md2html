@@ -144,9 +144,11 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         } else {
             recursive = markerData.recursive;
         }
-        return MetadataProcessingResult.immediate(recursive ?
-                metadataHandlers.applyAndMergeMetadataHandlers(content, document, visitedMarkers,
-                        "INCLUDE_FILE_PLUGIN:" + includeFile) :
-                content);
+        if (recursive) {
+            return metadataHandlers.processNestedMetadata(
+                    content, document, visitedMarkers,
+                    "INCLUDE_FILE_PLUGIN:" + includeFile);
+        }
+        return MetadataProcessingResult.immediate(content);
     }
 }
