@@ -9,12 +9,21 @@
       ]
     }
   ],
-  "glob_wiki": [
+  "flexmark_java": [
+    {
+      "input_file": "doc_src/sections/development.txt",
+      "output_file": "doc/content/sections/development.html",
+      "anchor_ids": [
+        "backref_ref_flexmark_java"
+      ]
+    }
+  ],
+  "glob": [
     {
       "input_file": "doc_src/sections/reference.txt",
       "output_file": "doc/content/sections/reference.html",
       "anchor_ids": [
-        "backref_ref_glob_wiki"
+        "backref_ref_glob"
       ]
     }
   ],
@@ -31,6 +40,15 @@
       "output_file": "doc/content/sections/reference.html",
       "anchor_ids": [
         "backref_ref_json"
+      ]
+    }
+  ],
+  "markdown": [
+    {
+      "input_file": "doc_src/sections/overview.txt",
+      "output_file": "doc/content/sections/overview.html",
+      "anchor_ids": [
+        "backref_ref_markdown"
       ]
     }
   ],

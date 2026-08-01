@@ -1,16 +1,22 @@
 <!--VARIABLES {"title": "References", "SORT_ORDER": "020", "code": "refs"}-->
 
-<!--refdef markdown [Markdown](https://daringfireball.net/projects/markdown/){.away}--> 
+<!--refdef markdown [Markdown](https://daringfireball.net/projects/markdown/){.away}--> ---
+a formatting syntax intended to be easy-to-read and easy-to-write in plain text
 
-<!--refdef mustache [Mustache](https://mustache.github.io/){.away}-->
+<!--refdef py_markdown [Python-Markdown](https://python-markdown.github.io/){.away}--> ---
+Python package for converting Markdown texts to HTML
+
+<!--refdef flexmark_java [vsch/flexmark-java](https://github.com/vsch/flexmark-java){.away}--> ---
+Java library for converting Markdown texts to HTML
+
+<!--refdef mustache [Mustache](https://mustache.github.io/){.away}--> --- logic-less template
+processor implemented in many languages, including Python and Java
 
 <!--refdef json [JSON](https://json.org/){.away}-->
 
-<!--refdef glob_wiki [GLOB](https://en.wikipedia.org/wiki/Glob_(programming)){.wiki}-->
+<!--refdef glob [GLOB](https://en.wikipedia.org/wiki/Glob_(programming)){.wiki}-->
 
 <!--refdef chat_gpt [ChatGPT](https://chat.openai.com/){.away}-->
 
-<!--refdef pelican [Pelican](https://getpelican.com/){.away}--> --- static site generator
-
-<!--refdef py_markdown [Python-Markdown](https://python-markdown.github.io/){.away}-->
+<!--refdef pelican [Pelican](https://getpelican.com/){.away}--> --- another static site generator
 

@@ -522,6 +522,12 @@ become `[](../page1.html)`.
 <!--index ["back references plugin", "cross references"]-->
 # "back-references" plugin {#back_references_plugin}
 
+!!! note "Beta (v1.1.0)"
+    This feature is **new in this release**. As the plugin ties multiple pages together,
+    it's more complex than other plugins. Testing so far is promising, but real-world use
+    is still limited. Please try it on a small part of your writing project and verify
+    the output before rolling it out broadly.
+
 **Motivation**
 
 Centralized reference lists may be achieved using the ["replace" plugin](#replace_plugin).
