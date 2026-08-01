@@ -1,0 +1,3 @@
+# First referencer
+
+First <!--note foo-->.

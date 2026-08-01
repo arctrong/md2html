@@ -150,9 +150,33 @@ class UtilTest(unittest.TestCase):
                 replacer = VariableReplacer(test_case[1])
                 self.assertEqual(test_case[3], replacer.replace(test_case[2]))
 
+    def test_variable_replacer_named_positive(self):
+        for test_case in (
+            ("simple", "start${href}middle${link_text}end",
+             {"href": "-A-", "link_text": "-B-"}, "start-A-middle-B-end"),
+            ("at start", "${href}end", {"href": "-A-"}, "-A-end"),
+            ("at end", "start${href}", {"href": "-A-"}, "start-A-"),
+            ("with spaces", "start${\n\thref \n}end", {"href": "-A-"}, "start-A-end"),
+            ("missing named key", "start${href}middle${link_text} end",
+             {"href": "-A-"}, "start-A-middle end"),
+            ("with masking in the middle", "start$${href}end",
+             {}, "start${href}end"),
+            ("underscore name", "${_ref}end", {"_ref": "x"}, "xend"),
+            ("positional ignored with dict", "start${1}end", {"1": "wrong"}, "startend"),
+        ):
+            with self.subTest(test_name=test_case[0]):
+                replacer = VariableReplacer(test_case[1])
+                self.assertEqual(test_case[3], replacer.replace(test_case[2]))
+
+    def test_variable_replacer_named_with_positional_list(self):
+        replacer = VariableReplacer("href=${href} index=${1}")
+        self.assertEqual("href=page.html index=", replacer.replace({"href": "page.html"}))
+        self.assertEqual("href= index=1", replacer.replace(["1"]))
+
     def test_variable_replacer_negative(self):
         for test_case in (
-            ("not a digit", "start${not-a-digit}end", [], "not-a-digit"),
+            ("not a digit", "start${not-a-digit}end", [], "Invalid placeholder"),
+            ("empty placeholder", "start${}end", [], "Empty placeholder"),
             ("position is zero", "start${0}end", [], "0"),
             ("position too small", "start${-43}end", [], "-43"),
             ("no closing brace", "start${1", [], "brace"),

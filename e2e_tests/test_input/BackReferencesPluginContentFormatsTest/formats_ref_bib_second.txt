@@ -1,0 +1,3 @@
+# Second bib referencer
+
+Also see: <!--ref format_bib-->.

@@ -78,11 +78,21 @@
         ],
         "replace": [
             { "markers": ["red"], "replace-with": "<span style=\"color:red;\">${1}</span>" },
-            { "markers": ["ref"], "replace-with":
-                "<a class=\"ref\" href=\"<!--page refs-->#${1}\">${1}</a>",
-                "recursive": true },
-            { "markers": ["refdef"], "replace-with":
-                "<a name=\"${1}\"></a><span class=\"refDef\">[${1}]</span>" }
-        ]
+            { "markers": ["version"], "replace-with": "1.1.0" }
+        ],
+        "back-references": {"code-prefix": "backref_", "cache": "doc/content/backrefs_cache.json",
+            "def-formats": [
+                {"markers": ["refdef"], "template":
+                    "<a name=\"${anchor}\"></a><span class=\"ref-def\">[${code}]</span><sup class=\"cross-refs\">${back_refs_html}</sup> ${content}",
+                    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${index}</a>",
+                    "back-ref-delimiter": ", "}
+            ],
+            "ref-formats": [
+                {"markers": ["ref"], "template":
+                "<a name=\"${anchor}\"></a>${content}<sup class=\"cross-refs\"><a class=\"ref\" href=\"${href}\">^</a></sup>"},
+                {"markers": ["ref_short"], "template":
+                    "<a name=\"${anchor}\"></a><a class=\"ref\" href=\"${href}\">${code}</a>"}
+            ]
+        }
     }
 }

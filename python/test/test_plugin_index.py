@@ -1,6 +1,7 @@
 import unittest
 
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.index_plugin import IndexPlugin
 from .utils_for_tests import find_single_instance_of_type, parse_argument_file_for_test
 
@@ -37,17 +38,17 @@ class IndexPluginTest(unittest.TestCase):
 
         page_text = "before <!--index entry 1--> after"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertNotEqual(processed_page, page_text)
 
         page_text = "before <!--index1 entry 1--> after"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual(processed_page, page_text)
 
         page_text = 'before <!--index ["entry 1", "entry 2"] --> after'
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertNotEqual(processed_page, page_text)
 
     def test_several_indexes(self):
@@ -66,17 +67,17 @@ class IndexPluginTest(unittest.TestCase):
 
         page_text = "before <!--index1 entry 1--> after"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertNotEqual(processed_page, page_text)
 
         page_text = "before <!--index2 entry 1--> after"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertNotEqual(processed_page, page_text)
 
         page_text = "before <!--index5 entry 1--> after"
         plugin.new_page(doc)
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual(processed_page, page_text)
 
 # TODO Also test page flows with index.

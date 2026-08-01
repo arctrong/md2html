@@ -1,0 +1,5 @@
+# Definition for example.net
+
+<!--refdef example_net [Example.net](https://example.net/)-->
+
+See also <!--ref example_com-->.

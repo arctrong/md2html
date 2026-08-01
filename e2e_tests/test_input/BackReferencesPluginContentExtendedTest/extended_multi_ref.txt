@@ -1,0 +1,3 @@
+# Multiple refs on one page
+
+First <!--ref code1--> and second <!--ref code1-->.

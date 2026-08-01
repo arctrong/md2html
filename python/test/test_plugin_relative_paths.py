@@ -1,6 +1,7 @@
 import unittest
 
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.relative_paths_plugin import *
 from .utils_for_tests import *
 
@@ -86,7 +87,7 @@ class RelativePathsPluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "![](<!--path1 pict1-->img1.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("![](doc/pict/img1.png)", processed_page)
 
     def test_different_paths(self):
@@ -105,10 +106,10 @@ class RelativePathsPluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "![](<!--path2 pict2-->img2.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc1)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc1)
         self.assertEqual("![](doc/pict/img2.png)", processed_page)
 
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc2)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc2)
         self.assertEqual("![](../doc/pict/img2.png)", processed_page)
 
     def test_unknown_path_must_ignore(self):
@@ -123,7 +124,7 @@ class RelativePathsPluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "![](<!--path2 unknown-->img2.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc1)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc1)
         self.assertEqual("![](<!--path2 unknown-->img2.png)", processed_page)
 
     def test_several_markers(self):
@@ -139,17 +140,17 @@ class RelativePathsPluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "![](<!--p1 pict2-->img.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("![](doc/pict/img.png)", processed_page)
 
         page_text = "![](<!--p2 pict2-->img.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("![](doc/pict/img.png)", processed_page)
 
         page_text = "![](<!--p1 pict3-->img.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("![](doc/layout/pict/img.png)", processed_page)
 
         page_text = "![](<!--p2 pict3-->img.png)"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("![](doc/layout/pict/img.png)", processed_page)

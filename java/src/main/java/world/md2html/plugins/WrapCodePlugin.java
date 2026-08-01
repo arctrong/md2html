@@ -14,6 +14,7 @@ import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
 import world.md2html.options.model.raw.ArgFileDocumentRaw;
 import world.md2html.options.model.raw.ArgFileRaw;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.CheckedIllegalArgumentException;
 import world.md2html.utils.JsonUtils;
@@ -172,8 +173,8 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         marker = marker.toUpperCase();
@@ -258,7 +259,8 @@ public class WrapCodePlugin extends AbstractMd2HtmlPlugin implements PageMetadat
         }
 
         try {
-            return relativizeRelativeResource(outputFileStr, document.getOutput());
+            return MetadataProcessingResult.immediate(
+                    relativizeRelativeResource(outputFileStr, document.getOutput()));
         } catch (CheckedIllegalArgumentException e) {
             throw new RuntimeException(e);
         }

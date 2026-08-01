@@ -1,0 +1,51 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesPluginContentFormatsTest/template.html",
+        "verbose": false,
+        "link-css": [
+            "common_styles.css",
+            "test_input/BackReferencesPluginContentFormatsTest/custom.css"
+        ]
+    },
+    "documents": [
+        { "input": "formats_def_standard.txt" },
+        { "input": "formats_ref_standard.txt" },
+        { "input": "formats_ref_compact.txt" },
+        { "input": "formats_def_bib.txt" },
+        { "input": "formats_ref_bib.txt" },
+        { "input": "formats_ref_bib_second.txt" },
+        { "input": "formats_ref_bib_compact.txt" }
+    ],
+    "plugins": {
+        "back-references": {
+            "code-prefix": "xref_",
+            "def-formats": [
+                {
+                    "markers": ["refdef"],
+                    "template": "<a name=\"${anchor}\"></a><span class=\"ref-def\">[${code}]</span> ${content}<sup>${back_refs_html}</sup>",
+                    "back-ref-template": "<a class=\"ref\" href=\"${href}\">${index}</a>",
+                    "back-ref-delimiter": ", "
+                },
+                {
+                    "markers": ["bibdef"],
+                    "template": "<div class=\"bib-def\" id=\"${anchor}\">${content}<sup>${back_refs_html}</sup></div>",
+                    "back-ref-template": "<a class=\"bib-back\" href=\"${href}\">${index}</a>",
+                    "back-ref-delimiter": "; "
+                }
+            ],
+            "ref-formats": [
+                {
+                    "markers": ["ref"],
+                    "template": "${content}<sup><a name=\"${anchor}\"></a><a class=\"ref\" href=\"${href}\">[${code}]</a></sup>"
+                },
+                {
+                    "markers": ["citeref"],
+                    "template": "[<cite class=\"compact-ref\"><a name=\"${anchor}\"></a><a href=\"${href}\">${code}</a></cite>]"
+                }
+            ]
+        }
+    }
+}

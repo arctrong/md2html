@@ -25,7 +25,7 @@ class VariablesPluginTest(unittest.TestCase):
             '"strange": "Don\'t do it yourself! -\u002D>" }}}')
         args = parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
         plugin = _find_single_plugin(args.plugins)
-        variables = plugin.variables({})
+        variables = plugin.variables(ANY_DOCUMENT)
         self.assertDictEqual({"var1": "val1", "_var2": "val2",
                               "strange": "Don\'t do it yourself! -->"}, variables)
 

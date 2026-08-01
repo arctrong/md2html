@@ -1,23 +1,22 @@
 <!--VARIABLES {"title": "References", "SORT_ORDER": "020", "code": "refs"}-->
 
-!!! note
-    This form of a *page of references* is by now proved to be convenient and simple in use.
-    It is created using existing program functionality. Further improvements are planned to add:
-    
-    - reference codes uniqueness control
-    - back references
+<!--refdef markdown [Markdown](https://daringfireball.net/projects/markdown/){.away}--> ---
+a formatting syntax intended to be easy-to-read and easy-to-write in plain text
 
-<!--refdef markdown--> [Markdown](https://daringfireball.net/projects/markdown/)
+<!--refdef py_markdown [Python-Markdown](https://python-markdown.github.io/){.away}--> ---
+Python package for converting Markdown texts to HTML
 
-<!--refdef mustache--> Mustache: <https://mustache.github.io/>
+<!--refdef flexmark_java [vsch/flexmark-java](https://github.com/vsch/flexmark-java){.away}--> ---
+Java library for converting Markdown texts to HTML
 
-<!--refdef json--> JSON: <https://json.org/>
+<!--refdef mustache [Mustache](https://mustache.github.io/){.away}--> --- logic-less template
+processor implemented in many languages, including Python and Java
 
-<!--refdef glob_wiki--> Wikipedia: [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming))
+<!--refdef json [JSON](https://json.org/){.away}-->
 
-<!--refdef chat_gpt--> ChatGPT: <https://chat.openai.com/>
+<!--refdef glob [GLOB](https://en.wikipedia.org/wiki/Glob_(programming)){.wiki}-->
 
-<!--refdef pelican--> Pelican static site generator: <https://getpelican.com/>
+<!--refdef chat_gpt [ChatGPT](https://chat.openai.com/){.away}-->
 
-<!--refdef py_markdown--> Python-Markdown module: <https://python-markdown.github.io/>
+<!--refdef pelican [Pelican](https://getpelican.com/){.away}--> --- another static site generator
 

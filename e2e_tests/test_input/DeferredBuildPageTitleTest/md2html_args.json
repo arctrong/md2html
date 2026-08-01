@@ -1,0 +1,28 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/DeferredBuildPageTitleTest/template.html",
+        "verbose": false,
+        "link-css": ["common_styles.css"]
+    },
+    "documents": [
+        {
+            "input": "referencer.txt",
+            "output": "referencer.html"
+        },
+        {
+            "input": "definition.txt",
+            "output": "definition.html"
+        },
+        {
+            "input": "plain.txt",
+            "output": "plain.html"
+        }
+    ],
+    "plugins": {
+        "page-variables": {},
+        "back-references": {}
+    }
+}

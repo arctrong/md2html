@@ -2,6 +2,7 @@ import unittest
 
 from build_cache import get_empty_build_cache
 from md2html import *
+from page_metadata_utils import apply_and_merge_metadata_handlers
 from plugins.include_file_plugin import IncludeFilePlugin
 from .utils_for_tests import find_single_instance_of_type, relative_to_current_dir, \
     parse_argument_file_for_test
@@ -53,7 +54,7 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1  code1.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before Sample text 1 after", processed_page)
 
     def test_with_untrimmed(self):
@@ -72,7 +73,7 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1  code1.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before \nSample text 1\n\n after", processed_page)
 
     def test_with_trimmed_empty_lines(self):
@@ -91,7 +92,7 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before<!--marker1  trim_empty_lines.txt -->after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before   Sample text 1   after", processed_page)
 
     def test_several_markers(self):
@@ -108,11 +109,11 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1  code1.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before Sample text 1 after", processed_page)
 
         page_text = "before <!--marker2  code1.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before Sample text 1 after", processed_page)
 
     def test_several_root_dirs(self):
@@ -133,25 +134,12 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1  code1.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before Sample text 1 after", processed_page)
 
         page_text = "before <!--marker2  code2.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before Sample text 2 after", processed_page)
-
-    def test_with_duplicate_markers_must_raise_error(self):
-        argument_file_dict = load_json_argument_file(
-            '{"documents": [{"input": "whatever.txt"}], '
-            '"plugins": {'
-            '"include-file": ['
-            '    {"markers": ["marker1"], "root-dir": "whatever/path1" },'
-            '    {"markers": ["marker2", "Marker1"], "root-dir": "whatever/path2" }'
-            ']}}')
-        with self.assertRaises(UserError) as cm:
-            parse_argument_file_for_test(argument_file_dict, CliArgDataObject())
-        self.assertTrue('duplication' in str(cm.exception))
-        self.assertTrue('MARKER1' in str(cm.exception))
 
     def test_recursive(self):
         argument_file_dict = load_json_argument_file(
@@ -169,7 +157,7 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1 recursive.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 1, [[text 2]] after", processed_page)
 
     def test_recursive_cycle_detection(self):
@@ -190,7 +178,7 @@ class IncludeFilePluginTest(unittest.TestCase):
 
         page_text = "before <!--marker1  recursive.txt --> after"
         with self.assertRaises(UserError) as cm:
-            apply_metadata_handlers(page_text, metadata_handlers, doc)
+            apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         message = str(cm.exception).upper()
         self.assertIn("CYCLE", message)
         self.assertIn("INCLUDE_FILE_PLUGIN", message)
@@ -214,7 +202,7 @@ class IncludeFilePluginTest(unittest.TestCase):
 
         page_text = "before <!--marker1  recursive.txt --> after"
         with self.assertRaises(UserError) as cm:
-            apply_metadata_handlers(page_text, metadata_handlers, doc)
+            apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         message = str(cm.exception).upper()
         self.assertIn("CYCLE", message)
         self.assertIn("INCLUDE_FILE_PLUGIN", message)
@@ -236,7 +224,7 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--include recursive1.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 3, text 1, [[text 2]] after", processed_page)
 
     def test_substring(self):
@@ -257,11 +245,11 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--include_text substrings.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before <body>BODY</body> after", processed_page)
 
         page_text = "before <!--include_marker substrings.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before BODY after", processed_page)
 
     def test_substring_with_per_file_delimiters(self):
@@ -280,12 +268,12 @@ class IncludeFilePluginTest(unittest.TestCase):
 
         page_text = ('before <!--include {"file": "per_file_delimiters.txt", "start-marker": "", '
                      '"start-with": "<body>", "end-with": "</body>"}--> after')
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before <body>BODY</body> after", processed_page)
 
         page_text = ('before <!--include {"file": "per_file_delimiters.txt", '
                      '"start-marker": "<body>", "end-marker": "</body>"}--> after')
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before BODY after", processed_page)
 
     def test_with_per_file_recursive(self):
@@ -303,11 +291,11 @@ class IncludeFilePluginTest(unittest.TestCase):
         metadata_handlers = register_page_metadata_handlers(args.plugins)
 
         page_text = "before <!--marker1 recursive.txt --> after"
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 1, <!--replace text 2--> after", processed_page)
 
         page_text = 'before <!--marker1 {"file": "recursive.txt", "recursive": true}--> after'
-        processed_page = apply_metadata_handlers(page_text, metadata_handlers, doc)
+        processed_page = apply_and_merge_metadata_handlers(page_text, metadata_handlers, doc)
         self.assertEqual("before text 1, [[text 2]] after", processed_page)
 
     def test_records_include_dependencies(self):

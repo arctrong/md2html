@@ -4,6 +4,8 @@ import com.github.mustachejava.Mustache;
 import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.DeferredPage;
+import world.md2html.pagemetadata.MetadataHandlersApplicationResult;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.plugins.Md2HtmlPlugin;
 import world.md2html.utils.CheckedIllegalArgumentException;
@@ -54,8 +56,8 @@ public class Md2Html {
             Md2HtmlContext.getBuildCacheManager();
 
     public static void execute(Document document, List<Md2HtmlPlugin> plugins,
-            PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options)
-            throws IOException, UserError {
+            PageMetadataHandlersWrapper metadataHandlersWrapper, SessionOptions options,
+            Map<String, DeferredPage> deferredPages) throws IOException, UserError {
 
         boolean skipped = isOutputUpToDate(document);
         buildCacheManager.recordPrimaryDocument(document.getInput(), document.getOutput(), skipped);
@@ -77,8 +79,36 @@ public class Md2Html {
                 "Error processing page"
         );
 
-        mdText = metadataHandlersWrapper.applyMetadataHandlers(mdText, document);
+        MetadataHandlersApplicationResult applyMetadataResult =
+                metadataHandlersWrapper.applyMetadataHandlersWithResult(mdText, document);
 
+        if (applyMetadataResult.isDeferPage()) {
+            if (deferredPages != null) {
+                deferredPages.put(document.getOutput(),
+                        new DeferredPage(document, applyMetadataResult));
+            }
+            return;
+        }
+
+        mdText = metadataHandlersWrapper.joinParsingResults(
+                applyMetadataResult.getParsingResults(), document);
+
+        outputProcessedPage(document, plugins, mdText);
+    }
+
+    public static void executePhase2(Map<String, DeferredPage> deferredPages,
+            List<Md2HtmlPlugin> plugins, PageMetadataHandlersWrapper metadataHandlersWrapper
+    ) throws UserError {
+        for (DeferredPage deferredPage : deferredPages.values()) {
+            Document document = deferredPage.getDocument();
+            String mdText = metadataHandlersWrapper.joinParsingResults(
+                    deferredPage.getApplicationResult().getParsingResults(), document);
+            outputProcessedPage(document, plugins, mdText);
+        }
+    }
+
+    private static void outputProcessedPage(Document document, List<Md2HtmlPlugin> plugins,
+            String mdText) throws UserError {
         Map<String, Object> substitutions = new HashMap<>();
 
         String htmlText = generateHtml(mdText);

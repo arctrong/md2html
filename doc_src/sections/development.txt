@@ -47,8 +47,7 @@ A single test may be called like this: `python -m unittest test\test_arg_file_pa
 ----------------------------------------------------------------------------------------------------
 # Java version
 
-This implementation uses the [vsch/flexmark-java](https://github.com/vsch/flexmark-java) module
-for converting Markdown text to HTML.
+This implementation uses the <!--ref flexmark_java--> library for converting Markdown text to HTML.
 
 
 ## Packaging and tests

@@ -11,7 +11,7 @@ from models.document import Document
 from models.options import Options
 from models.page_metadata_handlers import PageMetadataHandlers
 from output_utils import MARKDOWN, output_page
-from plugins.md2html_plugin import Md2HtmlPlugin
+from plugins.md2html_plugin import Md2HtmlPlugin, MetadataProcessingResult
 from plugins.plugin_utils import dict_from_string_or_object
 from utils import read_lines_from_cached_file, relativize_relative_resource, UserError
 
@@ -86,8 +86,11 @@ class WrapCodePlugin(Md2HtmlPlugin):
     def page_metadata_handlers(self):
         return [(self, marker, False) for marker in self.data.keys()]
 
-    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str, metadata_section,
-                             visited_markers: Union[Dict[str, None]] = None):
+    def accept_page_metadata(self, doc: Document, marker: str, metadata_str: str,
+                             metadata_section: str,
+                             visited_markers: Union[Dict[str, None], None] = None,
+                             phase: int = 1, data_from_prev_phase=None
+                             ) -> MetadataProcessingResult:
         marker = marker.upper()
         marker_data = self.data[marker]
         document_obj = marker_data.document_obj
@@ -145,4 +148,5 @@ class WrapCodePlugin(Md2HtmlPlugin):
 
             self.processed_cache[cache_key] = output_file_str
 
-        return relativize_relative_resource(output_file_str, doc.output_file)
+        return MetadataProcessingResult(
+            relativize_relative_resource(output_file_str, doc.output_file))

@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.MetadataProcessingPhase;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.UserError;
 import world.md2html.utils.VariableReplacer;
@@ -91,8 +93,17 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
+    ) throws PageMetadataException {
+        return acceptPageMetadata(document, marker, metadata, metadataSection, visitedMarkers,
+                MetadataProcessingPhase.PHASE_1, null);
+    }
+
+    @Override
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers,
+            MetadataProcessingPhase phase, Object dataFromPrevPhase
     ) throws PageMetadataException {
 
         String metadataStr = StringUtils.stripStart(metadata, null);
@@ -107,8 +118,11 @@ public class ReplacePlugin extends AbstractMd2HtmlPlugin implements PageMetadata
         Replacement replacement = replacements.get(marker);
         String result = replacement.replacer.replace(values);
 
-        return replacement.recursive ?
-                metadataHandlers.applyMetadataHandlers(result, document, visitedMarkers, marker) :
-                result;
+        if (replacement.recursive) {
+            return metadataHandlers.processNestedMetadata(
+                    result, document, visitedMarkers, marker);
+        } else {
+            return MetadataProcessingResult.immediate(result);
+        }
     }
 }

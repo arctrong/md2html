@@ -8,10 +8,12 @@ import world.md2html.plugins.PageMetadataHandler;
 import world.md2html.plugins.PageMetadataHandlerInfo;
 import world.md2html.utils.UserError;
 
+import java.util.Collections;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -47,6 +49,7 @@ public class PageMetadataHandlersWrapper {
 
     public static PageMetadataHandlersWrapper fromPlugins(List<Md2HtmlPlugin> plugins) {
         Map<MarkerKey, List<PageMetadataHandler>> markerHandlers = new HashMap<>();
+        Set<String> registeredMarkers = new HashSet<>();
         boolean allOnlyAtPageStart = true;
         for (Md2HtmlPlugin plugin : plugins) {
             List<PageMetadataHandlerInfo> handlerInfoList = plugin.pageMetadataHandlers();
@@ -55,13 +58,14 @@ public class PageMetadataHandlersWrapper {
                     if (!info.isOnlyAtPageStart()) {
                         allOnlyAtPageStart = false;
                     }
-                    MarkerKey markerKey = new MarkerKey(info.getMarker().toUpperCase(),
-                            info.isOnlyAtPageStart());
+                    String marker = info.getMarker().toUpperCase();
+                    if (!registeredMarkers.add(marker)) {
+                        throw new UserError("Marker duplication (case-insensitively): " + marker);
+                    }
+                    MarkerKey markerKey = new MarkerKey(marker, info.isOnlyAtPageStart());
                     List<PageMetadataHandler> handlers = new ArrayList<>();
-                    List<PageMetadataHandler> OldValue = markerHandlers.putIfAbsent(markerKey,
-                            handlers);
-                    handlers = OldValue == null ? handlers : OldValue;
                     handlers.add(info.getPageMetadataHandler());
+                    markerHandlers.put(markerKey, handlers);
                 }
             }
         }
@@ -69,8 +73,19 @@ public class PageMetadataHandlersWrapper {
     }
 
     public String applyMetadataHandlers(String text, Document document,
-                                        Set<String> visitedMarkers,
-                                        String recursiveMarker) {
+            Set<String> visitedMarkers, String recursiveMarker) {
+        MetadataHandlersApplicationResult applicationResult =
+                applyMetadataHandlersWithResult(text, document, visitedMarkers, recursiveMarker);
+        return joinParsingResults(applicationResult.getParsingResults(), document);
+    }
+
+    public MetadataHandlersApplicationResult applyMetadataHandlersWithResult(String text,
+            Document document) {
+        return applyMetadataHandlersWithResult(text, document, null, null);
+    }
+
+    public MetadataHandlersApplicationResult applyMetadataHandlersWithResult(String text,
+            Document document, Set<String> visitedMarkers, String recursiveMarker) {
 
         if (recursiveMarker != null) {
             visitedMarkers = visitedMarkers == null ? new LinkedHashSet<>() : visitedMarkers;
@@ -79,7 +94,7 @@ public class PageMetadataHandlersWrapper {
                         ", the path is [" + String.join(",", visitedMarkers) + "]");
             }
             visitedMarkers.add(recursiveMarker);
-            // Different plugin may have their peculiarities, so we cannot be completely sure
+            // Different plugins may have their peculiarities, so we cannot be completely sure
             // that ALL cycles are detected in ALL possible cases.
             if (visitedMarkers.size() > RECURSIVE_MAX_DEPTH) {
                 throw new UserError("Cycle SUSPECTED with recursive depth " + RECURSIVE_MAX_DEPTH +
@@ -88,9 +103,10 @@ public class PageMetadataHandlersWrapper {
             }
         }
 
-        StringBuilder newText = new StringBuilder();
+        List<ParsingResultItem> parsingResults = new ArrayList<>();
         int lastPos = 0;
         boolean replacementDone = false;
+        boolean deferPage = false;
         Iterator<MetadataMatchObject> it = metadataFinder(text);
         while (it.hasNext()) {
             MetadataMatchObject matchObj = it.next();
@@ -103,16 +119,25 @@ public class PageMetadataHandlersWrapper {
                 handlers = this.markerHandlers.get(
                         new MarkerKey(lookupMarker, false));
             }
-            String replacement = matchObj.metadataBlock;
+            ParsingResultItem replacement = ParsingResultItem.text(matchObj.metadataBlock);
             if (handlers != null) {
                 for (PageMetadataHandler h : handlers) {
-                    replacement = h.acceptPageMetadata(document, lookupMarker,
-                            matchObj.metadata, matchObj.metadataBlock, visitedMarkers);
+                    MetadataProcessingResult acceptResult = h.acceptPageMetadata(
+                            document, lookupMarker, matchObj.metadata, matchObj.metadataBlock,
+                            visitedMarkers);
+                    deferPage |= acceptResult.isDefer();
+                    if (acceptResult.isDefer()) {
+                        replacement = ParsingResultItem.deferred(acceptResult.getResult(),
+                                lookupMarker, matchObj.metadata, matchObj.metadataBlock,
+                                new MarkerKey(lookupMarker, false));
+                    } else {
+                        replacement = ParsingResultItem.text(acceptResult.getResultAsString());
+                    }
                     replacementDone = true;
                 }
             }
-            newText.append(matchObj.before);
-            newText.append(replacement);
+            parsingResults.add(ParsingResultItem.text(matchObj.before));
+            parsingResults.add(replacement);
             if (allOnlyAtPageStart) {
                 break;
             }
@@ -123,11 +148,67 @@ public class PageMetadataHandlersWrapper {
         }
 
         if (replacementDone) {
-            newText.append(text.substring(lastPos));
-            return newText.toString();
+            parsingResults.add(ParsingResultItem.text(text.substring(lastPos)));
+            return new MetadataHandlersApplicationResult(parsingResults, deferPage);
         } else {
-            return text;
+            return new MetadataHandlersApplicationResult(
+                    Collections.singletonList(ParsingResultItem.text(text)), false);
         }
+    }
+
+    public MetadataProcessingResult processNestedMetadata(String text, Document document,
+            Set<String> visitedMarkers, String recursiveMarker) {
+        MetadataHandlersApplicationResult applicationResult =
+                applyMetadataHandlersWithResult(text, document, visitedMarkers, recursiveMarker);
+        if (applicationResult.isDeferPage()) {
+            return MetadataProcessingResult.deferred(applicationResult);
+        }
+        return MetadataProcessingResult.immediate(
+                joinParsingResults(applicationResult.getParsingResults(), document));
+    }
+
+    public String joinParsingResults(List<ParsingResultItem> parsingResults, Document document) {
+        StringBuilder result = new StringBuilder();
+        for (ParsingResultItem item : parsingResults) {
+            Object replacement = item.getResult();
+            if (item.isDeferred()) {
+                if (item.getResult() instanceof MetadataHandlersApplicationResult) {
+                    replacement = joinParsingResults(
+                            ((MetadataHandlersApplicationResult) item.getResult())
+                                    .getParsingResults(),
+                            document);
+                } else {
+                    List<PageMetadataHandler> handlers = this.markerHandlers.get(item.getMarkerKey());
+                    if (handlers == null) {
+                        throw new IllegalStateException(
+                                "Deferred metadata marker '" + item.getMarker() +
+                                "' has no handler for phase-2 join (marker key: " +
+                                item.getMarkerKey() + "). Check plugin registration, e.g. " +
+                                "only-at-page-start mismatch.");
+                    }
+                    for (PageMetadataHandler h : handlers) {
+                        MetadataProcessingResult acceptResult = h.acceptPageMetadata(
+                                document,
+                                item.getMarker(),
+                                item.getMetadata(),
+                                item.getMetadataSection(),
+                                null,
+                                MetadataProcessingPhase.PHASE_2,
+                                item.getResult());
+                        if (acceptResult.isDefer()) {
+                            throw new UserError(
+                                    "Deferred result encountered when processing metadata " +
+                                    "marker '" + item.getMarker() + "' on phase 2. " +
+                                    "This may mean that this marker cannot be nested " +
+                                    "inside the other metadata block.");
+                        }
+                        replacement = acceptResult.getResult();
+                    }
+                }
+            }
+            result.append(replacement);
+        }
+        return result.toString();
     }
 
     public String applyMetadataHandlers(String pageText, Document doc) {
@@ -136,7 +217,7 @@ public class PageMetadataHandlersWrapper {
 
     @AllArgsConstructor
     @Getter
-    private static class MarkerKey {
+    public static class MarkerKey {
         private final String marker;
         private final boolean onlyAtPageStart;
 
@@ -192,11 +273,10 @@ public class PageMetadataHandlersWrapper {
                         Matcher matcher = METADATA_PATTERN
                                 .matcher(text.substring(begin + METADATA_START_LEN, end));
                         if (matcher.find()) {
-                            metadataMatchObject =
-                                    new MetadataMatchObject(text.substring(done, begin),
-                                            matcher.group(1), matcher.group(2),
-                                            text.substring(begin, end + METADATA_END_LEN),
-                                            end + METADATA_END_LEN);
+                            metadataMatchObject = new MetadataMatchObject(
+                                    text.substring(done, begin), matcher.group(1), matcher.group(2),
+                                    text.substring(begin, end + METADATA_END_LEN),
+                                    end + METADATA_END_LEN);
                             done = end + METADATA_END_LEN;
                             return true;
                         }

@@ -1,0 +1,3 @@
+# Referencer in pages/
+
+See <!--ref subdir_example-->.

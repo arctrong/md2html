@@ -1,0 +1,5 @@
+<!--VARIABLES {"title": "Referencing page"}-->
+
+# Referencing page body
+
+See <!--ref example-->.

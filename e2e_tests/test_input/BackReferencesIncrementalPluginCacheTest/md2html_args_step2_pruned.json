@@ -1,0 +1,22 @@
+{
+    "options": {
+        "verbose": false
+    },
+    "default": {
+        "template": "test_input/BackReferencesIncrementalPluginCacheTest/template.html",
+        "verbose": false,
+        "link-css": [
+            "common_styles.css",
+            "test_input/BackReferencesIncrementalPluginCacheTest/custom.css"
+        ]
+    },
+    "documents": [
+        { "input": "incr_plugin_cache_def.txt" },
+        { "input": "incr_plugin_cache_ref_first.txt" }
+    ],
+    "plugins": {
+        "back-references": {
+            "cache": "test_output/common/BackReferencesIncrementalPluginCacheE2eTest/backrefs_cache.json"
+        }
+    }
+}

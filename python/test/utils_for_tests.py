@@ -3,6 +3,9 @@ from pathlib import Path
 from cli_arguments_utils import CliArgDataObject
 from md2html import parse_argument_file
 from models.arguments import Arguments
+from models.document import Document
+
+ANY_DOCUMENT = Document(output_file='whatever.html')
 
 
 def find_single_instance_of_type(instances: list, instance_type: type):

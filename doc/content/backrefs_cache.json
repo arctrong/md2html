@@ -1,0 +1,91 @@
+{
+  "chat_gpt": [
+    {
+      "input_file": "doc_src/sections/ref/glossary.txt",
+      "output_file": "doc/content/sections/ref/glossary.html",
+      "anchor_ids": [
+        "backref_ref_chat_gpt",
+        "backref_ref_chat_gpt_1"
+      ]
+    }
+  ],
+  "flexmark_java": [
+    {
+      "input_file": "doc_src/sections/development.txt",
+      "output_file": "doc/content/sections/development.html",
+      "anchor_ids": [
+        "backref_ref_flexmark_java"
+      ]
+    }
+  ],
+  "glob": [
+    {
+      "input_file": "doc_src/sections/reference.txt",
+      "output_file": "doc/content/sections/reference.html",
+      "anchor_ids": [
+        "backref_ref_glob"
+      ]
+    }
+  ],
+  "json": [
+    {
+      "input_file": "doc_src/sections/plugins.txt",
+      "output_file": "doc/content/sections/plugins.html",
+      "anchor_ids": [
+        "backref_ref_json"
+      ]
+    },
+    {
+      "input_file": "doc_src/sections/reference.txt",
+      "output_file": "doc/content/sections/reference.html",
+      "anchor_ids": [
+        "backref_ref_json"
+      ]
+    }
+  ],
+  "markdown": [
+    {
+      "input_file": "doc_src/sections/overview.txt",
+      "output_file": "doc/content/sections/overview.html",
+      "anchor_ids": [
+        "backref_ref_markdown"
+      ]
+    }
+  ],
+  "mustache": [
+    {
+      "input_file": "doc_src/sections/templates.txt",
+      "output_file": "doc/content/sections/templates.html",
+      "anchor_ids": [
+        "backref_ref_mustache"
+      ]
+    }
+  ],
+  "pelican": [
+    {
+      "input_file": "doc_src/sections/overview.txt",
+      "output_file": "doc/content/sections/overview.html",
+      "anchor_ids": [
+        "backref_ref_pelican"
+      ]
+    }
+  ],
+  "penrose": [
+    {
+      "input_file": "doc_src/sections/plugins.txt",
+      "output_file": "doc/content/sections/plugins.html",
+      "anchor_ids": [
+        "backref_ref_penrose"
+      ]
+    }
+  ],
+  "py_markdown": [
+    {
+      "input_file": "doc_src/sections/overview.txt",
+      "output_file": "doc/content/sections/overview.html",
+      "anchor_ids": [
+        "backref_ref_py_markdown"
+      ]
+    }
+  ]
+}

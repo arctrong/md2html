@@ -29,8 +29,8 @@ These texts comprise the main content written by the author in Markdown language
 provided by [plugins](<!--page plugins-->).
 
 <!--index Markdown -->
-[Markdown](<!--page refs-->#markdown) is a formatting syntax whose main goal is to make texts that
-are as readable as possible in *plain text*.
+<!--ref markdown--> is a formatting syntax whose main goal is to make texts that are as readable
+as possible in *plain text*.
 This syntax is very simple and allows writing very fast. It has enough features for writing
 a variety of document kinds. Because of its simplicity, it's quite restricted and contains
 just a very small subset of HTML features, but it allows direct inclusion of HTML code that
@@ -110,12 +110,12 @@ provides an additional level of platform independence.
 <!--index ["Pelican static site generator"]-->
 # Alternative solution
 
-There's **Pelican** [<!--ref pelican-->] static site generator that may be considered quite close
+There's <!--ref pelican--> static site generator that may be considered quite close
 to **M<sub>2</sub>H** by its functionality. It looks mature and feature-rich enough, and has a
 similar motivation, see
 [Some history about Pelican](https://docs.getpelican.com/en/stable/report.html){.away}. 
 
-Pelican is written in Python only, uses the same Python-Markdown module [<!--ref py_markdown-->] and 
+Pelican is written in Python only, uses the same Markdown library <!--ref py_markdown--> and 
 also supports another markup language ---
 [reStructuredText](https://docutils.sourceforge.io/rst.html){.away}.
 

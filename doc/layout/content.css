@@ -199,30 +199,35 @@ img.floatLeft {
     position: relative;
     bottom: -2px;
     margin-right: 3px;
+    margin-left: 3px;
 }
 
 .external::before, .away::before {
     position: relative;
     bottom: -2px;
     margin-right: 3px;
+    margin-left: 3px;
 }
 
 .doc::before {
     position: relative;
     bottom: -2px;
     margin-right: 3px;
+    margin-left: 3px;
 }
 
 .folder::before {
     position: relative;
     bottom: -2px;
     margin-right: 3px;
+    margin-left: 3px;
 }
 
 .wiki::before {
     position: relative;
     bottom: -2px;
     margin-right: 3px;
+    margin-left: 3px;
 }
 
 .right {
@@ -235,5 +240,19 @@ img.floatLeft {
 
 .hide {
     display: none;
+}
+
+.ref {
+    background-color: aliceblue;
+    }
+
+.ref-def {
+    font-weight: bold;
+    background-color: aliceblue;
+}
+
+.cross-refs {
+    margin-left: 2px;
+    margin-right: 1px;
 }
 

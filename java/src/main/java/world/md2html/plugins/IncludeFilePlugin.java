@@ -7,6 +7,7 @@ import world.md2html.buildcache.BuildCacheManager;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
 import world.md2html.options.model.SessionOptions;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.pagemetadata.PageMetadataHandlersWrapper;
 import world.md2html.utils.JsonUtils;
 import world.md2html.utils.SmartSubstringer;
@@ -15,11 +16,11 @@ import world.md2html.utils.Utils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static world.md2html.plugins.PluginUtils.mapFromStringOrObject;
 import static world.md2html.utils.JsonUtils.loadJsonSchemaFromResource;
@@ -42,6 +43,7 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
     }
 
     private Map<String, IncludeFileData> data;
+    private List<PageMetadataHandlerInfo> handlerInfos = new ArrayList<>();
     private PageMetadataHandlersWrapper metadataHandlers;
     private final JsonSchema metadataSchema =
             loadJsonSchemaFromResource("plugins/include_file_metadata_schema.json");
@@ -52,29 +54,29 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         validateInputDataAgainstSchemaFromResource(data, "plugins/include_file_schema.json");
 
         Map<String, IncludeFileData> dataMap = new HashMap<>();
+        List<PageMetadataHandlerInfo> handlerInfos = new ArrayList<>();
         for (JsonNode item : data) {
             ObjectNode itemNode = (ObjectNode) item;
+            IncludeFileData includeFileData = new IncludeFileData();
+            includeFileData.rootDir = itemNode.get("root-dir").asText();
+            includeFileData.trim = itemNode.has("trim") ?
+                    itemNode.get("trim").asText("all") : "all";
+            includeFileData.recursive = itemNode.has("recursive") &&
+                    itemNode.get("recursive").asBoolean();
+            includeFileData.substringer = new SmartSubstringer(
+                    itemNode.has("start-with") ? itemNode.get("start-with").asText("") : "",
+                    itemNode.has("end-with") ? itemNode.get("end-with").asText("") : "",
+                    itemNode.has("start-marker") ? itemNode.get("start-marker").asText("") : "",
+                    itemNode.has("end-marker") ? itemNode.get("end-marker").asText("") : ""
+            );
             for (JsonNode jsonNode : itemNode.get("markers")) {
                 String marker = jsonNode.asText().toUpperCase();
-                if (dataMap.containsKey(marker)) {
-                    throw new UserError("Marker duplication (case-insensitively): " + marker);
-                }
-                IncludeFileData includeFileData = new IncludeFileData();
-                includeFileData.rootDir = itemNode.get("root-dir").asText();
-                includeFileData.trim = itemNode.has("trim") ?
-                        itemNode.get("trim").asText("all") : "all";
-                includeFileData.recursive = itemNode.has("recursive") &&
-                        itemNode.get("recursive").asBoolean();
-                includeFileData.substringer = new SmartSubstringer(
-                        itemNode.has("start-with") ? itemNode.get("start-with").asText("") : "",
-                        itemNode.has("end-with") ? itemNode.get("end-with").asText("") : "",
-                        itemNode.has("start-marker") ? itemNode.get("start-marker").asText("") : "",
-                        itemNode.has("end-marker") ? itemNode.get("end-marker").asText("") : ""
-                );
+                handlerInfos.add(new PageMetadataHandlerInfo(this, marker, false));
                 dataMap.put(marker, includeFileData);
             }
-            this.data = dataMap;
         }
+        this.data = dataMap;
+        this.handlerInfos = handlerInfos;
     }
 
     @Override
@@ -90,13 +92,12 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
 
     @Override
     public List<PageMetadataHandlerInfo> pageMetadataHandlers() {
-        return this.data.keySet().stream().map(marker ->
-                new PageMetadataHandlerInfo(this, marker, false)).collect(Collectors.toList());
+        return handlerInfos;
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         IncludeFileData markerData = this.data.get(marker);
@@ -143,9 +144,11 @@ public class IncludeFilePlugin extends AbstractMd2HtmlPlugin implements PageMeta
         } else {
             recursive = markerData.recursive;
         }
-        return recursive ?
-                metadataHandlers.applyMetadataHandlers(content, document, visitedMarkers,
-                        "INCLUDE_FILE_PLUGIN:" + includeFile) :
-                content;
+        if (recursive) {
+            return metadataHandlers.processNestedMetadata(
+                    content, document, visitedMarkers,
+                    "INCLUDE_FILE_PLUGIN:" + includeFile);
+        }
+        return MetadataProcessingResult.immediate(content);
     }
 }

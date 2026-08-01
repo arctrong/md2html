@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from models.document import Document
+from plugins.back_references_plugin import BackReferencesPlugin
 from plugins.ignore_plugin import IgnorePlugin
 from plugins.include_file_plugin import IncludeFilePlugin
 from plugins.index_plugin import IndexPlugin
@@ -15,6 +16,7 @@ from plugins.wrap_code_plugin import WrapCodePlugin
 from utils import UserError
 
 PLUGIN_PROVIDERS = {
+    'back-references': lambda: BackReferencesPlugin(),
     'relative-paths': lambda: RelativePathsPlugin(),
     "page-flows": lambda: PageFlowsPlugin(),
     'page-variables': lambda: PageVariablesPlugin(),

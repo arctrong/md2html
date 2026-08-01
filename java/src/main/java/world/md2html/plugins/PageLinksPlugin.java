@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.NullNode;
 import world.md2html.options.argfile.ArgFileParseException;
 import world.md2html.options.model.Document;
+import world.md2html.pagemetadata.MetadataProcessingResult;
 import world.md2html.utils.CheckedIllegalArgumentException;
 
 import java.io.IOException;
@@ -63,16 +64,17 @@ public class PageLinksPlugin extends AbstractMd2HtmlPlugin implements PageMetada
     }
 
     @Override
-    public String acceptPageMetadata(Document document, String marker, String metadata,
-                                     String metadataSection, Set<String> visitedMarkers
+    public MetadataProcessingResult acceptPageMetadata(Document document, String marker,
+            String metadata, String metadataSection, Set<String> visitedMarkers
     ) throws PageMetadataException {
 
         String destinationPageOutput = this.pages.get(metadata.trim());
         if (destinationPageOutput == null) {
-            return metadataSection;
+            return MetadataProcessingResult.immediate(metadataSection);
         } else {
             try {
-                return relativizeRelativeResource(destinationPageOutput, document.getOutput());
+                return MetadataProcessingResult.immediate(
+                        relativizeRelativeResource(destinationPageOutput, document.getOutput()));
             } catch (CheckedIllegalArgumentException e) {
                 throw new PageMetadataException("Plugin '" + this.getClass().getSimpleName() +
                         "': Cannot relativize '" + destinationPageOutput + "' against '" +

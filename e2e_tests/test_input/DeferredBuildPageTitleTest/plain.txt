@@ -1,0 +1,5 @@
+<!--VARIABLES {"title": "Plain page"}-->
+
+# Plain page body
+
+This page has no back-reference metadata and is rendered in phase 1.

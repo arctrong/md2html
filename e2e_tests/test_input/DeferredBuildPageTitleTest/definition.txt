@@ -1,0 +1,5 @@
+<!--VARIABLES {"title": "Definition page"}-->
+
+# Definition page body
+
+<!--refdef example [Example Domain](https://example.com/)-->
